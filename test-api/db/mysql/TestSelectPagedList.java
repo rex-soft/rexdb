@@ -10,9 +10,10 @@ import org.rex.WMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 
-import db.mysql.entitry.Student;
+import db.Student;
+import db.TestBase;
 
-public class TestSelectPagedList extends Base{
+public class TestSelectPagedList extends TestBase{
 
 	//--------------
 	public static void main(String[] args) throws Exception{

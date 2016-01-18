@@ -1,4 +1,4 @@
-package db.mysql.entitry;
+package db;
 
 import java.util.Arrays;
 import java.util.Date;

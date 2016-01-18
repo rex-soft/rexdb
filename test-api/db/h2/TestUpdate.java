@@ -1,4 +1,4 @@
-package db.mysql;
+package db.h2;
 
 import java.text.ParseException;
 import java.util.HashMap;

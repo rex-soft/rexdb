@@ -5,11 +5,19 @@
 	<settings>
 		<property name="lang" value="zh-cn"/>
 	</settings>
-	<dataSource>
+	<!-- Mysql -->
+<!-- 	<dataSource>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/test_db" />
 		<property name="username" value="root" />
 		<property name="password" value="12345678" />
+	</dataSource> -->
+	<!-- h2 -->
+ 	<dataSource>
+		<property name="driverClassName" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:file:D:/h2/data/rexdb" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
 	</dataSource>
 <!--<dataSource id="dbcp" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${ho.jdbc.driverClassName}" />
