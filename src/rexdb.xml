@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE configuration PUBLIC "-//db.rex-soft.org//DTD Config 1.0//EN" "http://db.rex-soft.org/dtd/rexdb-1-config.dtd">
+<configuration>
+	<!-- <properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" /> -->
+	<settings>
+		<property name="lang" value="zh-cn"/>
+	</settings>
+	<dataSource>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/test_db" />
+		<property name="username" value="root" />
+		<property name="password" value="12345678" />
+	</dataSource>
+<!--<dataSource id="dbcp" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${ho.jdbc.driverClassName}" />
+		<property name="url" value="${ho.jdbc.url}" />
+		<property name="username" value="${ho.jdbc.username}" />
+		<property name="password" value="${ho.jdbc.password}" />
+	</dataSource>
+	<dataSource id="ecpay" jndi="java:comp/env/ecpay"></dataSource> -->
+	<listener class="org.rex.db.listener.impl.DBPrintSqlListener" />
+</configuration>

@@ -1,0 +1,65 @@
+package org.rex.db.dialect.impl;
+
+import org.rex.db.Ps;
+import org.rex.db.dialect.Dialect;
+
+/**
+ * 达梦数据库
+ * 注意：USER_TABLES，DBA_TABLES在表数量大时速度极慢，无法读取数据
+ */
+public class DMDialect implements Dialect {
+
+	// ------------------------------------------------------------分页SQL
+	// 获取分页语句
+	protected String getLimitString(String sql, boolean hasOffset) {
+		sql = sql.trim();
+		boolean isForUpdate = false;
+		if (sql.toLowerCase().endsWith(" for update")) {
+			sql = sql.substring(0, sql.length() - 11);
+			isForUpdate = true;
+		}
+
+		StringBuffer pagingSelect = new StringBuffer(sql.length() + 100);
+		if (hasOffset) {
+			pagingSelect
+					.append("select * from ( select row_.*, rownum rownum_ from ( ");
+		} else {
+			pagingSelect.append("select * from ( ");
+		}
+		pagingSelect.append(sql);
+		if (hasOffset) {
+			pagingSelect.append(" ) row_ ) where rownum_ <= ? and rownum_ > ?");
+		} else {
+			pagingSelect.append(" ) where rownum <= ?");
+		}
+
+		if (isForUpdate) {
+			pagingSelect.append(" for update");
+		}
+
+		return pagingSelect.toString();
+	}
+	
+	public String getLimitSql(String sql, int limit) {
+		return getLimitString(sql, false);
+	}
+
+	public String getLimitSql(String sql, int offset, int limit) {
+		return getLimitString(sql, true);
+	}
+
+	public Ps getLimitPs(Ps ps, int limit) {
+		if(ps==null) ps=new Ps();
+		return ps.add(limit);
+	}
+
+	public Ps getLimitPs(Ps ps, int offset, int limit) {
+		if(ps==null) ps=new Ps();
+		return ps.add(limit).add(offset);
+	}
+	
+	// ------------------------------------------------------------版本信息
+	public String getDialectName() {
+		return "DMDialect";
+	}
+}
