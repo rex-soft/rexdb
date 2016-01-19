@@ -58,10 +58,10 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 		}
 
 		//使用当前的事务，如果当前没有事务，就抛出异常。
-		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_MANDATORY) {
-			ConnectionHolder connectionHolder = doGetTransaction();
-			if(connectionHolder == null)
-				throw new DBException("DB-C10017", "PROPAGATION_MANDATORY");
+		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_MANDATORY) {//XXX:取消这种无用选项
+//			ConnectionHolder connectionHolder = doGetTransaction();
+//			if(connectionHolder == null)
+//				throw new DBException("DB-C10017", "PROPAGATION_MANDATORY");
 		}
 
 		//如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。
@@ -122,7 +122,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	/**
 	 * 返回当前事物对象
 	 */
-	protected abstract ConnectionHolder doGetTransaction();
+//	protected abstract ConnectionHolder doGetTransaction();
 
 	/**
 	 * 开始事物
