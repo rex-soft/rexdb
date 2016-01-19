@@ -379,57 +379,57 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getList(resultClass, offset, limit);
+	public static <T> List<T> getList(String dataSourceId, String sql, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getList(resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(resultClass, offset, limit);
+	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getListOriginal(resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Ps ps, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getList(ps, resultClass, offset, limit);
+	public static <T> List<T> getList(String dataSourceId, String sql, Ps ps, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getList(ps, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Object[] params, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getList(params, resultClass, offset, limit);
+	public static <T> List<T> getList(String dataSourceId, String sql, Object[] params, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getList(params, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Object param, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getList(param, resultClass, offset, limit);
+	public static <T> List<T> getList(String dataSourceId, String sql, Object param, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getList(param, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Ps ps, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(ps, resultClass, offset, limit);
+	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Ps ps, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getListOriginal(ps, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Object[] params, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(params, resultClass, offset, limit);
+	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Object[] params, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getListOriginal(params, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Object param, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(param, resultClass, offset, limit);
+	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Object param, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getListOriginal(param, resultClass, offset, rows);
 	}
 	
 	/**
@@ -500,64 +500,64 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(offset, limit);
+	public static List<WMap> getMapList(String dataSourceId, String sql, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getMapList(offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(offset, limit);
+	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getMapListOriginal(offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Ps ps, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(ps, offset, limit);
+	public static List<WMap> getMapList(String dataSourceId, String sql, Ps ps, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getMapList(ps, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Object[] params, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(params, offset, limit);
+	public static List<WMap> getMapList(String dataSourceId, String sql, Object[] params, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getMapList(params, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Object param, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(param, offset, limit);
+	public static List<WMap> getMapList(String dataSourceId, String sql, Object param, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getMapList(param, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Ps ps, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(ps, offset, limit);
+	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Ps ps, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getMapListOriginal(ps, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Object[] params, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(params, offset, limit);
+	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Object[] params, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getMapListOriginal(params, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Object param, int offset, int limit) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(param, offset, limit);
+	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Object param, int offset, int rows) throws DBException{
+		return getQuery(dataSourceId, sql).getMapListOriginal(param, offset, rows);
 	}
 
 	//------------使用默认数据源
@@ -822,57 +822,57 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String sql, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(sql).getList(resultClass, offset, limit);
+	public static <T> List<T> getList(String sql, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(sql).getList(resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String sql, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(sql).getListOriginal(resultClass, offset, limit);
+	public static <T> List<T> getListOriginal(String sql, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(sql).getListOriginal(resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String sql, Ps ps, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(sql).getList(ps, resultClass, offset, limit);
+	public static <T> List<T> getList(String sql, Ps ps, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(sql).getList(ps, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String sql, Object[] params, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(sql).getList(params, resultClass, offset, limit);
+	public static <T> List<T> getList(String sql, Object[] params, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(sql).getList(params, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String sql, Object param, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(sql).getList(param, resultClass, offset, limit);
+	public static <T> List<T> getList(String sql, Object param, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(sql).getList(param, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String sql, Ps ps, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(sql).getListOriginal(ps, resultClass, offset, limit);
+	public static <T> List<T> getListOriginal(String sql, Ps ps, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(sql).getListOriginal(ps, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String sql, Object[] params, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(sql).getListOriginal(params, resultClass, offset, limit);
+	public static <T> List<T> getListOriginal(String sql, Object[] params, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(sql).getListOriginal(params, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String sql, Object param, Class<T> resultClass, int offset, int limit) throws DBException{
-		return getQuery(sql).getListOriginal(param, resultClass, offset, limit);
+	public static <T> List<T> getListOriginal(String sql, Object param, Class<T> resultClass, int offset, int rows) throws DBException{
+		return getQuery(sql).getListOriginal(param, resultClass, offset, rows);
 	}
 	
 	
@@ -944,64 +944,64 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, int offset, int limit) throws DBException{
-		return getQuery(sql).getMapList(offset, limit);
+	public static List<WMap> getMapList(String sql, int offset, int rows) throws DBException{
+		return getQuery(sql).getMapList(offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, int offset, int limit) throws DBException{
-		return getQuery(sql).getMapListOriginal(offset, limit);
+	public static List<WMap> getMapListOriginal(String sql, int offset, int rows) throws DBException{
+		return getQuery(sql).getMapListOriginal(offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Ps ps, int offset, int limit) throws DBException{
-		return getQuery(sql).getMapList(ps, offset, limit);
+	public static List<WMap> getMapList(String sql, Ps ps, int offset, int rows) throws DBException{
+		return getQuery(sql).getMapList(ps, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Object[] params, int offset, int limit) throws DBException{
-		return getQuery(sql).getMapList(params, offset, limit);
+	public static List<WMap> getMapList(String sql, Object[] params, int offset, int rows) throws DBException{
+		return getQuery(sql).getMapList(params, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Object param, int offset, int limit) throws DBException{
-		return getQuery(sql).getMapList(param, offset, limit);
+	public static List<WMap> getMapList(String sql, Object param, int offset, int rows) throws DBException{
+		return getQuery(sql).getMapList(param, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Ps ps, int offset, int limit) throws DBException{
-		return getQuery(sql).getMapListOriginal(ps, offset, limit);
+	public static List<WMap> getMapListOriginal(String sql, Ps ps, int offset, int rows) throws DBException{
+		return getQuery(sql).getMapListOriginal(ps, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Object[] params, int offset, int limit) throws DBException{
-		return getQuery(sql).getMapListOriginal(params, offset, limit);
+	public static List<WMap> getMapListOriginal(String sql, Object[] params, int offset, int rows) throws DBException{
+		return getQuery(sql).getMapListOriginal(params, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Object param, int offset, int limit) throws DBException{
-		return getQuery(sql).getMapListOriginal(param, offset, limit);
+	public static List<WMap> getMapListOriginal(String sql, Object param, int offset, int rows) throws DBException{
+		return getQuery(sql).getMapListOriginal(param, offset, rows);
 	}
 	
 	// --------------------------------------------- 更新

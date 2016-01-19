@@ -53,11 +53,11 @@ public class DBQuery extends DBOperation {
 	 * 获取分页SQL
 	 * 
 	 * @param sql sql语句
-	 * @param limit 结果条目
+	 * @param rows 结果条目
 	 * @return 分页SQL语句
 	 */
-	protected String getLimitSql(String sql, int limit) throws DBException {
-		return getDialect().getLimitSql(sql, limit);
+	protected String getLimitSql(String sql, int rows) throws DBException {
+		return getDialect().getLimitSql(sql, rows);
 	}
 
 	/**
@@ -65,23 +65,23 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @param sql sql语句
 	 * @param offset 偏移
-	 * @param limit 结果条目
+	 * @param rows 结果条目
 	 * @return 分页SQL语句
 	 */
-	protected String getLimitSql(String sql, int offset, int limit) throws DBException {
-		return getDialect().getLimitSql(sql, offset, limit);
+	protected String getLimitSql(String sql, int offset, int rows) throws DBException {
+		return getDialect().getLimitSql(sql, offset, rows);
 	}
 
 	/**
 	 * 获取分页后的预编译参数
 	 * 
 	 * @param ps 预编译参数
-	 * @param limit 分页sql条目
+	 * @param rows 分页sql条目
 	 * @return
 	 * @throws SQLException
 	 */
-	protected Ps getLimitPs(Ps ps, int limit) throws DBException {
-		return getDialect().getLimitPs(ps, limit);
+	protected Ps getLimitPs(Ps ps, int rows) throws DBException {
+		return getDialect().getLimitPs(ps, rows);
 	}
 
 	/**
@@ -89,12 +89,12 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @param ps 预编译参数
 	 * @param offset 偏移
-	 * @param limit 分页sql条目
+	 * @param rows 分页sql条目
 	 * @return
 	 * @throws SQLException
 	 */
-	protected Ps getLimitPs(Ps ps, int offset, int limit) throws DBException {
-		return getDialect().getLimitPs(ps, offset, limit);
+	protected Ps getLimitPs(Ps ps, int offset, int rows) throws DBException {
+		return getDialect().getLimitPs(ps, offset, rows);
 	}
 
 	/**
@@ -365,13 +365,13 @@ public class DBQuery extends DBOperation {
 	 * 执行查询, 获取多条记录
 	 * 
 	 * @param resultPojoClass 结果类
-	 * @param limit 记录条数
+	 * @param rows 记录条数
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return 结果记录
 	 * @throws SQLException
 	 */
-	protected <T> List<T> getList(Class<T> resultClass, int limit, boolean originalKey) throws DBException {
-		return getLimitList(null, resultClass, -1, limit, originalKey);
+	protected <T> List<T> getList(Class<T> resultClass, int rows, boolean originalKey) throws DBException {
+		return getLimitList(null, resultClass, -1, rows, originalKey);
 	}
 
 	/**
@@ -379,13 +379,13 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @param resultPojoClass 结果类
 	 * @param offset 记录偏移数
-	 * @param limit 记录条数
+	 * @param rows 记录条数
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return 结果记录
 	 * @throws SQLException
 	 */
-	protected <T> List<T> getList(Class<T> resultClass, int offset, int limit, boolean originalKey) throws DBException {
-		return getLimitList(null, resultClass, offset, limit, originalKey);
+	protected <T> List<T> getList(Class<T> resultClass, int offset, int rows, boolean originalKey) throws DBException {
+		return getLimitList(null, resultClass, offset, rows, originalKey);
 	}
 
 	/**
@@ -394,23 +394,23 @@ public class DBQuery extends DBOperation {
 	 * @param ps 预编译参数
 	 * @param resultPojoClass 结果类
 	 * @param offset 记录偏移数, 该值小于0时忽略
-	 * @param limit 记录条数
+	 * @param rows 记录条数
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return 结果记录
 	 * @throws SQLException
 	 * @throws DBException
 	 */
-	protected <T> List<T> getLimitList(Ps ps, Class<T> resultClass, int offset, int limit, boolean originalKey) throws DBException {
-		return queryList(wrapLimitPs(ps, offset, limit), resultClass, originalKey);
+	protected <T> List<T> getLimitList(Ps ps, Class<T> resultClass, int offset, int rows, boolean originalKey) throws DBException {
+		return queryList(wrapLimitPs(ps, offset, rows), resultClass, originalKey);
 	}
 	
-	protected List<WMap> getLimitList(Ps ps, int offset, int limit, boolean originalKey) throws DBException {
-		return queryList(wrapLimitPs(ps, offset, limit), originalKey);
+	protected List<WMap> getLimitList(Ps ps, int offset, int rows, boolean originalKey) throws DBException {
+		return queryList(wrapLimitPs(ps, offset, rows), originalKey);
 	}
 
-	private Ps wrapLimitPs(Ps ps, int offset, int limit) throws DBException{
-		String limitSql = getLimitSql(getSql(), offset, limit);
-		Ps limitPs = offset < 0 ? getLimitPs(ps, limit) : getLimitPs(ps, offset, limit);// 小于0的offset无视
+	private Ps wrapLimitPs(Ps ps, int offset, int rows) throws DBException{
+		String limitSql = getLimitSql(getSql(), offset, rows);
+		Ps limitPs = offset < 0 ? getLimitPs(ps, rows) : getLimitPs(ps, offset, rows);// 小于0的offset无视
 		setSql(limitSql);
 		return limitPs;
 	}
@@ -421,13 +421,13 @@ public class DBQuery extends DBOperation {
 	 * @param params 预编译参数
 	 * @param resultPojoClass 结果类
 	 * @param offset 记录偏移数, 该值小于0时忽略
-	 * @param limit 记录条数
+	 * @param rows 记录条数
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return 结果记录
 	 * @throws SQLException
 	 */
-	protected <T> List<T> getListByParamArray(Object[] params, Class<T> resultClass, int offset, int limit, boolean originalKey) throws DBException {
-		return getLimitList(getPs(params), resultClass, offset, limit, originalKey);
+	protected <T> List<T> getListByParamArray(Object[] params, Class<T> resultClass, int offset, int rows, boolean originalKey) throws DBException {
+		return getLimitList(getPs(params), resultClass, offset, rows, originalKey);
 	}
 
 	/**
@@ -436,13 +436,13 @@ public class DBQuery extends DBOperation {
 	 * @param param 预编译参数
 	 * @param resultPojoClass 结果类
 	 * @param offset 记录偏移数, 该值小于0时忽略
-	 * @param limit 记录条数
+	 * @param rows 记录条数
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return 结果记录
 	 * @throws SQLException
 	 */
-	protected <T> List<T> getListByEl(Object param, Class<T> resultClass, int offset, int limit, boolean originalKey) throws DBException {
-		return getLimitList(parseSqlEl(param), resultClass, offset, limit, originalKey);
+	protected <T> List<T> getListByEl(Object param, Class<T> resultClass, int offset, int rows, boolean originalKey) throws DBException {
+		return getLimitList(parseSqlEl(param), resultClass, offset, rows, originalKey);
 	}
 
 	// --------返回Map对象
@@ -460,27 +460,27 @@ public class DBQuery extends DBOperation {
 	/**
 	 * 执行查询, 获取多条记录
 	 * 
-	 * @param limit 数据条目
+	 * @param rows 数据条目
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return 结果记录
 	 * @throws SQLException
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(int limit, boolean originalKey) throws DBException {
-		return getLimitList(null, -1, limit, originalKey);
+	protected List<WMap> getMapList(int rows, boolean originalKey) throws DBException {
+		return getLimitList(null, -1, rows, originalKey);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 * 
 	 * @param offset 结果集偏移数
-	 * @param limit 数据条目
+	 * @param rows 数据条目
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return 结果记录
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(int offset, int limit, boolean originalKey) throws DBException {
-		return getLimitList(null, offset, limit, originalKey);
+	protected List<WMap> getMapList(int offset, int rows, boolean originalKey) throws DBException {
+		return getLimitList(null, offset, rows, originalKey);
 	}
 
 	/**
@@ -499,13 +499,13 @@ public class DBQuery extends DBOperation {
 	 * 执行查询, 获取多条记录
 	 * 
 	 * @param ps 预编译参数
-	 * @param limit 数据条目
+	 * @param rows 数据条目
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(Ps ps, int limit, boolean originalKey) throws DBException {
-		return getLimitList(ps, -1, limit, originalKey);
+	protected List<WMap> getMapList(Ps ps, int rows, boolean originalKey) throws DBException {
+		return getLimitList(ps, -1, rows, originalKey);
 	}
 
 	/**
@@ -513,13 +513,13 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @param ps 预编译参数
 	 * @param offset 结果集偏移数
-	 * @param limit 数据条目
+	 * @param rows 数据条目
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(Ps ps, int offset, int limit, boolean originalKey) throws DBException {
-		return getLimitList(ps, offset, limit, originalKey);
+	protected List<WMap> getMapList(Ps ps, int offset, int rows, boolean originalKey) throws DBException {
+		return getLimitList(ps, offset, rows, originalKey);
 	}
 
 	/**
@@ -550,40 +550,26 @@ public class DBQuery extends DBOperation {
 	 * 执行查询, 获取多条记录
 	 * 
 	 * @param params 预编译参数
-	 * @param limit 数据条目
+	 * @param rows 数据条目
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByParamArray(Object[] params, int limit, boolean originalKey) throws DBException {
-		return getLimitList(getPs(params), -1, limit, originalKey);
+	protected List<WMap> getMapListByParamArray(Object[] params, int rows, boolean originalKey) throws DBException {
+		return getLimitList(getPs(params), -1, rows, originalKey);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 * 
 	 * @param params 预编译参数
-	 * @param limit 数据条目
+	 * @param rows 数据条目
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByEl(Object param, int limit, boolean originalKey) throws DBException {
-		return getLimitList(parseSqlEl(param), -1, limit, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param params 预编译参数
-	 * @param offset 结果集偏移数
-	 * @param limit 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<WMap> getMapListByParamArray(Object[] params, int offset, int limit, boolean originalKey) throws DBException {
-		return getLimitList(getPs(params), offset, limit, originalKey);
+	protected List<WMap> getMapListByEl(Object param, int rows, boolean originalKey) throws DBException {
+		return getLimitList(parseSqlEl(param), -1, rows, originalKey);
 	}
 
 	/**
@@ -591,13 +577,27 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @param params 预编译参数
 	 * @param offset 结果集偏移数
-	 * @param limit 数据条目
+	 * @param rows 数据条目
 	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByEl(Object param, int offset, int limit, boolean originalKey) throws DBException {
-		return getLimitList(parseSqlEl(param), offset, limit, originalKey);
+	protected List<WMap> getMapListByParamArray(Object[] params, int offset, int rows, boolean originalKey) throws DBException {
+		return getLimitList(getPs(params), offset, rows, originalKey);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 * 
+	 * @param params 预编译参数
+	 * @param offset 结果集偏移数
+	 * @param rows 数据条目
+	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
+	 * @return
+	 * @throws DBException
+	 */
+	protected List<WMap> getMapListByEl(Object param, int offset, int rows, boolean originalKey) throws DBException {
+		return getLimitList(parseSqlEl(param), offset, rows, originalKey);
 	}
 
 	// ---------------------------------------执行查询，对外接口
@@ -896,57 +896,57 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public <T> List<T> getList(Class<T> resultClass, int offset, int limit) throws DBException {
-		return getList(resultClass, offset, limit, false);
+	public <T> List<T> getList(Class<T> resultClass, int offset, int rows) throws DBException {
+		return getList(resultClass, offset, rows, false);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public <T> List<T> getListOriginal(Class<T> resultClass, int offset, int limit) throws DBException {
-		return getList(resultClass, offset, limit, true);
+	public <T> List<T> getListOriginal(Class<T> resultClass, int offset, int rows) throws DBException {
+		return getList(resultClass, offset, rows, true);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public <T> List<T> getList(Ps ps, Class<T> resultClass, int offset, int limit) throws DBException {
-		return getLimitList(ps, resultClass, offset, limit, false);
+	public <T> List<T> getList(Ps ps, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getLimitList(ps, resultClass, offset, rows, false);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public <T> List<T> getList(Object[] params, Class<T> resultClass, int offset, int limit) throws DBException {
-		return getListByParamArray(params, resultClass, offset, limit, false);
+	public <T> List<T> getList(Object[] params, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getListByParamArray(params, resultClass, offset, rows, false);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public <T> List<T> getList(Object param, Class<T> resultClass, int offset, int limit) throws DBException {
-		return getListByEl(param, resultClass, offset, limit, false);
+	public <T> List<T> getList(Object param, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getListByEl(param, resultClass, offset, rows, false);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public <T> List<T> getListOriginal(Ps ps, Class<T> resultClass, int offset, int limit) throws DBException {
-		return getLimitList(ps, resultClass, offset, limit, true);
+	public <T> List<T> getListOriginal(Ps ps, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getLimitList(ps, resultClass, offset, rows, true);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public <T> List<T> getListOriginal(Object[] params, Class<T> resultClass, int offset, int limit) throws DBException {
-		return getListByParamArray(params, resultClass, offset, limit, true);
+	public <T> List<T> getListOriginal(Object[] params, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getListByParamArray(params, resultClass, offset, rows, true);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public <T> List<T> getListOriginal(Object param, Class<T> resultClass, int offset, int limit) throws DBException {
-		return getListByEl(param, resultClass, offset, limit, true);
+	public <T> List<T> getListOriginal(Object param, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getListByEl(param, resultClass, offset, rows, true);
 	}
 
 	/**
@@ -1026,8 +1026,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(int offset, int limit) throws DBException {
-		return getMapList(offset, limit, false);
+	public List<WMap> getMapList(int offset, int rows) throws DBException {
+		return getMapList(offset, rows, false);
 	}
 
 	/**
@@ -1035,8 +1035,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(int offset, int limit) throws DBException {
-		return getMapList(offset, limit, true);
+	public List<WMap> getMapListOriginal(int offset, int rows) throws DBException {
+		return getMapList(offset, rows, true);
 	}
 
 	/**
@@ -1044,8 +1044,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Ps ps, int offset, int limit) throws DBException {
-		return getMapList(ps, offset, limit, false);
+	public List<WMap> getMapList(Ps ps, int offset, int rows) throws DBException {
+		return getMapList(ps, offset, rows, false);
 	}
 
 	/**
@@ -1053,8 +1053,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Object[] params, int offset, int limit) throws DBException {
-		return getMapListByParamArray(params, offset, limit, false);
+	public List<WMap> getMapList(Object[] params, int offset, int rows) throws DBException {
+		return getMapListByParamArray(params, offset, rows, false);
 	}
 
 	/**
@@ -1062,8 +1062,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Object param, int offset, int limit) throws DBException {
-		return getMapListByEl(param, offset, limit, false);
+	public List<WMap> getMapList(Object param, int offset, int rows) throws DBException {
+		return getMapListByEl(param, offset, rows, false);
 	}
 
 	/**
@@ -1071,8 +1071,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Ps ps, int offset, int limit) throws DBException {
-		return getMapList(ps, offset, limit, true);
+	public List<WMap> getMapListOriginal(Ps ps, int offset, int rows) throws DBException {
+		return getMapList(ps, offset, rows, true);
 	}
 
 	/**
@@ -1080,8 +1080,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Object[] params, int offset, int limit) throws DBException {
-		return getMapListByParamArray(params, offset, limit, true);
+	public List<WMap> getMapListOriginal(Object[] params, int offset, int rows) throws DBException {
+		return getMapListByParamArray(params, offset, rows, true);
 	}
 
 	/**
@@ -1089,8 +1089,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Object param, int offset, int limit) throws DBException {
-		return getMapListByEl(param, offset, limit, true);
+	public List<WMap> getMapListOriginal(Object param, int offset, int rows) throws DBException {
+		return getMapListByEl(param, offset, rows, true);
 	}
 
 }
