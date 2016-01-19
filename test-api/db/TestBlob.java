@@ -1,4 +1,4 @@
-package db.mysql;
+package db;
 
 public class TestBlob {
 

@@ -1,4 +1,4 @@
-package db.mysql;
+package db;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -10,16 +10,14 @@ import org.rex.WMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 
-import db.mysql.entitry.Student;
-
-public class TestSelectPagedList extends Base{
+public class TestSelectList extends Base{
 
 	//--------------
 	public static void main(String[] args) throws Exception{
-		TestSelectPagedList selectPagedList = new TestSelectPagedList();
-		selectPagedList.executeSql();
-		selectPagedList.executePreparedSql();
-		selectPagedList.executePreparedELSql();
+		TestSelectList selectList = new TestSelectList();
+		selectList.executeSql();
+		selectList.executePreparedSql();
+		selectList.executePreparedELSql();
 	}
 	
 	//--------------
@@ -27,16 +25,15 @@ public class TestSelectPagedList extends Base{
 	 * 执行普通SQL
 	 */
 	public void executeSql() throws DBException{
-		String sql = "select * from r_student";
+		String sql = "select * from r_student limit 10";
 		
 		//查询结果封装为List<WMap>，列下标转换为java风格
-		List<WMap> result1 = DB.getMapList(sql, 0, 10);
+		List<WMap> result1 = DB.getMapList(sql);
 		System.out.println(result1);
 		
 		//查询结果封装为List<T>
-		List<Student> result2 = DB.getList(sql, Student.class, 0, 10);
+		List<Student> result2 = DB.getList(sql, Student.class);
 		System.out.println(result2);
-		
 	}
 	
 	
@@ -47,11 +44,11 @@ public class TestSelectPagedList extends Base{
 		String sql = "select * from r_student where student_id < ?";
 		
 		//查询结果封装为List<WMap>，列下标转换为java风格
-		List<WMap> result1 = DB.getMapList(sql, new Ps(10), 0, 10);
+		List<WMap> result1 = DB.getMapList(sql, new Ps(10));
 		System.out.println(result1);
 		
 		//查询结果封装为List<T>
-		List<Student> result2 = DB.getList(sql, new Ps(10), Student.class, 0, 10);
+		List<Student> result2 = DB.getList(sql, new Ps(10), Student.class);
 		System.out.println(result2);
 	}
 	
@@ -66,11 +63,11 @@ public class TestSelectPagedList extends Base{
 		paramMap.put("studentId", 10);
 		
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		List<WMap> result1 = DB.getMapList(sql, paramMap, 0, 10);
+		List<WMap> result1 = DB.getMapList(sql, paramMap);
 		System.out.println(result1);
 		
 		//查询结果封装为Bean
-		List<Student> result2 = DB.getList(sql, paramMap, Student.class, 0, 10);
+		List<Student> result2 = DB.getList(sql, paramMap, Student.class);
 		System.out.println(result2);
 		
 		//---------使用Java对象传递参数
@@ -78,11 +75,11 @@ public class TestSelectPagedList extends Base{
 		paramBean.setStudentId(10);
 		
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		List<WMap> result4 = DB.getMapList(sql, paramBean, 0, 10);
+		List<WMap> result4 = DB.getMapList(sql, paramBean);
 		System.out.println(result4);
 		
 		//查询结果封装为Bean
-		List<Student> result5 = DB.getList(sql, paramBean, Student.class, 0, 10);
+		List<Student> result5 = DB.getList(sql, paramBean, Student.class);
 		System.out.println(result5);
 	}
 }

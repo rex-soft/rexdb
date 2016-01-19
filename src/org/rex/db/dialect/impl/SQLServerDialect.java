@@ -10,16 +10,16 @@ public class SQLServerDialect implements Dialect {
 
 
 	// ------------------------------------------------------------分页SQL
-	public String getLimitSql(String sql, int limit) {
-		return getLimitSql(sql, 0, limit);
+	public String getLimitSql(String sql, int rows) {
+		return getLimitSql(sql, 0, rows);
 	}
 
-	public String getLimitSql(String sql, int offset, int limit) {
+	public String getLimitSql(String sql, int offset, int rows) {
 		if (offset > 0) {
 			throw new UnsupportedOperationException("数据库不支持带有偏移的分页查询");
 		}
 		return new StringBuffer(sql.length() + 8).append(sql)
-				.insert(getAfterSelectInsertPoint(sql), " top " + limit)
+				.insert(getAfterSelectInsertPoint(sql), " top " + rows)
 				.toString();
 	}
 
@@ -30,20 +30,20 @@ public class SQLServerDialect implements Dialect {
 		return selectIndex + (selectDistinctIndex == selectIndex ? 15 : 6);
 	}
 
-	public Ps getLimitPs(Ps ps, int limit) {
+	public Ps getLimitPs(Ps ps, int rows) {
 		return ps;
 	}
 
-	public Ps getLimitPs(Ps ps, int offset, int limit) {
+	public Ps getLimitPs(Ps ps, int offset, int rows) {
 		if (offset > 0) {
 			throw new UnsupportedOperationException("数据库不支持带有偏移的分页查询");
 		}
 
-		return getLimitPs(ps, limit);
+		return getLimitPs(ps, rows);
 	}
 
 	// ------------------------------------------------------------版本信息
-	public String getDialectName() {
-		return "SQLServerDialect";
+	public String getName() {
+		return "SQLSERVER";
 	}
 }

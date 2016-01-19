@@ -11,7 +11,6 @@ import org.rex.db.dialect.Dialect;
  */
 public class Oracle8iDialect implements Dialect {
 
-
 	// ------------------------------------------------------------分页SQL
 	public String getLimitSql(String sql, int rows) {
 		return getLimitString(sql, false);
@@ -62,8 +61,8 @@ public class Oracle8iDialect implements Dialect {
 	}
 	
 	// ------------------------------------------------------------当前方言版本信息
-	public String getDialectName() {
-		return "Oracle8iDialect";
+	public String getName() {
+		return "ORACLE";
 	}
 
 }

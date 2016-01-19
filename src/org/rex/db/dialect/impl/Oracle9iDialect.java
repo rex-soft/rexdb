@@ -1,7 +1,5 @@
 package org.rex.db.dialect.impl;
 
-import java.sql.Types;
-
 /**
  * Oracle9i
  */
@@ -37,7 +35,7 @@ public class Oracle9iDialect extends Oracle8iDialect {
 		return pagingSelect.toString();
 	}
 
-	public String getDialectName(){
-		return "Oracle9iDialect";
+	public String getName(){
+		return "ORACLE";
 	}
 }

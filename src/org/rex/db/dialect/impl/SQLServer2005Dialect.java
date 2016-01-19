@@ -5,10 +5,10 @@ import org.rex.db.Ps;
 public class SQLServer2005Dialect extends SQLServerDialect {
 	
 	//------------------------------------------------------------分页SQL
-	public String getLimitString(String querySqlString, int offset, int limit) {
+	public String getLimitString(String querySqlString, int offset, int rows) {
 		if(offset==0){
 			offset=1;
-			limit=limit+1;
+			rows=rows+1;
 		}
 		StringBuffer pagingBuilder = new StringBuffer();
 		String orderby = getOrderByPart(querySqlString);
@@ -37,13 +37,13 @@ public class SQLServer2005Dialect extends SQLServerDialect {
 			.append(" SELECT * FROM query ")
 			.append(" WHERE ")
 			.append(" __hibernate_row_nr__ >=").append(offset)
-			.append(" AND __hibernate_row_nr__ <").append(limit)
+			.append(" AND __hibernate_row_nr__ <").append(rows)
 			.append(" ORDER BY __hibernate_row_nr__");
 
 		return result.toString();
 	}
 	
-	public void setLimitParam(Ps ps, boolean hasOffset,  int offset, int limit){
+	public void setLimitParam(Ps ps, boolean hasOffset,  int offset, int rows){
 	}
 
 	static String getOrderByPart(String sql) {
@@ -56,7 +56,7 @@ public class SQLServer2005Dialect extends SQLServerDialect {
 		}
 	}
 	
-	public String getDialectName(){
-		return "SQLServer2005Dialect";
+	public String getName(){
+		return "SQLSERVER";
 	}
 }

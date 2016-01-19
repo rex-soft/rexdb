@@ -48,5 +48,5 @@ public interface Dialect {
 	 * 获取方言版本信息
 	 * @return 方言版本
 	 */
-	public String getDialectName();
+	public String getName();
 }

@@ -9,22 +9,22 @@ import org.rex.db.dialect.Dialect;
 public class H2Dialect implements Dialect {
 
 	// ------------------------------------------------------------分页SQL
-	public String getLimitSql(String sql, int limit) {
+	public String getLimitSql(String sql, int rows) {
 		return getLimitString(sql, false);
 	}
 
-	public String getLimitSql(String sql, int offset, int limit) {
+	public String getLimitSql(String sql, int offset, int rows) {
 		return getLimitString(sql, true);
 	}
 
-	public Ps getLimitPs(Ps ps, int limit) {
+	public Ps getLimitPs(Ps ps, int rows) {
 		if(ps==null) ps=new Ps();
-		return ps.add(limit);
+		return ps.add(rows);
 	}
 
-	public Ps getLimitPs(Ps ps, int offset, int limit) {
+	public Ps getLimitPs(Ps ps, int offset, int rows) {
 		if(ps==null) ps=new Ps();
-		return ps.add(limit).add(offset);
+		return ps.add(rows).add(offset);
 	}
 
 	protected String getLimitString(String sql, boolean hasOffset) {
@@ -33,8 +33,8 @@ public class H2Dialect implements Dialect {
 	}
 
 	// ------------------------------------------------------------版本信息
-	public String getDialectName() {
-		return "H2Dialect";
+	public String getName() {
+		return "H2";
 	}
 	
 }

@@ -1,4 +1,4 @@
-package db.mysql;
+package db;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -8,8 +8,6 @@ import org.rex.DB;
 import org.rex.WMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
-
-import db.mysql.entitry.Student;
 
 public class TestSelectOne extends Base{
 

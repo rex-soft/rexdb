@@ -1,4 +1,4 @@
-package db.mysql;
+package db;
 
 import org.rex.DB;
 import org.rex.WMap;
