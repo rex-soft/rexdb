@@ -5,9 +5,7 @@ import org.rex.WMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 
-import db.TestBase;
-
-public class TestCall extends TestBase {
+public class TestCall extends Base {
 
 	public static void main(String[] args) throws Exception {
 		TestCall call = new TestCall();

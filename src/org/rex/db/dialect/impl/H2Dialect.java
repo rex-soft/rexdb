@@ -24,7 +24,7 @@ public class H2Dialect implements Dialect {
 
 	public Ps getLimitPs(Ps ps, int offset, int limit) {
 		if(ps==null) ps=new Ps();
-		return ps.add(limit).add(offset);
+		return ps.add(offset).add(limit);
 	}
 
 	protected String getLimitString(String sql, boolean hasOffset) {

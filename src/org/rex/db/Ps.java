@@ -886,28 +886,15 @@ public class Ps {
 	}
 	//-------------------------------------------toString
 	public String toString() {
-		List values = new ArrayList();
-		List<String> sqlTypes = new ArrayList<String>();
-		List<String> paramTypes = new ArrayList<String>();
-		
-		for (SqlParameter parameter : parameters) {
-			values.add(parameter.getValue());
-			sqlTypes.add(JdbcUtil.getNameByType(parameter.getSqlType()));
-			if(parameter instanceof SqlInOutParameter)
-				paramTypes.add("INOUT");
-			else if(parameter instanceof SqlOutParameter)
-				paramTypes.add("OUT");
-			else
-				paramTypes.add("IN");
-		}
-		
 		StringBuffer sb = new StringBuffer();
-		sb.append("values: ")
-			.append(values)
-			.append(", sql types: ")
-			.append(sqlTypes)
-			.append(", parameter types: ")
-			.append(paramTypes);
+		for (int i = 0; i < parameters.size(); i++) {
+			sb.append(i)
+				.append(":")
+				.append(parameters.get(i));
+			
+			if(i != parameters.size() -1)
+				sb.append(",");
+		}
 		return sb.toString();
 	}
 	

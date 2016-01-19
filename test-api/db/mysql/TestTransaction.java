@@ -3,9 +3,7 @@ package db.mysql;
 import org.rex.DB;
 import org.rex.db.Ps;
 
-import db.TestBase;
-
-public class TestTransaction extends TestBase {
+public class TestTransaction extends Base {
 
 	// --------------
 	public static void main(String[] args) throws Exception {

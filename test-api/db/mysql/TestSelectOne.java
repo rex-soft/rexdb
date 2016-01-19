@@ -9,10 +9,9 @@ import org.rex.WMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 
-import db.Student;
-import db.TestBase;
+import db.mysql.entitry.Student;
 
-public class TestSelectOne extends TestBase{
+public class TestSelectOne extends Base{
 
 	//--------------
 	public static void main(String[] args) throws Exception{

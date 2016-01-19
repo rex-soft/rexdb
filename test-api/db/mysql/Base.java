@@ -1,11 +1,11 @@
-package db;
+package db.mysql;
 
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TestBase {
+public class Base {
 
 	protected Date getBirthday() throws ParseException{
 		SimpleDateFormat fd = new SimpleDateFormat("yyyy-MM-dd");

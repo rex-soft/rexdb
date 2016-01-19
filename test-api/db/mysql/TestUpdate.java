@@ -8,13 +8,12 @@ import org.rex.DB;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 
-import db.Student;
-import db.TestBase;
+import db.mysql.entitry.Student;
 
 /**
  * 增删改表
  */
-public class TestUpdate extends TestBase{
+public class TestUpdate extends Base{
 	
 	//--------------
 	public static void main(String[] args) throws Exception{
