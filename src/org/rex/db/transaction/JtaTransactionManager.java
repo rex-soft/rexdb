@@ -26,20 +26,26 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	private Properties environment;
 	
 	//----------------------------------implements
-	
+	/**
+	 * 开始事物
+	 */
 	protected void doBegin(TransactionDefinition definition) throws DBException {
 		try {
-//			applyTimeout(timeout);
+			applyTimeout(definition.getTimeout());
 			doGetTransaction().begin();
-		}catch (NotSupportedException ex) {
-			throw new DBException("JTA implementation does not support nested transactions", ex);
-		}catch (UnsupportedOperationException ex) {
-			throw new DBException("JTA implementation does not support nested transactions", ex);
-		}catch (SystemException ex) {
-			throw new DBException("JTA failure on begin", ex);
+		} catch (NotSupportedException e) {
+			throw new DBException("DB-C10055", e, e.getMessage());
+		} catch (SystemException e) {
+			throw new DBException("DB-C10055", e, e.getMessage());
 		}
 	}
 
+	/**
+	 * 设置超时时间
+	 * @param timeout
+	 * @throws DBException
+	 * @throws SystemException
+	 */
 	protected void applyTimeout(int timeout) throws DBException, SystemException {
 		if (timeout > TransactionDefinition.TIMEOUT_DEFAULT) {
 			doGetTransaction().setTransactionTimeout(timeout);
@@ -47,11 +53,14 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	}
 
 
+	/**
+	 * 提交事务
+	 */
 	protected void doCommit() throws DBException {
 		try {
 			int jtaStatus = doGetTransaction().getStatus();
 			if (jtaStatus == Status.STATUS_NO_TRANSACTION) {
-				throw new DBException("JTA transaction already completed - probably rolled back");
+				throw new DBException("DB-C10056");
 			}
 			
 			if (jtaStatus == Status.STATUS_ROLLEDBACK) {
@@ -59,24 +68,21 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 					doGetTransaction().rollback();
 				}catch (IllegalStateException ex) {
 				}
-				throw new DBException("JTA transaction already rolled back (probably due to a timeout)");
+				throw new DBException("DB-C10057");
 			}
 			doGetTransaction().commit();
-		}catch (RollbackException ex) {
-			throw new DBException("JTA transaction unexpectedly rolled back (maybe due to a timeout)", ex);
-		}catch (IllegalStateException ex) {
-			throw new DBException("Unexpected internal transaction state", ex);
-		}catch (SystemException ex) {
-			throw new DBException("JTA failure on commit", ex);
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DBException("DB-C10058", e, e.getMessage());
+		} catch (IllegalStateException e) {
+			throw new DBException("DB-C10058", e, e.getMessage());
+		} catch (RollbackException e) {
+			throw new DBException("DB-C10058", e, e.getMessage());
 		} catch (HeuristicMixedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DBException("DB-C10058", e, e.getMessage());
 		} catch (HeuristicRollbackException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DBException("DB-C10058", e, e.getMessage());
+		} catch (SystemException e) {
+			throw new DBException("DB-C10058", e, e.getMessage());
 		}
 	}
 
@@ -87,37 +93,52 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 			if (jtaStatus != Status.STATUS_NO_TRANSACTION) {
 				try {
 					doGetTransaction().rollback();
-				}catch (IllegalStateException ex) {
+				}catch (IllegalStateException e) {
 					if (jtaStatus != Status.STATUS_ROLLEDBACK) 
-						throw new DBException("Unexpected internal transaction state", ex);
+						throw new DBException("DB-C10059", e, e.getMessage());
 				}
 			}
-		}catch (SystemException ex) {
-			throw new DBException("JTA failure on rollback", ex);
+		}catch (SystemException e) {
+			throw new DBException("DB-C10059", e, e.getMessage());
 		}
 	}
 
 	//-----------------------
+	/**
+	 * 从jndi中获取数据源
+	 * @return UserTransaction对象
+	 * @throws DBException
+	 */
 	protected UserTransaction doGetTransaction() throws DBException {
 		if(userTransaction != null)
 			return userTransaction;
 		
 		initUserTransaction();
 		if (userTransaction == null)
-			throw new DBException("No JTA UserTransaction available -  programmatic PlatformTransactionManager.getTransaction usage not supported");
+			throw new DBException("DB-C10062");
 		else
 			return userTransaction;
 	}
 	
+	/**
+	 * 初始化事物对象
+	 * @throws DBException
+	 */
 	protected void initUserTransaction() throws DBException{
 		if (userTransaction != null) return;
 		
-		String transactionName = userTransactionName != null ? userTransactionName : DEFAULT_USER_TRANSACTION_NAME, UserTransaction;
+		String transactionName = userTransactionName != null ? userTransactionName : DEFAULT_USER_TRANSACTION_NAME;
 		userTransaction = lookupTransaction(transactionName, UserTransaction.class);
 	}
 	
 	
-	//从jndi中查找UserTransaction对象
+	/**
+	 * 从jndi中查找UserTransaction对象
+	 * @param transactionName 执行事务对象名称
+	 * @param clazz jndi查找到的对象类型
+	 * @return jndi中查找到的对象
+	 * @throws DBException
+	 */
 	protected <T> T lookupTransaction(String transactionName, Class<T> clazz) throws DBException {
 		InitialContext initCtx = null;
 		try {
@@ -128,11 +149,12 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 			}
 
 			Object obj = initCtx.lookup(transactionName);
-			if(!clazz.isInstance(obj)) throw new DBException("JNDI对象类型不匹配"+clazz.getName());
+			if(!clazz.isInstance(obj)) 
+				throw new DBException("DB-C10060", transactionName, clazz.getName());
 			
 			return (T)obj;
 		} catch (NamingException e) {
-			throw new DBException("There was an error configuring JndiDataSourceTransactionPool. Cause: "+ e, e);
+			throw new DBException("DB-C10061", e, e.getMessage());
 		}finally {
 			try {
 				if (initCtx != null)
@@ -142,14 +164,10 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 		}
 	}
 
-	@Override
 	protected void afterCompletion() {
-		// TODO Auto-generated method stub
 	}
 
-	@Override
 	protected Connection doGetTransactionConnection() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

@@ -43,6 +43,7 @@ public class TestInsert extends Base{
 	public int executeSql() throws Exception{
 		String sql =  null;
 		String dbName = DB.getDialect().getName();
+		System.out.println(dbName);
 		
 		//MYSQL
 		if("MYSQL".equals(dbName)){
@@ -130,6 +131,7 @@ public class TestInsert extends Base{
 				+ "VALUES (#{studentId}, #{name}, #{sex}, #{birthday}, #{birthTime}, #{enrollmentTime}, #{major}, #{photo}, #{remark}, #{readonly})";
 
 		Student student = new Student();
+		System.out.println(student);
 		student.setStudentId(generateStudentId());
 		student.setName("Jim");
 		student.setSex(1);

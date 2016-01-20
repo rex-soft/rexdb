@@ -1,13 +1,15 @@
 package db;
 
 import org.rex.DB;
+import org.rex.db.exception.DBException;
 
 public class TestTransaction extends Base {
 
 	// --------------
 	public static void main(String[] args) throws Exception {
 		TestTransaction transaction = new TestTransaction();
-		transaction.execute();
+//		transaction.execute();
+		transaction.executeJta();
 	}
 
 	public void execute() throws Exception {
@@ -24,5 +26,11 @@ public class TestTransaction extends Base {
 			DB.rollback();
 			throw e;
 		}
+	}
+	
+	public void executeJta() throws DBException{
+		DB.beginJtaTransaction();
+		
+		
 	}
 }

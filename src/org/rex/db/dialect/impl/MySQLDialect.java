@@ -35,7 +35,7 @@ public class MySQLDialect implements Dialect {
 
 	// ------------------------------------------------------------版本信息
 	public String getName() {
-		return "MySQL";
+		return "MYSQL";
 	}
 	
 }

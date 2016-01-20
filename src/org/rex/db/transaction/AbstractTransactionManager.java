@@ -3,7 +3,6 @@ package org.rex.db.transaction;
 import java.sql.Connection;
 
 import org.rex.db.configuration.Configuration;
-import org.rex.db.datasource.ConnectionHolder;
 import org.rex.db.exception.DBException;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.listener.TransactionContext;
@@ -70,7 +69,9 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 				TransactionContext context = fireOnEvent(TransactionContext.TRANSACTION_BEGIN, definition);
 				doBegin(definition);//开始事物
 				fireAfterEvent(context);
-			} catch (Exception e) {
+			} catch (DBException e) {
+				throw e;
+			}catch (Exception e) {
 				throw new DBException("DB-C10022", e, e.getMessage());
 			}
 

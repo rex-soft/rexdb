@@ -6,6 +6,6 @@ package org.rex.db.dialect.impl;
 public class DerbyDialect extends DB2Dialect{
 	
 	public String getDialectName(){
-		return "DerbyDialect";
+		return "DERBY";
 	}
 }

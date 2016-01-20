@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import org.rex.db.exception.DBException;
 import org.rex.db.transaction.DataSourceTransactionManager;
 import org.rex.db.transaction.DefaultTransactionDefinition;
+import org.rex.db.transaction.JtaTransactionManager;
 import org.rex.db.transaction.TransactionManager;
 
 /**
@@ -19,6 +20,8 @@ import org.rex.db.transaction.TransactionManager;
 public class DBTransaction extends DefaultTransactionDefinition {
 
 	protected static Map<DataSource, TransactionManager> managers = new HashMap<DataSource, TransactionManager>();
+	
+	protected static TransactionManager jtaTransactionManager = null;
 
 	protected static TransactionManager getTransactionManager(DataSource dataSource) {
 		if (!managers.containsKey(dataSource))
@@ -26,7 +29,15 @@ public class DBTransaction extends DefaultTransactionDefinition {
 
 		return managers.get(dataSource);
 	}
+	
+	protected static TransactionManager getJtaTransactionManager(){
+		if(jtaTransactionManager == null)
+			jtaTransactionManager = new JtaTransactionManager();
+		
+		return jtaTransactionManager;
+	}
 
+	//------transaction
 	/**
 	 * 开始事物
 	 */
@@ -62,4 +73,33 @@ public class DBTransaction extends DefaultTransactionDefinition {
 		return getTransactionManager(dataSource).getTransactionConnection();
 	}
 
+	
+	//-------jta
+	/**
+	 * 开始事物
+	 */
+	public static void beginJta(DefaultTransactionDefinition definition) throws DBException {
+		getJtaTransactionManager().begin(definition);
+	}
+
+	/**
+	 * 开始事物
+	 */
+	public static void beginJta() throws DBException {
+		getJtaTransactionManager().begin(null);
+	}
+
+	/**
+	 * 提交事物
+	 */
+	public static void commitJta() throws DBException {
+		getJtaTransactionManager().commit();
+	}
+	
+	/**
+	 * 回滚事物
+	 */
+	public static void rollbackJta() throws DBException {
+		getJtaTransactionManager().rollback();
+	}
 }

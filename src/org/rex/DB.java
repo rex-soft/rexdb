@@ -1395,6 +1395,7 @@ public class DB {
 
 	// --------------------------------------------- 事务
 	
+	//---普通事物
 	/**
 	 * 开始事物
 	 */
@@ -1477,5 +1478,27 @@ public class DB {
 	 */
 	public static Connection getTransactionConnection(DataSource dataSource) throws DBException{
 		return DBTransaction.getTransactionConnection(dataSource);
+	}
+	
+	//---jta
+	/**
+	 * 开始事物
+	 */
+	public static void beginJtaTransaction() throws DBException{
+		DBTransaction.beginJta();
+	}
+	
+	/**
+	 * 提交事物
+	 */
+	public static void commitJta() throws DBException{
+		DBTransaction.commitJta();
+	}
+	
+	/**
+	 * 回滚事务
+	 */
+	public static void rollbackJta() throws DBException{
+		DBTransaction.rollbackJta();
 	}
 }

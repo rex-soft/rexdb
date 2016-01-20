@@ -6,12 +6,12 @@
 		<property name="lang" value="zh-cn"/>
 	</settings>
 	<!-- Mysql -->
-<!--<dataSource>
+<dataSource>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/test_db" />
 		<property name="username" value="root" />
 		<property name="password" value="12345678" />
-	</dataSource>-->
+	</dataSource>
 	<!-- h2 -->
 <!--<dataSource>
 		<property name="driverClassName" value="org.h2.Driver" />
@@ -19,11 +19,12 @@
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 	</dataSource> -->
-	<dataSource>
+<!--	<dataSource>
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
 		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:orcl" />
 		<property name="username" value="test" />
 		<property name="password" value="123456" />
-	</dataSource>
+	</dataSource>-->
+	<dataSource jndi=""/>
 	<listener class="org.rex.db.listener.impl.DBPrintSqlListener" />
 </configuration>
