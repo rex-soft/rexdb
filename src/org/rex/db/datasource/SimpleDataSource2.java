@@ -16,16 +16,22 @@ import org.rex.db.exception.DBException;
 /**
  * 创建一个简易数据源，只有单个连接，仅用于程序测试
  */
-public class SimpleDataSource implements DataSource {
+public class SimpleDataSource2 implements DataSource {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 	
+	private String driverClassName = "";
 
+	private String url = "";
 
-	public SimpleDataSource() {
+	private String username = "";
+
+	private String password = "";
+
+	public SimpleDataSource2() {
 	}
 
-	public SimpleDataSource(String driverClassName, String url, String username, String password)
+	public SimpleDataSource2(String driverClassName, String url, String username, String password)
 	    throws DBException {
 		setDriverClassName(driverClassName);
 		setUrl(url);
