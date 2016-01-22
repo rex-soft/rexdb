@@ -13,60 +13,60 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.rex.db.exception.DBException;
 
-import com.zaxxer.hikari.javassist.ClassFile;
-import com.zaxxer.hikari.javassist.CtClass;
-import com.zaxxer.hikari.javassist.CtConstructor;
 
-public class SimplePool {
+public class SimpleConnectionPool {
 
+	private static boolean isJdk5;			//当前JDK版本是否是1.5
+	static{
+		isJdk5 = System.getProperty("java.version").contains("1.5.");
+	}
+	
 	// -----------config
 	private String driverClassName = "com.mysql.jdbc.Driver";
 	private String url = "jdbc:mysql://localhost:3306/rexdb";
 	private String username = "root";
 	private String password = "12345678";
 
-	private volatile int acquireIncrement;
-	private volatile int acquireRetries;
-	private volatile long acquireRetryDelay;
-	private volatile long connectionTimeout;
-	private volatile long idleTimeout;
-	private volatile long maxLifetime;
-	private volatile int minPoolSize;
-	private volatile int maxPoolSize;
+	
+	private volatile int minPoolSize = 10;			//连接池最小连接数
+	private volatile int maxPoolSize = 30;			//连接池最大连接数
+	
+	private volatile int acquireIncrement = 5;		//每次增长的连接数
+	private volatile int acquireRetries = 3;		//获取数据库连接失败后的重试次数
+	private volatile long acquireRetryDelay = 750;	//增长连接失败后重试间隔
+	
+	private volatile long connectionTimeout = 5000;	//连接超时时间（毫秒）
+	private volatile long idleTimeout = 600000;		//允许的连接空闲时间，超出时将被关闭
+	private volatile long maxLifetime = 1800000;	//允许的连接最长时间，超出时将被关闭
 
-	private String connectionTestQuery;
-	private final boolean jdbc4ConnectionTest;
-	private boolean autoCommit;
+	private boolean testConnectionByJdbc = true;	//使用JDBC接口测试连接（1.6以上版本有效）
+	private String connectionTestQuery;				//测试连接有效性SQL
+	
+	private boolean autoCommit = true;				//连接是否设置为自动提交
 
 	// ---------runtime
-	private final LinkedTransferQueue<ConnectionProxy> idleConnections;
+	private Timer timer;
+	
+	private final LinkedTransferQueue<IConnectionProxy> idleConnections;
 	private final AtomicInteger totalConnections;
 	private final AtomicInteger idleConnectionCount;
 
-	private Timer timer;
-
-	public SimplePool() {
-		acquireIncrement = 5;
-		acquireRetries = 3;
-		acquireRetryDelay = 750;
-		connectionTimeout = 5000;
-		idleTimeout = TimeUnit.MINUTES.toMillis(10);
-		autoCommit = true;
-		jdbc4ConnectionTest = true;
-		minPoolSize = 30;
-		maxPoolSize = 10;
-		maxLifetime = TimeUnit.MINUTES.toMillis(30);
-
+	public SimpleConnectionPool() {
 		this.totalConnections = new AtomicInteger();
 		this.idleConnectionCount = new AtomicInteger();
-		this.idleConnections = new LinkedTransferQueue<ConnectionProxy>();
+		this.idleConnections = new LinkedTransferQueue<IConnectionProxy>();
 	}
 
-	public SimplePool(Properties properties) throws DBException {
+	/**
+	 * 初始化连接池
+	 * @param properties
+	 * @throws DBException
+	 */
+	public SimpleConnectionPool(Properties properties) throws DBException {
 		this();
 		extractProperties(properties);
 
-		timer = new Timer("SimplePoolTimer", true);
+		timer = new Timer("AutoCleanIdleConnections", true);
 		if (idleTimeout > 0 || maxLifetime > 0) {
 			timer.scheduleAtFixedRate(new PoolTimerTask(idleTimeout, maxLifetime), TimeUnit.SECONDS.toMillis(30), TimeUnit.SECONDS.toMillis(30));
 		}
@@ -75,19 +75,16 @@ public class SimplePool {
 		fillPool();
 	}
 
-	public static void main(String[] args) throws DBException, SQLException {
-		SimplePool pool = new SimplePool(null);
-		Connection conn = pool.getConnection();
-		System.out.println(conn);
-	}
-
 	/**
 	 * 获取配置
 	 */
 	private void extractProperties(Properties properties) {
-
+		
 	}
 
+	/**
+	 * 初始化驱动管理
+	 */
 	public void initDriverManager() throws DBException {
 		try {
 			Class.forName(this.driverClassName, true, Thread.currentThread().getContextClassLoader());
@@ -96,8 +93,10 @@ public class SimplePool {
 		}
 	}
 
+	/**
+	 * 获取连接
+	 */
 	public Connection getConnection() throws SQLException {
-
 		try {
 			long timeout = this.connectionTimeout;
 			final long start = System.currentTimeMillis();
@@ -106,7 +105,7 @@ public class SimplePool {
 					addConnections();
 				}
 
-				ConnectionProxy connectionProxy = idleConnections.poll(timeout, TimeUnit.MILLISECONDS);
+				IConnectionProxy connectionProxy = idleConnections.poll(timeout, TimeUnit.MILLISECONDS);
 				if (connectionProxy == null) {
 					throw new SQLException("Timeout of encountered waiting for connection");
 				}
@@ -138,7 +137,10 @@ public class SimplePool {
 		}
 	}
 
-	public void releaseConnection(ConnectionProxy connectionProxy) {
+	/**
+	 * 释放连接
+	 */
+	public void releaseConnection(IConnectionProxy connectionProxy) {
 		if (!connectionProxy.isBrokenConnection()) {
 			connectionProxy.markLastAccess();
 			idleConnectionCount.incrementAndGet();
@@ -147,15 +149,24 @@ public class SimplePool {
 			closeConnection(connectionProxy);
 		}
 	}
-
+	
+	/**
+	 * 获取活动连接
+	 */
 	public int getActiveConnections() {
 		return Math.min(this.maxPoolSize, totalConnections.get() - idleConnectionCount.get());
 	}
 
+	/**
+	 * 获取空闲连接
+	 */
 	public int getIdleConnections() {
 		return idleConnectionCount.get();
 	}
 
+	/**
+	 * 获取所有连接
+	 */
 	public int getTotalConnections() {
 		return totalConnections.get();
 	}
@@ -167,7 +178,7 @@ public class SimplePool {
 	public void closeIdleConnections() {
 		final int idleCount = idleConnectionCount.get();
 		for (int i = 0; i < idleCount; i++) {
-			ConnectionProxy connectionProxy = idleConnections.poll();
+			IConnectionProxy connectionProxy = idleConnections.poll();
 			if (connectionProxy == null) {
 				break;
 			}
@@ -185,6 +196,9 @@ public class SimplePool {
 		}
 	}
 
+	/**
+	 * 向连接池中增加预设的连接数，但不超过最大连接数
+	 */
 	private synchronized void addConnections() {
 		final int max = this.maxPoolSize;
 		final int increment = this.acquireIncrement;
@@ -193,27 +207,25 @@ public class SimplePool {
 		}
 	}
 
+	/**
+	 * 向连接池中增加1个连接
+	 */
 	private void addConnection() {
 		int retries = 0;
 		while (true) {
 			try {
-				Connection connection = newConnection();
-				System.out.println("-----------------");
+				IConnectionProxy connection = newConnection();
 				boolean alive = isConnectionAlive(connection, this.connectionTimeout);
 				if (alive) {
 					connection.setAutoCommit(this.autoCommit);
 					idleConnectionCount.incrementAndGet();
 					totalConnections.incrementAndGet();
-					
-					ConnectionProxy proxyConnection = new ConnectionProxy(connection);
-					proxyConnection.setParentPool(this);
-					idleConnections.add(proxyConnection);
+					idleConnections.add(connection);
 					break;
 				} else {
 					Thread.sleep(this.acquireRetryDelay);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
 				if (retries++ > this.acquireRetries) {
 					break;
 				}
@@ -227,46 +239,38 @@ public class SimplePool {
 		}
 	}
 
-	private Connection newConnection() throws SQLException {
-		return DriverManager.getConnection(url, username, password);
+	/**
+	 * 创建一个新的数据库连接
+	 */
+	private IConnectionProxy newConnection() throws SQLException {
+		Connection conn = DriverManager.getConnection(url, username, password);
+		ConnectionProxy proxy = new ConnectionProxy();
+		proxy.setParentPool(this);
+		return proxy.bind(conn);
 	}
 
-	private byte[] transformConnection(ClassFile classFile) throws Exception {
-		String className = classFile.getName();
-		CtClass target = classPool.getCtClass(className);
-
-		CtClass intf = classPool.get("com.zaxxer.hikari.proxy.IHikariConnectionProxy");
-		target.addInterface(intf);
-		LOGGER.debug("Added interface {} to {}", intf.getName(), className);
-
-		CtClass proxy = classPool.get("com.zaxxer.hikari.proxy.ConnectionProxy");
-
-		copyFields(proxy, target);
-		copyMethods(proxy, target, classFile);
-		mergeClassInitializers(proxy, target, classFile);
-		specialConnectionInjectCloseCheck(target);
-		injectTryCatch(target);
-
-		for (CtConstructor constructor : target.getConstructors()) {
-			constructor.insertAfter("__init();");
-		}
-
-		return target.toBytecode();
-	}
-
+	/**
+	 * 测试连接是否可用
+	 * @param connection 连接
+	 * @param timeoutMs	超时时间
+	 * @return 是否可用
+	 */
 	private boolean isConnectionAlive(final Connection connection, long timeoutMs) {
-
-		System.out.println("==========isConnectionAlive");
-		
 		if (timeoutMs < 500) {
 			timeoutMs = 500;
 		}
 
 		try {
-			if (jdbc4ConnectionTest) {
-				return connection.isValid((int) timeoutMs * 1000);
+			//使用jdbc自带接口测试连接有效性
+			if (!isJdk5 && this.testConnectionByJdbc) {
+				return connection.isValid((int)Math.ceil(timeoutMs / 1000));
 			}
+			
+			//无法执行自定义测试时，不进行测试
+			if(connectionTestQuery == null)
+				return true;
 
+			//执行查询测试连接
 			Statement statement = connection.createStatement();
 			try {
 				statement.executeQuery(this.connectionTestQuery);
@@ -276,12 +280,12 @@ public class SimplePool {
 
 			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
 			return false;
 		}
 	}
+	
 
-	private void closeConnection(ConnectionProxy connectionProxy) {
+	private void closeConnection(IConnectionProxy connectionProxy) {
 		try {
 			totalConnections.decrementAndGet();
 			connectionProxy.__close();
@@ -290,6 +294,9 @@ public class SimplePool {
 		}
 	}
 
+	/**
+	 * 用于定期清理空闲连接，并在必要时重建连接
+	 */
 	private class PoolTimerTask extends TimerTask {
 
 		private long idleTimeout;
@@ -301,15 +308,13 @@ public class SimplePool {
 		}
 
 		public void run() {
-			timer.purge();
+			timer.purge();//移除所有任务
 
 			final long now = System.currentTimeMillis();
-			final long idleTimeout = this.idleTimeout;
-			final long maxLifetime = this.maxLifetime;
 			final int idleCount = idleConnectionCount.get();
 
 			for (int i = 0; i < idleCount; i++) {
-				ConnectionProxy connectionProxy = idleConnections.poll();
+				IConnectionProxy connectionProxy = idleConnections.poll();
 				if (connectionProxy == null) {
 					break;
 				}
@@ -318,6 +323,7 @@ public class SimplePool {
 
 				if ((idleTimeout > 0 && now > connectionProxy.getLastAccess() + idleTimeout)
 						|| (maxLifetime > 0 && now > connectionProxy.getCreationTime() + maxLifetime)) {
+					System.out.println("--清理连接："+connectionProxy);
 					closeConnection(connectionProxy);
 				} else {
 					idleConnectionCount.incrementAndGet();

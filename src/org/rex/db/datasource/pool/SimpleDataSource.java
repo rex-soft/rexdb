@@ -12,10 +12,10 @@ public class SimpleDataSource implements DataSource {
 
 	private int loginTimeout;
 
-	private SimplePool pool;
+	private SimpleConnectionPool pool;
 
 	public SimpleDataSource(PoolConfig configuration) {
-		pool = new SimplePool(configuration);
+		pool = new SimpleConnectionPool(configuration);
 	}
 
 	public Connection getConnection() throws SQLException {

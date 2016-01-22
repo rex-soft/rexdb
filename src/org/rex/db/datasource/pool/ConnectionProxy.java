@@ -1,23 +1,23 @@
 package org.rex.db.datasource.pool;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TimerTask;
 
-public class ConnectionProxy{
-	private static final Set<String> SQL_ERRORS;
-
+public class ConnectionProxy implements InvocationHandler {
+	
 	private ArrayList<Statement> _openStatements;
 	private volatile boolean _isClosed;
-	private SimplePool _parentPool;
+	private SimpleConnectionPool _parentPool;
 
-	protected final Connection delegate;
+	protected Connection delegate;
 
 	private volatile boolean _forceClose;
 	private long _creationTime;
@@ -25,20 +25,39 @@ public class ConnectionProxy{
 
 	private TimerTask _leakTask;
 
-	// static initializer
-	static {
-		SQL_ERRORS = new HashSet<String>();
-		SQL_ERRORS.add("57P01"); // ADMIN SHUTDOWN
-		SQL_ERRORS.add("57P02"); // CRASH SHUTDOWN
-		SQL_ERRORS.add("57P03"); // CANNOT CONNECT NOW
-		SQL_ERRORS.add("57P02"); // CRASH SHUTDOWN
-		SQL_ERRORS.add("01002"); // SQL92 disconnect error
+	public IConnectionProxy bind(Connection conn) {
+		this.delegate = conn;
+		__init();
+		
+		IConnectionProxy proxyConnection = (IConnectionProxy)Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] { IConnectionProxy.class }, this);
+		return proxyConnection;
 	}
 
-	protected ConnectionProxy(Connection connection) {
-		this.delegate = connection;
-
-		__init();
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		Method[] overrideMethods = ConnectionProxy.class.getMethods();
+		for (int i = 0; i < overrideMethods.length; i++) {
+			if (methodEqueals(overrideMethods[i], method)) {
+				return overrideMethods[i].invoke(this, args);
+			}
+		}
+		return method.invoke(delegate, args);
+	}
+	
+	private boolean methodEqueals(Method m1, Method m2){
+        if (m1.getName() == m2.getName()) {
+            if (!m1.getReturnType().equals(m2.getReturnType()))
+                return false;
+            Class<?>[] params1 = m1.getParameterTypes();
+            Class<?>[] params2 = m2.getParameterTypes();
+            if (params1.length == params2.length) {
+                for (int i = 0; i < params1.length; i++) {
+                    if (params1[i] != params2[i])
+                        return false;
+                }
+                return true;
+            }
+        }
+        return false;
 	}
 
 	public void unregisterStatement(Object statement) {
@@ -66,15 +85,15 @@ public class ConnectionProxy{
 	public boolean isBrokenConnection() {
 		return _forceClose;
 	}
-	
-    public void setParentPool(SimplePool parentPool)
-    {
-        this._parentPool = parentPool;
-    }
+
+	public void setParentPool(SimpleConnectionPool parentPool) {
+		this._parentPool = parentPool;
+	}
 
 	public SQLException checkException(SQLException sqle) {
-		String sqlState = sqle.getSQLState();
-		_forceClose |= (sqlState != null && (sqlState.startsWith("08") || SQL_ERRORS.contains(sqlState)));
+		// String sqlState = sqle.getSQLState();
+		// _forceClose |= (sqlState != null && (sqlState.startsWith("08") ||
+		// SQL_ERRORS.contains(sqlState)));
 
 		return sqle;
 	}
@@ -94,8 +113,7 @@ public class ConnectionProxy{
 		return delegate;
 	}
 
-
-	//----------------implements
+	// ----------------implements
 	public void close() throws SQLException {
 		if (!_isClosed) {
 			_isClosed = true;
@@ -116,7 +134,7 @@ public class ConnectionProxy{
 			}
 		}
 	}
-	
+
 	public final void __close() throws SQLException {
 		delegate.close();
 	}
@@ -280,5 +298,5 @@ public class ConnectionProxy{
 			throw checkException(e);
 		}
 	}
-	
+
 }
