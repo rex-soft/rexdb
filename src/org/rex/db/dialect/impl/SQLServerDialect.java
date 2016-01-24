@@ -2,6 +2,7 @@ package org.rex.db.dialect.impl;
 
 import org.rex.db.Ps;
 import org.rex.db.dialect.Dialect;
+import org.rex.db.exception.DBRuntimeException;
 
 /**
  * PostgreSQL
@@ -16,7 +17,7 @@ public class SQLServerDialect implements Dialect {
 
 	public String getLimitSql(String sql, int offset, int rows) {
 		if (offset > 0) {
-			throw new UnsupportedOperationException("数据库不支持带有偏移的分页查询");
+			throw new DBRuntimeException("DB-D10004", getName());
 		}
 		return new StringBuffer(sql.length() + 8).append(sql)
 				.insert(getAfterSelectInsertPoint(sql), " top " + rows)
@@ -36,12 +37,20 @@ public class SQLServerDialect implements Dialect {
 
 	public Ps getLimitPs(Ps ps, int offset, int rows) {
 		if (offset > 0) {
-			throw new UnsupportedOperationException("数据库不支持带有偏移的分页查询");
+			throw new DBRuntimeException("DB-D10004", getName());
 		}
 
 		return getLimitPs(ps, rows);
 	}
-
+	
+	// ------------------------------------------------------------数据库测试SQL
+	/**
+	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
+	 */
+	public String getTestSql(){
+		return "SELECT 1";
+	}
+	
 	// ------------------------------------------------------------版本信息
 	public String getName() {
 		return "SQLSERVER";

@@ -29,15 +29,11 @@ public class SimpleDataSourceFactory implements DataSourceFactory {
 
 	public void setProperties(Properties properties) throws DBException {
 		checkProperties(properties);
-		dataSource = new SimpleDataSource(
-				properties.getProperty(KEY_DRIVER), 
-				properties.getProperty(KEY_URL),
-				properties.getProperty(KEY_USERNAME), 
-				properties.getProperty(KEY_PASSWORD));
+		dataSource = new SimpleDataSource(properties);
 	}
 	
 	/**
-	 * 检查数据完整性
+	 * 检查必要的数据完整性
 	 */
 	public void checkProperties(Properties properties){
 		throwExceptionIfNullProperty(properties.getProperty(KEY_DRIVER));

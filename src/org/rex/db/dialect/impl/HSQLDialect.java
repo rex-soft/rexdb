@@ -33,6 +33,13 @@ public class HSQLDialect implements Dialect {
 				.insert(sql.toLowerCase().indexOf("select") + 6,
 						hasOffset ? " limit ? ?" : " top ?").toString();
 	}
+	// ------------------------------------------------------------数据库测试SQL
+	/**
+	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
+	 */
+	public String getTestSql(){
+		return "CALL SESSION_ID()";
+	}
 	
 	// ------------------------------------------------------------版本信息
 	public String getName() {

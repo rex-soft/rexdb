@@ -4,9 +4,11 @@
 	<!-- <properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" /> -->
 	<settings>
 		<property name="lang" value="zh-cn"/>
+		<property name="logger" value="log4j" />
+		<!-- <property name="loggerFactory" value="org.rex.db.logger.log4j2.Log4j2LoggerFactory" /> -->
 	</settings>
 	<!-- Mysql -->
-<dataSource>
+	<dataSource>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/test_db" />
 		<property name="username" value="root" />

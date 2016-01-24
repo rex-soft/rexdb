@@ -135,10 +135,10 @@ public class ReflectUtil {
 	/**
 	 * 创建对象实例
 	 */
-	public static Object instance(String classPath, Class<?> targetClass) throws DBException{
+	public static <T> T instance(String classPath, Class<T> targetClass) throws DBException{
 		if(StringUtil.isEmptyString(classPath)) return null;
 		
-		Class clazz = null;
+		Class<?> clazz = null;
 		try {
 			clazz = Class.forName(classPath);
 		} catch (ClassNotFoundException e) {
@@ -149,7 +149,7 @@ public class ReflectUtil {
 			throw new DBException("类"+classPath+"必须是"+targetClass.getName()+"的实现");
 		
 		try {
-			return clazz.newInstance();
+			return (T)clazz.newInstance();
 		} catch (InstantiationException e) {
 			throw new DBException("无法实例化");
 		} catch (IllegalAccessException e) {

@@ -8,15 +8,21 @@ import org.rex.DB;
 import org.rex.WMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 public class TestSelectOne extends Base{
+	
+	static Logger logger = LoggerFactory.getLogger(TestSelectOne.class);
 
 	//--------------
 	public static void main(String[] args) throws Exception{
+		logger.info("starting");
 		TestSelectOne selectOne = new TestSelectOne();
 		selectOne.executeSql();
 		selectOne.executePreparedSql();
 		selectOne.executePreparedELSql();
+		logger.info("end");
 	}
 	
 	//--------------

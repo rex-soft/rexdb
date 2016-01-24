@@ -56,19 +56,33 @@ public class DialectManager {
 			Connection con = null;
 			try {
 				con = DataSourceUtil.getConnection(dataSource);
-				DatabaseMetaData dbmd = con.getMetaData();
-				dialect = resolveDialectInternal(dbmd);
-			} catch (SQLException e) {
-				throw new DBException("DB-D10001", e, dataSource);
+				dialect = getDialect(con);
 			} finally {
 				if (con != null) {
 					DataSourceUtil.closeConnection(con, dataSource);
 				}
 			}
 
-			dialectInstances.put(hashCode, dialect);
+			if(dialect != null)
+				dialectInstances.put(hashCode, dialect);
 		}
 		return dialect;
+	}
+	
+	/**
+	 * 获取连接对应的方言，注意该方法不会主动关闭连接
+	 * @param connection 数据库连接
+	 * @return 方言
+	 * @throws DBException 获取元数据描述失败时，抛出异常
+	 */
+	public static Dialect getDialect(Connection connection) throws DBException {
+		if(connection == null) return null;
+		try {
+			DatabaseMetaData dbmd = connection.getMetaData();
+			return resolveDialectInternal(dbmd);
+		} catch (SQLException e) {
+			throw new DBException("DB-D10001", e, e.getMessage());
+		}
 	}
 
 	/**
@@ -79,9 +93,16 @@ public class DialectManager {
 	 * @throws DBException 当找不到数据库对应的方言时，抛出异常
 	 * @throws SQLException 获取数据库元数据描述失败时，抛出异常
 	 */
-	private Dialect resolveDialectInternal(DatabaseMetaData metaData) throws SQLException, DBException {
-		String databaseName = metaData.getDatabaseProductName();
-		int databaseMajorVersion = metaData.getDatabaseMajorVersion();
+	private static Dialect resolveDialectInternal(DatabaseMetaData metaData) throws DBException {
+		String databaseName;
+		int databaseMajorVersion;
+		try {
+			databaseName = metaData.getDatabaseProductName();
+			databaseMajorVersion = metaData.getDatabaseMajorVersion();
+		} catch (SQLException e) {
+			throw new DBException("DB-D10001", e, e.getMessage());
+		}
+		
 
 		if ("Oracle".equals(databaseName)) {
 			switch (databaseMajorVersion) {

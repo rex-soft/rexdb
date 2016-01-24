@@ -31,7 +31,14 @@ public class H2Dialect implements Dialect {
 		return new StringBuffer(sql.length() + 20).append(sql)
 				.append(hasOffset ? " limit ? offset ?" : " limit ?").toString();
 	}
-
+	// ------------------------------------------------------------数据库测试SQL
+	/**
+	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
+	 */
+	public String getTestSql(){
+		return "SELECT 1";
+	}
+	
 	// ------------------------------------------------------------版本信息
 	public String getName() {
 		return "H2";

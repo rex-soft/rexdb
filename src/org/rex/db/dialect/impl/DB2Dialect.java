@@ -71,6 +71,14 @@ public class DB2Dialect implements Dialect {
 		return sql.toLowerCase().indexOf("select distinct") >= 0;
 	}
 
+	// ------------------------------------------------------------数据库测试SQL
+	/**
+	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
+	 */
+	public String getTestSql(){
+		return "SELECT COUNT(*) FROM SYSIBM.SYSTABLES";
+	}
+	
 	// ------------------------------------------------------------版本信息
 	public String getName() {
 		return "DB2";

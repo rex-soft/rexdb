@@ -17,6 +17,7 @@ import org.rex.db.dialect.Dialect;
 import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
 import org.rex.db.listener.DBListener;
+import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.ResourceUtil;
 import org.rex.db.util.StringUtil;
@@ -64,6 +65,8 @@ public class XMLConfigParser {
 		try {
 			parsePropertiesNode(root.evalNode("properties"));
 			parseSettingsNode(root.evalNode("settings"));
+			applySettings();
+			
 			parseDataSource(root.evalNode("dataSource"));
 			parseListener(root.evalNode("listener"));
 		} catch (Exception e) {
@@ -119,6 +122,14 @@ public class XMLConfigParser {
 		}
 
 		ReflectUtil.setProperties(configuration, props);
+	}
+	
+	/**
+	 * 立即应用setting里的配置
+	 * @throws DBException 
+	 */
+	public void applySettings() throws DBException{
+		
 	}
 
 	/**

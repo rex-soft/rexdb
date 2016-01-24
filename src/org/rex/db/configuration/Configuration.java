@@ -83,6 +83,13 @@ public class Configuration {
 	private String lang;
 	
 	/**
+	 * 选用的日志包，可选log4j，log4j2，slf4j，jdk
+	 */
+	private String logger;
+	
+	private String loggerFactory;
+	
+	/**
 	 * 数据源
 	 */
 	private DataSourceManager dataSourceManager;
@@ -113,6 +120,22 @@ public class Configuration {
 		this.lang = lang;
 	}
 	
+	public String getLogger() {
+		return logger;
+	}
+
+	public void setLogger(String logger) {
+		this.logger = logger;
+	}
+
+	public String getLoggerFactory() {
+		return loggerFactory;
+	}
+
+	public void setLoggerFactory(String loggerFactory) {
+		this.loggerFactory = loggerFactory;
+	}
+
 	public void setDefaultDataSource(DataSource dataSource){
 		dataSourceManager.addDefault(dataSource);
 	}
