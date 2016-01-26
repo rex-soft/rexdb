@@ -3,6 +3,10 @@ package org.rex.db.exception;
 
 public class DBException extends Exception {
 	
+	public DBException(Throwable e){
+		super(e);
+	}
+	
 	public DBException(String code) {
 		super(ExceptionResourceFactory.getInstance().translate(code));
 	}

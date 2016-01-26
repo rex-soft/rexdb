@@ -17,6 +17,8 @@ import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.DialectManager;
 import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.StringUtil;
 
 /**
@@ -25,6 +27,8 @@ import org.rex.db.util.StringUtil;
 public class SimpleConnectionPool {
 
 	private static final boolean IS_JDK5 = System.getProperty("java.version").contains("1.5."); // 当前JDK版本是否是1.5
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleConnectionPool.class);
 
 	// -----------config
 	private String driverClassName;
@@ -33,35 +37,27 @@ public class SimpleConnectionPool {
 	private String password;
 
 	private int initSize = 1;//初始化时创建的连接数
-	private volatile int minSize = 3; // 连接池保持的最小连接数
-	private volatile int maxSize = 10; // 连接池最大连接数
-	private volatile int increment = 3; // 每次增长的连接数
+	private int minSize = 3; // 连接池保持的最小连接数
+	private int maxSize = 10; // 连接池最大连接数
+	private int increment = 3; // 每次增长的连接数
 
-	private volatile int retries = 3; // 获取数据库连接失败后的重试次数
-	private volatile int retryInterval = 750; // 增长连接失败后重试间隔
+	private int retries = 3; // 获取数据库连接失败后的重试次数
+	private int retryInterval = 750; // 增长连接失败后重试间隔
 
-	private volatile int connectionTimeout = 5000; // 连接超时时间（毫秒）
-	private volatile int inactiveTimeout = 600000; // 允许的连接空闲时间，超出时将被关闭
-	private volatile int maxLifetime = 1800000; // 允许的连接最长时间，超出时将被重置
+	private int connectionTimeout = 5000; // 连接超时时间（毫秒）
+	private int inactiveTimeout = 600000; // 允许的连接空闲时间，超出时将被关闭
+	private int maxLifetime = 1800000; // 允许的连接最长时间，超出时将被重置
 
 	private boolean testConnection = true; // 使用JDBC接口测试连接（1.6以上版本有效）
 	private String testSql; // 测试连接有效性SQL
 	private int testTimeout = 500;// 测试连接有效性的超时时间
 
 	// ---------runtime
-	private Timer timer;
+	private final Timer timer;
 
-	private LinkedTransferQueue<ConnectionProxy> inactiveConnections;
-	private AtomicInteger totalConnectionsCount;
-	private AtomicInteger inactiveConnectionCount;
-	
-//	private Throwable lastException;
-
-	public void init() {
-		this.totalConnectionsCount = new AtomicInteger();
-		this.inactiveConnectionCount = new AtomicInteger();
-		this.inactiveConnections = new LinkedTransferQueue<ConnectionProxy>();
-	}
+	private final LinkedTransferQueue<ConnectionProxy> inactiveConnections;
+	private final AtomicInteger totalConnectionsCount;
+	private final AtomicInteger inactiveConnectionCount;
 
 	/**
 	 * 初始化连接池
@@ -70,17 +66,27 @@ public class SimpleConnectionPool {
 	 * @throws DBException
 	 */
 	public SimpleConnectionPool(Properties properties) throws DBException {
-		init();
+		if(LOGGER.isDebugEnabled()){
+			LOGGER.debug("starting connection pool with properties: {0}", properties);
+		}
+		
 		extractProperties(properties);
 		validateConfig();
-
+		
+		totalConnectionsCount = new AtomicInteger();
+		inactiveConnectionCount = new AtomicInteger();
+		inactiveConnections = new LinkedTransferQueue<ConnectionProxy>();
 		timer = new Timer("AutoCleanInactiveConnections", true);
+		
 		if (inactiveTimeout > 0 || maxLifetime > 0) {
 			timer.scheduleAtFixedRate(new PoolTimerTask(inactiveTimeout, maxLifetime), TimeUnit.SECONDS.toMillis(30), TimeUnit.SECONDS.toMillis(30));
 		}
 
 		initDriverManager();
 		initConnectionPool();
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("connection pool [{0}] started. ", this.hashCode());
 	}
 
 	/**
@@ -93,19 +99,18 @@ public class SimpleConnectionPool {
 		Field[] fields = this.getClass().getDeclaredFields();
 		for (Enumeration<?> en = properties.propertyNames(); en.hasMoreElements();) {
 			String key = (String)en.nextElement();
+			String value = properties.getProperty(key);
 			
+			boolean hasField = false;
 			for (int i = 0; i < fields.length; i++) {
 				if(fields[i].getName().equals(key)){
-					try{
-						overrideProperty(fields[i], properties.getProperty(key));
-					}catch(Exception e){
-						//log.warn("参数赋值出错");
-					}
+					overrideProperty(fields[i], value);
+					hasField = true;
 					continue;
 				}
-				//
-				//log.warn("不支持参数");
 			}
+			if(!hasField)
+				LOGGER.warn("connection pool property [{0}: {1}] not support, ignore.", key, value);
 		}
 	}
 	
@@ -125,15 +130,13 @@ public class SimpleConnectionPool {
 				try{
 					field.setInt(this, Integer.parseInt(value));
 				}catch(NumberFormatException e){
-					throw new DBRuntimeException(field.getName()+"的值不是数字");
+					LOGGER.warn("value of connection pool property [{0}: {1}] is not a number, ignore.", field.getName(), value);
 				}
 			}else if("boolean".equals(fieldType)){
 				field.setBoolean(this, Boolean.parseBoolean(value));
 			}
-		} catch (IllegalArgumentException e) {
-			throw new DBRuntimeException(field.getName()+"赋值出错");
-		} catch (IllegalAccessException e) {
-			throw new DBRuntimeException(field.getName()+"赋值出错");
+		} catch (Exception e) {
+			LOGGER.warn("couldn't set connection pool property [{0}: {1}]: {2}, ignore.", field.getName(), value, e.getMessage());
 		}
 	}
 

@@ -3,7 +3,7 @@ package org.rex.db.logger.jdk;
 import java.util.logging.Level;
 
 import org.rex.db.logger.Logger;
-import org.rex.db.util.LoggerUtil;
+import org.rex.db.util.StringUtil;
 
 public class JdkLogger implements Logger {
     
@@ -14,31 +14,31 @@ public class JdkLogger implements Logger {
     }
 
     public void error(String msg, String... args) {
-        log.log(Level.SEVERE, LoggerUtil.format(msg, args));
+        log.log(Level.SEVERE, StringUtil.format(msg, args));
     }
 
     public void error(String msg, Object... args) {
-        log.log(Level.SEVERE, LoggerUtil.format(msg, args));
+        log.log(Level.SEVERE, StringUtil.format(msg, args));
     }
 
     public void error(String msg, Throwable ex, String... args) {
-        log.log(Level.SEVERE, LoggerUtil.format(msg, args), ex);
+        log.log(Level.SEVERE, StringUtil.format(msg, args), ex);
     }
     
     public void fatal(String msg, String... args) {
-        log.log(Level.SEVERE, LoggerUtil.format(msg, args));
+        log.log(Level.SEVERE, StringUtil.format(msg, args));
     }
 
     public void fatal(String msg, Throwable ex, String... args) {
-        log.log(Level.SEVERE, LoggerUtil.format(msg, args), ex);
+        log.log(Level.SEVERE, StringUtil.format(msg, args), ex);
     }
 
     public void info(String msg, String... args) {
-        log.log(Level.INFO, LoggerUtil.format(msg, args));
+        log.log(Level.INFO, StringUtil.format(msg, args));
     }
 
     public void info(String msg, Throwable ex, String... args) {
-        log.log(Level.INFO, LoggerUtil.format(msg, args), ex);
+        log.log(Level.INFO, StringUtil.format(msg, args), ex);
     }
 
     public boolean isInfoEnabled() {
@@ -46,15 +46,15 @@ public class JdkLogger implements Logger {
     }
 
     public void warn(String msg, String... args) {
-        log.log(Level.WARNING, LoggerUtil.format(msg, args));
+        log.log(Level.WARNING, StringUtil.format(msg, args));
     }
 
     public void warn(String msg, Object... args) {
-        log.log(Level.WARNING, LoggerUtil.format(msg, args));
+        log.log(Level.WARNING, StringUtil.format(msg, args));
     }
 
     public void warn(String msg, Throwable ex, String... args) {
-        log.log(Level.WARNING, LoggerUtil.format(msg, args), ex);
+        log.log(Level.WARNING, StringUtil.format(msg, args), ex);
     }
     
     public boolean isDebugEnabled() {
@@ -62,15 +62,15 @@ public class JdkLogger implements Logger {
     }
     
     public void debug(String msg, String... args) {
-        log.log(Level.FINE, LoggerUtil.format(msg, args));
+        log.log(Level.FINE, StringUtil.format(msg, args));
     }
 
     public void debug(String msg, Object... args) {
-        log.log(Level.FINE, LoggerUtil.format(msg, args));
+        log.log(Level.FINE, StringUtil.format(msg, args));
     }
 
     public void debug(String msg, Throwable ex, String... args) {
-        log.log(Level.FINE, LoggerUtil.format(msg, args), ex);
+        log.log(Level.FINE, StringUtil.format(msg, args), ex);
     }
     
     public boolean isTraceEnabled() {
@@ -78,15 +78,15 @@ public class JdkLogger implements Logger {
     }
     
     public void trace(String msg, String... args) {
-        log.log(Level.FINEST, LoggerUtil.format(msg, args));
+        log.log(Level.FINEST, StringUtil.format(msg, args));
     }
 
     public void trace(String msg, Object... args) {
-        log.log(Level.FINEST, LoggerUtil.format(msg, args));
+        log.log(Level.FINEST, StringUtil.format(msg, args));
     }
 
     public void trace(String msg, Throwable ex, String... args) {
-        log.log(Level.FINEST, LoggerUtil.format(msg, args), ex);
+        log.log(Level.FINEST, StringUtil.format(msg, args), ex);
     }
 
     public boolean isErrorEnabled() {

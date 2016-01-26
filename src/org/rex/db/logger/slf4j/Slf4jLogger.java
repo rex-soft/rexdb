@@ -1,7 +1,7 @@
 package org.rex.db.logger.slf4j;
 
 import org.rex.db.logger.Logger;
-import org.rex.db.util.LoggerUtil;
+import org.rex.db.util.StringUtil;
 
 public class Slf4jLogger implements Logger {
     
@@ -12,23 +12,23 @@ public class Slf4jLogger implements Logger {
     }
 
     public void error(String msg, String... args) {
-        log.error(LoggerUtil.format(msg, args));
+        log.error(StringUtil.format(msg, args));
     }
 
     public void error(String msg, Object... args) {
-        log.error(LoggerUtil.format(msg, args));
+        log.error(StringUtil.format(msg, args));
     }
 
     public void error(String msg, Throwable ex, String... args) {
-        log.error(LoggerUtil.format(msg, args), ex);
+        log.error(StringUtil.format(msg, args), ex);
     }
 
     public void info(String msg, String... args) {
-        log.info(LoggerUtil.format(msg, args));
+        log.info(StringUtil.format(msg, args));
     }
 
     public void info(String msg, Throwable ex, String... args) {
-        log.info(LoggerUtil.format(msg, args), ex);
+        log.info(StringUtil.format(msg, args), ex);
     }
 
     public boolean isInfoEnabled() {
@@ -36,15 +36,15 @@ public class Slf4jLogger implements Logger {
     }
 
     public void warn(String msg, String... args) {
-        log.warn(LoggerUtil.format(msg, args));
+        log.warn(StringUtil.format(msg, args));
     }
 
     public void warn(String msg, Object... args) {
-        log.warn(LoggerUtil.format(msg, args));
+        log.warn(StringUtil.format(msg, args));
     }
 
     public void warn(String msg, Throwable ex, String... args) {
-        log.warn(LoggerUtil.format(msg, args), ex);
+        log.warn(StringUtil.format(msg, args), ex);
     }
     
     public boolean isDebugEnabled() {
@@ -52,15 +52,15 @@ public class Slf4jLogger implements Logger {
     }
     
     public void debug(String msg, String... args) {
-        log.debug(LoggerUtil.format(msg, args));
+        log.debug(StringUtil.format(msg, args));
     }
 
     public void debug(String msg, Object... args) {
-        log.debug(LoggerUtil.format(msg, args));
+        log.debug(StringUtil.format(msg, args));
     }
 
     public void debug(String msg, Throwable ex, String... args) {
-        log.debug(LoggerUtil.format(msg, args), ex);
+        log.debug(StringUtil.format(msg, args), ex);
     }
     
     public boolean isTraceEnabled() {
@@ -68,24 +68,24 @@ public class Slf4jLogger implements Logger {
     }
     
     public void trace(String msg, String... args) {
-        log.trace(LoggerUtil.format(msg, args));
+        log.trace(StringUtil.format(msg, args));
     }
 
     public void trace(String msg, Object... args) {
-        log.trace(LoggerUtil.format(msg, args));
+        log.trace(StringUtil.format(msg, args));
     }
 
     public void trace(String msg, Throwable ex, String... args) {
-        log.trace(LoggerUtil.format(msg, args), ex);
+        log.trace(StringUtil.format(msg, args), ex);
     }
 
 
     public void fatal(String msg, String... args) {
-        log.error(LoggerUtil.format(msg, args));
+        log.error(StringUtil.format(msg, args));
     }
 
     public void fatal(String msg, Throwable ex, String... args) {
-        log.error(LoggerUtil.format(msg, args), ex);
+        log.error(StringUtil.format(msg, args), ex);
     }
 
     public boolean isErrorEnabled() {
