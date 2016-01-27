@@ -15,8 +15,8 @@ public class XMLEntityResolver implements EntityResolver {
 
 	private static final Map<String, String> doctypeMap = new HashMap<String, String>();
 
-	private static final String CONFIG_PUBLIC = "-//db.rex-soft.org//DTD Config 1.0//EN".toUpperCase(Locale.ENGLISH);
-	private static final String CONFIG_SYSTEM = "http://db.rex-soft.org/dtd/rexdb-1-config.dtd".toUpperCase(Locale.ENGLISH);
+	private static final String CONFIG_PUBLIC = "-//rex-soft.org//REXDB DTD 1.0//EN".toUpperCase(Locale.ENGLISH);
+	private static final String CONFIG_SYSTEM = "http://www.rex-soft.org/dtd/rexdb-1-config.dtd".toUpperCase(Locale.ENGLISH);
 	private static final String CONFIG_DTD = "org/rex/db/configuration/rexdb-1-config.dtd";
 
 	static {

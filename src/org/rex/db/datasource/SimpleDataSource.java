@@ -9,21 +9,16 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.rex.db.datasource.pool.SimpleConnectionPool;
-import org.rex.db.exception.DBException;
 
 /**
  * 一个简易数据源，用于程序测试
  */
 public class SimpleDataSource implements DataSource {
 
-	protected final Log logger = LogFactory.getLog(getClass());
-
 	private SimpleConnectionPool pool;
 	
-	public SimpleDataSource(Properties properties) throws DBException {
+	public SimpleDataSource(Properties properties) throws SQLException {
 		pool = new SimpleConnectionPool(properties);
 	}
 

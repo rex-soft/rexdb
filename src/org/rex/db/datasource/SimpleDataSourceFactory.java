@@ -1,5 +1,6 @@
 package org.rex.db.datasource;
 
+import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -16,7 +17,6 @@ public class SimpleDataSourceFactory implements DataSourceFactory {
 	private static final String KEY_DRIVER = "driverClassName";
 	private static final String KEY_URL = "url";
 	private static final String KEY_USERNAME = "username";
-	private static final String KEY_PASSWORD = "password";
 
 	protected DataSource dataSource;
 
@@ -29,7 +29,11 @@ public class SimpleDataSourceFactory implements DataSourceFactory {
 
 	public void setProperties(Properties properties) throws DBException {
 		checkProperties(properties);
-		dataSource = new SimpleDataSource(properties);
+		try {
+			dataSource = new SimpleDataSource(properties);
+		} catch (SQLException e) {
+			throw new DBException("DB-C10065", e, e.getMessage());
+		}
 	}
 	
 	/**
