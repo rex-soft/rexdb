@@ -19,6 +19,8 @@ public interface Logger {
 	boolean isDebugEnabled();
 
 	void info(String msg, String... args);
+	
+	void info(String msg, Object... args);
 
 	void info(String msg, Throwable ex, String... args);
 
@@ -41,6 +43,8 @@ public interface Logger {
 	boolean isErrorEnabled();
 
 	void fatal(String msg, String... args);
+	
+	void fatal(String msg, Object... args);
 
 	void fatal(String msg, Throwable ex, String... args);
 

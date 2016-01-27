@@ -44,7 +44,7 @@ public class SimpleConnectionPool {
 	private int retries = 3; // 获取数据库连接失败后的重试次数
 	private int retryInterval = 750; // 增长连接失败后重试间隔
 
-	private int connectionTimeout = 5000; // 连接超时时间（毫秒）
+	private int getConnectionTimeout = 5000; // 连接超时时间（毫秒）
 	private int inactiveTimeout = 600000; // 允许的连接空闲时间，超出时将被关闭
 	private int maxLifetime = 1800000; // 允许的连接最长时间，超出时将被重置
 
@@ -59,7 +59,7 @@ public class SimpleConnectionPool {
 	private final AtomicInteger totalConnectionsCount;
 	private final AtomicInteger inactiveConnectionCount;
 
-	private volatile Throwable lastException;
+	private volatile Throwable latestException;
 
 	/**
 	 * 初始化连接池
@@ -67,12 +67,15 @@ public class SimpleConnectionPool {
 	 * @param properties
 	 * @throws DBException
 	 */
-	public SimpleConnectionPool(Properties properties) throws SQLException {
+	public SimpleConnectionPool(Properties properties) throws DBException  {
 		if (LOGGER.isInfoEnabled()) {
-			Properties clone = (Properties)properties.clone();
-			if(clone.containsKey("password"))
-				clone.put("password", "******");
-			LOGGER.info("starting simple connection pool with properties {0}", clone.toString());
+			Properties clone = null;
+			if(properties != null){
+				clone = (Properties)properties.clone();
+				if(clone.containsKey("password"))
+					clone.put("password", "******");
+			}
+			LOGGER.info("starting simple connection pool with properties {0}", clone);
 		}
 
 		extractProperties(properties);
@@ -90,7 +93,7 @@ public class SimpleConnectionPool {
 		initDriverManager();
 		initConnectionPool();
 
-		LOGGER.info("simple connection pool for database {0}@{1} has been started. ", username, url);
+		LOGGER.info("simple connection pool for database {0}@{1} has been started {2}.", username, url, latestException==null?"":"with errors");
 	}
 
 	// -----------property
@@ -99,18 +102,17 @@ public class SimpleConnectionPool {
 	 * 
 	 * @throws DBException
 	 */
-	private void extractProperties(Properties properties) throws SQLException {
+	private void extractProperties(Properties properties) throws DBException {
 		if (properties == null)
-			throw new SQLException(translateException("DB-C10063", "properties"));
+			throw new DBException("DB-C10063", "properties");
 		Field[] fields = this.getClass().getDeclaredFields();
 		for (Enumeration<?> en = properties.propertyNames(); en.hasMoreElements();) {
-			String key = (String) en.nextElement();
-			String value = properties.getProperty(key);
-
+			Object key =  en.nextElement();
+			Object value = properties.get(key);
 			boolean hasField = false;
 			for (int i = 0; i < fields.length; i++) {
 				if (fields[i].getName().equals(key)) {
-					overrideProperty(fields[i], value);
+					overrideProperty(fields[i], String.valueOf(value));
 					hasField = true;
 					continue;
 				}
@@ -151,7 +153,7 @@ public class SimpleConnectionPool {
 	/**
 	 * 检查各项参数是否正确
 	 */
-	private void validateConfig() throws SQLException {
+	private void validateConfig() throws DBException {
 		// --not null
 		throwExceptionIfNull("driverClassName", driverClassName);
 		throwExceptionIfNull("url", url);
@@ -161,20 +163,20 @@ public class SimpleConnectionPool {
 		// ignore
 	}
 
-	private void throwExceptionIfNull(String key, String value) throws SQLException {
+	private void throwExceptionIfNull(String key, String value) throws DBException {
 		if (StringUtil.isEmptyString(url))
-			throw new SQLException(translateException("DB-C10063", key));
+			throw new DBException("DB-C10063", key);
 	}
 
 	// -------------pool
 	/**
 	 * 初始化驱动管理
 	 */
-	public void initDriverManager() throws SQLException {
+	public void initDriverManager() throws DBException {
 		try {
 			Class.forName(this.driverClassName, true, Thread.currentThread().getContextClassLoader());
 		} catch (ClassNotFoundException ex) {
-			throw new SQLException(translateException("DB-C10015", ex, this.driverClassName));
+			throw new DBException("DB-C10015", ex, this.driverClassName);
 		}
 	}
 
@@ -188,7 +190,7 @@ public class SimpleConnectionPool {
 		}
 
 		try {
-			int timeout = this.connectionTimeout;
+			int timeout = this.getConnectionTimeout;
 			long start = System.currentTimeMillis();
 			do {
 				if (inactiveConnectionCount.get() == 0) {
@@ -197,7 +199,8 @@ public class SimpleConnectionPool {
 
 				ConnectionProxy connectionProxy = inactiveConnections.poll(timeout, TimeUnit.MILLISECONDS);
 				if (connectionProxy == null) {
-					throw new SQLException(translateException("DB-C10064", lastException, lastException.getMessage()));
+					throw new SQLException("couldn't get connection from simple pool, current idle pool size: "+
+							inactiveConnectionCount.get()+"/"+totalConnectionsCount.get()+"，the latest exception is: "+(latestException == null ? "" : latestException.getMessage()));
 				}
 
 				inactiveConnectionCount.decrementAndGet();
@@ -220,7 +223,9 @@ public class SimpleConnectionPool {
 
 				return connection;
 			} while (timeout > 0);
-			throw new SQLException(translateException("DB-C10064", lastException, lastException.getMessage()));
+			
+			throw new SQLException("couldn't get connection from simple pool, current idle pool size: "+
+					inactiveConnectionCount.get()+"/"+totalConnectionsCount.get()+"，the latest exception is: "+(latestException == null ? "" : latestException.getMessage()));
 		} catch (InterruptedException e) {
 			return null;
 		}
@@ -287,7 +292,7 @@ public class SimpleConnectionPool {
 			addConnection();
 
 		if (totalConnectionsCount.get() < initSize) {
-			LOGGER.error("init simple connection pool for database {0}@{1} failed, the last exception is: ", lastException, username, url);
+			LOGGER.error("init simple connection pool for database {0}@{1} failed, the last exception is: ", latestException, username, url);
 			// throw new DBRuntimeException("初始化连接池失败", lastException);
 		}
 	}
@@ -337,7 +342,7 @@ public class SimpleConnectionPool {
 				LOGGER.warn("getting connection from database failed: {0}, current idle pool size: {1}/{2} ", e.getMessage(),
 						inactiveConnectionCount.get(), totalConnectionsCount.get());
 
-				lastException = e;
+				latestException = e;
 				if (retries++ >= this.retries - 1) {
 					LOGGER.warn("reached maximum number of retries: {0}, stop trying to get this connection. current idle pool size: {1}/{2} ", this.retries,
 							inactiveConnectionCount.get(), totalConnectionsCount.get());
@@ -488,10 +493,5 @@ public class SimpleConnectionPool {
 				LOGGER.debug("timer task ended.");
 			}
 		}
-	}
-	
-	//translate exception text
-	private static String translateException(String code, Object... params){
-		return ExceptionResourceFactory.getInstance().translate(code, params);
 	}
 }

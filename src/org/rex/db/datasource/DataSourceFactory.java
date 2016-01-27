@@ -1,11 +1,14 @@
 package org.rex.db.datasource;
 
 import java.util.Properties;
+
 import javax.sql.DataSource;
 
+import org.rex.db.exception.DBException;
+
 public interface DataSourceFactory {
-
-	void setProperties(Properties props) throws Exception;
-
-	DataSource getDataSource() throws Exception;
+	
+	public abstract void setProperties(Properties properties) throws DBException;
+	
+	public abstract DataSource getDataSource() throws Exception;
 }

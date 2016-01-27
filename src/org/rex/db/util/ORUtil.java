@@ -409,7 +409,7 @@ public class ORUtil {
 							content.append("\r\n");
 						}
 					} catch (IOException e) {
-						throw new SQLException("DB-Q10017", e);
+						throw new DBException("DB-Q10017", e);
 					}
 
 					if ("java.lang.String".equals(paramClassName))

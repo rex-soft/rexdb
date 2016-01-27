@@ -12,9 +12,9 @@ import org.rex.db.exception.DBRuntimeException;
  */
 public class DataSourceManager {
 	
-	private DataSource defaultDataSource;
+	private volatile DataSource defaultDataSource;
 
-	private Map<String, DataSource> dataSourses;
+	private final Map<String, DataSource> dataSourses;
 	
 	public DataSourceManager(){
 		dataSourses = new HashMap<String, DataSource>();

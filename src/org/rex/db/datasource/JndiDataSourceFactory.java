@@ -17,7 +17,7 @@ public class JndiDataSourceFactory implements DataSourceFactory {
 	public static final String INITIAL_CONTEXT = "context";
 	public static final String DATA_SOURCE = "jndi";
 
-	private DataSource dataSource;
+	private volatile DataSource dataSource;
 	
 	public JndiDataSourceFactory(){
 	}
@@ -26,7 +26,7 @@ public class JndiDataSourceFactory implements DataSourceFactory {
 		setProperties(properties);
 	}
 
-	public void setProperties(Properties properties) throws DBException {
+	public synchronized void setProperties(Properties properties) throws DBException {
 		InitialContext initCtx = null;
 		try {
 			if (properties == null) {
@@ -53,7 +53,7 @@ public class JndiDataSourceFactory implements DataSourceFactory {
 		}
 	}
 
-	public DataSource getDataSource() {
+	public synchronized DataSource getDataSource() {
 		return dataSource;
 	}
 }

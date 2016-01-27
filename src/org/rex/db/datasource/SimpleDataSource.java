@@ -3,22 +3,22 @@ package org.rex.db.datasource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.rex.db.datasource.pool.SimpleConnectionPool;
+import org.rex.db.exception.DBException;
+import org.rex.db.exception.DBRuntimeException;
 
 /**
  * 一个简易数据源，用于程序测试
  */
 public class SimpleDataSource implements DataSource {
 
-	private SimpleConnectionPool pool;
+	private final SimpleConnectionPool pool;
 	
-	public SimpleDataSource(Properties properties) throws SQLException {
+	public SimpleDataSource(Properties properties) throws DBException {
 		pool = new SimpleConnectionPool(properties);
 	}
 
@@ -27,34 +27,23 @@ public class SimpleDataSource implements DataSource {
 	}
 
 	public Connection getConnection(String username, String password) throws SQLException {
-		return pool.getConnection();
+		throw new DBRuntimeException("DB-C10066", "getConnection");
 	}
 
 	public int getLoginTimeout() throws SQLException {
-		return 0;
+		throw new DBRuntimeException("DB-C10066", "getLoginTimeout");
 	}
 
 	public void setLoginTimeout(int timeout) throws SQLException {
-		throw new UnsupportedOperationException("setLoginTimeout");
+		throw new DBRuntimeException("DB-C10066", "setLoginTimeout");
 	}
 
 	public PrintWriter getLogWriter() {
-		throw new UnsupportedOperationException("getLogWriter");
+		throw new DBRuntimeException("DB-C10066", "getLogWriter");
 	}
 
 	public void setLogWriter(PrintWriter pw) throws SQLException {
-		throw new UnsupportedOperationException("setLogWriter");
+		throw new DBRuntimeException("DB-C10066", "setLogWriter");
 	}
 
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		return null;
-	}
-
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return false;
-	}
-
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		return null;
-	}
 }
