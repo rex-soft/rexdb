@@ -77,7 +77,7 @@ public class ReflectUtil {
 			String key = (String)entry.getKey();
 			Object value = entry.getValue();
 			if(!writers.containsKey(key))
-				throw new DBException(key + "赋值失败，找不到写入方法");
+				throw new DBException("赋值失败，找不到写入方法："+key);
 			
 			Method writer = writers.get(key);
 			if(value == null)

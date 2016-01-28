@@ -15,7 +15,7 @@ public interface Dialect {
 	 * @param limit 记录数
 	 * @return 分业后的SQL语句
 	 */
-	public String getLimitSql(String sql, int limit);
+	public String getLimitSql(String sql, int rows);
 
 	/**
 	 * 获取分页语句
@@ -25,7 +25,7 @@ public interface Dialect {
 	 * @param limit 记录数
 	 * @return 分业后的SQL语句
 	 */
-	public String getLimitSql(String sql, int offset, int limit);
+	public String getLimitSql(String sql, int offset, int rows);
 
 	/**
 	 * 当将sql包装为分页sql后，重置其预编译参数，增加分页参数。
@@ -33,7 +33,7 @@ public interface Dialect {
 	 * @param ps 预编译参数
 	 * @param limit 查询记录数
 	 */
-	public Ps getLimitPs(Ps ps, int limit);
+	public Ps getLimitPs(Ps ps, int rows);
 
 	/**
 	 * 当将sql包装为分页sql后，重置其预编译参数，增加分页参数。
@@ -41,7 +41,7 @@ public interface Dialect {
 	 * @param offset 偏移值
 	 * @param limit 查询记录数
 	 */
-	public Ps getLimitPs(Ps ps, int offset, int limit);
+	public Ps getLimitPs(Ps ps, int offset, int rows);
 	
 	// ------------------------------------------------------------数据库测试SQL
 	/**

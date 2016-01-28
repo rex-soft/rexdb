@@ -8,6 +8,8 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.rex.db.exception.DBException;
+import org.rex.db.util.DataSourceUtil;
+import org.rex.db.util.StringUtil;
 
 /**
  * JNDI连接池工厂
@@ -15,7 +17,7 @@ import org.rex.db.exception.DBException;
 public class JndiDataSourceFactory implements DataSourceFactory {
 
 	public static final String INITIAL_CONTEXT = "context";
-	public static final String DATA_SOURCE = "jndi";
+	public static final String JNDI_NAME = "jndi";
 
 	private volatile DataSource dataSource;
 	
@@ -27,19 +29,21 @@ public class JndiDataSourceFactory implements DataSourceFactory {
 	}
 
 	public synchronized void setProperties(Properties properties) throws DBException {
+		
+		
+		String jndiName = properties.getProperty(JNDI_NAME);
+		String initialContext = properties.getProperty(INITIAL_CONTEXT);
+		if(StringUtil.isEmptyString(jndiName))
+			throw new DBException("DB-D0004", JNDI_NAME, DataSourceUtil.hiddenPassword(properties));
+		
 		InitialContext initCtx = null;
 		try {
-			if (properties == null) {
-				initCtx = new InitialContext();
+			initCtx = new InitialContext(properties);
+			if (!StringUtil.isEmptyString(initialContext)) {
+				Context ctx = (Context) initCtx.lookup(initialContext);
+				dataSource = (DataSource) ctx.lookup(jndiName);
 			} else {
-				initCtx = new InitialContext(properties);
-			}
-
-			if (properties.containsKey(INITIAL_CONTEXT) && properties.containsKey(DATA_SOURCE)) {
-				Context ctx = (Context) initCtx.lookup(properties.getProperty(INITIAL_CONTEXT));
-				dataSource = (DataSource) ctx.lookup(properties.getProperty(DATA_SOURCE));
-			} else if (properties.containsKey(DATA_SOURCE)) {
-				dataSource = (DataSource) initCtx.lookup(properties.getProperty(DATA_SOURCE));
+				dataSource = (DataSource) initCtx.lookup(jndiName);
 			}
 
 		} catch (NamingException e) {

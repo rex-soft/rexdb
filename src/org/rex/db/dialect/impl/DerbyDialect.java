@@ -14,7 +14,7 @@ public class DerbyDialect extends DB2Dialect{
 	}
 	
 	// ------------------------------------------------------------版本信息
-	public String getDialectName(){
+	public String getName(){
 		return "DERBY";
 	}
 }

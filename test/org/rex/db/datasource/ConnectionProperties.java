@@ -11,7 +11,7 @@ public class ConnectionProperties {
 	public static Properties getSimpleProperties(){
 		Properties properties = new Properties();
 		properties.put("driverClassName","com.mysql.jdbc.Driver");
-		properties.put("url","jdbc:mysql://localhost:3306/test_db");
+		properties.put("url","jdbc:mysql://localhost:3306/rexdb");
 		properties.put("username","root");
 		properties.put("password","12345678");
 		return properties;

@@ -5,6 +5,7 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.rex.db.exception.DBException;
+import org.rex.db.util.DataSourceUtil;
 import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.StringUtil;
 
@@ -15,7 +16,7 @@ public class PoolDataSourceFactory implements DataSourceFactory {
 	
 	private volatile DataSource dataSource;
 	
-	public static final String DATA_SOURCE = "class";
+	public static final String DATA_SOURCE_CLASS = "class";
 	
 	public PoolDataSourceFactory(){
 	}
@@ -24,18 +25,16 @@ public class PoolDataSourceFactory implements DataSourceFactory {
 		setProperties(props);
 	}
 	
-	public synchronized void setProperties(Properties props) throws DBException{
-		String dataSourceClazz = props.getProperty(DATA_SOURCE);
+	public synchronized void setProperties(Properties properties) throws DBException{
+		String dataSourceClazz = properties.getProperty(DATA_SOURCE_CLASS);
+		
 		if(StringUtil.isEmptyString(dataSourceClazz))
-			throw new DBException("DB-C10063", DATA_SOURCE);
+			throw new DBException("DB-D0003", DATA_SOURCE_CLASS, DataSourceUtil.hiddenPassword(properties));
 		
-		try {
-			dataSource = (DataSource)Class.forName(dataSourceClazz).newInstance();
-		} catch (Exception e) {
-			throw new DBException("DB-C10064", e, e.getMessage());
-		}
+		dataSource = ReflectUtil.instance(dataSourceClazz, DataSource.class);
 		
-		ReflectUtil.setProperties(dataSource, props);
+		properties.remove(DATA_SOURCE_CLASS);
+		ReflectUtil.setProperties(dataSource, properties);
 	}
 
 	public synchronized DataSource getDataSource() {

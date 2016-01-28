@@ -21,6 +21,9 @@ public class SimpleDataSourceFactory implements DataSourceFactory {
 	}
 
 	public synchronized void setProperties(Properties properties) throws DBException {
+		if(properties == null || properties.size() == 0)
+			throw new DBException("");
+			
 		dataSource = new SimpleDataSource(properties);
 	}
 

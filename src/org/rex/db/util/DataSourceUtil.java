@@ -3,11 +3,10 @@ package org.rex.db.util;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.rex.db.datasource.ConnectionHolder;
 import org.rex.db.exception.DBException;
 import org.rex.db.transaction.ThreadConnectionHolder;
@@ -16,8 +15,6 @@ import org.rex.db.transaction.ThreadConnectionHolder;
  * 数据源通用类
  */
 public abstract class DataSourceUtil {
-
-	private static final Log logger = LogFactory.getLog(DataSourceUtil.class);
 
 	/**
 	 * 从数据源中获取连接
@@ -62,14 +59,25 @@ public abstract class DataSourceUtil {
 		if (con == null || ThreadConnectionHolder.has(ds)) {
 			return;
 		}
-//		if (!(ds instanceof SmartDataSource) || ((SmartDataSource) ds).shouldClose(con)) {
 		try {
 			con.close();
 		}catch (SQLException e) {
 			throw new DBException("DB-C10002", e, ds, con);
 		}
-//		}
 	}
 
 
+	/**
+	 * Make a copy and hidden password parameters in the datasource configuration
+	 * @param properties datasource configuration
+	 */
+	public static Properties hiddenPassword(Properties properties){
+		Properties clone = null;
+		if(properties != null){
+			clone = (Properties)properties.clone();
+			if(clone.containsKey("password"))
+				clone.put("password", "******(hidden)");
+		}
+		return clone;
+	}
 }

@@ -28,7 +28,7 @@ import org.rex.db.util.DataSourceUtil;
 public class DialectManager {
 
 	// ---已初始化的方言实例
-	private Map<String, Dialect> dialectInstances = new HashMap<String, Dialect>();
+	private final Map<String, Dialect> dialectInstances = new HashMap<String, Dialect>();
 	
 	/**
 	 * 为数据源指定一个方言
@@ -53,21 +53,27 @@ public class DialectManager {
 		if (dialectInstances.containsKey(hashCode)) {
 			dialect = dialectInstances.get(hashCode);
 		} else {
-			Connection con = null;
-			try {
-				con = DataSourceUtil.getConnection(dataSource);
-				dialect = getDialect(con);
-			} finally {
-				if (con != null) {
-					DataSourceUtil.closeConnection(con, dataSource);
-				}
-			}
-
+			dialect = resolveDialect(dataSource);
 			if(dialect != null)
 				dialectInstances.put(hashCode, dialect);
 		}
 		return dialect;
 	}
+	
+	public static Dialect resolveDialect(DataSource dataSource) throws DBException {
+		Dialect dialect = null;
+		Connection con = null;
+		try {
+			con = DataSourceUtil.getConnection(dataSource);
+			dialect = resolveDialect(con);
+		} finally {
+			if (con != null) {
+				DataSourceUtil.closeConnection(con, dataSource);
+			}
+		}
+		return dialect;
+	}
+	
 	
 	/**
 	 * 获取连接对应的方言，注意该方法不会主动关闭连接
@@ -75,7 +81,7 @@ public class DialectManager {
 	 * @return 方言
 	 * @throws DBException 获取元数据描述失败时，抛出异常
 	 */
-	public static Dialect getDialect(Connection connection) throws DBException {
+	public static Dialect resolveDialect(Connection connection) throws DBException {
 		if(connection == null) return null;
 		try {
 			DatabaseMetaData dbmd = connection.getMetaData();

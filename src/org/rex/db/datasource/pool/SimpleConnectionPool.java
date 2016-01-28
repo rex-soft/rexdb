@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.DialectManager;
 import org.rex.db.exception.DBException;
-import org.rex.db.exception.ExceptionResourceFactory;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.StringUtil;
@@ -419,7 +418,7 @@ public class SimpleConnectionPool {
 	}
 
 	private String getTestSqlFromDialect(Connection connection) throws DBException {
-		Dialect dialect = DialectManager.getDialect(connection);
+		Dialect dialect = DialectManager.resolveDialect(connection);
 		return dialect.getTestSql();
 	}
 

@@ -27,23 +27,23 @@ public class SimpleDataSource implements DataSource {
 	}
 
 	public Connection getConnection(String username, String password) throws SQLException {
-		throw new DBRuntimeException("DB-C10066", "getConnection");
+		throw new DBRuntimeException("DB-D0002", "getConnection");
 	}
 
 	public int getLoginTimeout() throws SQLException {
-		throw new DBRuntimeException("DB-C10066", "getLoginTimeout");
+		throw new DBRuntimeException("DB-D0002", "getLoginTimeout");
 	}
 
 	public void setLoginTimeout(int timeout) throws SQLException {
-		throw new DBRuntimeException("DB-C10066", "setLoginTimeout");
+		throw new DBRuntimeException("DB-D0002", "setLoginTimeout");
 	}
 
 	public PrintWriter getLogWriter() {
-		throw new DBRuntimeException("DB-C10066", "getLogWriter");
+		throw new DBRuntimeException("DB-D0002", "getLogWriter");
 	}
 
 	public void setLogWriter(PrintWriter pw) throws SQLException {
-		throw new DBRuntimeException("DB-C10066", "setLogWriter");
+		throw new DBRuntimeException("DB-D0002", "setLogWriter");
 	}
 
 }

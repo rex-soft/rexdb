@@ -3,11 +3,12 @@ package org.rex.db.exception;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+
+import org.rex.db.util.StringUtil;
 
 /**
  * 加载异常配置文件
@@ -33,7 +34,7 @@ public class ExceptionResourceFactory {
 	private String lang;
 	
 	//所有资源
-	private Map<String, ExceptionResource> resources;
+	private final Map<String, ExceptionResource> resources;
 	
 	//单例
 	private static final ExceptionResourceFactory instance;
@@ -120,7 +121,7 @@ public class ExceptionResourceFactory {
 		if(message == null)
 			return code;
 		else{
-			return "(" + code + ") " + MessageFormat.format(message, params);
+			return "(" + code + ") " + StringUtil.format(message, params);
 		}
 	}
 }
