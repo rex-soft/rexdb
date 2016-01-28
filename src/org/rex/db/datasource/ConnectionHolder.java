@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.util.Date;
 
 /**
- * 用于包装数据库连接
+ * 用于包装数据库连接，额外增加了用于给事物计时的超时时间等属性
+ * 为方便调用，包装后的数据库连接通常被放置在ThreadLocal中
  */
 public class ConnectionHolder{
 

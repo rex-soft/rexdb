@@ -9,8 +9,7 @@ public class TestPoolDataSourceFactory {
 
 	@Test
 	public void testPoolFactory() throws DBException {
-		PoolDataSourceFactory factory = new PoolDataSourceFactory();
-		factory.setProperties(ConnectionProperties.getPoolProperties());
+		PoolDataSourceFactory factory = new PoolDataSourceFactory(ConnectionProperties.getPoolProperties());
 		DataSource ds = factory.getDataSource();
 	}
 

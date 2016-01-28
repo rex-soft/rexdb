@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 数据库连接包装类
+ * 包装数据库连接，供简单连接池使用
  */
 public class SimpleConnectionProxy implements InvocationHandler {
 

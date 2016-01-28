@@ -1,34 +1,20 @@
 package org.rex.db.dialect;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.rex.db.dialect.impl.DB2Dialect;
-import org.rex.db.dialect.impl.DMDialect;
-import org.rex.db.dialect.impl.DerbyDialect;
-import org.rex.db.dialect.impl.H2Dialect;
-import org.rex.db.dialect.impl.HSQLDialect;
-import org.rex.db.dialect.impl.MySQLDialect;
-import org.rex.db.dialect.impl.Oracle8iDialect;
-import org.rex.db.dialect.impl.Oracle9iDialect;
-import org.rex.db.dialect.impl.PostgreSQLDialect;
-import org.rex.db.dialect.impl.SQLServer2005Dialect;
-import org.rex.db.dialect.impl.SQLServerDialect;
 import org.rex.db.exception.DBException;
-import org.rex.db.util.DataSourceUtil;
 
 /**
- * 获取数据库相应的方言
+ * 管理数据库方言
  */
 public class DialectManager {
 
-	// ---已初始化的方言实例
-	private final Map<String, Dialect> dialectInstances = new HashMap<String, Dialect>();
+	private final Map<String, Dialect> dialectInstances = Collections.synchronizedMap(new HashMap<String, Dialect>());
 	
 	/**
 	 * 为数据源指定一个方言
@@ -48,102 +34,15 @@ public class DialectManager {
 	 */
 	public Dialect getDialect(DataSource dataSource) throws DBException {
 		String hashCode = String.valueOf(dataSource.hashCode());
-		Dialect dialect = null;
-
-		if (dialectInstances.containsKey(hashCode)) {
-			dialect = dialectInstances.get(hashCode);
-		} else {
-			dialect = resolveDialect(dataSource);
-			if(dialect != null)
-				dialectInstances.put(hashCode, dialect);
-		}
-		return dialect;
-	}
-	
-	public static Dialect resolveDialect(DataSource dataSource) throws DBException {
-		Dialect dialect = null;
-		Connection con = null;
-		try {
-			con = DataSourceUtil.getConnection(dataSource);
-			dialect = resolveDialect(con);
-		} finally {
-			if (con != null) {
-				DataSourceUtil.closeConnection(con, dataSource);
-			}
-		}
-		return dialect;
-	}
-	
-	
-	/**
-	 * 获取连接对应的方言，注意该方法不会主动关闭连接
-	 * @param connection 数据库连接
-	 * @return 方言
-	 * @throws DBException 获取元数据描述失败时，抛出异常
-	 */
-	public static Dialect resolveDialect(Connection connection) throws DBException {
-		if(connection == null) return null;
-		try {
-			DatabaseMetaData dbmd = connection.getMetaData();
-			return resolveDialectInternal(dbmd);
-		} catch (SQLException e) {
-			throw new DBException("DB-D10001", e, e.getMessage());
-		}
-	}
-
-	/**
-	 * 根据数据库类型创建方言实例
-	 * 
-	 * @param metaData 数据库元描述
-	 * @return 方言实例
-	 * @throws DBException 当找不到数据库对应的方言时，抛出异常
-	 * @throws SQLException 获取数据库元数据描述失败时，抛出异常
-	 */
-	private static Dialect resolveDialectInternal(DatabaseMetaData metaData) throws DBException {
-		String databaseName;
-		int databaseMajorVersion;
-		try {
-			databaseName = metaData.getDatabaseProductName();
-			databaseMajorVersion = metaData.getDatabaseMajorVersion();
-		} catch (SQLException e) {
-			throw new DBException("DB-D10001", e, e.getMessage());
-		}
 		
-
-		if ("Oracle".equals(databaseName)) {
-			switch (databaseMajorVersion) {
-			case 8:
-				return new Oracle8iDialect();
-			default:
-				return new Oracle9iDialect();//其它版本使用Oracle 9i
+		synchronized(dialectInstances){
+			if (!dialectInstances.containsKey(hashCode)) {
+				Dialect dialect = DialectFactory.resolveDialect(dataSource);
+				dialectInstances.put(hashCode, dialect);
 			}
+			return dialectInstances.get(hashCode);
 		}
-
-		if (databaseName.startsWith("Microsoft SQL Server")) {
-			switch (databaseMajorVersion) {
-			case 8:
-				return new SQLServerDialect();
-			default:
-				return new SQLServer2005Dialect();// 其它版本使用SQL Server 2005
-			}
-		}
-
-		if (databaseName.startsWith("DB2"))
-			return new DB2Dialect();
-		if ("HSQL Database Engine".equals(databaseName))
-			return new HSQLDialect();
-		if ("MySQL".equals(databaseName))
-			return new MySQLDialect();
-		if ("PostgreSQL".equals(databaseName))
-			return new PostgreSQLDialect();
-		if ("Apache Derby".equals(databaseName))
-			return new DerbyDialect();
-		if ("DM DBMS".equals(databaseName))
-			return new DMDialect();
-		if ("H2".equals(databaseName)) {
-			return new H2Dialect();
-		}
-
-		throw new DBException("DB-D10002", databaseName);
 	}
+	
+
 }

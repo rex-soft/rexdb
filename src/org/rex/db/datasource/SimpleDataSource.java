@@ -12,7 +12,8 @@ import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
 
 /**
- * 一个简易数据源，用于程序测试
+ * 框架内置的简单数据源，内置一个简单的连接池，通常用于开发环境。
+ * 
  */
 public class SimpleDataSource implements DataSource {
 

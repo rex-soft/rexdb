@@ -14,14 +14,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.rex.db.dialect.Dialect;
-import org.rex.db.dialect.DialectManager;
+import org.rex.db.dialect.DialectFactory;
 import org.rex.db.exception.DBException;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
+import org.rex.db.util.DataSourceUtil;
 import org.rex.db.util.StringUtil;
 
 /**
- * 简易的连接池
+ * 简单的连接池，提供基本的数据库连接管理、获取、超时处理等功能
  */
 public class SimpleConnectionPool {
 
@@ -68,13 +69,7 @@ public class SimpleConnectionPool {
 	 */
 	public SimpleConnectionPool(Properties properties) throws DBException  {
 		if (LOGGER.isInfoEnabled()) {
-			Properties clone = null;
-			if(properties != null){
-				clone = (Properties)properties.clone();
-				if(clone.containsKey("password"))
-					clone.put("password", "******");
-			}
-			LOGGER.info("starting simple connection pool with properties {0}", clone);
+			LOGGER.info("starting simple connection pool with properties {0}", DataSourceUtil.hiddenPassword(properties));
 		}
 
 		extractProperties(properties);
@@ -103,7 +98,8 @@ public class SimpleConnectionPool {
 	 */
 	private void extractProperties(Properties properties) throws DBException {
 		if (properties == null)
-			throw new DBException("DB-C10063", "properties");
+			throw new DBException("DB-D0006");
+		
 		Field[] fields = this.getClass().getDeclaredFields();
 		for (Enumeration<?> en = properties.propertyNames(); en.hasMoreElements();) {
 			Object key =  en.nextElement();
@@ -158,13 +154,12 @@ public class SimpleConnectionPool {
 		throwExceptionIfNull("url", url);
 		throwExceptionIfNull("username", username);
 
-		// --pool size
-		// ignore
+		// ignore others
 	}
 
 	private void throwExceptionIfNull(String key, String value) throws DBException {
 		if (StringUtil.isEmptyString(url))
-			throw new DBException("DB-C10063", key);
+			throw new DBException("DB-D0007", key);
 	}
 
 	// -------------pool
@@ -174,8 +169,8 @@ public class SimpleConnectionPool {
 	public void initDriverManager() throws DBException {
 		try {
 			Class.forName(this.driverClassName, true, Thread.currentThread().getContextClassLoader());
-		} catch (ClassNotFoundException ex) {
-			throw new DBException("DB-C10015", ex, this.driverClassName);
+		} catch (ClassNotFoundException e) {
+			throw new DBException("DB-D0008", e, this.driverClassName);
 		}
 	}
 
@@ -198,7 +193,7 @@ public class SimpleConnectionPool {
 
 				ConnectionProxy connectionProxy = inactiveConnections.poll(timeout, TimeUnit.MILLISECONDS);
 				if (connectionProxy == null) {
-					throw new SQLException("couldn't get connection from simple pool, current idle pool size: "+
+					throw new SQLException("couldn't get connection from simple pool "+username + '@' + url+", current idle pool size: "+
 							inactiveConnectionCount.get()+"/"+totalConnectionsCount.get()+"，the latest exception is: "+(latestException == null ? "" : latestException.getMessage()));
 				}
 
@@ -223,7 +218,7 @@ public class SimpleConnectionPool {
 				return connection;
 			} while (timeout > 0);
 			
-			throw new SQLException("couldn't get connection from simple pool, current idle pool size: "+
+			throw new SQLException("couldn't get connection from simple pool "+username + '@' + url+", current idle pool size: "+
 					inactiveConnectionCount.get()+"/"+totalConnectionsCount.get()+"，the latest exception is: "+(latestException == null ? "" : latestException.getMessage()));
 		} catch (InterruptedException e) {
 			return null;
@@ -418,7 +413,7 @@ public class SimpleConnectionPool {
 	}
 
 	private String getTestSqlFromDialect(Connection connection) throws DBException {
-		Dialect dialect = DialectManager.resolveDialect(connection);
+		Dialect dialect = DialectFactory.resolveDialect(connection);
 		return dialect.getTestSql();
 	}
 

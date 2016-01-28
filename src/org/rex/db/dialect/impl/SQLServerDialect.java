@@ -17,7 +17,7 @@ public class SQLServerDialect implements Dialect {
 
 	public String getLimitSql(String sql, int offset, int rows) {
 		if (offset > 0) {
-			throw new DBRuntimeException("DB-D10004", getName());
+			throw new DBRuntimeException("DB-A0003", getName());
 		}
 		return new StringBuffer(sql.length() + 8).append(sql)
 				.insert(getAfterSelectInsertPoint(sql), " top " + rows)
@@ -37,7 +37,7 @@ public class SQLServerDialect implements Dialect {
 
 	public Ps getLimitPs(Ps ps, int offset, int rows) {
 		if (offset > 0) {
-			throw new DBRuntimeException("DB-D10004", getName());
+			throw new DBRuntimeException("DB-A0003", getName());
 		}
 
 		return getLimitPs(ps, rows);

@@ -12,32 +12,27 @@ import org.rex.db.util.DataSourceUtil;
 import org.rex.db.util.StringUtil;
 
 /**
- * JNDI连接池工厂
+ * 根据JNDI加载数据源，通常用于Java EE服务器环境中
  */
-public class JndiDataSourceFactory implements DataSourceFactory {
+public class JndiDataSourceFactory extends DataSourceFactory {
 
 	public static final String INITIAL_CONTEXT = "context";
 	public static final String JNDI_NAME = "jndi";
 
-	private volatile DataSource dataSource;
-	
-	public JndiDataSourceFactory(){
+	public JndiDataSourceFactory(Properties properties) throws DBException {
+		super(properties);
 	}
 	
-	public JndiDataSourceFactory(Properties properties) throws DBException{
-		setProperties(properties);
-	}
-
-	public synchronized void setProperties(Properties properties) throws DBException {
-		
-		
-		String jndiName = properties.getProperty(JNDI_NAME);
-		String initialContext = properties.getProperty(INITIAL_CONTEXT);
+	public DataSource createDataSource() throws DBException {
+		Properties properties = getProperties();
+				
+		String jndiName = properties.getProperty(JNDI_NAME), initialContext = properties.getProperty(INITIAL_CONTEXT);
 		if(StringUtil.isEmptyString(jndiName))
 			throw new DBException("DB-D0004", JNDI_NAME, DataSourceUtil.hiddenPassword(properties));
 		
 		InitialContext initCtx = null;
 		try {
+			DataSource dataSource;
 			initCtx = new InitialContext(properties);
 			if (!StringUtil.isEmptyString(initialContext)) {
 				Context ctx = (Context) initCtx.lookup(initialContext);
@@ -45,9 +40,10 @@ public class JndiDataSourceFactory implements DataSourceFactory {
 			} else {
 				dataSource = (DataSource) initCtx.lookup(jndiName);
 			}
-
+			
+			return dataSource;
 		} catch (NamingException e) {
-			throw new DBException("There was an error configuring JndiDataSourceTransactionPool. Cause: "+ e, e);
+			throw new DBException("DB-D0005", e, e.getMessage(), properties);
 		}finally {
 			try {
 				if (initCtx != null)
@@ -56,8 +52,5 @@ public class JndiDataSourceFactory implements DataSourceFactory {
 			}
 		}
 	}
-
-	public synchronized DataSource getDataSource() {
-		return dataSource;
-	}
+	
 }

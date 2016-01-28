@@ -13,8 +13,7 @@ import junit.framework.Assert;
 public class TestSimpleDataSourceFactory {
 	
 	private DataSource getDataSource(Properties properties) throws DBException{
-		SimpleDataSourceFactory sdf = new SimpleDataSourceFactory();
-		sdf.setProperties(properties);
+		SimpleDataSourceFactory sdf = new SimpleDataSourceFactory(properties);
 		DataSource ds = sdf.getDataSource();
 		return ds;
 	}

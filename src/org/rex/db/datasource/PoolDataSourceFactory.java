@@ -10,34 +10,26 @@ import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.StringUtil;
 
 /**
- * 自定义连接池数据源
+ * 用于加载第三方数据源的工厂，例如DBCP、C3P0
  */
-public class PoolDataSourceFactory implements DataSourceFactory {
-	
-	private volatile DataSource dataSource;
+public class PoolDataSourceFactory extends DataSourceFactory {
 	
 	public static final String DATA_SOURCE_CLASS = "class";
 	
-	public PoolDataSourceFactory(){
+	public PoolDataSourceFactory(Properties properties) throws DBException {
+		super(properties);
 	}
 	
-	public PoolDataSourceFactory(Properties props) throws DBException{
-		setProperties(props);
-	}
-	
-	public synchronized void setProperties(Properties properties) throws DBException{
-		String dataSourceClazz = properties.getProperty(DATA_SOURCE_CLASS);
+	public DataSource createDataSource() throws DBException {
+		Properties properties = (Properties)getProperties().clone();
 		
+		String dataSourceClazz = properties.getProperty(DATA_SOURCE_CLASS);
 		if(StringUtil.isEmptyString(dataSourceClazz))
 			throw new DBException("DB-D0003", DATA_SOURCE_CLASS, DataSourceUtil.hiddenPassword(properties));
 		
-		dataSource = ReflectUtil.instance(dataSourceClazz, DataSource.class);
-		
+		DataSource dataSource = ReflectUtil.instance(dataSourceClazz, DataSource.class);
 		properties.remove(DATA_SOURCE_CLASS);
 		ReflectUtil.setProperties(dataSource, properties);
-	}
-
-	public synchronized DataSource getDataSource() {
 		return dataSource;
 	}
 }

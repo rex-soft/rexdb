@@ -152,17 +152,16 @@ public class XMLConfigParser {
 
 		// 不指定class和jndi时，使用自带简易数据源
 		else if (StringUtil.isEmptyString(clazz) && StringUtil.isEmptyString(jndi)) {
-			factory = new SimpleDataSourceFactory();
+			factory = new SimpleDataSourceFactory(props);
 		}
 		// 有jndi参数，使用JNDI
 		else if (!StringUtil.isEmptyString(jndi)) {
-			factory = new JndiDataSourceFactory();
+			factory = new JndiDataSourceFactory(props);
 		}
 		// 自定指定数据源
 		else {
-			factory = new PoolDataSourceFactory();
+			factory = new PoolDataSourceFactory(props);
 		}
-		factory.setProperties(props);
 		DataSource dataSource = factory.getDataSource();
 
 		// 处理方言

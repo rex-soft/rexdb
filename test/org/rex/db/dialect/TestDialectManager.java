@@ -3,6 +3,9 @@ package org.rex.db.dialect;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
+
+import javax.sql.DataSource;
 
 import org.junit.Test;
 import org.rex.db.datasource.ConnectionProperties;
@@ -13,14 +16,17 @@ import junit.framework.Assert;
 
 public class TestDialectManager {
 	
+	private DataSource getDataSource() throws DBException, SQLException{
+		SimpleDataSourceFactory sdf = new SimpleDataSourceFactory(ConnectionProperties.getPoolProperties());
+		return sdf.getDataSource();
+	}
+	
 	private Connection getConnection() throws DBException, SQLException{
-		SimpleDataSourceFactory sdf = new SimpleDataSourceFactory();
-		sdf.setProperties(ConnectionProperties.getPoolProperties());
-		return sdf.getDataSource().getConnection();
+		return getDataSource().getConnection();
 	}
 
 	private Dialect getDialect() throws DBException, SQLException{
-		return DialectManager.resolveDialect(getConnection());
+		return DialectFactory.resolveDialect(getConnection());
 	}
 	
 	@Test

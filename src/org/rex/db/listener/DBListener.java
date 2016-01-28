@@ -2,8 +2,6 @@ package org.rex.db.listener;
 
 import java.util.EventListener;
 
-import org.rex.db.transaction.TransactionDefinition;
-
 public interface DBListener extends EventListener{
 	
 	/**

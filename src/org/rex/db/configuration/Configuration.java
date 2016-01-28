@@ -137,7 +137,7 @@ public class Configuration {
 	}
 
 	public void setDefaultDataSource(DataSource dataSource){
-		dataSourceManager.addDefault(dataSource);
+		dataSourceManager.setDefault(dataSource);
 	}
 	
 	public void setDataSource(String id, DataSource dataSource){
