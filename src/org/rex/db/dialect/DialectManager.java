@@ -8,11 +8,15 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.rex.db.exception.DBException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 /**
  * 管理数据库方言
  */
 public class DialectManager {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DialectManager.class);
 
 	private final Map<String, Dialect> dialectInstances = Collections.synchronizedMap(new HashMap<String, Dialect>());
 	
@@ -23,6 +27,9 @@ public class DialectManager {
 	 */
 	public void setDialect(DataSource dataSource, Dialect dialect){
 		dialectInstances.put(String.valueOf(dataSource.hashCode()), dialect);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("Dialect[{0}] for datasource[{1}] registed.", dialect.getName(), dataSource.hashCode());
 	}
 	
 	/**

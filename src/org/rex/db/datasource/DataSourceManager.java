@@ -5,10 +5,15 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
+
 /**
  * 管理已加载的数据源，包括1个默认数据源，以及多个指定ID的数据源
  */
 public class DataSourceManager {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceManager.class);
 	
 	private volatile DataSource defaultDataSource;
 
@@ -20,10 +25,16 @@ public class DataSourceManager {
 
 	public void setDefault(DataSource dataSource){
 		defaultDataSource = dataSource;
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("Default datasource[{0}] registed.", dataSource.hashCode());
 	}
 	
 	public void add(String id, DataSource dataSource){
 		dataSourses.put(id, dataSource);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("Datasource[{0}] of id {1} registed.", dataSource.hashCode(), id);
 	}
 	
 	public DataSource get(String id){

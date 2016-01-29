@@ -24,7 +24,7 @@ jndi CDATA #IMPLIED
 dialect CDATA #IMPLIED
 >
 
-<!ELEMENT listener EMPTY>
+<!ELEMENT listener (property*)>
 <!ATTLIST listener
 class CDATA #REQUIRED
 >

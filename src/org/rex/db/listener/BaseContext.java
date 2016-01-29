@@ -13,5 +13,4 @@ public class BaseContext {
 	public String getContextId() {
 		return contextId;
 	}
-	
 }

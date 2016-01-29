@@ -4,14 +4,14 @@ import org.rex.db.transaction.Constants;
 import org.rex.db.transaction.TransactionDefinition;
 
 /**
- * 执行事物的上下文
+ * 包装事物配置等信息，方便监听程序调用
  */
 public class TransactionContext extends BaseContext {
 	
 	/** 
 	 * 用于读取常量 
 	 */
-	private static final Constants constants = new Constants(TransactionContext.class);
+	static final Constants CONSTANTS = new Constants(TransactionContext.class);
 
 	/**
 	 * 事物的状态：开启
@@ -54,7 +54,7 @@ public class TransactionContext extends BaseContext {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("event=")
-		.append(constants.toCode(new Integer(event), "TRANSACTION"))
+		.append(CONSTANTS.toCode(new Integer(event), "TRANSACTION"))
 		.append(", definition=[")
 		.append(definition)
 		.append("]");

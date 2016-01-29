@@ -3,40 +3,61 @@ package org.rex.db.listener;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
+
 /**
- * 监听注册器
+ * 用于管理已注册的监听程序，当发生数据库操作时，会逐个通知监听
  */
 public class ListenerManager {
 	
-//	private static ListenerManager instance;
-//	
-//	static {
-//		instance = new ListenerManager();
-//	}
-//	
-//	public static ListenerManager getInstance(){
-//		return instance;
-//	}
+	private static final Logger LOGGER = LoggerFactory.getLogger(ListenerManager.class);
 	
-	private Vector<DBListener> listeners;
+	private final Vector<DBListener> listeners;
 	
 	public ListenerManager(){
 		listeners = new Vector<DBListener>();
 	}
 	
-	//注册监听
+	/**
+	 * 注册监听
+	 * @param listener
+	 */
 	public void registe(DBListener listener) {
 		listeners.addElement(listener);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("Listener {0} registed.", listener.getClass().getName());
 	}
 
-	//解除监听
+	/**
+	 * 解除监听
+	 * @param listener
+	 */
 	public void remove(DBListener listener) {
 		listeners.remove(listener);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("Listener {0} removed.", listener.getClass().getName());
 	}
 
-	//已注册的监听数量
+	/**
+	 * 已注册的监听数量
+	 * @return
+	 */
 	public int getSize(){
 		return listeners.size();
+	}
+	
+	/**
+	 * 查询是否有注册的监听
+	 */
+	public boolean hasListener(){
+		return listeners.size() > 0;
+	}
+	
+	public DBListener[] getListeners(){
+		return listeners.toArray(new DBListener[listeners.size()]);
 	}
 	
 	/**
@@ -81,13 +102,6 @@ public class ListenerManager {
 				listener.afterTransaction(context);
 			}
 		});
-	}
-	
-	/**
-	 * 查询是否有注册的监听
-	 */
-	public boolean hasListener(){
-		return listeners.size() > 0;
 	}
 	
 	//---------private

@@ -8,7 +8,7 @@ import org.rex.db.Ps;
 import org.rex.db.transaction.Constants;
 
 /**
- * 执行SQL前的上下文
+ * 包装SQL、预编译参数、数据源等，方便监听程序调用
  */
 public class SqlContext extends BaseContext{
 	

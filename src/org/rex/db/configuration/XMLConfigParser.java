@@ -121,7 +121,7 @@ public class XMLConfigParser {
 			}
 		}
 
-		ReflectUtil.setProperties(configuration, props);
+		ReflectUtil.setProperties(configuration, props, true);
 	}
 	
 	/**
@@ -185,29 +185,13 @@ public class XMLConfigParser {
 			return;
 
 		String clazz = context.getStringAttribute("class");
+		Properties props = context.getChildrenAsProperties();
 		if (StringUtil.isEmptyString(clazz)) {
 			throw new DBException("DB-C10047", "listener", "class");
 		}
-
-		Class listenerClass = null;
-		try {
-			listenerClass = Class.forName(clazz);
-		} catch (ClassNotFoundException e) {
-			throw new DBException("DB-C10048", clazz);
-		}
-
-		if (!DBListener.class.isAssignableFrom(listenerClass)) {
-			throw new DBException("DB-C10049", clazz, DBListener.class.getName());
-		}
-
-		DBListener listener = null;
-		try {
-			listener = (DBListener) listenerClass.newInstance();
-		} catch (InstantiationException e) {
-			throw new DBException("DB-C10050", e, clazz, e.getMessage());
-		} catch (IllegalAccessException e) {
-			throw new DBException("DB-C10050", e, clazz, e.getMessage());
-		}
+		
+		DBListener listener = ReflectUtil.instance(clazz, DBListener.class);
+		ReflectUtil.setProperties(listener, props, true);
 
 		configuration.addListener(listener);
 	}

@@ -2,6 +2,9 @@ package org.rex.db.listener;
 
 import java.util.EventListener;
 
+/**
+ * 基于观察者模式实现的监听接口，由具体监听程序实现，将会拦截基于框架的所有数据库操作
+ */
 public interface DBListener extends EventListener{
 	
 	/**

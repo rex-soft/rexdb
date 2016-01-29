@@ -20,6 +20,9 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String format(String message, Object... params) {
-		return MessageFormat.format(message, params);
+		if(params != null && params.length > 0)
+			return MessageFormat.format(message, params);
+		else
+			return message;
 	}
 }
