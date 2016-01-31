@@ -1,13 +1,13 @@
 package org.rex.db.core.reader;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
+import org.rex.db.util.ReflectUtil;
 
 /**
  * 读取单条结果集，进行OR映射
@@ -61,22 +61,10 @@ public class ClassResultReader<T> implements ResultReader<T> {
 	 */
 	protected T row2Bean(ResultSet rs, int rowNum, Ps ps, boolean originalKey) throws DBException {
 		if (resultClass == null)
-			throw new DBException("DB-Q10021");
+			throw new DBException("DB-C0003");
 
-		T bean = null;
-		try {
-			bean = resultClass.newInstance();
-		} catch (InstantiationException e) {
-			throw new DBException("DB-Q10006", e, resultClass.getName());
-		} catch (IllegalAccessException e) {
-			throw new DBException("DB-Q10007", e, resultClass.getName());
-		}
-
-		try {
-			return orUtil.rs2Object(rs, bean, originalKey);
-		} catch (SQLException e) {
-			throw new DBException("DB-Q10010", e);
-		}
+		T bean = ReflectUtil.instance(resultClass);
+		return orUtil.rs2Object(rs, bean, originalKey);
 	}
 
 	public static <T> T createInstance(Class<T> cls) {

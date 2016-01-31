@@ -19,7 +19,7 @@ public class ExceptionResourceFactory {
 	private static final String PROPERTIES_ENCODING = "UTF-8";
 			
 	//--支持的语言，方便用户设置
-	public static final String LANG_ZH_CN = "zh_cn";
+	public static final String LANG_ZH_CN = "zh-cn";
 	public static final String LANG_EN = "en";
 	
 	//--异常资源配置文件
@@ -31,7 +31,7 @@ public class ExceptionResourceFactory {
 	};
 
 	//--当前使用的语言
-	private String lang;
+	private volatile String lang = LANG_ZH_CN;
 	
 	//所有资源
 	private final Map<String, ExceptionResource> resources;
@@ -50,7 +50,6 @@ public class ExceptionResourceFactory {
 
 	protected ExceptionResourceFactory() {
 		resources = new HashMap<String, ExceptionResource>();
-		lang = LANG_ZH_CN;
 		init();
 	}
 	
@@ -76,7 +75,6 @@ public class ExceptionResourceFactory {
 			if (inputStream == null) {
 				return null;
 			}
-
 			props.load(new InputStreamReader(inputStream, encode));
 			return props;
 		} catch (IOException ex) {

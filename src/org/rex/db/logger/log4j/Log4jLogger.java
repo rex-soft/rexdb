@@ -2,6 +2,7 @@ package org.rex.db.logger.log4j;
 
 import org.apache.commons.logging.Log;
 import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.StringUtil;
 
 public class Log4jLogger implements Logger {
@@ -13,27 +14,33 @@ public class Log4jLogger implements Logger {
 	}
 
 	public void error(String msg, String... args) {
-		log.error(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.error(StringUtil.format(msg, args));
 	}
 
 	public void error(String msg, Object... args) {
-		log.error(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.error(StringUtil.format(msg, args));
 	}
 
 	public void error(String msg, Throwable ex, String... args) {
-		log.error(StringUtil.format(msg, args), ex);
+		if (!LoggerFactory.isNolog())
+			log.error(StringUtil.format(msg, args), ex);
 	}
 
 	public void info(String msg, String... args) {
-		log.info(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.info(StringUtil.format(msg, args));
 	}
 
 	public void info(String msg, Object... args) {
-		log.info(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.info(StringUtil.format(msg, args));
 	}
 
 	public void info(String msg, Throwable ex, String... args) {
-		log.info(StringUtil.format(msg, args), ex);
+		if (!LoggerFactory.isNolog())
+			log.info(StringUtil.format(msg, args), ex);
 	}
 
 	public boolean isInfoEnabled() {
@@ -41,15 +48,18 @@ public class Log4jLogger implements Logger {
 	}
 
 	public void warn(String msg, String... args) {
-		log.warn(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.warn(StringUtil.format(msg, args));
 	}
 
 	public void warn(String msg, Object... args) {
-		log.warn(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.warn(StringUtil.format(msg, args));
 	}
 
 	public void warn(String msg, Throwable ex, String... args) {
-		log.warn(StringUtil.format(msg, args), ex);
+		if (!LoggerFactory.isNolog())
+			log.warn(StringUtil.format(msg, args), ex);
 	}
 
 	public boolean isDebugEnabled() {
@@ -57,15 +67,18 @@ public class Log4jLogger implements Logger {
 	}
 
 	public void debug(String msg, String... args) {
-		log.debug(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.debug(StringUtil.format(msg, args));
 	}
 
 	public void debug(String msg, Object... args) {
-		log.debug(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.debug(StringUtil.format(msg, args));
 	}
 
 	public void debug(String msg, Throwable ex, String... args) {
-		log.debug(StringUtil.format(msg, args), ex);
+		if (!LoggerFactory.isNolog())
+			log.debug(StringUtil.format(msg, args), ex);
 	}
 
 	public boolean isTraceEnabled() {
@@ -73,27 +86,33 @@ public class Log4jLogger implements Logger {
 	}
 
 	public void trace(String msg, String... args) {
-		log.trace(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.trace(StringUtil.format(msg, args));
 	}
 
 	public void trace(String msg, Object... args) {
-		log.trace(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.trace(StringUtil.format(msg, args));
 	}
 
 	public void trace(String msg, Throwable ex, String... args) {
-		log.trace(StringUtil.format(msg, args), ex);
+		if (!LoggerFactory.isNolog())
+			log.trace(StringUtil.format(msg, args), ex);
 	}
 
 	public void fatal(String msg, String... args) {
-		log.fatal(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.fatal(StringUtil.format(msg, args));
 	}
 
 	public void fatal(String msg, Object... args) {
-		log.fatal(StringUtil.format(msg, args));
+		if (!LoggerFactory.isNolog())
+			log.fatal(StringUtil.format(msg, args));
 	}
 
 	public void fatal(String msg, Throwable ex, String... args) {
-		log.fatal(StringUtil.format(msg, args), ex);
+		if (!LoggerFactory.isNolog())
+			log.fatal(StringUtil.format(msg, args), ex);
 	}
 
 	public boolean isErrorEnabled() {

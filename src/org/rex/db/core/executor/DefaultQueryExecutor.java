@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 public class DefaultQueryExecutor implements QueryExecutor {
 
 	public ResultSet executeQuery(Statement stmt, String sql) throws SQLException {

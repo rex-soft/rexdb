@@ -1,18 +1,88 @@
 package org.rex.db.configuration;
 
+import java.io.InputStream;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.rex.db.core.DBTemplate;
 import org.rex.db.datasource.DataSourceManager;
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.DialectManager;
 import org.rex.db.exception.DBException;
+import org.rex.db.exception.ExceptionResourceFactory;
 import org.rex.db.listener.DBListener;
 import org.rex.db.listener.ListenerManager;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
+import org.rex.db.util.ResourceUtil;
 
 public class Configuration {
 	
+	//-----------------------------singlon instance
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+	
+	private static final String DEFAULT_CONFIG_PATH = "rexdb.xml";
+	
+	/**
+	 * 以单例模式运行
+	 */
+	private static volatile Configuration instance;
+	
+	//-----------------------------configuration
+	/**
+	 * 配置变量
+	 */
+	private volatile Properties variables;
+	
+	/**
+	 * 语言：zh-cn、en
+	 */
+	private volatile String lang;
+	
+	/**
+	 * 关闭所有输出日志
+	 */
+	private volatile boolean nolog = false;
+	
+	/**
+	 * 在执行SQL前执行基本校验，防止错误的SQL被发送到数据库
+	 */
+	private volatile boolean validateSql = true;
+	
+	/**
+	 * 是否检查执行过程中的各种警告，如连接警告、Statement警告、结果集警告
+	 */
+	private volatile boolean checkWarnings = false;
+	
+	
+	/**
+	 * 数据源
+	 */
+	private final DataSourceManager dataSourceManager;
+	
+	/**
+	 * 监听
+	 */
+	private final ListenerManager listenerManager;
+	
+	/**
+	 * 方言
+	 */
+	private final DialectManager dialectManager;
+	
+	static{
+		try {
+			LOGGER.info("Start loading default configuration {0}.", DEFAULT_CONFIG_PATH);
+			loadDefaultConfiguration();
+			LOGGER.info("Default configuration {0} loaded.", DEFAULT_CONFIG_PATH);
+		} catch (DBException e) {
+			LOGGER.error("Error loading default configuration {0}.", e);
+		}
+	}
+	
+	//--构造函数
 	public Configuration(){
 		variables = new Properties();
 		dataSourceManager = new DataSourceManager();
@@ -20,23 +90,42 @@ public class Configuration {
 		dialectManager = new DialectManager();
 	}
 	
-	//-----------------------------static: load configuration
-	
-	private static final String DEFAULT_CONFIG_PATH = "rexdb.xml";
-	
 	/**
-	 * 以单例模式运行
+	 * 加载默认配置
 	 */
-	private static Configuration instance;
-	
-	static{
-		try {
-			loadDefaultConfiguration();
-		} catch (DBException e) {
-			//e.printStackTrace();
-		}
+	public synchronized static void loadDefaultConfiguration() throws DBException{
+		if(instance != null)
+			throw new DBException("DB-C10052", DEFAULT_CONFIG_PATH);
+		
+		InputStream inputStream = ResourceUtil.getResourceAsStream(DEFAULT_CONFIG_PATH);
+		if(inputStream == null){
+			LOGGER.warn("Default configuration {0} wasn't found in classpath.", DEFAULT_CONFIG_PATH);
+		}else
+			instance = new XMLConfigurationLoader().load(inputStream);
 	}
 	
+	/**
+	 * 从classpath中加载指定配置
+	 * @param path classpath中的文件路径
+	 * @throws DBException 加载失败时抛出异常
+	 */
+	public synchronized static void loadConfigurationFromClasspath(String path) throws DBException{
+		if(instance != null)
+			throw new DBException("DB-F0007", path);
+		instance = new XMLConfigurationLoader().loadFromClasspath(path);
+	}
+	
+	/**
+	 * 从文件系统中加载指定配置
+	 * @param path 文件系统中的路径
+	 * @throws DBException 加载失败时抛出异常
+	 */
+	public  synchronized static void loadConfigurationFromFileSystem(String path) throws DBException{
+		if(instance != null)
+			throw new DBException("DB-F0007", path);
+		instance = new XMLConfigurationLoader().loadFromFileSystem(path);
+	}
+
 	/**
 	 * 获取当前配置
 	 */
@@ -46,66 +135,39 @@ public class Configuration {
 		}
 		
 		if(instance == null)
-			throw new DBException("DB-C10051");
+			throw new DBException("DB-F0008", DEFAULT_CONFIG_PATH);
 			
 		return instance;
 	}
 	
-	public synchronized static void loadDefaultConfiguration() throws DBException{
-		if(instance != null)
-			throw new DBException("DB-C10052", DEFAULT_CONFIG_PATH);
+	
+	//---------------------------
+	public void applySettings(){
+		//语言版本
+		if(lang != null){
+			ExceptionResourceFactory.getInstance().setLang(lang);
+		}
 		
-		instance = new XMLConfigurationLoader().loadFromClasspath(DEFAULT_CONFIG_PATH);
+		//日志
+		if(nolog){
+			LoggerFactory.setNolog(true);
+		}
+		
+		//基本的SQL校验
+		if(!validateSql){
+			DBTemplate.setValidateSql(validateSql);
+		}
+			
 	}
 	
-	public synchronized static void loadConfigurationFromClasspath(String path) throws DBException{
-		if(instance != null)
-			throw new DBException("DB-C10052", path);
-		instance = new XMLConfigurationLoader().loadFromClasspath(path);
-	}
 	
-	public  synchronized static void loadConfigurationFromFileSystem(String path) throws DBException{
-		if(instance != null)
-			throw new DBException("DB-C10052", path);
-		instance = new XMLConfigurationLoader().loadFromFileSystem(path);
-	}
-
-	
-	//-----------------------------configuration
-	/**
-	 * 配置变量
-	 */
-	private Properties variables;
-	
-	/**
-	 * 语言：zh-cn、en
-	 */
-	private String lang;
-	
-	/**
-	 * 选用的日志包，可选log4j，log4j2，slf4j，jdk
-	 */
-	private String logger;
-	
-	private String loggerFactory;
-	
-	/**
-	 * 数据源
-	 */
-	private DataSourceManager dataSourceManager;
-	
-	/**
-	 * 监听
-	 */
-	private ListenerManager listenerManager;
-	
-	/**
-	 * 方言
-	 */
-	private DialectManager dialectManager;
-	
+	//---------------------------
 	public void setVariables(Properties variables) {
 		this.variables = variables;
+	}
+	
+	public void addVariables(Properties variables) {
+		this.variables.putAll(variables);
 	}
 
 	public Properties getVariables() {
@@ -120,22 +182,32 @@ public class Configuration {
 		this.lang = lang;
 	}
 	
-	public String getLogger() {
-		return logger;
+	public boolean isNolog() {
+		return nolog;
 	}
 
-	public void setLogger(String logger) {
-		this.logger = logger;
+	public void setNolog(boolean nolog) {
+		this.nolog = nolog;
+	}
+	
+	public boolean isValidateSql() {
+		return validateSql;
 	}
 
-	public String getLoggerFactory() {
-		return loggerFactory;
+	public void setValidateSql(boolean validateSql) {
+		LOGGER.info("Sql validate has switched to {0}.", validateSql);
+		this.validateSql = validateSql;
 	}
 
-	public void setLoggerFactory(String loggerFactory) {
-		this.loggerFactory = loggerFactory;
+	public boolean isCheckWarnings() {
+		return checkWarnings;
 	}
 
+	public void setCheckWarnings(boolean checkWarnings) {
+		this.checkWarnings = checkWarnings;
+	}
+
+	//-----------
 	public void setDefaultDataSource(DataSource dataSource){
 		dataSourceManager.setDefault(dataSource);
 	}

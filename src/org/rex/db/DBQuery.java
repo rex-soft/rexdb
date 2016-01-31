@@ -102,8 +102,9 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @param param 封装了预编译参数的对象
 	 * @return Ps
+	 * @throws DBException 
 	 */
-	protected Ps parseSqlEl(Object param) {
+	protected Ps parseSqlEl(Object param) throws DBException {
 		Object[] result = SqlParser.parse(getSql(), param);
 		setSql((String) result[0]);
 		return (Ps) result[1];

@@ -25,7 +25,7 @@ public abstract class DataSourceFactory {
 		this.properties = properties;
 		
 		if(LOGGER.isDebugEnabled())
-			LOGGER.debug("A new new datasource factory of properties {0} has been created.", DataSourceUtil.hiddenPassword(properties));
+			LOGGER.debug("A new datasource factory of properties {0} has been created.", DataSourceUtil.hiddenPassword(properties));
 	}
 	
 	protected void validateProperties(Properties properties) throws DBException{

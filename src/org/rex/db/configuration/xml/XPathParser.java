@@ -123,6 +123,13 @@ public class XPathParser {
 	public void setVariables(Properties variables) {
 		this.variables = variables;
 	}
+	
+	public void addVariables(Properties variables) {
+		if(this.variables == null) 
+			this.variables = variables;
+		else
+			this.variables.putAll(variables);
+	}
 
 	public String evalString(String expression) {
 		return evalString(document, expression);

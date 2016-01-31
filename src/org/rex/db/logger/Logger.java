@@ -1,7 +1,7 @@
 package org.rex.db.logger;
 
 public interface Logger {
-
+	
 	void trace(String msg, String... args);
 
 	void trace(String msg, Object... args);

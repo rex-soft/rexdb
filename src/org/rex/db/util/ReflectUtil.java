@@ -3,16 +3,17 @@ package org.rex.db.util;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
 import org.rex.db.exception.DBException;
-import org.rex.db.exception.DBRuntimeException;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
@@ -21,31 +22,20 @@ public class ReflectUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReflectUtil.class);
 
 	/**
-	 * 查询类中是否有setter方法(未优化)
+	 * 获取类的所有可读属性
 	 * @param clazz
-	 * @param key
 	 * @return
+	 * @throws DBException
 	 */
-	public static boolean hasSetter(Class<?> clazz, String key) {
-		BeanInfo beanInfo = null;
-		try {
-			beanInfo = Introspector.getBeanInfo(clazz);
-		} catch (IntrospectionException e) {
-			throw new DBRuntimeException("xx");
+	public static Map<String, Method> getReadableParams(Class<?> clazz) throws DBException{
+		Map<String, Method> params = new HashMap<String, Method>();
+		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
+		for (int i = 0; i < props.length; i++) {
+			String key = props[i].getName();
+			if (props[i].getReadMethod() != null)
+				params.put(key, props[i].getWriteMethod());
 		}
-		
-		PropertyDescriptor[] proDescrtptors = beanInfo.getPropertyDescriptors();
-		if (proDescrtptors != null && proDescrtptors.length > 0) {
-			for (PropertyDescriptor propDesc : proDescrtptors) {
-				if (propDesc.getName().equals(key) 
-						&& "java.lang.String".equals(propDesc.getPropertyType().getName())
-						&& propDesc.getWriteMethod() != null) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
+		return params;
 	}
 	
 	/**
@@ -53,20 +43,71 @@ public class ReflectUtil {
 	 */
 	public static Map<String, Method> getWriteableParams(Class<?> clazz) throws DBException {
 		Map<String, Method> params = new HashMap<String, Method>();
-		BeanInfo bean = null;
-		try {
-			bean = Introspector.getBeanInfo(clazz);
-		} catch (IntrospectionException e) {
-			throw new DBException("DB-Q10008", e);
-		}
-		
-		PropertyDescriptor[] props = bean.getPropertyDescriptors();
+		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
 		for (int i = 0; i < props.length; i++) {
 			String key = props[i].getName();
 			if (props[i].getWriteMethod() != null)
 				params.put(key, props[i].getWriteMethod());
 		}
 		return params;
+	}
+	
+	/**
+	 * 获取类Bean属性
+	 * @param clazz
+	 * @return
+	 * @throws DBException 
+	 */
+	public static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws DBException{
+		BeanInfo bean = getBeanInfo(clazz);
+		return bean.getPropertyDescriptors();
+	}
+	
+	/**
+	 * 获取类Bean方法
+	 * @param clazz
+	 * @return
+	 * @throws DBException 
+	 */
+	public static MethodDescriptor[] getMethodDescriptor(Class<?> clazz) throws DBException{
+		BeanInfo bean = getBeanInfo(clazz);
+		return bean.getMethodDescriptors();
+	}
+	
+	/**
+	 * 获取类Bean信息
+	 * @param clazz
+	 * @return
+	 * @throws DBException 
+	 */
+	public static BeanInfo getBeanInfo(Class<?> clazz) throws DBException{
+		try {
+			return Introspector.getBeanInfo(clazz);
+		} catch (IntrospectionException e) {
+			throw new DBException("DB-Q10008", e);
+		}
+	}
+	
+	/**
+	 * 获取对象的clone方法（对象必须实现Cloneable接口，并且具备一个可以调用的clone方法，且该方法的返回值类型与对象相同）
+	 * @param clazz
+	 * @return
+	 * @throws DBException 
+	 */
+	public static Method getCloneMethod(Object bean) throws DBException{
+		if(!(bean instanceof Cloneable))
+			return null;
+		
+		MethodDescriptor[] methods = getMethodDescriptor(bean.getClass());
+		for (MethodDescriptor md : methods) {
+			Method method = md.getMethod();
+			if("clone".equals(method.getName())
+					&& Modifier.isPublic(method.getModifiers())
+					&& method.getReturnType() == bean.getClass()){
+				return method;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -110,34 +151,32 @@ public class ReflectUtil {
 	/**
 	 * 向写入方法赋值
 	 */
-	private static void setValue(Object bean, Method writer, String key, String value, boolean ignoreMismatches) throws DBException{
+	public static void setValue(Object bean, Method writer, String key, String value, boolean ignoreMismatches) throws DBException{
 		if(value == null)
 			invokeMethod(bean, writer, null);
 		else {
 			Class<?> paramType = writer.getParameterTypes()[0];
+			String paramTypeName = paramType.getName();
 			
 			//类型匹配，赋值
-			if(value instanceof String){
+			if("java.lang.String".equals(paramTypeName)){
 				invokeMethod(bean, writer, value);
-			}else{//值是String类型，而写入方法参数不是，进行类型转换
-				String paramTypeName = paramType.getName();
-				if("int".equals(paramTypeName) || "java.lang.Integer".equals(paramTypeName)){//Integer
-					invokeMethod(bean, writer, Integer.parseInt(value));
-				}else if("boolean".equals(paramTypeName) || "java.lang.Boolean".equals(paramTypeName)){//Boolean
-					invokeMethod(bean, writer, Boolean.parseBoolean(value));
-				}else if("double".equals(paramTypeName) || "java.lang.Double".equals(paramTypeName)){//Double
-					invokeMethod(bean, writer, Double.parseDouble(value));
-				}else if("float".equals(paramTypeName) || "java.lang.Float".equals(paramTypeName)){//Float
-					invokeMethod(bean, writer, Float.parseFloat(value));
-				}else if("long".equals(paramTypeName) || "java.lang.Long".equals(paramTypeName)){//Long
-					invokeMethod(bean, writer, Long.parseLong(value));
-				}else{
-					if(ignoreMismatches)
-						LOGGER.warn("Value of property [{0}: {1}] for {2}[{3}] is String, couldn't convert to {4}, ignore.", 
-								key, value, bean.getClass().getName(), bean.hashCode(), paramTypeName);
-					else
-						throw new DBException(key + "赋值失败，类型无法匹配，值类型："+key.getClass().getName()+"，类变量类型："+paramType.getName());
-				}
+			}else if("int".equals(paramTypeName) || "java.lang.Integer".equals(paramTypeName)){//Integer
+				invokeMethod(bean, writer, Integer.parseInt(value));
+			}else if("boolean".equals(paramTypeName) || "java.lang.Boolean".equals(paramTypeName)){//Boolean
+				invokeMethod(bean, writer, Boolean.parseBoolean(value));
+			}else if("double".equals(paramTypeName) || "java.lang.Double".equals(paramTypeName)){//Double
+				invokeMethod(bean, writer, Double.parseDouble(value));
+			}else if("float".equals(paramTypeName) || "java.lang.Float".equals(paramTypeName)){//Float
+				invokeMethod(bean, writer, Float.parseFloat(value));
+			}else if("long".equals(paramTypeName) || "java.lang.Long".equals(paramTypeName)){//Long
+				invokeMethod(bean, writer, Long.parseLong(value));
+			}else{
+				if(ignoreMismatches)
+					LOGGER.warn("Value of property [{0}: {1}] for {2}[{3}] is String, couldn't convert to {4}, ignore.", 
+							key, value, bean.getClass().getName(), bean.hashCode(), paramTypeName);
+				else
+					throw new DBException(key + "赋值失败，类型无法匹配，值类型："+key.getClass().getName()+"，类变量类型："+paramType.getName());
 			}
 		}
 	}
@@ -146,9 +185,9 @@ public class ReflectUtil {
 	 * 向对象赋值
 	 * @throws DBException 
 	 */
-	private static void invokeMethod(Object object, Method method, Object value) throws DBException{
+	public static Object invokeMethod(Object object, Method method, Object value) throws DBException{
 		try {
-			method.invoke(object, new Object[]{value});
+			return method.invoke(object, value == null ? null : new Object[]{value});
 		} catch (IllegalArgumentException e) {
 			throw new DBException("DB-Q10018", e, object.getClass().getName(), method.getName(), value);
 		} catch (IllegalAccessException e) {
@@ -158,6 +197,18 @@ public class ReflectUtil {
 		}
 	}
 	
+	/**
+	 * 创建对象实例
+	 */
+	public static <T> T instance(Class<T> targetClass) throws DBException{
+		try {
+			return targetClass.newInstance();
+		} catch (InstantiationException e) {
+			throw new DBException("DB-Q10006", e, targetClass.getName());
+		} catch (IllegalAccessException e) {
+			throw new DBException("DB-Q10007", e, targetClass.getName());
+		}
+	}
 	/**
 	 * 创建对象实例
 	 */

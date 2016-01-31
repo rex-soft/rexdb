@@ -1,17 +1,22 @@
 package org.rex.db.configuration.xml;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.rex.db.configuration.XMLConfigurationLoader;
+import org.rex.db.exception.DBException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.ResourceUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class XMLEntityResolver implements EntityResolver {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(XMLEntityResolver.class);
 
 	private static final Map<String, String> doctypeMap = new HashMap<String, String>();
 
@@ -53,7 +58,8 @@ public class XMLEntityResolver implements EntityResolver {
 			try {
 				in = ResourceUtil.getResourceAsStream(path);
 				source = new InputSource(in);
-			} catch (IOException e) {
+			} catch (DBException e) {
+				LOGGER.warn("Failed to load dtd file {0}, {1}", e, path, e.getMessage());
 			}
 		}
 		return source;

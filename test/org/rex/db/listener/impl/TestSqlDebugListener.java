@@ -15,4 +15,12 @@ public class TestSqlDebugListener {
 		DB.getMapList(sql, 1, 1);
 	}
 
+	
+	public static void main(String[] args) throws DBException {
+		String sql = "select * from r_student where student_id = ?";
+		DB.getMap(sql);
+		DB.getMapList(sql);
+		DB.getMapList(sql, 1, 1);
+		System.out.println("done");
+	}
 }

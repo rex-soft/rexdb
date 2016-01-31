@@ -46,7 +46,7 @@ public class SqlContext extends BaseContext{
 	private String[] sql;
 	
 	private Ps[] ps;
-
+	
 	public SqlContext(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Ps[] ps){
 		super();
 		this.sqlType = sqlType;

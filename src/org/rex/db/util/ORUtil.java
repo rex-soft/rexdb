@@ -243,7 +243,7 @@ public class ORUtil {
 	}
 
 	// ---------将结果集转为Object对象
-	public <T> T rs2Object(ResultSet rs, T bean, boolean inOriginal) throws DBException, SQLException {
+	public <T> T rs2Object(ResultSet rs, T bean, boolean inOriginal) throws DBException {
 
 		// 读取结果集元信息
 		String[] labels = getResultLabels(rs);
@@ -273,7 +273,12 @@ public class ORUtil {
 			String paramClassName = param0.isArray() ? param0.getComponentType().getName() + "[]" : param0.getName();// set方法只有一个参数
 
 			// //从结果集中取值并转换类型
-			Object value = getValue(rs, labels[i], types[i], paramClassName);
+			Object value = null;
+			try {
+				value = getValue(rs, labels[i], types[i], paramClassName);
+			} catch (SQLException e) {
+				throw new DBException("读取结果集是出现异常");
+			}
 			//
 			// //向POJO赋值
 			invokeMethod(bean, writer, value);
@@ -375,9 +380,7 @@ public class ORUtil {
 				value = new Long(rs.getLong(label));
 			else if ("java.math.BigDecimal".equals(paramClassName))
 				value = rs.getBigDecimal(label);
-			else if ("java.lang.String".equals(paramClassName) || "String".equals(paramClassName))// add
-																									// by
-																									// zhouzr
+			else if ("java.lang.String".equals(paramClassName) || "String".equals(paramClassName))
 				value = rs.getString(label);
 			else
 				throw new DBException("DB-Q10015", label, "sqlType.BIT|TINYINT|SMALLINT|INTEGER|BIGINT|REAL|FLOAT|DOUBLE|DECIMAL|NUMERIC",

@@ -4,7 +4,8 @@
 	<!-- <properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" /> -->
 	<settings>
 		<property name="lang" value="zh-cn"/>
-		<property name="logger" value="log4j" />
+		<property name="nolog" value="true" />
+		<property name="validateSql" value="true" />
 		<!-- <property name="loggerFactory" value="org.rex.db.logger.log4j2.Log4j2LoggerFactory" /> -->
 	</settings>
 	<!-- Mysql -->
@@ -28,8 +29,6 @@
 		<property name="password" value="123456" />
 	</dataSource>-->
 	<dataSource jndi=""/>
-	<listener class="org.rex.db.listener.impl.SqlDebugListener">
-		<property name="level" value="debug" />
-	</listener>
-<!-- 	<listener class="org.rex.db.listener.impl.SqlConsolePrintListener" /> -->
+	<listener class="org.rex.db.listener.impl.SqlDebugListener"/>
+<!-- 	<listener class="org.rex.db.listener.impl.SqlConsolePrinterListener" /> -->
 </configuration>

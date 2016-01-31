@@ -1,13 +1,14 @@
 package org.rex.db.core.reader;
 
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
+import org.rex.db.util.ReflectUtil;
 
 /**
  * 读取单条结果集，进行OR映射
@@ -21,8 +22,9 @@ public class BeanResultReader<T> implements ResultReader<T> {
 
 	private T resultBean;
 	private List<T> results;
-	
+
 	private int rowNum = 0;
+	private Method cloneMethod = null;
 
 	/**
 	 * 创建结果集读取类，适用于普通查询
@@ -44,10 +46,25 @@ public class BeanResultReader<T> implements ResultReader<T> {
 
 	// --------implements
 	public void processRow(ResultSet rs) throws DBException {
-		if(rowNum > 0) {
-			throw new DBException("DB-Q10022");
+		if (resultBean == null)
+			throw new DBException("DB-C0003");
+
+		
+		T clone = resultBean;
+		if (rowNum > 0) {
+			Method cloneMethod = getCloneMethod();
+			if(cloneMethod == null)
+				throw new DBException("DB-C0004", resultBean.getClass().getName());
+			
+			clone = (T)ReflectUtil.invokeMethod(resultBean, cloneMethod, null);
 		}
-		results.add(row2Bean(rs, rowNum++, ps, originalKey));
+		results.add(row2Bean(rs, rowNum++, ps, clone, originalKey));
+	}
+	
+	private Method getCloneMethod() throws DBException{
+		if(cloneMethod == null)
+			cloneMethod = ReflectUtil.getCloneMethod(resultBean);
+		return cloneMethod;
 	}
 
 	public List<T> getResults() {
@@ -57,11 +74,9 @@ public class BeanResultReader<T> implements ResultReader<T> {
 	/**
 	 * OR映射
 	 */
-	protected T row2Bean(ResultSet rs, int rowNum, Ps ps, boolean originalKey) throws DBException {
-			try {
-				return orUtil.rs2Object(rs, resultBean, originalKey);
-			} catch (SQLException e) {
-				throw new DBException("DB-Q10010", e);
-			}
+	protected T row2Bean(ResultSet rs, int rowNum, Ps ps, T bean, boolean originalKey) throws DBException {
+		return orUtil.rs2Object(rs, bean, originalKey);
 	}
+	
+
 }

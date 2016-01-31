@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.rex.db.exception.DBRuntimeException;
-import org.rex.db.util.JdbcUtil;
 import org.rex.db.util.SqlUtil;
 
 /**
@@ -62,7 +61,7 @@ public class Ps {
 		}
 
 		public String toString() {
-			return "[type=in, sqlType=" + JdbcUtil.getNameByType(sqlType) + ", value=" + value + "]";
+			return "[type=in, sqlType=" + SqlUtil.getNameByType(sqlType) + ", value=" + value + "]";
 		}
 	}
 	
@@ -112,7 +111,7 @@ public class Ps {
 		}
 
 		public String toString() {
-			return "[type=out, sqlType=" + JdbcUtil.getNameByType(super.sqlType) + ", value=" + super.value+", paramName=" + paramName
+			return "[type=out, sqlType=" + SqlUtil.getNameByType(super.sqlType) + ", value=" + super.value+", paramName=" + paramName
 					+ ", outEntitryClass=" + outEntitryClass + ", resultSet=" + resultSet + "]";
 		}
 	}
@@ -131,7 +130,7 @@ public class Ps {
 		}
 		
 		public String toString() {
-			return "[type=in out, sqlType=" + JdbcUtil.getNameByType(getSqlType()) + ", value=" + getValue()+", paramName=" + getParamName()
+			return "[type=in out, sqlType=" + SqlUtil.getNameByType(getSqlType()) + ", value=" + getValue()+", paramName=" + getParamName()
 					+ ", outEntitryClass=" + getOutEntitryClass() + ", resultSet=" + isResultSet() + "]";
 		}
 	}
@@ -892,7 +891,7 @@ public class Ps {
 		
 		for (SqlParameter parameter : parameters) {
 			values.add(parameter.getValue());
-			sqlTypes.add(JdbcUtil.getNameByType(parameter.getSqlType()));
+			sqlTypes.add(SqlUtil.getNameByType(parameter.getSqlType()));
 			if(parameter instanceof SqlInOutParameter)
 				paramTypes.add("INOUT");
 			else if(parameter instanceof SqlOutParameter)

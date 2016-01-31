@@ -12,10 +12,11 @@ import org.rex.db.logger.log4j2.Log4j2LoggerFactory;
 import org.rex.db.logger.slf4j.Slf4jLoggerFactory;
 
 public abstract class LoggerFactory {
-
+	
 	private static final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private static LoggerFactory factory;
-
+	private static volatile boolean nolog = false;
+	
 	private static final List<LoggerClass> loggers = new LinkedList<LoggerClass>() {
 		{
 			add(new LoggerClass<Log4jLoggerFactory>("org.apache.commons.logging.LogFactory", Log4jLoggerFactory.class));
@@ -60,6 +61,18 @@ public abstract class LoggerFactory {
 		} finally {
 			lock.writeLock().unlock();
 		}
+	}
+	
+	/**
+	 * 禁用所有Logger输出
+	 */
+	public static void setNolog(boolean isNolog){
+		getLogger(LoggerFactory.class).info("Logger has switched to {0} mode.", isNolog ? "nolog" : "normal");
+		nolog = isNolog;
+	}
+	
+	public static boolean isNolog(){
+		return nolog;
 	}
 
 	protected abstract Logger getLoggerImpl(Class<?> cls);

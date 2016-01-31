@@ -16,7 +16,7 @@ public class DefaultResultSetIterator implements ResultSetIterator {
 				resultReader.processRow(rs);
 			}
 		} catch (SQLException e) {
-			throw new DBException("DB-C10010", e);
+			throw new DBException("DB-C0002", e, e.getMessage());
 		}
 	}
 }

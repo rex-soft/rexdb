@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +12,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.rex.WMap;
 import org.rex.db.Ps;
 import org.rex.db.configuration.Configuration;
@@ -26,149 +23,55 @@ import org.rex.db.core.reader.MapResultReader;
 import org.rex.db.core.reader.ResultReader;
 import org.rex.db.core.reader.ResultSetIterator;
 import org.rex.db.core.statement.DefaultStatementCreatorFactory;
-import org.rex.db.core.statement.StatementCreatorFactory;
-import org.rex.db.core.statement.batch.BatchPreparedStatementCreator;
-import org.rex.db.core.statement.batch.BatchStatementCreator;
-import org.rex.db.core.statement.callable.CallableStatementCreator;
-import org.rex.db.core.statement.prepared.PreparedStatementCreator;
+import org.rex.db.core.statement.StatementCreator;
 import org.rex.db.exception.DBException;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.listener.SqlContext;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
+import org.rex.db.sql.SqlParser;
 import org.rex.db.util.DataSourceUtil;
+import org.rex.db.util.JdbcUtil;
 
 public class DBTemplate {
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(DBTemplate.class);
 	
-	/**
-	 * 是否忽略SQL Warnings，设置为否时抛出异常
-	 */
-	private boolean ignoreWarnings;
-	
-	private DataSource dataSource;
-	private QueryExecutor queryExecutor;
-	private ResultSetIterator resultSetIterator;
-	private StatementCreatorFactory statementCreatorFactory;
-
-	public DBTemplate() {
-		ignoreWarnings = true;
-		queryExecutor = new DefaultQueryExecutor();
-		resultSetIterator = new DefaultResultSetIterator();
-		statementCreatorFactory = new DefaultStatementCreatorFactory();
-	}
+	private final DataSource dataSource;
+	private final StatementCreator statementCreator;
+	private final QueryExecutor queryExecutor;
+	private final ResultSetIterator resultSetIterator;
 
 	public DBTemplate(DataSource dataSource) throws DBException {
-		setDataSource(dataSource);
-	}
-
-	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+		this.statementCreator = new DefaultStatementCreatorFactory().buildStatementCreator();
+		this.queryExecutor = new DefaultQueryExecutor();
+		this.resultSetIterator = new DefaultResultSetIterator();
 	}
 
 	public DataSource getDataSource() {
 		return dataSource;
 	}
 
-	public void setIgnoreWarnings(boolean ignoreWarnings) {
-		this.ignoreWarnings = ignoreWarnings;
-	}
-
-	public boolean isIgnoreWarnings() {
-		return ignoreWarnings;
-	}
-
-	/**
-	 * 如果设定允许，产生警告时，抛出异常
-	 */
-	private void throwExceptionOnWarning(Statement statement) throws DBException {
-		if(!this.ignoreWarnings){
-			SQLWarning warning = null;
-			try {
-				warning = statement.getWarnings();
-			} catch (SQLException e) {
-			}
-			
-			if (warning != null) 
-				throw new DBException("DB-C10009", warning);
-		}
-	}
-	
-	/**
-	 * 关闭连接、声明、结果集
-	 * @param con 连接
-	 * @param stmt 声明
-	 * @param rs 结果集
-	 * @throws DBException
-	 */
-	private void close(Connection con, Statement stmt, ResultSet rs) throws DBException{
-		if (rs != null) {
-			try {
-				rs.close();
-			}
-			catch (SQLException ignore) {
-			}
-		}
-		if (stmt != null) {
-			try {
-				stmt.close();
-			}
-			catch (SQLException ignore) {
-			}
-		}
-		
-		DataSourceUtil.closeConnection(con, this.dataSource);
-	}
-	
-	/**
-	 * 执行SQL前监听
-	 * @throws DBException 
-	 */
-	private SqlContext fireOnEvent(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Ps[] ps) throws DBException{
-		SqlContext context = null;
-		ListenerManager listenerManager = getListenerManager();
-		if(listenerManager.hasListener()){
-			context = getContext(sqlType, betweenTransaction, dataSource, sql, ps);
-			listenerManager.fireOnExecute(context);
-		}
-		return context;
-	}
-	
-	/**
-	 * 执行SQL后监听
-	 * @throws DBException 
-	 */
-	private void fireAfterEvent(SqlContext context, Object result) throws DBException{
-		if(context != null){
-			getListenerManager().fireAfterExecute(context, result);
-		}
-	}
-	
-	private SqlContext getContext(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Ps[] ps){
-		return new SqlContext(sqlType, betweenTransaction, dataSource, sql, ps);
-	}
-	
-	private ListenerManager getListenerManager() throws DBException{
-		return Configuration.getCurrentConfiguration().getListenerManager();
-	}
-	
 	//-------------------------------------------
 	/**
 	 * 执行不带预编译的SQL并处理结果集
 	 */
-	public void query(String sql, ResultReader resultReader) throws DBException {
+	public void query(String sql, ResultReader<?> resultReader) throws DBException {
+		validateSql(sql);
 		SqlContext context = fireOnEvent(SqlContext.SQL_QUERY, false, getDataSource(), new String[]{sql}, null);
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
-			stmt = con.createStatement();
+			stmt = statementCreator.createStatement(con);
 			DataSourceUtil.applyTransactionTimeout(stmt, this.dataSource);
 
 			rs = queryExecutor.executeQuery(stmt, sql);
 			resultSetIterator.read(resultReader, rs);
 			
-			throwExceptionOnWarning(stmt);
+			checkWarnings(con, stmt, rs);
 		}catch (SQLException e) {
 			throw new DBException("DB-Q10013", e, sql, e.getMessage());
 		}finally {
@@ -180,21 +83,21 @@ public class DBTemplate {
 	/**
 	 * 执行预编译SQL
 	 */
-	public void query(String sql, Ps ps, ResultReader resultReader) throws DBException {
+	public void query(String sql, Ps ps, ResultReader<?> resultReader) throws DBException {
+		validateSql(sql, ps);
 		SqlContext context = fireOnEvent(SqlContext.SQL_QUERY, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
 		
-		PreparedStatementCreator psc = statementCreatorFactory.newPreparedStatementCreator(sql);
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		try {
-			preparedStatement = psc.createPreparedStatement(con, ps);
+			preparedStatement = statementCreator.createPreparedStatement(con, sql, ps);
 			DataSourceUtil.applyTransactionTimeout(preparedStatement, this.dataSource);
 
 			rs = queryExecutor.executeQuery(preparedStatement);
 			resultSetIterator.read(resultReader, rs);
 
-			throwExceptionOnWarning(preparedStatement);
+			checkWarnings(con, preparedStatement, rs);
 		}catch (SQLException e) {
 			throw new DBException("DB-Q10014", e, psc, ps, e.getMessage());
 		}finally {
@@ -207,19 +110,19 @@ public class DBTemplate {
 	 * 通过PreparedStatementCreator执行多条SQL（非批处理方式）
 	 */
 	public int update(String sql) throws DBException {
+		validateSql(sql);
 		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, null);
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		Statement statement = null;
-		
 		int retval = 0;
 		try {
-			statement = con.createStatement();
+			statement = statementCreator.createStatement(con);
 			DataSourceUtil.applyTransactionTimeout(statement, this.dataSource);
 			
 			retval = queryExecutor.executeUpdate(statement, sql);
 			
-			throwExceptionOnWarning(statement);
+			checkWarnings(con, statement, null);
 			return retval;
 		}catch (SQLException ex) {
 			throw new DBException("DB-U10002", ex, sql, ex.getMessage());
@@ -233,20 +136,20 @@ public class DBTemplate {
 	 * 通过PreparedStatementCreator执行多条SQL（非批处理方式）
 	 */
 	public int update(String sql, Ps ps) throws DBException {
+		validateSql(sql, ps);
 		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
 		
-		PreparedStatementCreator psc = statementCreatorFactory.newPreparedStatementCreator(sql);
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		PreparedStatement preparedStatement = null;
 		
 		int retval = 0;
 		try {
-			preparedStatement = psc.createPreparedStatement(con, ps);
+			preparedStatement = statementCreator.createPreparedStatement(con, sql, ps);
 			DataSourceUtil.applyTransactionTimeout(preparedStatement, this.dataSource);
 			
 			retval = queryExecutor.executeUpdate(preparedStatement);
 			
-			throwExceptionOnWarning(preparedStatement);
+			checkWarnings(con, preparedStatement, null);
 			return retval;
 		}catch (SQLException ex) {
 			throw new DBException("DB-U10004", ex, psc, ps, ex.getMessage());
@@ -260,20 +163,20 @@ public class DBTemplate {
 	 * 执行批处理SQL
 	 */
 	public int[] batchUpdate(String sql, Ps[] ps) throws DBException {
+		validateSql(sql, ps);
 		SqlContext context = fireOnEvent(SqlContext.SQL_BATCH_UPDATE, false, getDataSource(), new String[]{sql}, ps);
 		
-		BatchPreparedStatementCreator bpsc = statementCreatorFactory.newBatchPreparedStatementCreator(sql);
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		PreparedStatement preparedStatement = null;
 		
 		int[] retvals = null;
 		try {
-			preparedStatement = bpsc.createBatchPreparedStatement(con, ps);
+			preparedStatement = statementCreator.createBatchPreparedStatement(con, sql, ps);
 			DataSourceUtil.applyTransactionTimeout(preparedStatement, this.dataSource);
 			
 			retvals = queryExecutor.executeBatch(preparedStatement);
 			
-			throwExceptionOnWarning(preparedStatement);
+			checkWarnings(con, preparedStatement, null);
 			return retvals;
 		}catch (SQLException ex) {
 			ArrayList<Ps> psList = new ArrayList<Ps>(Arrays.asList(ps));
@@ -288,20 +191,20 @@ public class DBTemplate {
 	 * 批量执行多条SQL
 	 */
 	public int[] batchUpdate(String sql[]) throws DBException{
+		validateSql(sql);
 		SqlContext context = fireOnEvent(SqlContext.SQL_BATCH_UPDATE, false, getDataSource(), sql, null);
 		
-		BatchStatementCreator bsc = statementCreatorFactory.newBatchStatementCreator();
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		Statement statement = null;
 		
 		int[] retvals = null;
 		try {
-			statement = bsc.createBatchStatement(con, sql);
+			statement = statementCreator.createBatchStatement(con, sql);
 			DataSourceUtil.applyTransactionTimeout(statement, this.dataSource);
 			
 			retvals = queryExecutor.executeBatch(statement);
 			
-			throwExceptionOnWarning(statement);
+			checkWarnings(con, statement, null);
 			return retvals;
 		} catch (SQLException ex) {
 			ArrayList<String> sqlList = new ArrayList<String>(Arrays.asList(sql));
@@ -316,19 +219,19 @@ public class DBTemplate {
 	 * 通过CallableStatement执行查询，通常用于调用存储过程
 	 */
 	public WMap call(String sql, Ps ps, boolean originalKey) throws DBException {
+		validateSql(sql, ps);
 		SqlContext context = fireOnEvent(SqlContext.SQL_CALL, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
 		
-		CallableStatementCreator csc = statementCreatorFactory.newCallableStatementCreator(sql);
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		CallableStatement cs = null;
 		WMap outs = null;
 		try {
-			cs = csc.createCallableStatement(con, ps);
+			cs = statementCreator.createCallableStatement(con, sql, ps);
 			DataSourceUtil.applyTransactionTimeout(cs, this.dataSource);
 			
 			boolean retval = queryExecutor.execute(cs);
 			
-			throwExceptionOnWarning(cs);
+			checkWarnings(con, cs, null);
 			outs = extractOutputParameters(cs, ps, originalKey);
 			WMap returns = extractReturnedResultSets(cs, ps, originalKey);
 			if(returns.size() > 0)
@@ -426,8 +329,7 @@ public class DBTemplate {
 		
 		return returns;
 	}
-
-
+	
 	/**
 	 * 创建一个结果集读取对象
 	 * @param originalKey
@@ -442,5 +344,103 @@ public class DBTemplate {
 			reader = new ClassResultReader(originalKey, entitryClass);
 		}
 		return reader;
+	}
+	
+	/**
+	 * 关闭连接、声明、结果集
+	 * @param con 连接
+	 * @param stmt 声明
+	 * @param rs 结果集
+	 * @throws DBException
+	 */
+	private void close(Connection con, Statement stmt, ResultSet rs) throws DBException{
+		if (rs != null) {
+			try {
+				rs.close();
+			}
+			catch (SQLException ignore) {
+			}
+		}
+		if (stmt != null) {
+			try {
+				stmt.close();
+			}
+			catch (SQLException ignore) {
+			}
+		}
+		
+		DataSourceUtil.closeConnection(con, this.dataSource);
+	}
+	
+	/**
+	 * 执行SQL前监听
+	 * @throws DBException 
+	 */
+	private SqlContext fireOnEvent(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Ps[] ps) throws DBException{
+		SqlContext context = null;
+		ListenerManager listenerManager = getListenerManager();
+		if(listenerManager.hasListener()){
+			context = getContext(sqlType, betweenTransaction, dataSource, sql, ps);
+			listenerManager.fireOnExecute(context);
+		}
+		return context;
+	}
+	
+	/**
+	 * 执行SQL后监听
+	 * @throws DBException 
+	 */
+	private void fireAfterEvent(SqlContext context, Object result) throws DBException{
+		if(context != null){
+			getListenerManager().fireAfterExecute(context, result);
+		}
+	}
+	
+	private SqlContext getContext(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Ps[] ps){
+		return new SqlContext(sqlType, betweenTransaction, dataSource, sql, ps);
+	}
+	
+	private ListenerManager getListenerManager() throws DBException{
+		return Configuration.getCurrentConfiguration().getListenerManager();
+	}
+	//------------------Check warnings
+	private void checkWarnings(Connection connection, Statement statement, ResultSet resultSet) throws DBException{
+		boolean isCheck = Configuration.getCurrentConfiguration().isCheckWarnings();
+		if(isCheck)
+			JdbcUtil.checkWarnings(connection, statement, resultSet);
+	}
+	
+	//------------------Sql validate
+	private boolean isValidateSql() throws DBException{
+		return Configuration.getCurrentConfiguration().isValidateSql();
+	}
+
+	/**
+	 * 在执行SQL前进行基本的校验
+	 * @param sql
+	 * @param ps
+	 * @throws DBException 
+	 */
+	private void validateSql(String sql, Ps ps) throws DBException{
+		if(isValidateSql())
+			SqlParser.validate(sql, ps);
+	}
+	
+	private void validateSql(String sql, Ps[] ps) throws DBException{
+		for (int i = 0; i < ps.length; i++) {
+			validateSql(sql, ps[i]);
+		}
+	}
+	
+	private void validateSql(String sql) throws DBException{
+		if(isValidateSql())
+			SqlParser.validate(sql, null);
+	}
+	
+	private void validateSql(String[] sql) throws DBException{
+		for (int i = 0; i < sql.length; i++) {
+			if(isValidateSql())
+				SqlParser.validate(sql[i], null);
+		}
 	}
 }

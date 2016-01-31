@@ -1,5 +1,7 @@
 package org.rex.db.sql.parser;
 
+import org.rex.db.exception.DBException;
+
 /**
  * SQL中参数处理接口
  */
@@ -12,5 +14,5 @@ public interface TokenHandler {
 	 * @param index 起始字符串位置
 	 * @return
 	 */
-	String handleToken(String content, String parsedPrefix, int index);
+	String handleToken(String content, String parsedPrefix, int index) throws DBException;
 }

@@ -9,17 +9,21 @@ import java.util.Map;
 import java.util.Set;
 
 import org.rex.db.exception.DBRuntimeException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 /**
  * 获取类中的常量，即public static final声明的常量
  */
 public class Constants {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Constants.class);
 
-	private Map map = new HashMap();
+	private final Map<String, Object> map = new HashMap<String, Object>();
 
-	private final Class clazz;
+	private final Class<?> clazz;
 
-	public Constants(Class clazz) {
+	public Constants(Class<?> clazz) {
 		this.clazz = clazz;
 		Field[] fields = clazz.getFields();
 		for (int i = 0; i < fields.length; i++) {
@@ -30,6 +34,7 @@ public class Constants {
 					Object value = f.get(null);
 					this.map.put(name, value);
 				} catch (IllegalAccessException ex) {
+					LOGGER.warn("failed to read constant property {0} of {1}, {2}", name, clazz.getName(), ex.getMessage());
 				}
 			}
 		}
