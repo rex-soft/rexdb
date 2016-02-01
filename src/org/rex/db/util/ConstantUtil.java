@@ -16,10 +16,10 @@ import org.rex.db.logger.LoggerFactory;
  * 获取类中的常量，即public static final声明的常量
  */
 public class ConstantUtil {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConstantUtil.class);
 
-	private final Map<String, Object> map = new HashMap<String, Object>();
+	private final Map<String, Object> constants = new HashMap<String, Object>();
 
 	private final Class<?> clazz;
 
@@ -32,44 +32,45 @@ public class ConstantUtil {
 				String name = f.getName();
 				try {
 					Object value = f.get(null);
-					this.map.put(name, value);
+					constants.put(name, value);
 				} catch (IllegalAccessException ex) {
-					LOGGER.warn("failed to read constant property {0} of {1}, {2}", name, clazz.getName(), ex.getMessage());
+					LOGGER.warn("Failed to read constant property {0} of {1}, {2}.", name, clazz.getName(), ex.getMessage());
 				}
 			}
 		}
 	}
 
 	public int getSize() {
-		return this.map.size();
-	}
-
-	public Number asNumber(String code) {
-		Object o = asObject(code);
-		if (!(o instanceof Number))
-			throw new DBRuntimeException("DB-C10018", clazz, code);
-		return (Number) o;
-	}
-
-	public String asString(String code) {
-		return asObject(code).toString();
+		return constants.size();
 	}
 
 	public Object asObject(String code) {
 		code = code.toUpperCase();
-		Object val = this.map.get(code);
-		if (val == null)
-			throw new DBRuntimeException("DB-C10019", clazz, code);
-		return val;
+		if (!constants.containsKey(code))
+			throw new DBRuntimeException("DB-UCS01", clazz.getName(), code);
+		
+		return constants.get(code);
+	}
+
+	public Number asNumber(String code) {
+		Object obj = asObject(code);
+		if (!(obj instanceof Number))
+			throw new DBRuntimeException("DB-UCS02", clazz.getName(), code, obj.getClass().getName());
+		return (Number) obj;
+	}
+
+	public String asString(String code) {
+		Object obj = asObject(code);
+		return obj == null ? null : obj.toString();
 	}
 
 	public Set getValues(String namePrefix) {
 		namePrefix = namePrefix.toUpperCase();
 		Set values = new HashSet();
-		for (Iterator it = this.map.keySet().iterator(); it.hasNext();) {
+		for (Iterator it = constants.keySet().iterator(); it.hasNext();) {
 			String code = (String) it.next();
 			if (code.startsWith(namePrefix)) {
-				values.add(this.map.get(code));
+				values.add(constants.get(code));
 			}
 		}
 		return values;
@@ -77,13 +78,13 @@ public class ConstantUtil {
 
 	public String toCode(Object value, String namePrefix) {
 		namePrefix = namePrefix.toUpperCase();
-		for (Iterator it = this.map.entrySet().iterator(); it.hasNext();) {
+		for (Iterator it = constants.entrySet().iterator(); it.hasNext();) {
 			Map.Entry entry = (Map.Entry) it.next();
 			String key = (String) entry.getKey();
 			if (key.startsWith(namePrefix) && entry.getValue().equals(value))
 				return key;
 		}
-		throw new DBRuntimeException("DB-C10020", clazz, namePrefix, value);
+		throw new DBRuntimeException("DB-UCS03", clazz.getName(), namePrefix, value);
 	}
 
 }

@@ -37,7 +37,7 @@ public class DialectFactory {
 			dialect = resolveDialect(con);
 		} finally {
 			if (con != null) {
-				DataSourceUtil.closeConnection(con, dataSource);
+				DataSourceUtil.closeConnectionIfNotTransaction(con, dataSource);
 			}
 		}
 		return dialect;

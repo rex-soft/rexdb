@@ -36,8 +36,10 @@ public class SqlParser {
 	public static void validate(String sql, Ps ps) throws DBException{
 		// 检查已经设定的预编译参数个数
 		int holderSize = SqlUtil.countParameterPlaceholders(sql, '?', '\'');
-		if ((ps == null && holderSize != 0) || (ps.getParameters().size() != holderSize))
-			throw new DBException("DB-S0001", sql, holderSize, ps == null ? 0 : ps.getParameters().size());
+		int paramSize = ps == null ? 0 : ps.getParameters().size();
+		
+		if (holderSize != paramSize)
+			throw new DBException("DB-S0001", sql, holderSize, paramSize);
 	}
 
 	/**

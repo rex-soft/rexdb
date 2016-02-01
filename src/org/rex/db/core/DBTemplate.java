@@ -24,12 +24,14 @@ import org.rex.db.core.reader.ResultReader;
 import org.rex.db.core.reader.ResultSetIterator;
 import org.rex.db.core.statement.DefaultStatementCreatorFactory;
 import org.rex.db.core.statement.StatementCreator;
+import org.rex.db.datasource.ConnectionHolder;
 import org.rex.db.exception.DBException;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.listener.SqlContext;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 import org.rex.db.sql.SqlParser;
+import org.rex.db.transaction.ThreadConnectionHolder;
 import org.rex.db.util.DataSourceUtil;
 import org.rex.db.util.JdbcUtil;
 
@@ -69,7 +71,7 @@ public class DBTemplate {
 		ResultSet rs = null;
 		try {
 			stmt = statementCreator.createStatement(con);
-			DataSourceUtil.applyTransactionTimeout(stmt, this.dataSource);
+			applyTimeout(stmt, this.dataSource);
 
 			rs = queryExecutor.executeQuery(stmt, sql);
 			resultSetIterator.read(resultReader, rs);
@@ -95,7 +97,7 @@ public class DBTemplate {
 		ResultSet rs = null;
 		try {
 			preparedStatement = statementCreator.createPreparedStatement(con, sql, ps);
-			DataSourceUtil.applyTransactionTimeout(preparedStatement, this.dataSource);
+			applyTimeout(preparedStatement, this.dataSource);
 
 			rs = queryExecutor.executeQuery(preparedStatement);
 			resultSetIterator.read(resultReader, rs);
@@ -121,7 +123,7 @@ public class DBTemplate {
 		int retval = 0;
 		try {
 			statement = statementCreator.createStatement(con);
-			DataSourceUtil.applyTransactionTimeout(statement, this.dataSource);
+			applyTimeout(statement, this.dataSource);
 			
 			retval = queryExecutor.executeUpdate(statement, sql);
 			
@@ -148,7 +150,7 @@ public class DBTemplate {
 		int retval = 0;
 		try {
 			preparedStatement = statementCreator.createPreparedStatement(con, sql, ps);
-			DataSourceUtil.applyTransactionTimeout(preparedStatement, this.dataSource);
+			applyTimeout(preparedStatement, this.dataSource);
 			
 			retval = queryExecutor.executeUpdate(preparedStatement);
 			
@@ -175,7 +177,7 @@ public class DBTemplate {
 		int[] retvals = null;
 		try {
 			preparedStatement = statementCreator.createBatchPreparedStatement(con, sql, ps);
-			DataSourceUtil.applyTransactionTimeout(preparedStatement, this.dataSource);
+			applyTimeout(preparedStatement, this.dataSource);
 			
 			retvals = queryExecutor.executeBatch(preparedStatement);
 			
@@ -203,7 +205,7 @@ public class DBTemplate {
 		int[] retvals = null;
 		try {
 			statement = statementCreator.createBatchStatement(con, sql);
-			DataSourceUtil.applyTransactionTimeout(statement, this.dataSource);
+			applyTimeout(statement, this.dataSource);
 			
 			retvals = queryExecutor.executeBatch(statement);
 			
@@ -230,7 +232,7 @@ public class DBTemplate {
 		WMap outs = null;
 		try {
 			cs = statementCreator.createCallableStatement(con, sql, ps);
-			DataSourceUtil.applyTransactionTimeout(cs, this.dataSource);
+			applyTimeout(cs, this.dataSource);
 			
 			boolean retval = queryExecutor.execute(cs);
 			
@@ -372,9 +374,32 @@ public class DBTemplate {
 			}
 		}
 		
-		DataSourceUtil.closeConnection(con, this.dataSource);
+		DataSourceUtil.closeConnectionIfNotTransaction(con, this.dataSource);
 	}
 	
+	//-----------------timeout
+	/**
+	 * 设置超时时间
+	 */
+	public void applyTimeout(Statement stmt, DataSource ds) throws DBException {
+		int live = Configuration.getCurrentConfiguration().getQueryTimeout();
+		ConnectionHolder holder = (ConnectionHolder) ThreadConnectionHolder.get(ds);
+		if (holder != null && holder.getDeadline() != null) {//已短的时间为准
+			int tranLive = holder.getTimeToLiveInSeconds();
+			if(live < 0  || (live > 0 && live > tranLive))
+				live = tranLive;
+		}
+		
+		if(live > 0){
+			try {
+				stmt.setQueryTimeout(live);
+			} catch (SQLException e) {
+				throw new DBException("DB-C10014", e);
+			}
+		}
+	}
+	
+	//-----------------listeners
 	/**
 	 * 执行SQL前监听
 	 * @throws DBException 

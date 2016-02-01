@@ -108,7 +108,7 @@ public class XMLConfigParser {
 			return;
 		
 		Properties props = context.getChildrenAsProperties();
-		Map<String, Method> writers = ReflectUtil.getWriteableParams(Configuration.class);
+		Map<String, Method> writers = ReflectUtil.getWriteableMethods(Configuration.class);
 		for (Iterator<?> iterator = props.keySet().iterator(); iterator.hasNext();) {
 			String key = String.valueOf(iterator.next());
 			if(!writers.containsKey(key)){

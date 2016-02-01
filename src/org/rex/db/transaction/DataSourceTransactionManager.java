@@ -161,7 +161,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 		}
 
 		try {
-			DataSourceUtil.closeConnection(con, this.dataSource);
+			DataSourceUtil.closeConnectionIfNotTransaction(con, this.dataSource);
 		}catch (DBException ex) {
 			LOGGER.warn("Closing connection failed after transaction, {0}.", ex, ex.getMessage());
 		}

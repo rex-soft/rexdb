@@ -1,15 +1,10 @@
 package org.rex.db.util;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -24,24 +19,21 @@ import java.util.Map;
 import org.rex.WMap;
 import org.rex.db.exception.DBException;
 
-/**
- * 公共方法 注意：本类并非线程安全
- * 
- * @author zw
- */
 public class ORUtil {
 
-	/**
-	 * 用于临时存储查询结果的列信息和类型信息
-	 */
-	private String[] resultLabels = null;
-	private int[] resultTypes = null;
-	private Map<String, String> labelsRenamed = new HashMap<String, String>();
+	// -----------temporary caches
+	private String[] resultLabels;
+	private int[] resultTypes;
+	private Map<String, String> labelsRenamed;
+	private Map<Class<?>, Map<String, Method>> classWriters;
 
-	// =====================将RS结果集转换为JAVA对象实例
-	// ---------将结果集转为Map对象
+	public ORUtil() {
+		labelsRenamed = new HashMap<String, String>();
+		classWriters = new HashMap<Class<?>, Map<String, Method>>();
+	}
+
+	// -----------result set to map
 	public WMap rs2Map(ResultSet rs, boolean inOriginal) throws DBException {
-
 		String[] labels = getResultLabels(rs);// 列名
 		int[] types = getResultTypes(rs);// 列类型
 
@@ -53,216 +45,14 @@ public class ORUtil {
 				value = getValue(rs, labels[i], types[i]);
 				results.put(label, value);
 			} catch (SQLException e) {
-				throw new DBException("读取结果集出错");
+				throw new DBException("UOR06", e, labels[i], e.getMessage());
 			}
 		}
 
 		return results;
 	}
-	
-	/**
-	 * 从结果集中读取一个字段
-	 * @param rs
-	 * @param label
-	 * @param type
-	 * @return
-	 * @throws SQLException
-	 * @throws DBException
-	 */
-	private Object getValue(ResultSet rs, String label, int type) throws SQLException, DBException{
-		Object value = null;
-		switch (type) {
 
-			case Types.BLOB:
-				value = readBlob(rs, label);
-				break;
-			case Types.CLOB:
-				value = readClob(rs, label);
-				break;
-			case Types.DATE:
-			case Types.TIMESTAMP:
-			case Types.TIME:
-				Timestamp timestamp = rs.getTimestamp(label);
-				if (timestamp != null) {
-					value = new java.util.Date(timestamp.getTime());
-				}
-				break;
-			default:
-				value = rs.getObject(label);
-		}
-		
-		return value;
-	}
-
-	// -------获取需要特殊处理的结果
-	/**
-	 * 读取clob数据，内容过大时可能造成内存溢出
-	 */
-	private String readClob(ResultSet rs, String label) throws SQLException, DBException {
-		Clob c = rs.getClob(label);
-		if (c != null) {
-			StringBuffer content = new StringBuffer();
-			String line = null;
-			Reader reader = null;
-			BufferedReader br = null;
-			try {
-				reader = c.getCharacterStream();
-				br = new BufferedReader(reader);
-
-				while ((line = br.readLine()) != null) {
-					content.append(line);
-					content.append("\r\n");
-				}
-			} catch (IOException e) {
-				throw new DBException("DB-Q10004", e, label, "CLOB");
-			} finally {
-				try {
-					if (br != null)
-						br.close();
-					if (reader != null)
-						reader.close();
-				} catch (IOException e) {
-				}
-			}
-
-			return content.toString();
-		}
-		return null;
-	}
-
-	/**
-	 * 读取blob数据，内容过大时可能造成内存溢出
-	 */
-	private byte[] readBlob(ResultSet rs, String label) throws SQLException, DBException {
-		Blob blob = rs.getBlob(label);
-		if (blob != null) {
-			InputStream bis = blob.getBinaryStream();
-			// 小于2M
-			// if(blob.length() <= 1024*1024*2){
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			try {
-				byte[] buffer = new byte[1024 * 1024];// 相当于我们的缓存
-				int byteRead = 0;
-				while ((byteRead = bis.read(buffer)) != -1) {
-					baos.write(buffer, 0, byteRead);
-				}
-				baos.flush();
-				return baos.toByteArray();
-			} catch (IOException e) {
-				throw new DBException("DB-Q10004", e, label, "BLOB");
-			} finally {
-				try {
-					if (bis != null)
-						bis.close();
-					if (baos != null)
-						baos.close();
-				} catch (IOException e) {
-				}
-			}
-			// XXX:这段需要斟酌，应当确保有写权限
-			// }else{
-			// String tmpdir="/opt/etl_temp/blob";
-			// if(System.getProperties().getProperty("os.name").toLowerCase().startsWith("win")){
-			// tmpdir="D:\\ETL_TEMP\\BLOB";
-			// }
-			// File dir = new File(tmpdir);
-			// if(!dir.exists()) dir.mkdirs();
-			//
-			// FileOutputStream fos = null;
-			// File file = null;
-			// try {
-			// file=new File(tmpdir + File.separator +
-			// String.valueOf(Math.random()).substring(10));
-			// if(!file.exists()) file.createNewFile();
-			// fos = new FileOutputStream(file);
-			// byte [] buffer=new byte[1024*1024];
-			// int byteRead=0;
-			// while((byteRead=bis.read(buffer))!=-1){
-			// fos.write(buffer, 0, byteRead);
-			// }
-			// fos.flush();
-			// value = file;
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// } finally {
-			// try {
-			// if (bis != null) bis.close();
-			// if (fos != null) fos.close();
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// }
-			// }
-		}
-		return null;
-	}
-
-	// -------读取结果集元数据信息
-	protected String[] getResultLabels(ResultSet rs) throws DBException {
-		if (resultLabels == null) {
-			try {
-				createMeta(rs.getMetaData());
-			} catch (SQLException e) {
-				throw new DBException("DB-Q10002", e);
-			}
-		}
-		return resultLabels;
-	}
-
-	protected int[] getResultTypes(ResultSet rs) throws DBException {
-		if (resultTypes == null)
-			try {
-				createMeta(rs.getMetaData());
-			} catch (SQLException e) {
-				throw new DBException("DB-Q10003", e);
-			}
-
-		return resultTypes;
-	}
-
-	public void createMeta(ResultSetMetaData meta) throws SQLException {
-
-		int c = meta.getColumnCount();
-		resultLabels = new String[c];
-		resultTypes = new int[c];
-
-		for (int i = 0; i < c; i++) {
-			// resultLabels[i]=meta.getColumnName(i+1);
-			// update by zhouzr 20130829 应该获取别名
-			resultLabels[i] = meta.getColumnLabel(i + 1);
-			resultTypes[i] = meta.getColumnType(i + 1);
-		}
-	}
-
-	/**
-	 * 处理掉label的下划线并转化大小写, 如CJXM_DM->cjxmDm;AA_BB_CC->aaBbCc
-	 */
-	protected String renameLabel(String label) {
-		if (labelsRenamed.containsKey(label))
-			return (String) labelsRenamed.get(label);
-
-		StringBuffer result = new StringBuffer();
-		char[] chars = label.toCharArray();
-		boolean last_ = false;
-		for (int i = 0; i < chars.length; i++) {
-			if (chars[i] == '_') {
-				last_ = true;
-				continue;
-			}
-
-			if (last_) {
-				last_ = false;
-				result.append(Character.toUpperCase(chars[i]));
-			} else
-				result.append(Character.toLowerCase(chars[i]));
-		}
-
-		String labelRenamed = result.toString();
-		labelsRenamed.put(label, labelRenamed);
-		return labelRenamed;
-	}
-
-	// ---------将结果集转为Object对象
+	// -----------result set to java bean
 	public <T> T rs2Object(ResultSet rs, T bean, boolean inOriginal) throws DBException {
 
 		// 读取结果集元信息
@@ -270,87 +60,73 @@ public class ORUtil {
 		int[] types = getResultTypes(rs);
 
 		// 遍历结果集
-		Map beanParams = getWriteableParams(bean.getClass(), inOriginal);
+		Map<String, Method> beanParams = getWriteableMethods(bean.getClass());
 		for (int i = 0; i < labels.length; i++) {
-
 			// 获取POJO写入方法
 			Method writer = null;
 
 			// 要求类属性必须和数据库列名一致，并且全为
-			if (inOriginal) {
-				String labelDbStyle = labels[i].toUpperCase();
-				if (beanParams.containsKey(labelDbStyle))
-					writer = (Method) beanParams.get(labelDbStyle);
-			} else {
-				String labelJavaStyle = renameLabel(labels[i]);
-				if (beanParams.containsKey(labelJavaStyle))
-					writer = (Method) beanParams.get(labelJavaStyle);
-			}
-			if (writer == null)
-				continue;
+			if (inOriginal) 
+				writer = beanParams.get(labels[i].toUpperCase());
+			else 
+				writer = beanParams.get(renameLabel(labels[i]));
+			
+			if (writer == null) continue;
 
-			Class param0 = writer.getParameterTypes()[0];
+			Class<?> param0 = writer.getParameterTypes()[0];
 			String paramClassName = param0.isArray() ? param0.getComponentType().getName() + "[]" : param0.getName();// set方法只有一个参数
 
-			// //从结果集中取值并转换类型
+			// 从结果集中取值并转换类型
 			Object value = null;
 			try {
 				value = getValue(rs, labels[i], types[i], paramClassName);
 			} catch (SQLException e) {
-				throw new DBException("读取结果集是出现异常");
+				throw new DBException("UOR06", e, labels[i], e.getMessage());
 			}
-			//
-			// //向POJO赋值
-			invokeMethod(bean, writer, value);
+			// 赋值
+			ReflectUtil.invokeMethod(bean, writer, value);
 		}
 
 		return bean;
 	}
 
+	// -----------get column value
 	/**
-	 * 获取该类的所有可写属性
+	 * 从结果集中读取一个字段
 	 */
-	private Map getWriteableParams(Class clazz, boolean inOriginal) throws DBException {
-		Map params = new HashMap();
-		BeanInfo bean = null;
-		try {
-			bean = Introspector.getBeanInfo(clazz);
-		} catch (IntrospectionException e) {
-			throw new DBException("DB-Q10008", e);
+	private Object getValue(ResultSet rs, String label, int type) throws SQLException, DBException {
+		Object value = null;
+		switch (type) {
+		case Types.BLOB:
+			value = readBlob(rs, label);
+			break;
+		case Types.CLOB:
+			value = readClob(rs, label);
+			break;
+		case Types.DATE:
+		case Types.TIMESTAMP:
+		case Types.TIME:
+			Timestamp timestamp = rs.getTimestamp(label);
+			if (timestamp != null) {
+				value = new java.util.Date(timestamp.getTime());
+			}
+			break;
+		default:
+			value = rs.getObject(label);
 		}
 
-		PropertyDescriptor[] props = bean.getPropertyDescriptors();
-		for (int i = 0; i < props.length; i++) {
-			String key;
-
-			if (inOriginal) {
-				key = renameLabelUpper(props[i].getName());
-				if (params.containsKey(key))// 不允许两个属性名转为大写后重复
-					throw new DBException("DB-Q10009", clazz.getName(), props[i].getName().toUpperCase());
-			} else
-				key = props[i].getName();
-
-			if (props[i].getWriteMethod() != null)
-				params.put(key, props[i].getWriteMethod());
-		}
-		return params;
-	}
-
-	/**
-	 * 处理掉下划线并转为大写,inOriginal=true时使用
-	 */
-	protected String renameLabelUpper(String label) {
-		return label.replaceAll("_", "").toUpperCase();
+		return value;
 	}
 
 	/**
 	 * 将结果集数据转换为Java所需类型
 	 * 
 	 * @param rs 结果集
-	 * @param label 结果集列命
-	 * @param sqlType 结果集列数据类型
+	 * @param label 列名
+	 * @param sqlType 列的SQL类型
 	 * @param paramClassName 待转换的java类型
 	 * @return java对象
+	 * 
 	 * @throws DBException
 	 * @throws SQLException
 	 */
@@ -366,7 +142,7 @@ public class ORUtil {
 			else if ("java.lang.String".equals(paramClassName) || "String".equals(paramClassName))
 				value = rs.getString(label);
 			else
-				throw new DBException("DB-Q10015", label, "sqlType.BOOLEAN", paramClassName);
+				throw new DBException("DB-UOR04", label, "sqlType.BOOLEAN", paramClassName);
 			break;
 
 		case Types.CHAR:
@@ -375,7 +151,7 @@ public class ORUtil {
 			if ("java.lang.String".equals(paramClassName) || "String".equals(paramClassName)) {
 				value = rs.getString(label);
 			} else
-				throw new DBException("DB-Q10015", label, "sqlType.CHAR|VARCHAR", paramClassName);
+				throw new DBException("DB-UOR04", label, "sqlType.CHAR|VARCHAR", paramClassName);
 			break;
 
 		case Types.BIT:
@@ -403,7 +179,7 @@ public class ORUtil {
 			else if ("java.lang.String".equals(paramClassName) || "String".equals(paramClassName))
 				value = rs.getString(label);
 			else
-				throw new DBException("DB-Q10015", label, "sqlType.BIT|TINYINT|SMALLINT|INTEGER|BIGINT|REAL|FLOAT|DOUBLE|DECIMAL|NUMERIC",
+				throw new DBException("DB-UOR04", label, "sqlType.BIT|TINYINT|SMALLINT|INTEGER|BIGINT|REAL|FLOAT|DOUBLE|DECIMAL|NUMERIC",
 						paramClassName);
 			break;
 
@@ -412,40 +188,23 @@ public class ORUtil {
 		case Types.LONGVARBINARY:
 		case Types.BLOB:
 			if ("byte[]".equals(paramClassName))
-				value = rs.getBytes(label);
+				value = readBlob(rs, label);
 			else
-				throw new DBException("DB-Q10015", label, "sqlType.BINARY|VARBINARY|LONGVARBINARY|BLOB", paramClassName);
+				throw new DBException("DB-UOR04", label, "sqlType.BINARY|VARBINARY|LONGVARBINARY|BLOB", paramClassName);
 			break;
 		case Types.CLOB:
+			StringBuffer clob = readClob(rs, label);
+			if (clob == null)
+				break;
 			if ("byte[]".equals(paramClassName))
-				value = rs.getBytes(label);
-			else if ("java.lang.String".equals(paramClassName) || "java.lang.StringBuffer".equals(paramClassName)) {
-				Clob c = rs.getClob(label);
-				if (c != null) {
-					StringBuffer content = new StringBuffer();
-					String line = null;
-					Reader reader = c.getCharacterStream();
-					BufferedReader br = new BufferedReader(reader);
-					try {
-						while ((line = br.readLine()) != null) {
-							content.append(line);
-							content.append("\r\n");
-						}
-					} catch (IOException e) {
-						throw new DBException("DB-Q10017", e);
-					}
-
-					if ("java.lang.String".equals(paramClassName))
-						value = content.toString();
-					else
-						value = content;
-				} else
-					value = null;
-
+				value = clob.toString().getBytes();
+			else if ("java.lang.String".equals(paramClassName)) {
+				value = clob.toString();
+			} else if ("java.lang.StringBuffer".equals(paramClassName)) {
+				value = clob;
 			} else
-				throw new DBException("DB-Q10015", label, "sqlType.CLOB", paramClassName);
+				throw new DBException("DB-UOR04", label, "sqlType.CLOB", paramClassName);
 			break;
-
 		case Types.DATE:
 		case Types.TIMESTAMP:
 		case Types.TIME:
@@ -461,29 +220,152 @@ public class ORUtil {
 					value = new java.util.Date(dateValue.getTime());
 				}
 			} else
-				throw new DBException("DB-Q10015", label, "sqlType.DATE|TIMESTAMP|TIME", paramClassName);
+				throw new DBException("DB-UOR04", label, "sqlType.DATE|TIMESTAMP|TIME", paramClassName);
 			break;
 		default:
-			throw new DBException("DB-Q10015", sqlType, label);
+			throw new DBException("DB-UOR05", label, sqlType);
 		}
 
 		return value;
 	}
 
 	/**
-	 * 向对象赋值
-	 * 
-	 * @throws DBException
+	 * 读取clob数据，内容过大时可能造成内存溢出
 	 */
-	private static void invokeMethod(Object object, Method method, Object value) throws DBException {
-		try {
-			method.invoke(object, new Object[] { value });
-		} catch (IllegalArgumentException e) {
-			throw new DBException("DB-Q10018", e, object.getClass().getName(), method.getName(), value);
-		} catch (IllegalAccessException e) {
-			throw new DBException("DB-Q10019", e, object.getClass().getName(), method.getName(), value);
-		} catch (InvocationTargetException e) {
-			throw new DBException("DB-Q10020", e, object.getClass().getName(), method.getName(), value);
+	private StringBuffer readClob(ResultSet rs, String label) throws SQLException, DBException {
+		Clob c = rs.getClob(label);
+		if (c != null) {
+			StringBuffer content = new StringBuffer();
+			String line = null;
+			Reader reader = null;
+			BufferedReader br = null;
+			try {
+				reader = c.getCharacterStream();
+				br = new BufferedReader(reader);
+
+				while ((line = br.readLine()) != null) {
+					content.append(line);
+					content.append("\r\n");
+				}
+			} catch (IOException e) {
+				throw new DBException("DB-UOR03", e, label, e.getMessage());
+			} finally {
+				try {
+					if (br != null)
+						br.close();
+					if (reader != null)
+						reader.close();
+				} catch (IOException e) {
+				}
+			}
+
+			return content;
 		}
+		return null;
+	}
+
+	/**
+	 * 读取blob数据，内容过大时可能造成内存溢出
+	 */
+	private byte[] readBlob(ResultSet rs, String label) throws SQLException, DBException {
+		Blob blob = rs.getBlob(label);
+		if (blob != null) {
+			InputStream bis = blob.getBinaryStream();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			try {
+				byte[] buffer = new byte[1024 * 1024];// 相当于我们的缓存
+				int byteRead = 0;
+				while ((byteRead = bis.read(buffer)) != -1) {
+					baos.write(buffer, 0, byteRead);
+				}
+				baos.flush();
+				return baos.toByteArray();
+			} catch (IOException e) {
+				throw new DBException("DB-UOR02", e, label, e.getMessage());
+			} finally {
+				try {
+					if (bis != null)
+						bis.close();
+					if (baos != null)
+						baos.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		return null;
+	}
+
+	// -----------result set meta
+	private String[] getResultLabels(ResultSet rs) throws DBException {
+		if (resultLabels == null) {
+			try {
+				createMeta(rs.getMetaData());
+			} catch (SQLException e) {
+				throw new DBException("DB-UOR01", e, e.getMessage());
+			}
+		}
+		return resultLabels;
+	}
+
+	private int[] getResultTypes(ResultSet rs) throws DBException {
+		if (resultTypes == null)
+			try {
+				createMeta(rs.getMetaData());
+			} catch (SQLException e) {
+				throw new DBException("DB-UOR01", e, e.getMessage());
+			}
+
+		return resultTypes;
+	}
+
+	private void createMeta(ResultSetMetaData meta) throws SQLException {
+		int c = meta.getColumnCount();
+		resultLabels = new String[c];
+		resultTypes = new int[c];
+
+		for (int i = 0; i < c; i++) {
+			resultLabels[i] = meta.getColumnLabel(i + 1);
+			resultTypes[i] = meta.getColumnType(i + 1);
+		}
+	}
+
+	/**
+	 * 处理掉label的下划线并转化大小写, 如CJXM_DM->cjxmDm;AA_BB_CC->aaBbCc
+	 */
+	private String renameLabel(String label) {
+		if (labelsRenamed.containsKey(label))
+			return (String) labelsRenamed.get(label);
+
+		StringBuffer result = new StringBuffer();
+		char[] chars = label.toCharArray();
+		boolean last_ = false;
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] == '_') {
+				last_ = true;
+				continue;
+			}
+
+			if (last_) {
+				last_ = false;
+				result.append(Character.toUpperCase(chars[i]));
+			} else
+				result.append(Character.toLowerCase(chars[i]));
+		}
+
+		String labelRenamed = result.toString();
+		labelsRenamed.put(label, labelRenamed);
+		return labelRenamed;
+	}
+
+	// -----------bean info
+	/**
+	 * 获取该类的所有可写方法
+	 */
+	private Map<String, Method> getWriteableMethods(Class<?> clazz) throws DBException {
+		if(!classWriters.containsKey(clazz)){
+			Map<String, Method> writers = ReflectUtil.getWriteableMethods(clazz);
+			classWriters.put(clazz, writers);
+		}
+		return classWriters.get(clazz);
 	}
 }

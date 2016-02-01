@@ -64,7 +64,7 @@ public class SqlUtil {
 					else if (ch == delim) {
 						if (index < len - 1 && delim == lookahead) {
 							if (index > len - 2)
-								throw new DBRuntimeException("DB-C10032", str);
+								throw new DBRuntimeException("DB-USQ01", str);
 							else {
 								index += 1;
 							}
@@ -74,9 +74,9 @@ public class SqlUtil {
 					}
 					break;
 				case stateError :
-					throw new DBRuntimeException("DB-C10033", str);
+					throw new DBRuntimeException("DB-USQ02", str);
 				default :
-					throw new RuntimeException("DB-C10034");
+					throw new DBRuntimeException("DB-USQ03", str);
 			}
 			++index;
 		}

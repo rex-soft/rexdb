@@ -33,7 +33,7 @@ public class ResourceUtil {
 	public static InputStream getResourceAsStream(ClassLoader loader, String resource) throws DBException {
 		InputStream in = classLoaderWrapper.getResourceAsStream(resource, loader);
 		if (in == null) {
-			throw new DBException("DB-U0001", resource);
+			throw new DBException("DB-URS01", resource);
 		}
 		return in;
 	}
@@ -44,7 +44,7 @@ public class ResourceUtil {
 	public static Properties getResourceAsProperties(String resource) throws DBException {
 		return getResourceAsProperties(null, resource, null);
 	}
-	
+
 	public static Properties getResourceAsProperties(String resource, String encoding) throws DBException {
 		return getResourceAsProperties(null, resource, encoding);
 	}
@@ -53,7 +53,7 @@ public class ResourceUtil {
 		Reader reader = getResourceAsReader(loader, resource);
 		return getProperties(resource, reader);
 	}
-	
+
 	public static Properties getResourceAsProperties(ClassLoader loader, String resource, String encoding) throws DBException {
 		Reader reader = getResourceAsReader(loader, resource, encoding);
 		return getProperties(resource, reader);
@@ -69,20 +69,21 @@ public class ResourceUtil {
 	public static Reader getResourceAsReader(String resource, String encoding) throws DBException {
 		return getResourceAsReader(null, resource, encoding);
 	}
-	
+
 	public static Reader getResourceAsReader(ClassLoader loader, String resource) throws DBException {
 		return getResourceAsReader(loader, resource, null);
 	}
-	
+
 	public static Reader getResourceAsReader(ClassLoader loader, String resource, String encoding) throws DBException {
-		if(encoding != null){
+		if (encoding != null) {
 			try {
 				return new InputStreamReader(getResourceAsStream(loader, resource), encoding);
 			} catch (UnsupportedEncodingException e) {
-				LOGGER.warn("Error on loading resource {0} as {1}, {2}, the resource will be loaded as default encoding.", resource, encoding, e.getMessage());
+				LOGGER.warn("Error on loading resource {0} as {1}, {2}, the resource will be loaded as default encoding.", resource, encoding,
+						e.getMessage());
 			}
 		}
-		
+
 		return new InputStreamReader(getResourceAsStream(loader, resource));
 	}
 
@@ -107,7 +108,7 @@ public class ResourceUtil {
 	public static URL getResourceURL(ClassLoader loader, String resource) throws DBException {
 		URL url = classLoaderWrapper.getResourceAsURL(resource, loader);
 		if (url == null) {
-			throw new DBException("DB-U0001", resource);
+			throw new DBException("DB-URS01", resource);
 		}
 		return url;
 	}
@@ -121,7 +122,7 @@ public class ResourceUtil {
 			URLConnection conn = url.openConnection();
 			return conn.getInputStream();
 		} catch (IOException e) {
-			throw new DBException("DB-U0002", e, urlString, e.getMessage());
+			throw new DBException("DB-URS02", e, urlString, e.getMessage());
 		}
 	}
 
@@ -131,9 +132,9 @@ public class ResourceUtil {
 	public static Reader getUrlAsReader(String urlString) throws DBException {
 		return getUrlAsReader(urlString, null);
 	}
-	
+
 	public static Reader getUrlAsReader(String urlString, String encoding) throws DBException {
-		if(encoding != null){
+		if (encoding != null) {
 			try {
 				return new InputStreamReader(getUrlAsStream(urlString), encoding);
 			} catch (UnsupportedEncodingException e) {
@@ -146,19 +147,18 @@ public class ResourceUtil {
 	public static Properties getUrlAsProperties(String urlString) throws DBException {
 		return getUrlAsProperties(urlString, null);
 	}
-	
+
 	public static Properties getUrlAsProperties(String urlString, String encoding) throws DBException {
 		Reader reader = getUrlAsReader(urlString, encoding);
 		return getProperties(urlString, reader);
 	}
-	
 
 	private static Properties getProperties(String path, Reader reader) throws DBException {
 		Properties props = new Properties();
 		try {
 			props.load(reader);
 		} catch (IOException e) {
-			throw new DBException("DB-U0002", e, path, e.getMessage());
+			throw new DBException("DB-URS02", e, path, e.getMessage());
 		} finally {
 			try {
 				reader.close();
@@ -169,8 +169,6 @@ public class ResourceUtil {
 
 		return props;
 	}
-	
-
 
 	/**
 	 * 使用类加载器加载文件

@@ -55,7 +55,7 @@ public class BeanResultReader<T> implements ResultReader<T> {
 			if(cloneMethod == null)
 				throw new DBException("DB-C0004", resultBean.getClass().getName());
 			
-			clone = (T)ReflectUtil.invokeMethod(resultBean, cloneMethod, null);
+			clone = (T)ReflectUtil.invokeMethod(resultBean, cloneMethod);
 		}
 		results.add(row2Bean(rs, rowNum++, ps, clone, originalKey));
 	}

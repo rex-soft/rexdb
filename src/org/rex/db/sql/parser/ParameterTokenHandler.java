@@ -58,12 +58,12 @@ public class ParameterTokenHandler implements TokenHandler{
 		if (params instanceof Map) {
 			return ((Map<?,?>) params).get(key);
 		} else {
-			Map<String, Method> readers = ReflectUtil.getReadableParams(params.getClass());
+			Map<String, Method> readers = ReflectUtil.getReadableMethods(params.getClass());
 			for (Iterator<?> iterator = readers.keySet().iterator(); iterator.hasNext();) {
 				String paramName = (String)iterator.next();
 				Method reader = readers.get(paramName);
 				if(paramName.equals(key)){
-					return ReflectUtil.invokeMethod(params, reader, null);
+					return ReflectUtil.invokeMethod(params, reader);
 				}
 			}
 			return null;

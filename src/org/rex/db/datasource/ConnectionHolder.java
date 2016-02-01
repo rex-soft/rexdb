@@ -1,7 +1,10 @@
 package org.rex.db.datasource;
 
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.util.Date;
+
+import org.rex.db.exception.DBRuntimeException;
 
 /**
  * 用于包装数据库连接，额外增加了用于给事物计时的超时时间等属性
@@ -14,8 +17,13 @@ public class ConnectionHolder{
 	/**
 	 * 超时时间
 	 */
+	private int liveSeconds = -1;
+	
+	/**
+	 * 事物截至时间
+	 */
 	private Date deadline;
-
+	
 	public ConnectionHolder(Connection connection) {
 		this.connection = connection;
 	}
@@ -28,10 +36,11 @@ public class ConnectionHolder{
 	 * 设置超时时间
 	 */
 	public void setTimeoutInSeconds(int seconds) {
+		liveSeconds = seconds;
 		setTimeoutInMillis(seconds * 1000);
 	}
 
-	public void setTimeoutInMillis(long millis) {
+	private void setTimeoutInMillis(long millis) {
 		this.deadline = new Date(System.currentTimeMillis() + millis);
 	}
 
@@ -50,8 +59,13 @@ public class ConnectionHolder{
 		return (int) Math.ceil(diff);
 	}
 
-	public long getTimeToLiveInMillis() {
-		return deadline.getTime() - System.currentTimeMillis();
+	private long getTimeToLiveInMillis() {
+		long liveInMillis = deadline.getTime() - System.currentTimeMillis();
+		if(liveInMillis <= 0){
+			throw new DBRuntimeException("T0015", liveSeconds, new DecimalFormat("0.00").format((liveSeconds - liveInMillis/1000)), connection.hashCode());
+		}
+		
+		return liveInMillis;
 	}
 
 }
