@@ -6,14 +6,15 @@ import org.rex.db.configuration.Configuration;
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.DialectManager;
 import org.rex.db.exception.DBException;
-import org.rex.db.exception.DBRuntimeException;
 
+/**
+ * 数据库操作基类
+ */
 public class DBOperation {
 	
 	private String sql;
-	private DBTemplate template = new DBTemplate();
-	
-	private Dialect dialect;//方言
+	private DBTemplate template;
+	private Dialect dialect;
 	
 	protected DBTemplate getTemplate() {
 		return template;
@@ -24,17 +25,20 @@ public class DBOperation {
 		this.dialect = null;
 	}
 	
-	public void setDataSource(DataSource dataSource) {
-		this.template.setDataSource(dataSource);
+	public void setDataSource(DataSource dataSource) throws DBException {
+		if(dataSource == null)
+			throw new DBException("DB-C0008");
+		
+		this.template = new DBTemplate(dataSource);
 		this.dialect = null;
 	}
 	
 	/**
 	 * 设置SQL
 	 */
-	public void setSql(String sql) {
+	public void setSql(String sql) throws DBException {
 		if (sql == null)
-			throw new DBRuntimeException("DB-Q10011");
+			throw new DBException("DB-C0009");
 		
 		this.sql = sql;
 	}
@@ -50,9 +54,6 @@ public class DBOperation {
 	 * 获取方言
 	 */
 	protected Dialect getDialect() throws DBException{
-		if(template.getDataSource() == null)
-			throw new DBException("DB-D10003");
-		
 		if(dialect == null){
 			dialect = getDialectManager().getDialect(template.getDataSource());
 		}

@@ -48,7 +48,6 @@ public class BeanResultReader<T> implements ResultReader<T> {
 	public void processRow(ResultSet rs) throws DBException {
 		if (resultBean == null)
 			throw new DBException("DB-C0003");
-
 		
 		T clone = resultBean;
 		if (rowNum > 0) {

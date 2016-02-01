@@ -4,9 +4,13 @@
 	<!-- <properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" /> -->
 	<settings>
 		<property name="lang" value="zh-cn"/>
-		<property name="nolog" value="true" />
+		<property name="nolog" value="false" />
 		<property name="validateSql" value="true" />
-		<!-- <property name="loggerFactory" value="org.rex.db.logger.log4j2.Log4j2LoggerFactory" /> -->
+ 		<property name="checkWarnings" value="false" />
+		<property name="queryTimeout" value="-1" />
+		<property name="transactionTimeout" value="-1" />
+		<property name="transactionIsolation" value="" />
+		<property name="autoRollback" value="false" />
 	</settings>
 	<!-- Mysql -->
 	<dataSource>

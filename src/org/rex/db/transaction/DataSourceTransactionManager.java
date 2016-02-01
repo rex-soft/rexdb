@@ -8,29 +8,23 @@ import javax.sql.DataSource;
 import org.rex.db.datasource.ConnectionHolder;
 import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.DataSourceUtil;
 
 /**
- * 单JDBC数据源事物
+ * 数据源事物管理
  */
 public class DataSourceTransactionManager extends AbstractTransactionManager {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceTransactionManager.class);
 
 	private DataSource dataSource;
 
-	public DataSourceTransactionManager() {
-	}
-
 	public DataSourceTransactionManager(DataSource dataSource) {
 		if (dataSource == null) {
-			throw new DBRuntimeException("DB-C10021");
+			throw new DBRuntimeException("DB-T0003");
 		}
-		this.dataSource = dataSource;
-	}
-
-	/**
-	 * 设置数据源
-	 */
-	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
@@ -41,8 +35,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 		return dataSource;
 	}
 	
-	//-------------------------------实现父类
-
+	//-------------------------------implements
 	/**
 	 * 获取事物对象
 	 */
@@ -56,55 +49,68 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	/**
 	 * 开始事务
 	 */
-	protected void doBegin(TransactionDefinition definition) throws SQLException, DBException {
+	protected void doBegin(TransactionDefinition definition) throws DBException {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
 		
 		if (connectionHolder == null) {
 			Connection con = DataSourceUtil.getConnection(dataSource);
 			connectionHolder = new DataSourceConnectionHolder(con, definition);
 		}
-
-		Connection con = connectionHolder.getConnection();
 		
+		try {
+			beginTransaction(connectionHolder, definition);
+		} catch (SQLException e) {
+			throw new DBException("DB-T0004", e, e.getMessage(), connectionHolder.getConnection().hashCode(), dataSource.hashCode());
+		}
+
+		// 将连接绑定至线程
+		ThreadConnectionHolder.bind(dataSource, connectionHolder);
+	}
+	
+	/**
+	 * 为连接开启事物
+	 * @param connectionHolder
+	 * @param definition
+	 * @throws SQLException
+	 */
+	private void beginTransaction(DataSourceConnectionHolder connectionHolder, TransactionDefinition definition) throws SQLException{
+		Connection conn = connectionHolder.getConnection();
 		// 设置隔离级别
 		if (definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT) {
-			connectionHolder.setPreviousIsolationLevel(con.getTransactionIsolation());
-			con.setTransactionIsolation(definition.getIsolationLevel());
+			connectionHolder.setPreviousIsolationLevel(conn.getTransactionIsolation());
+			conn.setTransactionIsolation(definition.getIsolationLevel());
 		}
 
 		// 是否只读
 		if (definition.isReadOnly()) {
-			con.setReadOnly(true);
+			conn.setReadOnly(true);
 		}
 
 		// 切换至手动提交事物
-		con.setAutoCommit(false);
+		conn.setAutoCommit(false);
 
 		// 注册事物超时时间
 		if (definition.getTimeout() != TransactionDefinition.TIMEOUT_DEFAULT) {
 			connectionHolder.setTimeoutInSeconds(definition.getTimeout());
 		}
-
-		// 将连接绑定至线程
-		ThreadConnectionHolder.bind(dataSource, connectionHolder);
 	}
 
 
 	/**
 	 * 提交事务
 	 */
-	protected void doCommit() throws Exception {
+	protected void doCommit() throws DBException {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
 		if(connectionHolder == null){
-			throw new DBException("DB-C10038", dataSource);
+			throw new DBException("DB-T0005", dataSource.hashCode());
 		}
 		
-		try{
+		try {
 			connectionHolder.getConnection().commit();
-		}catch(Exception e){
-			if (connectionHolder.getDefinition().isRollbackOnCommitFailure()) 
+		} catch (SQLException e) {
+			if (connectionHolder.getDefinition().isAutoRollback()) 
 				doRollbackOnCommitException(e);
-			throw e;
+			throw new DBException("DB-T0008", e, connectionHolder.getConnection().hashCode(), dataSource.hashCode());
 		}
 	}
 	
@@ -112,24 +118,24 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	 * 提交事务出现异常时，自动回滚
 	 */
 	private void doRollbackOnCommitException(Throwable ex) throws DBException {
-		try {
-			doRollback();
-		}catch (Exception e) {
-			throw new DBException("DB-C10024", e, e.getMessage());
-		}
+		doRollback();
 	}
 
 	/**
 	 * 回滚事务
 	 */
-	protected void doRollback() throws SQLException, DBException {
+	protected void doRollback() throws DBException {
 		ConnectionHolder connectionHolder = doGetTransaction();
 		if(connectionHolder == null){
-			throw new DBException("DB-C10038", dataSource);
+			throw new DBException("DB-T0005", dataSource.hashCode());
 		}
-		connectionHolder.getConnection().rollback();
+		
+		try {
+			connectionHolder.getConnection().rollback();
+		} catch (SQLException e) {
+			throw new DBException("DB-T0009", e, connectionHolder.getConnection().hashCode(), dataSource.hashCode());
+		}
 	}
-
 
 	/**
 	 * 恢复连接至初始状态
@@ -151,11 +157,13 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 				con.setReadOnly(false);
 			}
 		}catch (Exception ex) {
+			LOGGER.warn("Reseting connection state failed after transaction, {0}.", ex, ex.getMessage());
 		}
 
 		try {
 			DataSourceUtil.closeConnection(con, this.dataSource);
 		}catch (DBException ex) {
+			LOGGER.warn("Closing connection failed after transaction, {0}.", ex, ex.getMessage());
 		}
 	}
 

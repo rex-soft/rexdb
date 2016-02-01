@@ -1,4 +1,4 @@
-package org.rex.db.transaction;
+package org.rex.db.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -15,15 +15,15 @@ import org.rex.db.logger.LoggerFactory;
 /**
  * 获取类中的常量，即public static final声明的常量
  */
-public class Constants {
+public class ConstantUtil {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(Constants.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConstantUtil.class);
 
 	private final Map<String, Object> map = new HashMap<String, Object>();
 
 	private final Class<?> clazz;
 
-	public Constants(Class<?> clazz) {
+	public ConstantUtil(Class<?> clazz) {
 		this.clazz = clazz;
 		Field[] fields = clazz.getFields();
 		for (int i = 0; i < fields.length; i++) {

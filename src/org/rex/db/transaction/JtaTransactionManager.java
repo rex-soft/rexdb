@@ -15,6 +15,9 @@ import javax.transaction.UserTransaction;
 
 import org.rex.db.exception.DBException;
 
+/**
+ * 简单的JTA事物管理
+ */
 public class JtaTransactionManager extends AbstractTransactionManager{
 
 	public static final String DEFAULT_USER_TRANSACTION_NAME = "java:comp/UserTransaction";
@@ -34,9 +37,9 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 			applyTimeout(definition.getTimeout());
 			doGetTransaction().begin();
 		} catch (NotSupportedException e) {
-			throw new DBException("DB-C10055", e, e.getMessage());
+			throw new DBException("DB-T0012", e, e.getMessage(), userTransactionName, environment);
 		} catch (SystemException e) {
-			throw new DBException("DB-C10055", e, e.getMessage());
+			throw new DBException("DB-T0012", e, e.getMessage(), userTransactionName, environment);
 		}
 	}
 
@@ -52,7 +55,6 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 		}
 	}
 
-
 	/**
 	 * 提交事务
 	 */
@@ -60,7 +62,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 		try {
 			int jtaStatus = doGetTransaction().getStatus();
 			if (jtaStatus == Status.STATUS_NO_TRANSACTION) {
-				throw new DBException("DB-C10056");
+				throw new DBException("DB-T0013", "JTA transaction not found, maybe JTA transaction already rolled back or timeout", userTransactionName, environment);
 			}
 			
 			if (jtaStatus == Status.STATUS_ROLLEDBACK) {
@@ -68,24 +70,24 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 					doGetTransaction().rollback();
 				}catch (IllegalStateException ex) {
 				}
-				throw new DBException("DB-C10057");
+				throw new DBException("DB-T0013", "JTA transaction have been rolled back or timeout", userTransactionName, environment);
 			}
+			
 			doGetTransaction().commit();
 		} catch (SecurityException e) {
-			throw new DBException("DB-C10058", e, e.getMessage());
+			throw new DBException("DB-T0013", e, e.getMessage(), userTransactionName, environment);
 		} catch (IllegalStateException e) {
-			throw new DBException("DB-C10058", e, e.getMessage());
+			throw new DBException("DB-T0013", e, e.getMessage(), userTransactionName, environment);
 		} catch (RollbackException e) {
-			throw new DBException("DB-C10058", e, e.getMessage());
+			throw new DBException("DB-T0013", e, e.getMessage(), userTransactionName, environment);
 		} catch (HeuristicMixedException e) {
-			throw new DBException("DB-C10058", e, e.getMessage());
+			throw new DBException("DB-T0013", e, e.getMessage(), userTransactionName, environment);
 		} catch (HeuristicRollbackException e) {
-			throw new DBException("DB-C10058", e, e.getMessage());
+			throw new DBException("DB-T0013", e, e.getMessage(), userTransactionName, environment);
 		} catch (SystemException e) {
-			throw new DBException("DB-C10058", e, e.getMessage());
+			throw new DBException("DB-T0013", e, e.getMessage(), userTransactionName, environment);
 		}
 	}
-
 	
 	protected void doRollback() throws DBException {
 		try {
@@ -99,7 +101,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 				}
 			}
 		}catch (SystemException e) {
-			throw new DBException("DB-C10059", e, e.getMessage());
+			throw new DBException("DB-T0014", e, e.getMessage(), userTransactionName, environment);
 		}
 	}
 
@@ -110,27 +112,13 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	 * @throws DBException
 	 */
 	protected UserTransaction doGetTransaction() throws DBException {
-		if(userTransaction != null)
-			return userTransaction;
-		
-		initUserTransaction();
-		if (userTransaction == null)
-			throw new DBException("DB-C10062");
-		else
-			return userTransaction;
+		if(userTransaction == null){
+			String transactionName = userTransactionName != null ? userTransactionName : DEFAULT_USER_TRANSACTION_NAME;
+			userTransaction = lookupTransaction(transactionName, UserTransaction.class);
+		}
+			
+		return userTransaction;
 	}
-	
-	/**
-	 * 初始化事物对象
-	 * @throws DBException
-	 */
-	protected void initUserTransaction() throws DBException{
-		if (userTransaction != null) return;
-		
-		String transactionName = userTransactionName != null ? userTransactionName : DEFAULT_USER_TRANSACTION_NAME;
-		userTransaction = lookupTransaction(transactionName, UserTransaction.class);
-	}
-	
 	
 	/**
 	 * 从jndi中查找UserTransaction对象
@@ -150,11 +138,11 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 
 			Object obj = initCtx.lookup(transactionName);
 			if(!clazz.isInstance(obj)) 
-				throw new DBException("DB-C10060", transactionName, clazz.getName());
+				throw new DBException("DB-T0011", transactionName, obj.getClass().getName(), clazz.getName());
 			
 			return (T)obj;
 		} catch (NamingException e) {
-			throw new DBException("DB-C10061", e, e.getMessage());
+			throw new DBException("DB-T0010", e, transactionName, e.getMessage());
 		}finally {
 			try {
 				if (initCtx != null)

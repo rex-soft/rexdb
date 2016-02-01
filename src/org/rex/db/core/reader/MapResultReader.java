@@ -1,7 +1,6 @@
 package org.rex.db.core.reader;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,11 +65,7 @@ public class MapResultReader implements ResultReader {
 	 * @throws DBException
 	 */
 	private WMap row2Map(ResultSet rs, int rowNum, Ps ps, boolean originalKey) throws DBException {
-		try {
-			return orUtil.rs2Map(rs, originalKey);
-		} catch (SQLException e) {
-			throw new DBException("DB-Q10005", e);
-		}
+		return orUtil.rs2Map(rs, originalKey);
 	}
 
 }

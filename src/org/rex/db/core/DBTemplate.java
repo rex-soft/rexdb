@@ -33,6 +33,9 @@ import org.rex.db.sql.SqlParser;
 import org.rex.db.util.DataSourceUtil;
 import org.rex.db.util.JdbcUtil;
 
+/**
+ * 数据库模板，封装了框架支持的数据库操作
+ */
 public class DBTemplate {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DBTemplate.class);
@@ -73,7 +76,7 @@ public class DBTemplate {
 			
 			checkWarnings(con, stmt, rs);
 		}catch (SQLException e) {
-			throw new DBException("DB-Q10013", e, sql, e.getMessage());
+			throw new DBException("DB-C0005", e, sql, null, e.getMessage());
 		}finally {
 			close(con, stmt, rs);
 			fireAfterEvent(context, resultReader.getResults());
@@ -99,7 +102,7 @@ public class DBTemplate {
 
 			checkWarnings(con, preparedStatement, rs);
 		}catch (SQLException e) {
-			throw new DBException("DB-Q10014", e, psc, ps, e.getMessage());
+			throw new DBException("DB-C0005", e, sql, ps, e.getMessage());
 		}finally {
 			close(con, preparedStatement, rs);
 			fireAfterEvent(context, resultReader.getResults());
@@ -124,8 +127,8 @@ public class DBTemplate {
 			
 			checkWarnings(con, statement, null);
 			return retval;
-		}catch (SQLException ex) {
-			throw new DBException("DB-U10002", ex, sql, ex.getMessage());
+		}catch (SQLException e) {
+			throw new DBException("DB-C0005", e, sql, null, e.getMessage());
 		}finally {
 			close(con, statement, null);
 			fireAfterEvent(context, retval);
@@ -151,8 +154,8 @@ public class DBTemplate {
 			
 			checkWarnings(con, preparedStatement, null);
 			return retval;
-		}catch (SQLException ex) {
-			throw new DBException("DB-U10004", ex, psc, ps, ex.getMessage());
+		}catch (SQLException e) {
+			throw new DBException("DB-C0005", e, sql, ps, e.getMessage());
 		}finally {
 			close(con, preparedStatement, null);
 			fireAfterEvent(context, retval);
@@ -178,9 +181,9 @@ public class DBTemplate {
 			
 			checkWarnings(con, preparedStatement, null);
 			return retvals;
-		}catch (SQLException ex) {
+		}catch (SQLException e) {
 			ArrayList<Ps> psList = new ArrayList<Ps>(Arrays.asList(ps));
-			throw new DBException("DB-U10003", ex, bpsc, psList, ex.getMessage());
+			throw new DBException("DB-C0005", e, sql, psList, e.getMessage());
 		}finally {
 			close(con, preparedStatement, null);
 			fireAfterEvent(context, retvals);
@@ -206,9 +209,9 @@ public class DBTemplate {
 			
 			checkWarnings(con, statement, null);
 			return retvals;
-		} catch (SQLException ex) {
+		} catch (SQLException e) {
 			ArrayList<String> sqlList = new ArrayList<String>(Arrays.asList(sql));
-			throw new DBException("DB-U10005", ex, sqlList, ex.getMessage());
+			throw new DBException("DB-C0005", e, sqlList, null, e.getMessage());
 		} finally {
 			close(con, statement, null);
 			fireAfterEvent(context, retvals);
@@ -239,8 +242,8 @@ public class DBTemplate {
 			
 			return outs;
 		}
-		catch (SQLException ex) {
-			throw new DBException("DB-P10001", ex, csc, ps, ex.getMessage());
+		catch (SQLException e) {
+			throw new DBException("DB-C0005", e, sql, ps, e.getMessage());
 		}finally {
 			close(con, cs, null);
 			fireAfterEvent(context, outs);
@@ -265,7 +268,7 @@ public class DBTemplate {
 				try {
 					out = cs.getObject(i + 1);//jdbc查询出的结果
 				} catch (SQLException e) {
-					throw new DBException("DB-P10002", e, cs, i + 1);
+					throw new DBException("DB-C0006", e, i + 1, e.getMessage(), ps);
 				}
 				
 				//输出参数是结果集时，需要进行OR转换
@@ -316,7 +319,7 @@ public class DBTemplate {
 					returns.put("return" + rsIndx, list);
 				}
 			}catch (SQLException e) {
-				throw new DBException("DB-P10008", e);
+				throw new DBException("DB-C0007", e, e.getMessage(), ps);
 			}finally {
 				try {
 					if(rs != null) rs.close();

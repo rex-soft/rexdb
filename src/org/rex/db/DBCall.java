@@ -5,8 +5,6 @@ import javax.sql.DataSource;
 import org.rex.WMap;
 import org.rex.db.core.DBOperation;
 import org.rex.db.core.DBTemplate;
-import org.rex.db.core.reader.MapResultReader;
-import org.rex.db.core.reader.ResultReader;
 import org.rex.db.exception.DBException;
 import org.rex.db.sql.SqlParser;
 
@@ -20,8 +18,9 @@ public class DBCall extends DBOperation{
 	/**
 	 * 构造函数
 	 * @param dataSource 数据源
+	 * @throws DBException 
 	 */
-	public DBCall(DataSource dataSource, String spName){
+	public DBCall(DataSource dataSource, String spName) throws DBException{
 		setDataSource(dataSource);
 		setSql(spName);
 	}

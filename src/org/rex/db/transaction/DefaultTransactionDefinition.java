@@ -1,34 +1,23 @@
 package org.rex.db.transaction;
 
-import org.rex.db.exception.DBRuntimeException;
+import org.rex.db.configuration.Configuration;
+import org.rex.db.exception.DBException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
+import org.rex.db.util.ConstantUtil;
 
 /**
  * 定义事物运行参数
  */
 public class DefaultTransactionDefinition implements TransactionDefinition {
 
-	/** 
-	 * 描述字符串中的事务超时值的前缀 
-	 */
-	public static final String TIMEOUT_PREFIX = "timeout_";
-
-	/**
-	 * 描述字符串中只读事务的标记 
-	 */
-	public static final String READ_ONLY_MARKER = "readOnly";
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTransactionDefinition.class);
+	
 	/** 
 	 * 用于读取事物定义常量 
 	 */
-	private static final Constants constants = new Constants(TransactionDefinition.class);
-
+	private static final ConstantUtil CONSTANTS = new ConstantUtil(TransactionDefinition.class);
 	
-	//-------------
-	/**
-	 * 事物传播机制
-	 */
-	private int propagationBehavior = PROPAGATION_REQUIRED;
-
 	/**
 	 * 隔离级别
 	 */
@@ -47,49 +36,43 @@ public class DefaultTransactionDefinition implements TransactionDefinition {
 	/**
 	 * 设置事物提交失败时是否回滚
 	 */
-	private boolean rollbackOnCommitFailure = false;
-
-	public DefaultTransactionDefinition() {
+	private boolean autoRollback = false;
+	
+	//--------construction
+	public DefaultTransactionDefinition() throws DBException{
+		applyConfigrations();
 	}
-
-	public DefaultTransactionDefinition(int propagationBehavior) {
-		this.propagationBehavior = propagationBehavior;
-	}
-
+	
 	/**
-	 * 设置事物传播机制
+	 * 应用全局配置
 	 */
-	public final void setPropagationBehaviorName(String constantName) {
-		if (constantName == null || !constantName.startsWith(PROPAGATION_CONSTANT_PREFIX)) {
-			throw new DBRuntimeException("DB-C10025", constantName);
+	protected void applyConfigrations() throws DBException{
+		Configuration config = Configuration.getCurrentConfiguration();
+		autoRollback = config.isAutoRollback();
+		try{
+			setTimeout(config.getTransactionTimeout());
+		}catch(Exception e){
+			LOGGER.warn("Configuration's transaction timeout is invalid, {0}, ignore.", e.getMessage());
 		}
-		setPropagationBehavior(constants.asNumber(constantName).intValue());
-	}
-
-	public final void setPropagationBehavior(int propagationBehavior){
-		if (!constants.getValues(PROPAGATION_CONSTANT_PREFIX).contains(new Integer(propagationBehavior))) {
-			throw new DBRuntimeException("DB-C10026", propagationBehavior);
+		
+		try{
+			setIsolationLevel(config.getTransactionIsolation());
+		}catch(Exception e){
+			LOGGER.warn("Configuration's isolation level is invalid, {0}, ignore.", e.getMessage());
 		}
-		this.propagationBehavior = propagationBehavior;
 	}
 
-	public final int getPropagationBehavior() {
-		return propagationBehavior;
-	}
-
-	/**
-	 * 设置事物隔离级别
-	 */
-	public final void setIsolationLevelName(String constantName) {
-		if (constantName == null || !constantName.startsWith(ISOLATION_CONSTANT_PREFIX)) {
-			throw new DBRuntimeException("DB-C10027", constantName);
+	//--------事物隔离级别
+	public final void setIsolationLevel(String isolationLevelName) throws DBException {
+		if (isolationLevelName == null || !isolationLevelName.startsWith(ISOLATION_CONSTANT_PREFIX)) {
+			throw new DBException("DB-T0001", isolationLevelName);
 		}
-		setIsolationLevel(constants.asNumber(constantName).intValue());
+		setIsolationLevel(CONSTANTS.asNumber(isolationLevelName).intValue());
 	}
 
-	public final void setIsolationLevel(int isolationLevel) {
-		if (!constants.getValues(ISOLATION_CONSTANT_PREFIX).contains(new Integer(isolationLevel))) {
-			throw new DBRuntimeException("DB-C10028", isolationLevel);
+	public final void setIsolationLevel(int isolationLevel) throws DBException {
+		if (!CONSTANTS.getValues(ISOLATION_CONSTANT_PREFIX).contains(new Integer(isolationLevel))) {
+			throw new DBException("DB-T0001", isolationLevel);
 		}
 		this.isolationLevel = isolationLevel;
 	}
@@ -98,12 +81,10 @@ public class DefaultTransactionDefinition implements TransactionDefinition {
 		return isolationLevel;
 	}
 
-	/**
-	 * 设置超时时间
-	 */
-	public final void setTimeout(int timeout) {
+	//--------超时时间
+	public final void setTimeout(int timeout) throws DBException {
 		if (timeout < TIMEOUT_DEFAULT) {
-			throw new DBRuntimeException("DB-C10029", timeout);
+			throw new DBException("DB-T0002", timeout);
 		}
 		this.timeout = timeout;
 	}
@@ -112,9 +93,7 @@ public class DefaultTransactionDefinition implements TransactionDefinition {
 		return timeout;
 	}
 
-	/**
-	 * 设置只读选项
-	 */
+	//--------设置只读
 	public final void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
@@ -123,33 +102,24 @@ public class DefaultTransactionDefinition implements TransactionDefinition {
 		return readOnly;
 	}
 
-	/**
-	 * 设置事物提交失败时是否回滚
-	 */
-	public void setRollbackOnCommitFailure(boolean rollbackOnCommitFailure) {
-		this.rollbackOnCommitFailure = rollbackOnCommitFailure;
+	//--------设置事物提交失败时自动回滚
+	public void setAutoRollback(boolean autoRollback) {
+		this.autoRollback = autoRollback;
 	}
 
-	/**
-	 * 返回事物提交失败时是否回滚
-	 */
-	public boolean isRollbackOnCommitFailure() {
-		return rollbackOnCommitFailure;
+	public boolean isAutoRollback() {
+		return autoRollback;
 	}
 
+	//--------to string
 	public String toString() {
 		StringBuffer desc = new StringBuffer();
-		desc.append(constants.toCode(new Integer(this.propagationBehavior), PROPAGATION_CONSTANT_PREFIX));
-		desc.append(',');
-		desc.append(constants.toCode(new Integer(this.isolationLevel), ISOLATION_CONSTANT_PREFIX));
-		if (this.timeout != TIMEOUT_DEFAULT) {
-			desc.append(',');
-			desc.append(TIMEOUT_PREFIX + this.timeout);
-		}
-		if (this.readOnly) {
-			desc.append(',');
-			desc.append(READ_ONLY_MARKER);
-		}
+		desc.append("ISOLATION=")
+			.append(CONSTANTS.toCode(new Integer(this.isolationLevel), ISOLATION_CONSTANT_PREFIX))
+			.append(", TIMEOUT=")
+			.append(this.timeout)
+			.append(", READ_ONLY=")
+			.append(this.readOnly);
 		return desc.toString();
 	}
 

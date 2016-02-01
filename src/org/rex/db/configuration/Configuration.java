@@ -5,7 +5,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.rex.db.core.DBTemplate;
 import org.rex.db.datasource.DataSourceManager;
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.DialectManager;
@@ -36,6 +35,7 @@ public class Configuration {
 	 */
 	private volatile Properties variables;
 	
+	//--------settings
 	/**
 	 * 语言：zh-cn、en
 	 */
@@ -56,7 +56,29 @@ public class Configuration {
 	 */
 	private volatile boolean checkWarnings = false;
 	
+	/**
+	 * 执行查询的默认超时时间
+	 */
+	private volatile int queryTimeout = -1;
 	
+	/**
+	 * 事物默认超时时间
+	 */
+	private volatile int transactionTimeout = -1;
+	
+	/**
+	 * 事物中的操作执行失败时，是否自动回滚
+	 */
+	private volatile boolean autoRollback = false;
+	
+	/**
+	 * 事物默认隔离级别
+	 */
+	private volatile String transactionIsolation;
+	
+	
+	
+	//--------managers
 	/**
 	 * 数据源
 	 */
@@ -152,14 +174,7 @@ public class Configuration {
 		if(nolog){
 			LoggerFactory.setNolog(true);
 		}
-		
-		//基本的SQL校验
-		if(!validateSql){
-			DBTemplate.setValidateSql(validateSql);
-		}
-			
 	}
-	
 	
 	//---------------------------
 	public void setVariables(Properties variables) {
@@ -204,7 +219,40 @@ public class Configuration {
 	}
 
 	public void setCheckWarnings(boolean checkWarnings) {
+		LOGGER.info("Check warnings has switched to {0}.", validateSql);
 		this.checkWarnings = checkWarnings;
+	}
+	
+	public int getQueryTimeout() {
+		return queryTimeout;
+	}
+
+	public void setQueryTimeout(int queryTimeout) {
+		this.queryTimeout = queryTimeout;
+	}
+
+	public int getTransactionTimeout() {
+		return transactionTimeout;
+	}
+
+	public void setTransactionTimeout(int transactionTimeout) {
+		this.transactionTimeout = transactionTimeout;
+	}
+
+	public boolean isAutoRollback() {
+		return autoRollback;
+	}
+
+	public void setAutoRollback(boolean autoRollback) {
+		this.autoRollback = autoRollback;
+	}
+
+	public String getTransactionIsolation() {
+		return transactionIsolation;
+	}
+
+	public void setTransactionIsolation(String transactionIsolation) {
+		this.transactionIsolation = transactionIsolation;
 	}
 
 	//-----------

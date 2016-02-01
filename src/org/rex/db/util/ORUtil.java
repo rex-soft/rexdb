@@ -36,11 +36,11 @@ public class ORUtil {
 	 */
 	private String[] resultLabels = null;
 	private int[] resultTypes = null;
-	private Map labelsRenamed = new HashMap();
+	private Map<String, String> labelsRenamed = new HashMap<String, String>();
 
 	// =====================将RS结果集转换为JAVA对象实例
 	// ---------将结果集转为Map对象
-	public WMap rs2Map(ResultSet rs, boolean inOriginal) throws SQLException, DBException {
+	public WMap rs2Map(ResultSet rs, boolean inOriginal) throws DBException {
 
 		String[] labels = getResultLabels(rs);// 列名
 		int[] types = getResultTypes(rs);// 列类型
@@ -48,30 +48,50 @@ public class ORUtil {
 		WMap results = new WMap();
 		for (int i = 0; i < labels.length; i++) {
 			String label = inOriginal ? labels[i].toUpperCase() : renameLabel(labels[i]);
-			Object value = null;
-			switch (types[i]) {
+			Object value;
+			try {
+				value = getValue(rs, labels[i], types[i]);
+				results.put(label, value);
+			} catch (SQLException e) {
+				throw new DBException("读取结果集出错");
+			}
+		}
+
+		return results;
+	}
+	
+	/**
+	 * 从结果集中读取一个字段
+	 * @param rs
+	 * @param label
+	 * @param type
+	 * @return
+	 * @throws SQLException
+	 * @throws DBException
+	 */
+	private Object getValue(ResultSet rs, String label, int type) throws SQLException, DBException{
+		Object value = null;
+		switch (type) {
 
 			case Types.BLOB:
-				value = readBlob(rs, labels[i]);
+				value = readBlob(rs, label);
 				break;
 			case Types.CLOB:
-				value = readClob(rs, labels[i]);
+				value = readClob(rs, label);
 				break;
 			case Types.DATE:
 			case Types.TIMESTAMP:
 			case Types.TIME:
-				Timestamp timestamp = rs.getTimestamp(labels[i]);
+				Timestamp timestamp = rs.getTimestamp(label);
 				if (timestamp != null) {
 					value = new java.util.Date(timestamp.getTime());
 				}
 				break;
 			default:
-				value = rs.getObject(labels[i]);
-			}
-			results.put(label, value);
+				value = rs.getObject(label);
 		}
-
-		return results;
+		
+		return value;
 	}
 
 	// -------获取需要特殊处理的结果

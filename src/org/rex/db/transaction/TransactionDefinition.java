@@ -7,25 +7,7 @@ import java.sql.Connection;
  */
 public interface TransactionDefinition {
 
-	String PROPAGATION_CONSTANT_PREFIX = "PROPAGATION";
-
 	String ISOLATION_CONSTANT_PREFIX = "ISOLATION";
-
-	// -----------------------------事物传播机制
-	/**
-	 * 支持当前事务，如果不存在，则创建一个新的
-	 */
-	int PROPAGATION_REQUIRED = 0;
-
-	/**
-	 * 支持当前事务，如果不存在，则执行非事务处理
-	 */
-	int PROPAGATION_SUPPORTS = 1;
-
-	/**
-	 * 支持当前事务，如果不存在，则抛出异常
-	 */
-	int PROPAGATION_MANDATORY = 2;
 
 	// -------------------------------事物隔离级别
 	/**
@@ -53,18 +35,13 @@ public interface TransactionDefinition {
 	 */
 	int ISOLATION_SERIALIZABLE = Connection.TRANSACTION_SERIALIZABLE;
 
-	// -------------------------------
+	// --------------------default
 	/**
 	 * 使用事物默认超时时间
 	 */
 	int TIMEOUT_DEFAULT = -1;
 
-	// -------------------------------
-	/**
-	 * 返回事物传播机制
-	 */
-	int getPropagationBehavior();
-
+	// --------------------getters
 	/**
 	 * 返回事物隔离级别
 	 */
@@ -83,5 +60,5 @@ public interface TransactionDefinition {
 	/**
 	 * 提交失败时是否自动回滚
 	 */
-	boolean isRollbackOnCommitFailure();
+	boolean isAutoRollback();
 }

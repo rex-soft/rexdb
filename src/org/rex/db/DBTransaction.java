@@ -38,6 +38,10 @@ public class DBTransaction extends DefaultTransactionDefinition {
 	}
 
 	//------transaction
+	public DBTransaction() throws DBException {
+		super();
+	}
+	
 	/**
 	 * 开始事物
 	 */

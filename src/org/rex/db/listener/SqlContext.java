@@ -5,7 +5,7 @@ import java.util.Arrays;
 import javax.sql.DataSource;
 
 import org.rex.db.Ps;
-import org.rex.db.transaction.Constants;
+import org.rex.db.util.ConstantUtil;
 
 /**
  * 包装SQL、预编译参数、数据源等，方便监听程序调用
@@ -15,7 +15,7 @@ public class SqlContext extends BaseContext{
 	/** 
 	 * 用于读取常量 
 	 */
-	private static final Constants constants = new Constants(SqlContext.class);
+	private static final ConstantUtil constants = new ConstantUtil(SqlContext.class);
 	
 	/**
 	 * 执行的SQL类型：查询

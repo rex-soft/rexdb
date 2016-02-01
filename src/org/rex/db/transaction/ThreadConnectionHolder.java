@@ -13,7 +13,7 @@ import org.rex.db.exception.DBRuntimeException;
  */
 public class ThreadConnectionHolder {
 
-	private static ThreadLocal<Map> connections = new ThreadLocal<Map>() {//线程保存的资源
+	private static ThreadLocal<Map<DataSource, ConnectionHolder>> connections = new ThreadLocal<Map<DataSource, ConnectionHolder>>() {//线程保存的资源
 		protected Map<DataSource, ConnectionHolder> initialValue() {
 			return new HashMap<DataSource, ConnectionHolder> ();
 		}
@@ -33,15 +33,15 @@ public class ThreadConnectionHolder {
 
 	public static void bind(DataSource key, ConnectionHolder value) {
 		if (has(key)) {
-			throw new DBRuntimeException("DB-C10030", key);
+			throw new DBRuntimeException("DB-T0006", key);
 		}
 		get().put(key, value);
 	}
 
 	public static void unbind(DataSource key) {
 		if (!has(key)) {
-			throw new DBRuntimeException("DB-C10031", key);
+			throw new DBRuntimeException("DB-T0007", key);
 		}
-		Object value = get().remove(key);
+		get().remove(key);
 	}
 }

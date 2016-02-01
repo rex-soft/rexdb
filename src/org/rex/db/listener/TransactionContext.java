@@ -1,7 +1,7 @@
 package org.rex.db.listener;
 
-import org.rex.db.transaction.Constants;
 import org.rex.db.transaction.TransactionDefinition;
+import org.rex.db.util.ConstantUtil;
 
 /**
  * 包装事物配置等信息，方便监听程序调用
@@ -11,7 +11,7 @@ public class TransactionContext extends BaseContext {
 	/** 
 	 * 用于读取常量 
 	 */
-	static final Constants CONSTANTS = new Constants(TransactionContext.class);
+	static final ConstantUtil CONSTANTS = new ConstantUtil(TransactionContext.class);
 
 	/**
 	 * 事物的状态：开启

@@ -37,9 +37,8 @@ public abstract class DataSourceUtil {
 		}
 	}
 
-
 	/**
-	 * 设置查询超时时间
+	 * 设置事物超时时间
 	 */
 	public static void applyTransactionTimeout(Statement stmt, DataSource ds) throws DBException {
 		ConnectionHolder holder = (ConnectionHolder) ThreadConnectionHolder.get(ds);

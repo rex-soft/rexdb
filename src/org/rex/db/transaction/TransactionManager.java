@@ -23,7 +23,7 @@ public interface TransactionManager {
 	 * 回滚事务
 	 */
 	void rollback() throws DBException;
-	
+
 	/**
 	 * 获取开启事物的连接
 	 */
