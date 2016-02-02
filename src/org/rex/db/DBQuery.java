@@ -32,23 +32,10 @@ public class DBQuery extends DBOperation {
 	 */
 	public DBQuery(DataSource dataSource, String sql) throws DBException {
 		setDataSource(dataSource);
-		// setSql(translateSql(sql));
 		setSql(sql);
 	}
 
 	// ---------------------------------------与方言有关的内部方法
-
-	/**
-	 * 执行SQL翻译，主要针对SQL语句中的方法
-	 * 
-	 * @param sql 原SQL语句
-	 * @return 翻译后的SQL
-	 * @throws SQLException 翻译SQL时发生了错误
-	 */
-	// protected String translateSql(String sql) throws W11DBException{
-	// return getDialect().translateSql(sql);
-	// }
-
 	/**
 	 * 获取分页SQL
 	 * 

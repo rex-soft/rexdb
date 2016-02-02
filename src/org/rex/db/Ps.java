@@ -156,7 +156,7 @@ public class Ps {
 	private List insert(List list, int index, Object value){
 		--index;
 		if(list.size() < index)
-			throw new DBRuntimeException("DB-C10040", value, index + 1, list.size());
+			throw new DBRuntimeException("DB-00001", value, index + 1, list.size(), list);
 		
 		if(list.size() == index){
 			list.add(value);

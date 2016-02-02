@@ -19,7 +19,7 @@ import org.rex.db.exception.DBException;
 
 /**
  * 方便调用的数据库操作接口类
- * @author zhouwei
+ * @author z
  */
 public class DB {
 	
@@ -35,14 +35,14 @@ public class DB {
 	public static DataSource getDefaultDataSource() throws DBException {
 		DataSource defaultDataSource = getDataSourceManager().getDefault();
 		if(defaultDataSource == null)
-			throw new DBException("DB-C10035");
+			throw new DBException("DB-00002");
 		return defaultDataSource;
 	}
 	
 	public static DataSource getDataSource(String dataSourceId) throws DBException {
 		DataSource dataSource = getDataSourceManager().get(dataSourceId);
 		if(dataSource == null)
-			throw new DBException("DB-C10036", dataSourceId);
+			throw new DBException("DB-00003", dataSourceId);
 		return dataSource;
 	}
 	

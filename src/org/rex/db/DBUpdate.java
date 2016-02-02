@@ -31,23 +31,10 @@ public class DBUpdate extends DBOperation{
 	 */
 	public DBUpdate(DataSource dataSource, String sql) throws DBException{
 		setDataSource(dataSource);
-//		setSql(translateSql(sql));//对SQL执行基于方言的翻译
 		setSql(sql);
 	}
 	
-	//---------------------------------------与方言有关的内部方法
-	/**
-	 * 执行SQL翻译，主要针对SQL语句中的方法
-	 * @param sql 原SQL语句
-	 * @return 翻译后的SQL
-	 * @throws W11DBException 翻译SQL时发生了错误
-	 */
-//	protected String translateSql(String sql) throws W11DBException{
-//		return getDialect().translateSql(sql);
-//	}
-	
 	//---------------------------------------执行操作，对外接口
-	
 	/**
 	 * 执行更新
 	 * @throws DBException 
