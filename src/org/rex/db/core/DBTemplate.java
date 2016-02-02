@@ -12,7 +12,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.rex.WMap;
+import org.rex.RMap;
 import org.rex.db.Ps;
 import org.rex.db.configuration.Configuration;
 import org.rex.db.core.executor.DefaultQueryExecutor;
@@ -223,13 +223,13 @@ public class DBTemplate {
 	/**
 	 * 通过CallableStatement执行查询，通常用于调用存储过程
 	 */
-	public WMap call(String sql, Ps ps, boolean originalKey) throws DBException {
+	public RMap call(String sql, Ps ps, boolean originalKey) throws DBException {
 		validateSql(sql, ps);
 		SqlContext context = fireOnEvent(SqlContext.SQL_CALL, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		CallableStatement cs = null;
-		WMap outs = null;
+		RMap outs = null;
 		try {
 			cs = statementCreator.createCallableStatement(con, sql, ps);
 			applyTimeout(cs, this.dataSource);
@@ -238,7 +238,7 @@ public class DBTemplate {
 			
 			checkWarnings(con, cs, null);
 			outs = extractOutputParameters(cs, ps, originalKey);
-			WMap returns = extractReturnedResultSets(cs, ps, originalKey);
+			RMap returns = extractReturnedResultSets(cs, ps, originalKey);
 			if(returns.size() > 0)
 				outs.putAll(returns);
 			
@@ -255,8 +255,8 @@ public class DBTemplate {
 	/**
 	 * 调用存储过程后，解析输出参数
 	 */
-	private WMap extractOutputParameters(CallableStatement cs, Ps ps, boolean originalKey) throws DBException {
-		WMap outParams = new WMap();
+	private RMap extractOutputParameters(CallableStatement cs, Ps ps, boolean originalKey) throws DBException {
+		RMap outParams = new RMap();
 		if(ps == null) return outParams;
 		
 		List<Ps.SqlParameter> parameters = ps.getParameters();
@@ -304,8 +304,8 @@ public class DBTemplate {
 	 * 调用存储过程后，解析返回结果
 	 * XXX:暂时不能解析为bean
 	 */
-	private WMap extractReturnedResultSets(CallableStatement cs, Ps ps, boolean originalKey) throws DBException, SQLException {
-		WMap returns = new WMap();
+	private RMap extractReturnedResultSets(CallableStatement cs, Ps ps, boolean originalKey) throws DBException, SQLException {
+		RMap returns = new RMap();
 		int rsIndx = 0;
 		ResultReader reader = null;
 		do {

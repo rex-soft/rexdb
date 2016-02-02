@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.rex.DB;
-import org.rex.WMap;
+import org.rex.RMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 
@@ -28,7 +28,7 @@ public class TestSelectPagedList extends Base{
 		String sql = "select * from r_student";
 		
 		//查询结果封装为List<WMap>，列下标转换为java风格
-		List<WMap> result1 = DB.getMapList(sql, 0, 10);
+		List<RMap> result1 = DB.getMapList(sql, 0, 10);
 		System.out.println(result1);
 		
 		//查询结果封装为List<T>
@@ -45,7 +45,7 @@ public class TestSelectPagedList extends Base{
 		String sql = "select * from r_student where student_id < ?";
 		
 		//查询结果封装为List<WMap>，列下标转换为java风格
-		List<WMap> result1 = DB.getMapList(sql, new Ps(10), 0, 10);
+		List<RMap> result1 = DB.getMapList(sql, new Ps(10), 0, 10);
 		System.out.println(result1);
 		
 		//查询结果封装为List<T>
@@ -64,7 +64,7 @@ public class TestSelectPagedList extends Base{
 		paramMap.put("studentId", 10);
 		
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		List<WMap> result1 = DB.getMapList(sql, paramMap, 0, 10);
+		List<RMap> result1 = DB.getMapList(sql, paramMap, 0, 10);
 		System.out.println(result1);
 		
 		//查询结果封装为Bean
@@ -76,7 +76,7 @@ public class TestSelectPagedList extends Base{
 		paramBean.setStudentId(10);
 		
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		List<WMap> result4 = DB.getMapList(sql, paramBean, 0, 10);
+		List<RMap> result4 = DB.getMapList(sql, paramBean, 0, 10);
 		System.out.println(result4);
 		
 		//查询结果封装为Bean

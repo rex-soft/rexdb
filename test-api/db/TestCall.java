@@ -1,7 +1,7 @@
 package db;
 
 import org.rex.DB;
-import org.rex.WMap;
+import org.rex.RMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 
@@ -30,7 +30,7 @@ public class TestCall extends Base {
 
 		String sql = "{call proc_in(?)}";
 
-		WMap result = DB.call(sql, new Ps(1));
+		RMap result = DB.call(sql, new Ps(1));
 		System.out.println(result);
 	}
 
@@ -51,7 +51,7 @@ public class TestCall extends Base {
 //		ps.setOutResultSet(0, oracle.jdbc.OracleTypes.CURSOR);
 //		ps.setOutResultSet(0, oracle.jdbc.OracleTypes.CURSOR, Student.class);
 
-		WMap result = DB.call(sql, ps);
+		RMap result = DB.call(sql, ps);
 		System.out.println(result);
 	}
 
@@ -72,7 +72,7 @@ public class TestCall extends Base {
 		ps1.add(1);
 		ps1.addOutInt();
 
-		WMap result1 = DB.call(sql, ps1);
+		RMap result1 = DB.call(sql, ps1);
 		System.out.println(result1);
 
 		//为输出参数重命名
@@ -80,7 +80,7 @@ public class TestCall extends Base {
 		ps2.add(1);
 		ps2.addOutInt("param-1");
 
-		WMap result2 = DB.call(sql, ps2);
+		RMap result2 = DB.call(sql, ps2);
 		System.out.println(result2);
 	}
 	
@@ -100,14 +100,14 @@ public class TestCall extends Base {
 		Ps ps1=new Ps();
 		ps1.addInOut(1);
 		
-		WMap result1 = DB.call(sql, ps1);
+		RMap result1 = DB.call(sql, ps1);
 		System.out.println(result1);
 		
 		//为输出参数重命名
 		Ps ps2=new Ps();
 		ps2.addInOut("param-1", 1);
 		
-		WMap result2 = DB.call(sql, ps2);
+		RMap result2 = DB.call(sql, ps2);
 		System.out.println(result2);
 	}
 	
@@ -123,7 +123,7 @@ public class TestCall extends Base {
 		
 		String sql = "{call proc_return()}";
 		
-		WMap result = DB.call(sql);
+		RMap result = DB.call(sql);
 		System.out.println(result);
 	}
 	
@@ -140,7 +140,7 @@ public class TestCall extends Base {
 		
 		String sql = "{call proc_return_rs()}";
 	
-		WMap result = DB.call(sql);
+		RMap result = DB.call(sql);
 		System.out.println(result);
 	}
 }

@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.rex.WMap;
+import org.rex.RMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
@@ -19,12 +19,12 @@ public class MapResultReader implements ResultReader {
 	private Ps ps;
 	boolean originalKey;
 
-	private List<WMap> results;
+	private List<RMap> results;
 
 	private int rowNum = 0;
 
 	public MapResultReader(boolean originalKey) {
-		this.results = new LinkedList<WMap>();
+		this.results = new LinkedList<RMap>();
 		this.originalKey = originalKey;
 	}
 
@@ -49,7 +49,7 @@ public class MapResultReader implements ResultReader {
 		results.add(row2Map(rs, rowNum++, ps, originalKey));
 	}
 
-	public List<WMap> getResults() {
+	public List<RMap> getResults() {
 		return results;
 	}
 
@@ -64,7 +64,7 @@ public class MapResultReader implements ResultReader {
 	 * @return
 	 * @throws DBException
 	 */
-	private WMap row2Map(ResultSet rs, int rowNum, Ps ps, boolean originalKey) throws DBException {
+	private RMap row2Map(ResultSet rs, int rowNum, Ps ps, boolean originalKey) throws DBException {
 		return orUtil.rs2Map(rs, originalKey);
 	}
 

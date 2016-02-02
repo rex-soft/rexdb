@@ -2,7 +2,7 @@ package org.rex.db;
 
 import javax.sql.DataSource;
 
-import org.rex.WMap;
+import org.rex.RMap;
 import org.rex.db.core.DBOperation;
 import org.rex.db.core.DBTemplate;
 import org.rex.db.exception.DBException;
@@ -29,7 +29,7 @@ public class DBCall extends DBOperation{
 	/**
 	 * 执行存储过程调用
 	 */
-	protected WMap execute(Ps ps, boolean originalKey) throws DBException {
+	protected RMap execute(Ps ps, boolean originalKey) throws DBException {
 		DBTemplate template = getTemplate();
 		return template.call(getSql(), ps, originalKey);
 	}
@@ -60,7 +60,7 @@ public class DBCall extends DBOperation{
 	 * 调用存储过程
 	 * @throws DBException 
 	 */
-	public WMap call() throws DBException{
+	public RMap call() throws DBException{
 		return execute(null, false);
 	}
 	
@@ -69,7 +69,7 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public WMap call(Ps ps) throws DBException{
+	public RMap call(Ps ps) throws DBException{
 		return execute(ps, false);
 	}
 	
@@ -78,7 +78,7 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public WMap call(Object[] params) throws DBException{
+	public RMap call(Object[] params) throws DBException{
 		return execute(getPs(params), false);
 	}
 	
@@ -87,7 +87,7 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public WMap call(Object param) throws DBException{
+	public RMap call(Object param) throws DBException{
 		return execute(parseSqlEl(param), false);
 	}
 	
@@ -96,7 +96,7 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public WMap callOriginal() throws DBException{
+	public RMap callOriginal() throws DBException{
 		return execute(null, true);
 	}
 	
@@ -105,7 +105,7 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public WMap callOriginal(Ps ps) throws DBException{
+	public RMap callOriginal(Ps ps) throws DBException{
 		return execute(ps, true);
 	}
 	
@@ -114,7 +114,7 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public WMap callOriginal(Object[] params) throws DBException{
+	public RMap callOriginal(Object[] params) throws DBException{
 		return execute(getPs(params), true);
 	}
 	
@@ -123,7 +123,7 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public WMap callOriginal(Object param) throws DBException{
+	public RMap callOriginal(Object param) throws DBException{
 		return execute(parseSqlEl(param), true);
 	}
 }

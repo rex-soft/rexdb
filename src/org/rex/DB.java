@@ -251,7 +251,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMap(String dataSourceId, String sql) throws DBException{
+	public static RMap getMap(String dataSourceId, String sql) throws DBException{
 		return getQuery(dataSourceId, sql).getMap();
 	}
 	
@@ -259,7 +259,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMapOriginal(String dataSourceId, String sql) throws DBException{
+	public static RMap getMapOriginal(String dataSourceId, String sql) throws DBException{
 		return getQuery(dataSourceId, sql).getMapOriginal();
 	}
 	
@@ -267,7 +267,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMap(String dataSourceId, String sql, Ps ps) throws DBException{
+	public static RMap getMap(String dataSourceId, String sql, Ps ps) throws DBException{
 		return getQuery(dataSourceId, sql).getMap(ps);
 	}
 	
@@ -275,7 +275,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMap(String dataSourceId, String sql, Object[] params) throws DBException{
+	public static RMap getMap(String dataSourceId, String sql, Object[] params) throws DBException{
 		return getQuery(dataSourceId, sql).getMap(params);
 	}
 	
@@ -283,7 +283,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMap(String dataSourceId, String sql, Object param) throws DBException{
+	public static RMap getMap(String dataSourceId, String sql, Object param) throws DBException{
 		return getQuery(dataSourceId, sql).getMap(param);
 	}
 	
@@ -291,7 +291,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMapOriginal(String dataSourceId, String sql, Ps ps) throws DBException{
+	public static RMap getMapOriginal(String dataSourceId, String sql, Ps ps) throws DBException{
 		return getQuery(dataSourceId, sql).getMapOriginal(ps);
 	}
 	
@@ -299,7 +299,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMapOriginal(String dataSourceId, String sql, Object[] params) throws DBException{
+	public static RMap getMapOriginal(String dataSourceId, String sql, Object[] params) throws DBException{
 		return getQuery(dataSourceId, sql).getMapOriginal(params);
 	}
 	
@@ -307,7 +307,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMapOriginal(String dataSourceId, String sql, Object param) throws DBException{
+	public static RMap getMapOriginal(String dataSourceId, String sql, Object param) throws DBException{
 		return getQuery(dataSourceId, sql).getMapOriginal(param);
 	}
 
@@ -436,7 +436,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql) throws DBException{
+	public static List<RMap> getMapList(String dataSourceId, String sql) throws DBException{
 		return getQuery(dataSourceId, sql).getMapList();
 	}
 	
@@ -444,7 +444,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql) throws DBException{
+	public static List<RMap> getMapListOriginal(String dataSourceId, String sql) throws DBException{
 		return getQuery(dataSourceId, sql).getMapListOriginal();
 	}
 	
@@ -452,7 +452,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Ps ps) throws DBException{
+	public static List<RMap> getMapList(String dataSourceId, String sql, Ps ps) throws DBException{
 		return getQuery(dataSourceId, sql).getMapList(ps);
 	}
 	
@@ -460,7 +460,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Object[] params) throws DBException{
+	public static List<RMap> getMapList(String dataSourceId, String sql, Object[] params) throws DBException{
 		return getQuery(dataSourceId, sql).getMapList(params);
 	}
 	
@@ -468,7 +468,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Object param) throws DBException{
+	public static List<RMap> getMapList(String dataSourceId, String sql, Object param) throws DBException{
 		return getQuery(dataSourceId, sql).getMapList(param);
 	}
 	
@@ -476,7 +476,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Ps ps) throws DBException{
+	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Ps ps) throws DBException{
 		return getQuery(dataSourceId, sql).getMapListOriginal(ps);
 	}
 	
@@ -484,7 +484,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Object[] params) throws DBException{
+	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Object[] params) throws DBException{
 		return getQuery(dataSourceId, sql).getMapListOriginal(params);
 	}
 	
@@ -492,7 +492,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Object param) throws DBException{
+	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Object param) throws DBException{
 		return getQuery(dataSourceId, sql).getMapListOriginal(param);
 	}
 	
@@ -500,7 +500,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, int offset, int rows) throws DBException{
+	public static List<RMap> getMapList(String dataSourceId, String sql, int offset, int rows) throws DBException{
 		return getQuery(dataSourceId, sql).getMapList(offset, rows);
 	}
 	
@@ -508,7 +508,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, int offset, int rows) throws DBException{
+	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, int offset, int rows) throws DBException{
 		return getQuery(dataSourceId, sql).getMapListOriginal(offset, rows);
 	}
 	
@@ -516,7 +516,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Ps ps, int offset, int rows) throws DBException{
+	public static List<RMap> getMapList(String dataSourceId, String sql, Ps ps, int offset, int rows) throws DBException{
 		return getQuery(dataSourceId, sql).getMapList(ps, offset, rows);
 	}
 	
@@ -524,7 +524,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Object[] params, int offset, int rows) throws DBException{
+	public static List<RMap> getMapList(String dataSourceId, String sql, Object[] params, int offset, int rows) throws DBException{
 		return getQuery(dataSourceId, sql).getMapList(params, offset, rows);
 	}
 	
@@ -532,7 +532,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String dataSourceId, String sql, Object param, int offset, int rows) throws DBException{
+	public static List<RMap> getMapList(String dataSourceId, String sql, Object param, int offset, int rows) throws DBException{
 		return getQuery(dataSourceId, sql).getMapList(param, offset, rows);
 	}
 	
@@ -540,7 +540,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Ps ps, int offset, int rows) throws DBException{
+	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Ps ps, int offset, int rows) throws DBException{
 		return getQuery(dataSourceId, sql).getMapListOriginal(ps, offset, rows);
 	}
 	
@@ -548,7 +548,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Object[] params, int offset, int rows) throws DBException{
+	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Object[] params, int offset, int rows) throws DBException{
 		return getQuery(dataSourceId, sql).getMapListOriginal(params, offset, rows);
 	}
 	
@@ -556,7 +556,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String dataSourceId, String sql, Object param, int offset, int rows) throws DBException{
+	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Object param, int offset, int rows) throws DBException{
 		return getQuery(dataSourceId, sql).getMapListOriginal(param, offset, rows);
 	}
 
@@ -694,7 +694,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMap(String sql) throws DBException{
+	public static RMap getMap(String sql) throws DBException{
 		return getQuery(sql).getMap();
 	}
 	
@@ -702,7 +702,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMapOriginal(String sql) throws DBException{
+	public static RMap getMapOriginal(String sql) throws DBException{
 		return getQuery(sql).getMapOriginal();
 	}
 	
@@ -710,7 +710,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMap(String sql, Ps ps) throws DBException{
+	public static RMap getMap(String sql, Ps ps) throws DBException{
 		return getQuery(sql).getMap(ps);
 	}
 	
@@ -718,7 +718,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMap(String sql, Object[] params) throws DBException{
+	public static RMap getMap(String sql, Object[] params) throws DBException{
 		return getQuery(sql).getMap(params);
 	}
 	
@@ -726,7 +726,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMap(String sql, Object param) throws DBException{
+	public static RMap getMap(String sql, Object param) throws DBException{
 		return getQuery(sql).getMap(param);
 	}
 	
@@ -734,7 +734,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMapOriginal(String sql, Ps ps) throws DBException{
+	public static RMap getMapOriginal(String sql, Ps ps) throws DBException{
 		return getQuery(sql).getMapOriginal(ps);
 	}
 	
@@ -742,7 +742,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMapOriginal(String sql, Object[] params) throws DBException{
+	public static RMap getMapOriginal(String sql, Object[] params) throws DBException{
 		return getQuery(sql).getMapOriginal(params);
 	}
 	
@@ -750,7 +750,7 @@ public class DB {
 	 * 执行查询, 获取一条记录
 	 * @throws DBException 
 	 */
-	public static WMap getMapOriginal(String sql, Object param) throws DBException{
+	public static RMap getMapOriginal(String sql, Object param) throws DBException{
 		return getQuery(sql).getMapOriginal(param);
 	}
 
@@ -880,7 +880,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql) throws DBException{
+	public static List<RMap> getMapList(String sql) throws DBException{
 		return getQuery(sql).getMapList();
 	}
 	
@@ -888,7 +888,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql) throws DBException{
+	public static List<RMap> getMapListOriginal(String sql) throws DBException{
 		return getQuery(sql).getMapListOriginal();
 	}
 	
@@ -896,7 +896,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Ps ps) throws DBException{
+	public static List<RMap> getMapList(String sql, Ps ps) throws DBException{
 		return getQuery(sql).getMapList(ps);
 	}
 	
@@ -904,7 +904,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Object[] params) throws DBException{
+	public static List<RMap> getMapList(String sql, Object[] params) throws DBException{
 		return getQuery(sql).getMapList(params);
 	}
 	
@@ -912,7 +912,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Object param) throws DBException{
+	public static List<RMap> getMapList(String sql, Object param) throws DBException{
 		return getQuery(sql).getMapList(param);
 	}
 	
@@ -920,7 +920,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Ps ps) throws DBException{
+	public static List<RMap> getMapListOriginal(String sql, Ps ps) throws DBException{
 		return getQuery(sql).getMapListOriginal(ps);
 	}
 	
@@ -928,7 +928,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Object[] params) throws DBException{
+	public static List<RMap> getMapListOriginal(String sql, Object[] params) throws DBException{
 		return getQuery(sql).getMapListOriginal(params);
 	}
 	
@@ -936,7 +936,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Object param) throws DBException{
+	public static List<RMap> getMapListOriginal(String sql, Object param) throws DBException{
 		return getQuery(sql).getMapListOriginal(param);
 	}
 	
@@ -944,7 +944,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, int offset, int rows) throws DBException{
+	public static List<RMap> getMapList(String sql, int offset, int rows) throws DBException{
 		return getQuery(sql).getMapList(offset, rows);
 	}
 	
@@ -952,7 +952,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, int offset, int rows) throws DBException{
+	public static List<RMap> getMapListOriginal(String sql, int offset, int rows) throws DBException{
 		return getQuery(sql).getMapListOriginal(offset, rows);
 	}
 	
@@ -960,7 +960,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Ps ps, int offset, int rows) throws DBException{
+	public static List<RMap> getMapList(String sql, Ps ps, int offset, int rows) throws DBException{
 		return getQuery(sql).getMapList(ps, offset, rows);
 	}
 	
@@ -968,7 +968,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Object[] params, int offset, int rows) throws DBException{
+	public static List<RMap> getMapList(String sql, Object[] params, int offset, int rows) throws DBException{
 		return getQuery(sql).getMapList(params, offset, rows);
 	}
 	
@@ -976,7 +976,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapList(String sql, Object param, int offset, int rows) throws DBException{
+	public static List<RMap> getMapList(String sql, Object param, int offset, int rows) throws DBException{
 		return getQuery(sql).getMapList(param, offset, rows);
 	}
 	
@@ -984,7 +984,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Ps ps, int offset, int rows) throws DBException{
+	public static List<RMap> getMapListOriginal(String sql, Ps ps, int offset, int rows) throws DBException{
 		return getQuery(sql).getMapListOriginal(ps, offset, rows);
 	}
 	
@@ -992,7 +992,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Object[] params, int offset, int rows) throws DBException{
+	public static List<RMap> getMapListOriginal(String sql, Object[] params, int offset, int rows) throws DBException{
 		return getQuery(sql).getMapListOriginal(params, offset, rows);
 	}
 	
@@ -1000,7 +1000,7 @@ public class DB {
 	 * 执行查询, 获取多条记录
 	 * @throws DBException 
 	 */
-	public static List<WMap> getMapListOriginal(String sql, Object param, int offset, int rows) throws DBException{
+	public static List<RMap> getMapListOriginal(String sql, Object param, int offset, int rows) throws DBException{
 		return getQuery(sql).getMapListOriginal(param, offset, rows);
 	}
 	
@@ -1254,7 +1254,7 @@ public class DB {
 	 * 调用存储过程
 	 * @throws DBException 
 	 */
-	public static WMap call(DataSource dataSource, String sql) throws DBException{
+	public static RMap call(DataSource dataSource, String sql) throws DBException{
 		return getCall(dataSource, sql).call();
 	}
 	
@@ -1263,7 +1263,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap call(DataSource dataSource, String sql, Ps ps) throws DBException{
+	public static RMap call(DataSource dataSource, String sql, Ps ps) throws DBException{
 		return getCall(dataSource, sql).call(ps);
 	}
 	
@@ -1272,7 +1272,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap call(DataSource dataSource, String sql, Object[] params) throws DBException{
+	public static RMap call(DataSource dataSource, String sql, Object[] params) throws DBException{
 		return getCall(dataSource, sql).call(params);
 	}
 	
@@ -1281,7 +1281,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap call(DataSource dataSource, String sql, Object param) throws DBException{
+	public static RMap call(DataSource dataSource, String sql, Object param) throws DBException{
 		return getCall(dataSource, sql).call(param);
 	}
 	
@@ -1290,7 +1290,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap callOriginal(DataSource dataSource, String sql) throws DBException{
+	public static RMap callOriginal(DataSource dataSource, String sql) throws DBException{
 		return getCall(dataSource, sql).callOriginal();
 	}
 	
@@ -1299,7 +1299,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap callOriginal(DataSource dataSource, String sql, Ps ps) throws DBException{
+	public static RMap callOriginal(DataSource dataSource, String sql, Ps ps) throws DBException{
 		return getCall(dataSource, sql).callOriginal(ps);
 	}
 	
@@ -1308,7 +1308,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap callOriginal(DataSource dataSource, String sql, Object[] params) throws DBException{
+	public static RMap callOriginal(DataSource dataSource, String sql, Object[] params) throws DBException{
 		return getCall(dataSource, sql).callOriginal(params);
 	}
 	
@@ -1317,7 +1317,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap callOriginal(DataSource dataSource, String sql, Object param) throws DBException{
+	public static RMap callOriginal(DataSource dataSource, String sql, Object param) throws DBException{
 		return getCall(dataSource, sql).callOriginal(param);
 	}
 	
@@ -1326,7 +1326,7 @@ public class DB {
 	 * 调用存储过程
 	 * @throws DBException 
 	 */
-	public static WMap call(String sql) throws DBException{
+	public static RMap call(String sql) throws DBException{
 		return getCall(sql).call();
 	}
 	
@@ -1335,7 +1335,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap call(String sql, Ps ps) throws DBException{
+	public static RMap call(String sql, Ps ps) throws DBException{
 		return getCall(sql).call(ps);
 	}
 	
@@ -1344,7 +1344,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap call(String sql, Object[] params) throws DBException{
+	public static RMap call(String sql, Object[] params) throws DBException{
 		return getCall(sql).call(params);
 	}
 	
@@ -1353,7 +1353,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap call(String sql, Object param) throws DBException{
+	public static RMap call(String sql, Object param) throws DBException{
 		return getCall(sql).call(param);
 	}
 	
@@ -1362,7 +1362,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap callOriginal(String sql) throws DBException{
+	public static RMap callOriginal(String sql) throws DBException{
 		return getCall(sql).callOriginal();
 	}
 	
@@ -1371,7 +1371,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap callOriginal(String sql, Ps ps) throws DBException{
+	public static RMap callOriginal(String sql, Ps ps) throws DBException{
 		return getCall(sql).callOriginal(ps);
 	}
 	
@@ -1380,7 +1380,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap callOriginal(String sql, Object[] params) throws DBException{
+	public static RMap callOriginal(String sql, Object[] params) throws DBException{
 		return getCall(sql).callOriginal(params);
 	}
 	
@@ -1389,7 +1389,7 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static WMap callOriginal(String sql, Object param) throws DBException{
+	public static RMap callOriginal(String sql, Object param) throws DBException{
 		return getCall(sql).callOriginal(param);
 	}
 

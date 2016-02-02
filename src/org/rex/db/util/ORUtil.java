@@ -16,7 +16,7 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.rex.WMap;
+import org.rex.RMap;
 import org.rex.db.exception.DBException;
 
 public class ORUtil {
@@ -33,11 +33,11 @@ public class ORUtil {
 	}
 
 	// -----------result set to map
-	public WMap rs2Map(ResultSet rs, boolean inOriginal) throws DBException {
+	public RMap rs2Map(ResultSet rs, boolean inOriginal) throws DBException {
 		String[] labels = getResultLabels(rs);// 列名
 		int[] types = getResultTypes(rs);// 列类型
 
-		WMap results = new WMap();
+		RMap results = new RMap();
 		for (int i = 0; i < labels.length; i++) {
 			String label = inOriginal ? labels[i].toUpperCase() : renameLabel(labels[i]);
 			Object value;

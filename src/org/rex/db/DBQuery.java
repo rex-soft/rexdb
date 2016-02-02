@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.rex.WMap;
+import org.rex.RMap;
 import org.rex.db.core.DBOperation;
 import org.rex.db.core.DBTemplate;
 import org.rex.db.core.reader.BeanResultReader;
@@ -134,8 +134,8 @@ public class DBQuery extends DBOperation {
 		return execute(rr, ps);
 	}
 
-	private List<WMap> queryList(Ps ps, boolean originalKey) throws DBException {
-		ResultReader<WMap> rr = new MapResultReader(ps, originalKey);
+	private List<RMap> queryList(Ps ps, boolean originalKey) throws DBException {
+		ResultReader<RMap> rr = new MapResultReader(ps, originalKey);
 		return execute(rr, ps);
 	}
 
@@ -150,8 +150,8 @@ public class DBQuery extends DBOperation {
 		return fetchOne(result);
 	}
 
-	private WMap query(Ps ps, boolean originalKey) throws DBException {
-		List<WMap> result = queryList(ps, originalKey);
+	private RMap query(Ps ps, boolean originalKey) throws DBException {
+		List<RMap> result = queryList(ps, originalKey);
 		return fetchOne(result);
 	}
 
@@ -264,7 +264,7 @@ public class DBQuery extends DBOperation {
 	 * @return 结果集（未查询到记录时为null）
 	 * @throws DBException
 	 */
-	protected WMap getMap(boolean originalKey) throws DBException {
+	protected RMap getMap(boolean originalKey) throws DBException {
 		return query(null, originalKey);
 	}
 
@@ -276,7 +276,7 @@ public class DBQuery extends DBOperation {
 	 * @return 结果集（未查询到记录时为null）
 	 * @throws DBException
 	 */
-	protected WMap getMap(Ps ps, boolean originalKey) throws DBException {
+	protected RMap getMap(Ps ps, boolean originalKey) throws DBException {
 		return query(ps, originalKey);
 	}
 
@@ -288,7 +288,7 @@ public class DBQuery extends DBOperation {
 	 * @return 结果集（未查询到记录时为null）
 	 * @throws DBException
 	 */
-	protected WMap getMapByParamArray(Object[] params, boolean originalKey) throws DBException {
+	protected RMap getMapByParamArray(Object[] params, boolean originalKey) throws DBException {
 		return query(getPs(params), originalKey);
 	}
 
@@ -300,7 +300,7 @@ public class DBQuery extends DBOperation {
 	 * @return 结果集（未查询到记录时为null）
 	 * @throws DBException
 	 */
-	protected WMap getMapByEl(Object param, boolean originalKey) throws DBException {
+	protected RMap getMapByEl(Object param, boolean originalKey) throws DBException {
 		return query(parseSqlEl(param), originalKey);
 	}
 
@@ -392,7 +392,7 @@ public class DBQuery extends DBOperation {
 		return queryList(wrapLimitPs(ps, offset, rows), resultClass, originalKey);
 	}
 	
-	protected List<WMap> getLimitList(Ps ps, int offset, int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getLimitList(Ps ps, int offset, int rows, boolean originalKey) throws DBException {
 		return queryList(wrapLimitPs(ps, offset, rows), originalKey);
 	}
 
@@ -441,7 +441,7 @@ public class DBQuery extends DBOperation {
 	 * @return 结果记录
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(boolean originalKey) throws DBException {
+	protected List<RMap> getMapList(boolean originalKey) throws DBException {
 		return queryList(null, originalKey);
 	}
 
@@ -454,7 +454,7 @@ public class DBQuery extends DBOperation {
 	 * @throws SQLException
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getMapList(int rows, boolean originalKey) throws DBException {
 		return getLimitList(null, -1, rows, originalKey);
 	}
 
@@ -467,7 +467,7 @@ public class DBQuery extends DBOperation {
 	 * @return 结果记录
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(int offset, int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getMapList(int offset, int rows, boolean originalKey) throws DBException {
 		return getLimitList(null, offset, rows, originalKey);
 	}
 
@@ -479,7 +479,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(Ps ps, boolean originalKey) throws DBException {
+	protected List<RMap> getMapList(Ps ps, boolean originalKey) throws DBException {
 		return queryList(ps, originalKey);
 	}
 
@@ -492,7 +492,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(Ps ps, int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getMapList(Ps ps, int rows, boolean originalKey) throws DBException {
 		return getLimitList(ps, -1, rows, originalKey);
 	}
 
@@ -506,7 +506,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapList(Ps ps, int offset, int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getMapList(Ps ps, int offset, int rows, boolean originalKey) throws DBException {
 		return getLimitList(ps, offset, rows, originalKey);
 	}
 
@@ -518,7 +518,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByParamArray(Object[] params, boolean originalKey) throws DBException {
+	protected List<RMap> getMapListByParamArray(Object[] params, boolean originalKey) throws DBException {
 		return queryList(getPs(params), originalKey);
 	}
 
@@ -530,7 +530,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByEl(Object param, boolean originalKey) throws DBException {
+	protected List<RMap> getMapListByEl(Object param, boolean originalKey) throws DBException {
 		return queryList(parseSqlEl(param), originalKey);
 	}
 
@@ -543,7 +543,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByParamArray(Object[] params, int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getMapListByParamArray(Object[] params, int rows, boolean originalKey) throws DBException {
 		return getLimitList(getPs(params), -1, rows, originalKey);
 	}
 
@@ -556,7 +556,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByEl(Object param, int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getMapListByEl(Object param, int rows, boolean originalKey) throws DBException {
 		return getLimitList(parseSqlEl(param), -1, rows, originalKey);
 	}
 
@@ -570,7 +570,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByParamArray(Object[] params, int offset, int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getMapListByParamArray(Object[] params, int offset, int rows, boolean originalKey) throws DBException {
 		return getLimitList(getPs(params), offset, rows, originalKey);
 	}
 
@@ -584,7 +584,7 @@ public class DBQuery extends DBOperation {
 	 * @return
 	 * @throws DBException
 	 */
-	protected List<WMap> getMapListByEl(Object param, int offset, int rows, boolean originalKey) throws DBException {
+	protected List<RMap> getMapListByEl(Object param, int offset, int rows, boolean originalKey) throws DBException {
 		return getLimitList(parseSqlEl(param), offset, rows, originalKey);
 	}
 
@@ -739,8 +739,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public WMap getMap() throws DBException {
-		return (WMap) getMap(false);
+	public RMap getMap() throws DBException {
+		return (RMap) getMap(false);
 	}
 
 	/**
@@ -748,8 +748,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public WMap getMapOriginal() throws DBException {
-		return (WMap) getMap(true);
+	public RMap getMapOriginal() throws DBException {
+		return (RMap) getMap(true);
 	}
 
 	/**
@@ -757,8 +757,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public WMap getMap(Ps ps) throws DBException {
-		return (WMap) getMap(ps, false);
+	public RMap getMap(Ps ps) throws DBException {
+		return (RMap) getMap(ps, false);
 	}
 
 	/**
@@ -766,8 +766,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public WMap getMap(Object[] params) throws DBException {
-		return (WMap) getMapByParamArray(params, false);
+	public RMap getMap(Object[] params) throws DBException {
+		return (RMap) getMapByParamArray(params, false);
 	}
 
 	/**
@@ -775,8 +775,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public WMap getMap(Object param) throws DBException {
-		return (WMap) getMapByEl(param, false);
+	public RMap getMap(Object param) throws DBException {
+		return (RMap) getMapByEl(param, false);
 	}
 
 	/**
@@ -784,8 +784,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public WMap getMapOriginal(Ps ps) throws DBException {
-		return (WMap) getMap(ps, true);
+	public RMap getMapOriginal(Ps ps) throws DBException {
+		return (RMap) getMap(ps, true);
 	}
 
 	/**
@@ -793,8 +793,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public WMap getMapOriginal(Object[] params) throws DBException {
-		return (WMap) getMapByParamArray(params, true);
+	public RMap getMapOriginal(Object[] params) throws DBException {
+		return (RMap) getMapByParamArray(params, true);
 	}
 
 	/**
@@ -802,8 +802,8 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public WMap getMapOriginal(Object param) throws DBException {
-		return (WMap) getMapByEl(param, true);
+	public RMap getMapOriginal(Object param) throws DBException {
+		return (RMap) getMapByEl(param, true);
 	}
 
 	// --------------------多条
@@ -942,7 +942,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList() throws DBException {
+	public List<RMap> getMapList() throws DBException {
 		return getMapList(false);
 	}
 
@@ -951,7 +951,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal() throws DBException {
+	public List<RMap> getMapListOriginal() throws DBException {
 		return getMapList(true);
 	}
 
@@ -960,7 +960,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Ps ps) throws DBException {
+	public List<RMap> getMapList(Ps ps) throws DBException {
 		return getMapList(ps, false);
 	}
 
@@ -969,7 +969,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Object[] params) throws DBException {
+	public List<RMap> getMapList(Object[] params) throws DBException {
 		return getMapListByParamArray(params, false);
 	}
 
@@ -978,7 +978,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Object param) throws DBException {
+	public List<RMap> getMapList(Object param) throws DBException {
 		return getMapListByEl(param, false);
 	}
 
@@ -987,7 +987,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Ps ps) throws DBException {
+	public List<RMap> getMapListOriginal(Ps ps) throws DBException {
 		return getMapList(ps, true);
 	}
 
@@ -996,7 +996,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Object[] params) throws DBException {
+	public List<RMap> getMapListOriginal(Object[] params) throws DBException {
 		return getMapListByParamArray(params, true);
 	}
 
@@ -1005,7 +1005,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Object param) throws DBException {
+	public List<RMap> getMapListOriginal(Object param) throws DBException {
 		return getMapListByEl(param, true);
 	}
 
@@ -1014,7 +1014,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(int offset, int rows) throws DBException {
+	public List<RMap> getMapList(int offset, int rows) throws DBException {
 		return getMapList(offset, rows, false);
 	}
 
@@ -1023,7 +1023,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(int offset, int rows) throws DBException {
+	public List<RMap> getMapListOriginal(int offset, int rows) throws DBException {
 		return getMapList(offset, rows, true);
 	}
 
@@ -1032,7 +1032,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Ps ps, int offset, int rows) throws DBException {
+	public List<RMap> getMapList(Ps ps, int offset, int rows) throws DBException {
 		return getMapList(ps, offset, rows, false);
 	}
 
@@ -1041,7 +1041,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Object[] params, int offset, int rows) throws DBException {
+	public List<RMap> getMapList(Object[] params, int offset, int rows) throws DBException {
 		return getMapListByParamArray(params, offset, rows, false);
 	}
 
@@ -1050,7 +1050,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapList(Object param, int offset, int rows) throws DBException {
+	public List<RMap> getMapList(Object param, int offset, int rows) throws DBException {
 		return getMapListByEl(param, offset, rows, false);
 	}
 
@@ -1059,7 +1059,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Ps ps, int offset, int rows) throws DBException {
+	public List<RMap> getMapListOriginal(Ps ps, int offset, int rows) throws DBException {
 		return getMapList(ps, offset, rows, true);
 	}
 
@@ -1068,7 +1068,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Object[] params, int offset, int rows) throws DBException {
+	public List<RMap> getMapListOriginal(Object[] params, int offset, int rows) throws DBException {
 		return getMapListByParamArray(params, offset, rows, true);
 	}
 
@@ -1077,7 +1077,7 @@ public class DBQuery extends DBOperation {
 	 * 
 	 * @throws DBException
 	 */
-	public List<WMap> getMapListOriginal(Object param, int offset, int rows) throws DBException {
+	public List<RMap> getMapListOriginal(Object param, int offset, int rows) throws DBException {
 		return getMapListByEl(param, offset, rows, true);
 	}
 

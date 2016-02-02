@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.rex.DB;
-import org.rex.WMap;
+import org.rex.RMap;
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 import org.rex.db.logger.Logger;
@@ -33,7 +33,7 @@ public class TestSelectOne extends Base{
 		String sql = "select * from r_student limit 1";
 		
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		WMap result1 = DB.getMap(sql);
+		RMap result1 = DB.getMap(sql);
 		System.out.println(result1);
 		
 		//查询结果封装为Bean
@@ -52,7 +52,7 @@ public class TestSelectOne extends Base{
 		String sql = "select * from r_student where student_id = ?";
 		
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		WMap result1 = DB.getMap(sql, new Ps(1));
+		RMap result1 = DB.getMap(sql, new Ps(1));
 		System.out.println(result1);
 		
 		//查询结果封装为Bean
@@ -75,7 +75,7 @@ public class TestSelectOne extends Base{
 		paramMap.put("studentId", 1);
 		
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		WMap result1 = DB.getMap(sql, paramMap);
+		RMap result1 = DB.getMap(sql, paramMap);
 		System.out.println(result1);
 		
 		//查询结果封装为Bean
@@ -91,7 +91,7 @@ public class TestSelectOne extends Base{
 		paramBean.setStudentId(1);
 		
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		WMap result5 = DB.getMap(sql, paramBean);
+		RMap result5 = DB.getMap(sql, paramBean);
 		System.out.println(result5);
 		
 		//查询结果封装为Bean
