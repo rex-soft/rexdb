@@ -115,8 +115,6 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 	 * @return the value associated with key
 	 */
 	public boolean getBoolean(String key) {
-		if (!containsKey(key))
-			return false;
 		Object value = get(key);
 		if (value == null)
 			return false;

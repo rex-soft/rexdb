@@ -73,8 +73,6 @@ public class RMapTest {
         rmap.set("string-d23", "2015年6月12日");
         rmap.set("string-d24", "2015年6月");
         rmap.set("string-d25", "2015年");
-        
-
 	}
 
 	@Test
@@ -139,27 +137,115 @@ public class RMapTest {
 
 	@Test
 	public void testGetStringValue() {
-		fail("Not yet implemented");
+		Assert.assertEquals(null, rmap.getStringValue(null));
+		Assert.assertEquals("", rmap.getStringValue(""));
+		Assert.assertEquals(1, rmap.getStringValue(1));
+		Assert.assertEquals("[1, 2, 3]", rmap.getStringValue(new int[]{1,2,3}));
 	}
 
 	@Test
 	public void testGetBoolean() {
-		fail("Not yet implemented");
+		Assert.assertEquals(false, rmap.getBoolean(""));
+		Assert.assertEquals(false, rmap.getBoolean("string-null"));
+		Assert.assertEquals(false, rmap.getBoolean("string-empty"));
+		Assert.assertEquals(true, rmap.getBoolean("boolean"));
+		Assert.assertEquals(false, rmap.getBoolean("decimal"));
 	}
-
+	
 	@Test
 	public void testGetInt() {
-		fail("Not yet implemented");
+		Assert.assertEquals(0, rmap.getInt("string-n1"));
+		Assert.assertEquals(1, rmap.getInt("string-n2"));
+		Assert.assertEquals(-1, rmap.getInt("string-n3"));
+		try{
+			rmap.getInt("string-n4"); //1L
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("Couldn't convert"));
+		}
+		
+		try{
+			rmap.getInt("string-n5");//0.234935
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("For input"));
+		}
+		
+		try{
+			rmap.getInt("string-n6");//0.234935
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("For input"));
+		}
+		
+		
+		Assert.assertEquals(1, rmap.getInt("int"));
+		Assert.assertEquals(1, rmap.getInt("long"));
+		Assert.assertEquals(1, rmap.getInt("double"));
+		Assert.assertEquals(1, rmap.getInt("float"));
+		Assert.assertEquals(1, rmap.getInt("short"));
+		Assert.assertEquals(1, rmap.getInt("char"));
+		Assert.assertEquals(1, rmap.getInt("byte"));
+		
+		try{
+			rmap.getInt("boolean");//true
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("For input"));
+		}
+		
+		Assert.assertEquals(1, rmap.getInt("decimal"));
+		Assert.assertEquals(1, rmap.getInt("object"));
 	}
 
 	@Test
 	public void testParseInt() {
-		fail("Not yet implemented");
+		Assert.assertEquals(1, rmap.parseInt("1"));
+		Assert.assertEquals(-1, rmap.parseInt("-1"));
+		Assert.assertEquals(0, rmap.parseInt("0"));
+		
+		try{
+			rmap.parseInt("1.2");
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("For input"));
+		}
 	}
 
 	@Test
 	public void testGetLong() {
-		fail("Not yet implemented");
+		Assert.assertEquals(0, rmap.getLong("string-n1"));
+		Assert.assertEquals(1, rmap.getLong("string-n2"));
+		Assert.assertEquals(-1, rmap.getLong("string-n3"));
+		try{
+			rmap.getLong("string-n4"); //1L
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("Couldn't convert"));
+		}
+		
+		try{
+			rmap.getLong("string-n5");//0.234935
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("For input"));
+		}
+		
+		try{
+			rmap.getLong("string-n6");//0.234935
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("For input"));
+		}
+		
+		Assert.assertEquals(1, rmap.getLong("int"));
+		Assert.assertEquals(1, rmap.getLong("long"));
+		Assert.assertEquals(1, rmap.getLong("double"));
+		Assert.assertEquals(1, rmap.getLong("float"));
+		Assert.assertEquals(1, rmap.getLong("short"));
+		Assert.assertEquals(1, rmap.getLong("char"));
+		Assert.assertEquals(1, rmap.getLong("byte"));
+		
+		try{
+			rmap.getLong("boolean");//true
+		}catch(NumberFormatException e){
+			Assert.assertEquals(true, e.getMessage().contains("For input"));
+		}
+		
+		Assert.assertEquals(1, rmap.getLong("decimal"));
+		Assert.assertEquals(1, rmap.getLong("object"));
 	}
 
 	@Test
