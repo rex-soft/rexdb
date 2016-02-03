@@ -7,7 +7,7 @@ import org.rex.db.exception.DBException;
 import org.rex.db.sql.SqlParser;
 
 /**
- * 用于数据库的增删改操作
+ * 增删改
  * @author z
  */
 public class DBUpdate extends DBOperation{

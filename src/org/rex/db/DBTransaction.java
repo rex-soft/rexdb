@@ -13,7 +13,7 @@ import org.rex.db.transaction.JtaTransactionManager;
 import org.rex.db.transaction.TransactionManager;
 
 /**
- * 事务对象
+ * 事务
  * 
  * @author z
  */

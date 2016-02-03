@@ -31,7 +31,7 @@ public class ExceptionResourceFactory {
 	};
 
 	//--当前使用的语言
-	private volatile String lang = LANG_ZH_CN;
+	private volatile String lang = LANG_EN;
 	
 	//所有资源
 	private final Map<String, ExceptionResource> resources;

@@ -3,6 +3,7 @@ package org.rex;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -282,7 +283,7 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 		if (!containsKey(key))
 			return null;
 		Object value = get(key);
-		return getDate(value);
+		return getDateByValue(value);
 	}
 	
 	/**
@@ -326,7 +327,7 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 	 * @param value object to convert
 	 * @return date value
 	 */
-	protected Date getDate(Object value) {
+	protected Date getDateByValue(Object value) {
 		if (value == null)
 			return null;
 		else if (value instanceof Date)
@@ -338,6 +339,14 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 				if(date != null)
 					return date;
 			}
+			
+			try {
+				Date d = DateFormat.getInstance().parse(s);
+				if(d != null) return d;
+			} catch (ParseException e) {
+				//ignore
+			}
+			
 			throw new IllegalArgumentException("Couldn't convert " + s + "(" + value.getClass().getName() + ") to date whitch toString is " + s + ", no date format parttern matches.");
 		}
 	}
@@ -346,11 +355,13 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 	 * Inner class for automatically parsing date string
 	 */
 	static class DateParser{
+		private String regular;
 		private Pattern pattern;
 		private SimpleDateFormat sdf;
 		
 		public DateParser(String pattern, String format) {
 			super();
+			this.regular = pattern;
 			this.pattern = Pattern.compile(pattern);
 			this.sdf = new SimpleDateFormat(format);
 		}
@@ -362,10 +373,18 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 		 */
 		public Date parse(String dateStr){
 			if(pattern.matcher(dateStr).matches()){
+				String curDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+				if (regular.equals("^\\d{2}\\s*:\\s*\\d{2}\\s*:\\s*\\d{2}$") || regular.equals("^\\d{2}\\s*:\\s*\\d{2}$")) {
+					dateStr = curDate + "-" + dateStr;
+				} else if (regular.equals("^\\d{1,2}\\D+\\d{1,2}$")) {
+					dateStr = curDate.substring(0, 4) + "-" + dateStr;
+				}
+				String dateReplace = dateStr.replaceAll("\\D+", "-");
 				try {
-					return sdf.parse(dateStr);
+					return sdf.parse(dateReplace);
 				} catch (ParseException e) {
-					throw new IllegalArgumentException("Couldn't parse date string "+ dateStr +" which matches pattern " + pattern.pattern() + "," + e.getMessage());
+					throw new IllegalArgumentException("Couldn't parse string '"+ dateStr +"' to date which matches pattern '" + pattern.pattern() 
+						+ "' and format '" + sdf.toPattern() + "', " + e.getMessage());
 				}
 			}
 			return null;
@@ -378,9 +397,9 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 			add(new DateParser("^\\d{4}\\D+\\d{1,2}\\D+\\d{1,2}\\D+\\d{1,2}\\D+\\d{1,2}\\D+\\d{1,2}\\D*$", "yyyy-MM-dd-HH-mm-ss"));//2016-02-02 02:02:02, 2016/2/2 2:2:2, 2016年2月2日 2时2分2秒
 			add(new DateParser("^\\d{4}\\D+\\d{1,2}\\D+\\d{1,2}\\D+\\d{1,2}\\D+\\d{1,2}$", "yyyy-MM-dd-HH-mm"));//2016-02-02 02:02
 			add(new DateParser("^\\d{4}\\D+\\d{1,2}\\D+\\d{1,2}\\D+\\d{1,2}$", "yyyy-MM-dd-HH"));//2016-02-02 02
-			add(new DateParser("^\\d{4}\\D+\\d{1,2}\\D+\\d{1,2}\\D$", "yyyy-MM-dd"));//2016-02-02
-			add(new DateParser("^\\d{4}\\D+\\d{1,2}\\D$", "yyyy-MM"));//2016-02
-			add(new DateParser("^\\d{4}\\D$", "yyyy"));//2016
+			add(new DateParser("^\\d{4}\\D+\\d{1,2}\\D+\\d{1,2}\\D*$", "yyyy-MM-dd"));//2016-02-02, 2016年02月02日
+			add(new DateParser("^\\d{4}\\D+\\d{1,2}\\D*$", "yyyy-MM"));//2016-02
+			add(new DateParser("^\\d{4}\\D*$", "yyyy"));//2016
 			add(new DateParser("^\\d{14}$", "yyyyMMddHHmmss"));//20160202020202
 			add(new DateParser("^\\d{12}$", "yyyyMMddHHmm"));//201602020202
 			add(new DateParser("^\\d{10}$", "yyyyMMddHH"));//2016020202
@@ -421,140 +440,56 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 		} else if (value instanceof String[]) {
 			return (String[]) value;
 		} else {
-			Object[] os = (Object[]) value;
-			String[] ss = new String[os.length];
-			for (int i = 0; i < os.length; i++) {
-				ss[i] = getStringValue(os[i]);
+			String[] ss;
+			if(value instanceof int[]){
+				int[] os = (int[])value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++)
+					ss[i] = getStringValue(os[i]);
+			}else if(value instanceof boolean[]){
+				boolean[] os = (boolean[])value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++) 
+					ss[i] = getStringValue(os[i]);
+			}else if(value instanceof byte[]){
+				byte[] os = (byte[])value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++)
+					ss[i] = getStringValue(os[i]);
+			}else if(value instanceof char[]){
+				char[] os = (char[])value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++) 
+					ss[i] = getStringValue(os[i]);
+			}else if(value instanceof double[]){
+				double[] os = (double[])value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++)
+					ss[i] = getStringValue(os[i]);
+			}else if(value instanceof float[]){
+				float[] os = (float[])value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++)
+					ss[i] = getStringValue(os[i]);
+			}else if(value instanceof long[]){
+				long[] os = (long[])value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++) 
+					ss[i] = getStringValue(os[i]);
+			}else if(value instanceof short[]){
+				short[] os = (short[])value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++)
+					ss[i] = getStringValue(os[i]);
+			}else{
+				Object[] os = (Object[]) value;
+				ss = new String[os.length];
+				for (int i = 0; i < os.length; i++)
+					ss[i] = getStringValue(os[i]);
 			}
 			return ss;
 		}
 	}
-	
-	/**
-	 * Get value as int array, if the value is not an array, will be the first element of the array
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
-	 */
-	public int[] getIntArray(String key) {
-		Object value = get(key);
-		if (value == null)
-			return null;
-
-		if (!value.getClass().isArray()) {
-			int i = parseInt(value);
-			return new int[] { i };
-		} else if (value instanceof int[]) {
-			return (int[]) value;
-		} else {
-			Object[] os = (Object[]) value;
-			int[] ss = new int[os.length];
-			for (int i = 0; i < os.length; i++) {
-				ss[i] = parseInt(os[i]);
-			}
-			return ss;
-		}
-	}
-
-	/**
-	 * Get value as long array, if the value is not an array, will be the first element of the array
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
-	 */
-	public long[] getLongArray(String key) {
-		Object value = get(key);
-		if (value == null)
-			return null;
-
-		if (!value.getClass().isArray()) {
-			long i = parseLong(value);
-			return new long[] { i };
-		} else if (value instanceof long[]) {
-			return (long[]) value;
-		} else {
-			Object[] os = (Object[]) value;
-			long[] ss = new long[os.length];
-			for (int i = 0; i < os.length; i++) {
-				ss[i] = parseLong(os[i]);
-			}
-			return ss;
-		}
-	}
-
-	/**
-	 * Get value as float array, if the value is not an array, will be the first element of the array
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
-	 */
-	public float[] getFloatArray(String key) {
-		Object value = get(key);
-		if (value == null)
-			return null;
-
-		if (!value.getClass().isArray()) {
-			float i = parseFloat(value);
-			return new float[] { i };
-		} else if (value instanceof float[]) {
-			return (float[]) value;
-		} else {
-			Object[] os = (Object[]) value;
-			float[] ss = new float[os.length];
-			for (int i = 0; i < os.length; i++) {
-				ss[i] = parseFloat(os[i]);
-			}
-			return ss;
-		}
-	}
-
-	/**
-	 * Get value as double array, if the value is not an array, will be the first element of the array
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
-	 */
-	public double[] getDoubleArray(String key) {
-		Object value = get(key);
-		if (value == null)
-			return null;
-
-		if (!value.getClass().isArray()) {
-			double i = parseDouble(value);
-			return new double[] { i };
-		} else if (value instanceof double[]) {
-			return (double[]) value;
-		} else {
-			Object[] os = (Object[]) value;
-			double[] ss = new double[os.length];
-			for (int i = 0; i < os.length; i++) {
-				ss[i] = parseDouble(os[i]);
-			}
-			return ss;
-		}
-	}
-
-	/**
-	 * Get value as java.util.Date array, if the value is not an array, will be the first element of the array
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
-	 */
-	public Date[] getDateArray(String key, String format) {
-		Object value = get(key);
-		if (value == null)
-			return null;
-
-		if (!value.getClass().isArray()) {
-			Date d = getDate(value);
-			return new Date[] { d };
-		} else if (value instanceof Date[]) {
-			return (Date[]) value;
-		} else {
-			Object[] os = (Object[]) value;
-			Date[] ss = new Date[os.length];
-			for (int i = 0; i < os.length; i++) {
-				ss[i] = getDate(os[i]);
-			}
-			return ss;
-		}
-	}
-
 
 	// -------------------------setters
 	/**

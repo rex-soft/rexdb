@@ -9,7 +9,7 @@ import org.rex.db.exception.DBException;
 import org.rex.db.sql.SqlParser;
 
 /**
- * 调用存储过程
+ * 存储过程
  * @author z
  */
 public class DBCall extends DBOperation{

@@ -16,9 +16,8 @@ import org.rex.db.exception.DBException;
 import org.rex.db.sql.SqlParser;
 
 /**
- * 处理查询
- * 
- * @author Z
+ * 查询
+ * @author z
  */
 public class DBQuery extends DBOperation {
 
