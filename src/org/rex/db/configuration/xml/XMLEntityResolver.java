@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.rex.db.configuration.XMLConfigurationLoader;
 import org.rex.db.exception.DBException;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;

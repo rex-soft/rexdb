@@ -28,8 +28,6 @@ import org.rex.db.datasource.ConnectionHolder;
 import org.rex.db.exception.DBException;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.listener.SqlContext;
-import org.rex.db.logger.Logger;
-import org.rex.db.logger.LoggerFactory;
 import org.rex.db.sql.SqlParser;
 import org.rex.db.transaction.ThreadConnectionHolder;
 import org.rex.db.util.DataSourceUtil;
@@ -39,8 +37,6 @@ import org.rex.db.util.JdbcUtil;
  * 数据库模板，封装了框架支持的数据库操作
  */
 public class DBTemplate {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DBTemplate.class);
 	
 	private final DataSource dataSource;
 	private final StatementCreator statementCreator;
