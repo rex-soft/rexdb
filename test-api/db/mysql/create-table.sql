@@ -22,7 +22,7 @@ CREATE PROCEDURE `proc_return` ()  BEGIN
 END$$
 
 CREATE PROCEDURE `proc_return_rs` ()  BEGIN
-	SELECT * FROM r_student  limit 1,10; 
+	SELECT * FROM r_student  limit 0,10; 
     SELECT * FROM r_student  limit 10,10; 
 END$$
 

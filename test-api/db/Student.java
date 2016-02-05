@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class Student {
 	
-	private Integer studentId;//主键被设置成了Integer类型，当 
+	private int studentId;
 	private String name;
 	private int sex;
 	private Date birthday;
