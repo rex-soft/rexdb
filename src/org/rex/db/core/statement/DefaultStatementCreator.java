@@ -26,7 +26,6 @@ public class DefaultStatementCreator implements StatementCreator{
 		PreparedStatement preparedStatement = conn.prepareStatement(sql);
 		if(ps != null)
 			setParameters(preparedStatement, ps);
-		
 		return preparedStatement;
 	}
 	
@@ -82,11 +81,13 @@ public class DefaultStatementCreator implements StatementCreator{
 	public PreparedStatement createBatchPreparedStatement(Connection conn, String sql, Ps[] ps) throws DBException, SQLException {
 		PreparedStatement preparedStatement = conn.prepareStatement(sql);
 		
-        for(int i = 0; ps != null && i < ps.length; i++){
-        	if(ps[i] != null)
-        		setParameters(preparedStatement, ps[i]);
-        }
-        
+		if(ps != null){
+	        for(int i = 0; i < ps.length; i++){
+	        	if(ps[i] != null)
+	        		setParameters(preparedStatement, ps[i]);
+	        }
+		}
+		
         return preparedStatement;
 	}
 	
@@ -112,8 +113,7 @@ public class DefaultStatementCreator implements StatementCreator{
 	protected void setParam(PreparedStatement ps, int sqlType, Object value, int index) throws SQLException{
 		if (value == null) {
 			ps.setNull(index, sqlType);
-		}
-		else {
+		}else {
 			switch (sqlType) {
 				case Types.VARCHAR : 
 					ps.setString(index, (String) value);

@@ -503,7 +503,6 @@ public class RMap<K,V> extends LinkedHashMap<K,V> {
 		return put(key, value);
 	}
 
-
 	/**
      * Copies all of the mappings from the specified map to this map.
      *

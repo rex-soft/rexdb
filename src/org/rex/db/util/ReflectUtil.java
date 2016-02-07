@@ -21,6 +21,39 @@ public class ReflectUtil {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReflectUtil.class);
 
+	private static final Map<Class<?>, Map<String, Method>> getters = new HashMap<Class<?>, Map<String, Method>>();
+	
+	private static final Map<Class<?>, Map<String, Method>> setters = new HashMap<Class<?>, Map<String, Method>>();
+	
+	private static volatile boolean cacheEnabled = true;
+	
+	/**
+	 * 设置是否启用了BeanInfo缓存
+	 */
+	public static void setCacheEnabled(boolean isCacheEnabled){
+		if(cacheEnabled != isCacheEnabled){
+			LOGGER.info("Reflect cache is {0}.", cacheEnabled ? "enabled" : "disabled");
+			cacheEnabled = isCacheEnabled;
+			if(!cacheEnabled) clearCache();
+		}
+	}
+	
+	/**
+	 * 清空缓存
+	 */
+	public static void clearCache(){
+		getters.clear();
+		setters.clear();
+	}
+	
+	/**
+	 * 是否启用了BeanInfo缓存
+	 * @return
+	 */
+	public static boolean isCacheEnabled(){
+		return cacheEnabled;
+	}
+	
 	/**
 	 * 获取类的所有可读方法
 	 * 
@@ -29,6 +62,33 @@ public class ReflectUtil {
 	 * @throws DBException
 	 */
 	public static Map<String, Method> getReadableMethods(Class<?> clazz) throws DBException {
+		if(cacheEnabled){
+			if(!getters.containsKey(clazz)){
+				Map <String, Method> g = getGetters(clazz);
+				getters.put(clazz, g);
+				return g;
+			}else
+				return getters.get(clazz);
+		}else
+			return getGetters(clazz);
+	}
+	
+	/**
+	 * 获取该类的所有可写方法
+	 */
+	public static Map<String, Method> getWriteableMethods(Class<?> clazz) throws DBException {
+		if(cacheEnabled){
+			if(!setters.containsKey(clazz)){
+				Map <String, Method> s = getSetters(clazz);
+				setters.put(clazz, s);
+				return s;
+			}else
+				return setters.get(clazz);
+		}else
+			return getSetters(clazz);
+	}
+	
+	private static Map<String, Method> getGetters(Class<?> clazz) throws DBException {
 		Map<String, Method> params = new HashMap<String, Method>();
 		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
 		for (int i = 0; i < props.length; i++) {
@@ -38,11 +98,8 @@ public class ReflectUtil {
 		}
 		return params;
 	}
-
-	/**
-	 * 获取该类的所有可写方法
-	 */
-	public static Map<String, Method> getWriteableMethods(Class<?> clazz) throws DBException {
+	
+	private static Map<String, Method> getSetters(Class<?> clazz) throws DBException {
 		Map<String, Method> params = new HashMap<String, Method>();
 		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
 		for (int i = 0; i < props.length; i++) {
@@ -60,7 +117,7 @@ public class ReflectUtil {
 	 * @return
 	 * @throws DBException
 	 */
-	public static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws DBException {
+	private static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws DBException {
 		BeanInfo bean = getBeanInfo(clazz);
 		return bean.getPropertyDescriptors();
 	}
@@ -72,7 +129,7 @@ public class ReflectUtil {
 	 * @return
 	 * @throws DBException
 	 */
-	public static MethodDescriptor[] getMethodDescriptor(Class<?> clazz) throws DBException {
+	private static MethodDescriptor[] getMethodDescriptor(Class<?> clazz) throws DBException {
 		BeanInfo bean = getBeanInfo(clazz);
 		return bean.getMethodDescriptors();
 	}

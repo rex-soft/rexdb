@@ -139,8 +139,10 @@ public class XMLConfigParser {
 
 		DataSourceFactory factory;
 		if (hasJndi) {// 有jndi参数，使用JNDI
+			props.put(JndiDataSourceFactory.JNDI_NAME, jndi);
 			factory = new JndiDataSourceFactory(props);
 		}else if (hasClass){// 自定指定数据源
+			props.put(PoolDataSourceFactory.DATA_SOURCE_CLASS, clazz);
 			factory = new PoolDataSourceFactory(props);
 		}else{// 不指定class和jndi时，使用自带简易数据源
 			factory = new SimpleDataSourceFactory(props);

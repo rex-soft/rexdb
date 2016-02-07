@@ -117,9 +117,11 @@ public class SqlUtil {
 			else if("double".equals(paramClassName) || "java.lang.Double".equals(paramClassName)) 
 				type = Types.DOUBLE;
 			else if("java.util.Date".equals(paramClassName) || "java.sql.Date".equals(paramClassName)) 
-				type = Types.DATE;
+				//type = Types.DATE;
+				type = Types.TIMESTAMP;
 			else if("java.sql.Time".equals(paramClassName)) 
-				type = Types.TIME;
+				//type = Types.TIME;
+				type = Types.TIMESTAMP;
 			else if("java.sql.Timestamp".equals(paramClassName)) 
 				type = Types.TIMESTAMP;
 			else if("java.sql.Blob".equals(paramClassName)) //不确定BLOB/CLOB是否可用

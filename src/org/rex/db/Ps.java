@@ -47,7 +47,7 @@ public class Ps {
 			this.sqlType = sqlType;
 			
 			if(value != null && value.getClass().getName().equals("java.util.Date")){
-				this.value = new java.sql.Date(((Date)value).getTime());
+				this.value = new java.sql.Timestamp(((Date)value).getTime());
 			}else
 				this.value = value;
 		}
@@ -904,9 +904,7 @@ public class Ps {
 		sb.append("values: ")
 			.append(values)
 			.append(", sql types: ")
-			.append(sqlTypes)
-			.append(", parameter types: ")
-			.append(paramTypes);
+			.append(sqlTypes);
 		return sb.toString();
 	}
 	

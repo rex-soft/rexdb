@@ -14,6 +14,7 @@ import org.rex.db.listener.DBListener;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
+import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.ResourceUtil;
 
 public class Configuration {
@@ -76,7 +77,10 @@ public class Configuration {
 	 */
 	private volatile String transactionIsolation;
 	
-	
+	/**
+	 * 启用反射缓存
+	 */
+	private volatile boolean reflectCache = true;
 	
 	//--------managers
 	/**
@@ -142,7 +146,7 @@ public class Configuration {
 	 * @param path 文件系统中的路径
 	 * @throws DBException 加载失败时抛出异常
 	 */
-	public  synchronized static void loadConfigurationFromFileSystem(String path) throws DBException{
+	public synchronized static void loadConfigurationFromFileSystem(String path) throws DBException{
 		if(instance != null)
 			throw new DBException("DB-F0007", path);
 		instance = new XMLConfigurationLoader().loadFromFileSystem(path);
@@ -170,10 +174,16 @@ public class Configuration {
 			ExceptionResourceFactory.getInstance().setLang(lang);
 		}
 		
+		//反射缓存
+		if(!reflectCache){
+			ReflectUtil.setCacheEnabled(false);
+		}
+		
 		//日志
 		if(nolog){
 			LoggerFactory.setNolog(true);
 		}
+
 	}
 	
 	//---------------------------
@@ -253,6 +263,14 @@ public class Configuration {
 
 	public void setTransactionIsolation(String transactionIsolation) {
 		this.transactionIsolation = transactionIsolation;
+	}
+	
+	public boolean isReflectCache() {
+		return reflectCache;
+	}
+
+	public void setReflectCache(boolean reflectCache) {
+		this.reflectCache = reflectCache;
 	}
 
 	//-----------

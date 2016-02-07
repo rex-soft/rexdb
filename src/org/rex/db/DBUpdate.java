@@ -72,7 +72,6 @@ public class DBUpdate extends DBOperation{
 	 */
 	public int update(Object params) throws DBException{
 		Object[] result = SqlParser.parse(getSql(), params);
-		
 		setSql((String)result[0]);
 		return update((Ps)result[1]);
 	}

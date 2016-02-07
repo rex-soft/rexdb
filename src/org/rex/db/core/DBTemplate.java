@@ -39,15 +39,20 @@ import org.rex.db.util.JdbcUtil;
 public class DBTemplate {
 	
 	private final DataSource dataSource;
-	private final StatementCreator statementCreator;
-	private final QueryExecutor queryExecutor;
-	private final ResultSetIterator resultSetIterator;
+//	private final StatementCreator statementCreator;
+//	private final QueryExecutor queryExecutor;
+//	private final ResultSetIterator resultSetIterator;
+	
+	private static final StatementCreator statementCreator = new DefaultStatementCreatorFactory().buildStatementCreator();
+	private static final QueryExecutor queryExecutor = new DefaultQueryExecutor();
+	private static final ResultSetIterator resultSetIterator = new DefaultResultSetIterator();
 
 	public DBTemplate(DataSource dataSource) throws DBException {
 		this.dataSource = dataSource;
-		this.statementCreator = new DefaultStatementCreatorFactory().buildStatementCreator();
-		this.queryExecutor = new DefaultQueryExecutor();
-		this.resultSetIterator = new DefaultResultSetIterator();
+		
+//		this.statementCreator = new DefaultStatementCreatorFactory().buildStatementCreator();
+//		this.queryExecutor = new DefaultQueryExecutor();
+//		this.resultSetIterator = new DefaultResultSetIterator();
 	}
 
 	public DataSource getDataSource() {
@@ -137,26 +142,26 @@ public class DBTemplate {
 	 * 通过PreparedStatementCreator执行多条SQL（非批处理方式）
 	 */
 	public int update(String sql, Ps ps) throws DBException {
-		validateSql(sql, ps);
-		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
+//		validateSql(sql, ps);
+//		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		PreparedStatement preparedStatement = null;
 		
+		
 		int retval = 0;
 		try {
 			preparedStatement = statementCreator.createPreparedStatement(con, sql, ps);
-			applyTimeout(preparedStatement, this.dataSource);
-			
+//			applyTimeout(preparedStatement, this.dataSource);
 			retval = queryExecutor.executeUpdate(preparedStatement);
 			
-			checkWarnings(con, preparedStatement, null);
+//			checkWarnings(con, preparedStatement, null);
 			return retval;
 		}catch (SQLException e) {
 			throw new DBException("DB-C0005", e, sql, ps, e.getMessage());
 		}finally {
 			close(con, preparedStatement, null);
-			fireAfterEvent(context, retval);
+//			fireAfterEvent(context, retval);
 		}
 	}
 	

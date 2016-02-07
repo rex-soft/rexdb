@@ -4,15 +4,16 @@
 	<!-- <properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" /> -->
 	<settings>
 		<property name="lang" value="zh-cn"/>
-		<property name="nolog" value="false" />
+		<property name="nolog" value="true" />
 		<property name="validateSql" value="true" />
  		<property name="checkWarnings" value="false" />
 		<property name="queryTimeout" value="-1" />
 		<property name="transactionTimeout" value="-1" />
 		<property name="transactionIsolation" value="" />
 		<property name="autoRollback" value="false" />
+		<property name="reflectCache" value="true" />
 	</settings>
-	<!-- Mysql -->
+	<!-- Mysql  class="org.apache.commons.dbcp.BasicDataSource"-->
 	<dataSource>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
