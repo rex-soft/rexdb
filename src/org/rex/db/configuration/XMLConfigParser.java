@@ -116,7 +116,7 @@ public class XMLConfigParser {
 			}
 		}
 
-		ReflectUtil.setProperties(configuration, props, true);
+		ReflectUtil.setProperties(configuration, props, true, true);
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public class XMLConfigParser {
 		}
 		
 		DBListener listener = ReflectUtil.instance(clazz, DBListener.class);
-		ReflectUtil.setProperties(listener, props, true);
+		ReflectUtil.setProperties(listener, props, true, true);
 
 		configuration.addListener(listener);
 	}

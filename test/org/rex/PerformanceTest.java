@@ -2,11 +2,8 @@ package org.rex;
 
 import java.util.Date;
 
-import org.junit.Test;
 import org.rex.db.DBUpdate;
-import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
-import org.rex.db.sql.SqlParser;
 
 import db.Student;
 
@@ -18,11 +15,11 @@ public class PerformanceTest {
 	
 	public static void main(String[] args) throws DBException {
 		
-		Student[] stu = makeStudent(1000);
+		Student[] stu = makeStudent(100);
 		testPer(stu);
 		
 		long count=0, n=0;
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
 			long time = testPer(stu);
 			System.out.println(time);
 			n=i+1;
@@ -34,11 +31,11 @@ public class PerformanceTest {
 	
 	public static long testPer(Student[] stu) throws DBException{
 		long s = System.currentTimeMillis();
-		DB.beginTransaction();
+		//DB.beginTransaction();
 		for (int i = 0; i < stu.length; i++) {
 			DB.update(sql, stu[i]);
 		}
-		DB.commit();
+		//DB.commit();
 		return System.currentTimeMillis() - s;
 		
 //		long s = System.nanoTime();
@@ -63,24 +60,6 @@ public class PerformanceTest {
 		System.out.println(System.currentTimeMillis() - s);
 	}
 	
-	@Test
-	public void parseSql() throws DBException{
-		long s = System.currentTimeMillis();
-		for (int i = 0; i < 1000; i++) {
-			SqlParser.parse(sql, makeStudent(1)[0]);
-		}
-		System.out.println("--->"+(System.currentTimeMillis() - s));
-	}
-	
-	public void validateSql() throws DBException{
-		Object[] o =SqlParser.parse(sql, makeStudent(1)[0]);
-		
-		long s = System.currentTimeMillis();
-		for (int i = 0; i < 10000; i++) {
-			SqlParser.validate((String)o[0], (Ps)o[1]);
-		}
-		System.out.println(System.currentTimeMillis() - s);
-	}
 	
 	private static Student[] makeStudent(int i){
 		

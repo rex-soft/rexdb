@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.rex.db.exception.DBRuntimeException;
 import org.rex.db.logger.jdk.JdkLoggerFactory;
 import org.rex.db.logger.log4j.Log4jLoggerFactory;
 import org.rex.db.logger.log4j2.Log4j2LoggerFactory;
@@ -102,7 +101,7 @@ public abstract class LoggerFactory {
 			try {
 				return loggerImplClazz.newInstance();
 			} catch (Exception e) {
-				throw new DBRuntimeException("", e);
+				throw new RuntimeException("couldn't create loggerFactory instance, " + e.getMessage(), e);
 			}
 		}
 	}

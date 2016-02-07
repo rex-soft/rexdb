@@ -75,17 +75,19 @@ public class SqlDebugListener implements DBListener{
 		Ps[] ps = context.getPs();
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append("sql=")
-		.append(sql.length == 1 ? sql[0] : Arrays.toString(sql))
-		.append(", ps=")
-		.append(ps==null ? null : Arrays.toString(ps));
 		if(results != null){
-			sb.append(", reults=")
+			sb.append("reults=")
 			.append(results)
 			.append(", costs=")
 			.append(Calendar.getInstance().getTimeInMillis() - context.getCreateTime().getTime())
 			.append("ms");
 		}
+		
+		sb.append(", sql=")
+		.append(sql.length == 1 ? sql[0] : Arrays.toString(sql))
+		.append(", ps=")
+		.append(ps==null ? null : Arrays.toString(ps));
+		
 		sb.append(", context-id=")
 		.append(context.getContextId());
 		

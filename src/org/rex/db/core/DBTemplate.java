@@ -32,6 +32,7 @@ import org.rex.db.sql.SqlParser;
 import org.rex.db.transaction.ThreadConnectionHolder;
 import org.rex.db.util.DataSourceUtil;
 import org.rex.db.util.JdbcUtil;
+import org.rex.db.util.SqlUtil;
 
 /**
  * 数据库模板，封装了框架支持的数据库操作
@@ -142,8 +143,8 @@ public class DBTemplate {
 	 * 通过PreparedStatementCreator执行多条SQL（非批处理方式）
 	 */
 	public int update(String sql, Ps ps) throws DBException {
-//		validateSql(sql, ps);
-//		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
+		validateSql(sql, ps);
+		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		PreparedStatement preparedStatement = null;
@@ -152,16 +153,16 @@ public class DBTemplate {
 		int retval = 0;
 		try {
 			preparedStatement = statementCreator.createPreparedStatement(con, sql, ps);
-//			applyTimeout(preparedStatement, this.dataSource);
+			applyTimeout(preparedStatement, this.dataSource);
 			retval = queryExecutor.executeUpdate(preparedStatement);
 			
-//			checkWarnings(con, preparedStatement, null);
+			checkWarnings(con, preparedStatement, null);
 			return retval;
 		}catch (SQLException e) {
 			throw new DBException("DB-C0005", e, sql, ps, e.getMessage());
 		}finally {
 			close(con, preparedStatement, null);
-//			fireAfterEvent(context, retval);
+			fireAfterEvent(context, retval);
 		}
 	}
 	
@@ -390,7 +391,7 @@ public class DBTemplate {
 			if(live < 0  || (live > 0 && live > tranLive))
 				live = tranLive;
 		}
-		
+
 		if(live > 0){
 			try {
 				stmt.setQueryTimeout(live);
@@ -452,7 +453,7 @@ public class DBTemplate {
 	 */
 	private void validateSql(String sql, Ps ps) throws DBException{
 		if(isValidateSql())
-			SqlParser.validate(sql, ps);
+			SqlUtil.validate(sql, ps);
 	}
 	
 	private void validateSql(String sql, Ps[] ps) throws DBException{
@@ -463,13 +464,13 @@ public class DBTemplate {
 	
 	private void validateSql(String sql) throws DBException{
 		if(isValidateSql())
-			SqlParser.validate(sql, null);
+			SqlUtil.validate(sql, null);
 	}
 	
 	private void validateSql(String[] sql) throws DBException{
 		for (int i = 0; i < sql.length; i++) {
 			if(isValidateSql())
-				SqlParser.validate(sql[i], null);
+				SqlUtil.validate(sql[i], null);
 		}
 	}
 }

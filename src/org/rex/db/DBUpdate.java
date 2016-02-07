@@ -71,9 +71,9 @@ public class DBUpdate extends DBOperation{
 	 * @throws DBException 
 	 */
 	public int update(Object params) throws DBException{
-		Object[] result = SqlParser.parse(getSql(), params);
-		setSql((String)result[0]);
-		return update((Ps)result[1]);
+		SqlParser parser = new SqlParser(getSql(), params);
+		setSql(parser.getParsedSql());
+		return update(parser.getParsedPs());
 	}
 	
 	/**
@@ -132,9 +132,9 @@ public class DBUpdate extends DBOperation{
 		}
 		Ps[] ps = new Ps[params.length];
 		for(int i=0;i<params.length;i++){
-			Object[] result = SqlParser.parse(getSql(), params[i]);
-			ps[i] = (Ps)result[1];
-			if(i == params.length - 1) setSql((String)result[0]);
+			SqlParser parser = new SqlParser(getSql(), params[i]);
+			ps[i] = parser.getParsedPs();
+			if(i == params.length - 1) setSql(parser.getParsedSql());
 		}
 		return batchUpdate(ps);
 	}

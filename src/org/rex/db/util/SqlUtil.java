@@ -2,9 +2,24 @@ package org.rex.db.util;
 
 import java.sql.Types;
 
+import org.rex.db.Ps;
+import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
 
 public class SqlUtil {
+	
+	/**
+	 * 对SQL执行基本的校验，防止错误查询被发送到数据库。校验不通过时直接抛出异常
+	 * @param sql 待校验的SQL语句
+	 * @throws DBException 
+	 */
+	public static void validate(String sql, Ps ps) throws DBException{
+		// 检查已经设定的预编译参数个数
+		int holderSize = SqlUtil.countParameterPlaceholders(sql, '?', '\'');
+		int paramSize = ps == null ? 0 : ps.getParameters().size();
+		if (holderSize != paramSize)
+			throw new DBException("DB-S0001", sql, holderSize, paramSize);
+	}
 
 	/**
 	 * 检查文本中字符个数
@@ -232,13 +247,13 @@ public class SqlUtil {
 			case Types.REF: return "REF";
 			case Types.DATALINK: return "DATALINK";
 			case Types.BOOLEAN: return "BOOLEAN";
-			case Types.ROWID: return "ROWID";
-			case Types.NCHAR: return "NCHAR";
-			case Types.NVARCHAR: return "NVARCHAR";
-			case Types.LONGNVARCHAR: return "LONGNVARCHAR";
-			case Types.NCLOB: return "NCLOB";
-			case Types.SQLXML: return "SQLXML";
-			default: return "Unknown";
+//			case Types.ROWID: return "ROWID";
+//			case Types.NCHAR: return "NCHAR";
+//			case Types.NVARCHAR: return "NVARCHAR";
+//			case Types.LONGNVARCHAR: return "LONGNVARCHAR";
+//			case Types.NCLOB: return "NCLOB";
+//			case Types.SQLXML: return "SQLXML";
+			default: return "Unsupported";
 		}
 	}
 }

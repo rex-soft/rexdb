@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.rex.db.exception.DBException;
+import org.rex.db.util.ReflectUtil;
+
 /**
  * 包装数据库连接，供简单连接池使用
  */
@@ -297,14 +300,13 @@ public class SimpleConnectionProxy implements InvocationHandler {
 	}
 
 	public boolean isValid(int timeout) throws SQLException {
-		if (closed) {
+		if (closed)
 			return false;
-		}
 
 		try {
-			return delegate.isValid(timeout);
-		} catch (SQLException e) {
-			throw checkException(e);
+			return (Boolean)ReflectUtil.invokeMethod(delegate, "isValid", new Class[]{int.class}, new Object[]{timeout});
+		} catch (DBException e) {
+			return false;
 		}
 	}
 

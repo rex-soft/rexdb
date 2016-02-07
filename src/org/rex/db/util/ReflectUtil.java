@@ -178,7 +178,7 @@ public class ReflectUtil {
 	 * @throws DBException
 	 */
 	public static void setProperties(Object bean, Properties properties) throws DBException {
-		setProperties(bean, properties, false);
+		setProperties(bean, properties, false, false);
 	}
 
 	/**
@@ -187,9 +187,10 @@ public class ReflectUtil {
 	 * @param bean
 	 * @param properties
 	 * @param ignoreMismatches
+	 * @param ignoreEmpty
 	 * @throws DBException
 	 */
-	public static void setProperties(Object bean, Properties properties, boolean ignoreMismatches) throws DBException {
+	public static void setProperties(Object bean, Properties properties, boolean ignoreMismatches, boolean ignoreEmpty) throws DBException {
 		if (bean == null || properties == null || properties.size() == 0)
 			return;
 
@@ -197,6 +198,9 @@ public class ReflectUtil {
 		for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			String value = properties.getProperty(key);
+			
+			if(ignoreEmpty && StringUtil.isEmptyString(value))
+				continue;
 
 			if (!writers.containsKey(key)) {
 				if (ignoreMismatches) {
@@ -245,6 +249,29 @@ public class ReflectUtil {
 		}
 	}
 
+	/**
+	 * 反射调用指定名称的方法
+	 */
+	public static Object invokeMethod(Object object, String methodName, Class<?>[] paramTypes, Object[] params) throws DBException {
+		if(object == null || methodName == null) return null;
+		return invokeMethod(object, object.getClass(), methodName, paramTypes, params);
+	}
+	
+	/**
+	 * 反射调用指定名称的方法
+	 */
+	public static Object invokeMethod(Object object, Class<?> objectClass, String methodName, Class<?>[] paramTypes, Object[] params) throws DBException {
+		if(object == null || objectClass == null || methodName == null) return null;
+		try {
+			Method target = objectClass.getMethod(methodName, paramTypes);
+			return invoke(object, target, params);
+		} catch (SecurityException e) {
+			throw new DBException("DB-URF07", e, object.getClass().getName(), methodName, e.getMessage());
+		} catch (NoSuchMethodException e) {
+			throw new DBException("DB-URF07", e, object.getClass().getName(), methodName, e.getMessage());
+		}
+	}
+	
 	/**
 	 * 调用对象无参数的方法
 	 * 

@@ -56,8 +56,10 @@ public class DefaultTransactionDefinition implements TransactionDefinition {
 		}
 		
 		try{
-			setIsolationLevel(config.getTransactionIsolation());
+			if(config.getTransactionIsolation() != null)
+				setIsolationLevel(config.getTransactionIsolation());
 		}catch(Exception e){
+			e.printStackTrace();
 			LOGGER.warn("Configuration's isolation level is invalid, {0}, ignore.", e.getMessage());
 		}
 	}

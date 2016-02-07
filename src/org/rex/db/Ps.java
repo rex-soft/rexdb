@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.rex.db.configuration.Configuration;
+import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
 import org.rex.db.util.SqlUtil;
 
@@ -35,6 +37,23 @@ public class Ps {
 		}
 	}
 	
+	
+	//--------setting
+	/**
+	 * 是否启用日期类型自动调整
+	 * @return
+	 */
+	public static boolean isDateAdjust(){
+		boolean dateAdjust = true;
+		try {
+			dateAdjust = Configuration.getCurrentConfiguration().isDateAdjust();
+		} catch (DBException e) {
+			//
+			e.printStackTrace();
+		}
+		return dateAdjust;
+	}
+	
 	//-------------------------------------------inner class
 	/**
 	 * 输入参数
@@ -45,11 +64,14 @@ public class Ps {
 		
 		public SqlParameter(int sqlType, Object value) {
 			this.sqlType = sqlType;
+			this.value = value;
 			
-			if(value != null && value.getClass().getName().equals("java.util.Date")){
-				this.value = new java.sql.Timestamp(((Date)value).getTime());
-			}else
-				this.value = value;
+			if(isDateAdjust()){
+				if(value != null && value.getClass().getName().equals("java.util.Date")){
+					this.value = new java.sql.Timestamp(((Date)value).getTime());
+					this.sqlType = Types.TIMESTAMP;
+				}
+			}
 		}
 
 		public int getSqlType() {

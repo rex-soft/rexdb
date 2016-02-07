@@ -14,6 +14,7 @@ import org.rex.db.listener.DBListener;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
+import org.rex.db.sql.dynamic.ConvertorManager;
 import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.ResourceUtil;
 
@@ -81,6 +82,16 @@ public class Configuration {
 	 * 启用反射缓存
 	 */
 	private volatile boolean reflectCache = true;
+	
+	/**
+	 * 使用动态类替代反射调用
+	 */
+	private volatile boolean dynamicClass = false;
+	
+	/**
+	 * 自动调整日期/时间类型，以适应
+	 */
+	private volatile boolean dateAdjust = true;
 	
 	//--------managers
 	/**
@@ -271,6 +282,29 @@ public class Configuration {
 
 	public void setReflectCache(boolean reflectCache) {
 		this.reflectCache = reflectCache;
+	}
+	
+	public boolean isDynamicClass() {
+		return dynamicClass;
+	}
+
+	public void setDynamicClass(boolean dynamicClass) {
+		if(dynamicClass){//test dynamic
+			try{
+				ConvertorManager.getConvertor(this.getClass());
+				this.dynamicClass = true;
+			}catch(Exception e){
+				LOGGER.warn("Dynamic class is set to true, but the test failed, {0}, has automatically switched to false.", e, e.getMessage());
+			}
+		}
+	}
+
+	public boolean isDateAdjust() {
+		return dateAdjust;
+	}
+
+	public void setDateAdjust(boolean dateAdjust) {
+		this.dateAdjust = dateAdjust;
 	}
 
 	//-----------

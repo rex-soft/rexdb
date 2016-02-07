@@ -78,6 +78,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 		// 设置隔离级别
 		if (definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT) {
 			connectionHolder.setPreviousIsolationLevel(conn.getTransactionIsolation());
+			System.out.println("======"+conn.getClass().getName()+" === " +conn.getTransactionIsolation());
 			conn.setTransactionIsolation(definition.getIsolationLevel());
 		}
 
@@ -149,7 +150,8 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 
 		try {
 			con.setAutoCommit(true);
-			if (connectionHolder.getPreviousIsolationLevel() == null) {
+			if (connectionHolder.getPreviousIsolationLevel() != null) {
+				System.out.println("==="+connectionHolder.getPreviousIsolationLevel());
 				con.setTransactionIsolation(connectionHolder.getPreviousIsolationLevel());
 			}
 

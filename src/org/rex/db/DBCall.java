@@ -50,9 +50,9 @@ public class DBCall extends DBOperation{
 	 * @throws DBException 
 	 */
 	protected Ps parseSqlEl(Object param) throws DBException{
-		Object[] result = SqlParser.parse(getSql(), param);
-		setSql((String)result[0]);
-		return (Ps)result[1];
+		SqlParser parser = new SqlParser(getSql(), param);
+		setSql(parser.getParsedSql());
+		return parser.getParsedPs();
 	}
 	
 	//---------------------------------------对外接口，调用存储过程时，仅返回Map对象

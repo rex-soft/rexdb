@@ -91,9 +91,9 @@ public class DBQuery extends DBOperation {
 	 * @throws DBException 
 	 */
 	protected Ps parseSqlEl(Object param) throws DBException {
-		Object[] result = SqlParser.parse(getSql(), param);
-		setSql((String) result[0]);
-		return (Ps) result[1];
+		SqlParser parser = new SqlParser(getSql(), param);
+		setSql(parser.getParsedSql());
+		return parser.getParsedPs();
 	}
 
 	// ---------------------------------------私有内部方法

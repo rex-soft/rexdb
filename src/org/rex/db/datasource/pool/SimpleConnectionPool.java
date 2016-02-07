@@ -1,6 +1,7 @@
 package org.rex.db.datasource.pool;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ import org.rex.db.exception.DBException;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.DataSourceUtil;
+import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.StringUtil;
 
 /**
@@ -406,7 +408,9 @@ public class SimpleConnectionPool {
 				
 				isAlive = true;
 			} else {
-				isAlive = connection.isValid(timeout);// jdk6及以上版本，使用jdbc自带接口测试连接有效性
+				// jdk6及以上版本，使用jdbc自带接口测试连接有效性
+//				isAlive = connection.isValid(timeout);
+				isAlive = (Boolean)ReflectUtil.invokeMethod(connection, Connection.class, "isValid", new Class[]{int.class}, new Object[]{timeout});
 			}
 		} catch (DBException e) {
 			LOGGER.warn("Exception occurred while getting dialect: {0}.", e.getMessage());
