@@ -1,7 +1,10 @@
 package org.rex.db.dialect.impl;
 
-import org.rex.db.Ps;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import org.rex.db.dialect.Dialect;
+import org.rex.db.dialect.LimitHandler;
 import org.rex.db.exception.DBRuntimeException;
 
 /**
@@ -9,48 +12,52 @@ import org.rex.db.exception.DBRuntimeException;
  */
 public class SQLServerDialect implements Dialect {
 
-
 	// ------------------------------------------------------------分页SQL
-	public String getLimitSql(String sql, int rows) {
-		return getLimitSql(sql, 0, rows);
-	}
+	protected class SQLServerLimitHandler extends LimitHandler {
 
-	public String getLimitSql(String sql, int offset, int rows) {
-		if (offset > 0) {
-			throw new DBRuntimeException("DB-A0003", getName());
+		public SQLServerLimitHandler(int rows) {
+			super(rows);
 		}
-		return new StringBuffer(sql.length() + 8).append(sql)
-				.insert(getAfterSelectInsertPoint(sql), " top " + rows)
-				.toString();
-	}
 
-	private int getAfterSelectInsertPoint(String sql) {
-		int selectIndex = sql.toLowerCase().indexOf("select");
-		final int selectDistinctIndex = sql.toLowerCase().indexOf(
-				"select distinct");
-		return selectIndex + (selectDistinctIndex == selectIndex ? 15 : 6);
-	}
-
-	public Ps getLimitPs(Ps ps, int rows) {
-		return ps;
-	}
-
-	public Ps getLimitPs(Ps ps, int offset, int rows) {
-		if (offset > 0) {
+		public SQLServerLimitHandler(int offset, int rows) {
+			super(offset, rows);
 			throw new DBRuntimeException("DB-A0003", getName());
 		}
 
-		return getLimitPs(ps, rows);
+		public String wrapSql(String sql) {
+			if (getOffset() > 0) {
+				throw new DBRuntimeException("DB-A0003", getName());
+			}
+			return new StringBuilder(sql.length() + 12).append(sql).insert(getAfterSelectInsertPoint(sql), " top " + getRows()).toString();
+		}
+
+		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {
+		}
+
+		// --private
+		private int getAfterSelectInsertPoint(String sql) {
+			int selectIndex = sql.toLowerCase().indexOf("select");
+			final int selectDistinctIndex = sql.toLowerCase().indexOf("select distinct");
+			return selectIndex + (selectDistinctIndex == selectIndex ? 15 : 6);
+		}
 	}
-	
+
+	public LimitHandler getLimitHandler(int rows) {
+		return new SQLServerLimitHandler(rows);
+	}
+
+	public LimitHandler getLimitHandler(int offset, int rows) {
+		throw new DBRuntimeException("DB-A0003", getName());
+	}
+
 	// ------------------------------------------------------------数据库测试SQL
 	/**
 	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
 	 */
-	public String getTestSql(){
+	public String getTestSql() {
 		return "SELECT 1";
 	}
-	
+
 	// ------------------------------------------------------------版本信息
 	public String getName() {
 		return "SQLSERVER";

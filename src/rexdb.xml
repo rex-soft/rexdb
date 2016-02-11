@@ -12,11 +12,11 @@
 		<property name="transactionIsolation" value="" />
 		<property name="autoRollback" value="false" />
 		<property name="reflectCache" value="true" />
-		<property name="dynamicClass" value="false" />
+		<property name="dynamicClass" value="true" />
 		<property name="dateAdjust" value="true" />
 	</settings>
-	<!-- Mysql   class="org.apache.commons.dbcp.BasicDataSource"-->
-	<dataSource>
+	<!-- Mysql  -->
+	<dataSource class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
 		<property name="username" value="root" />

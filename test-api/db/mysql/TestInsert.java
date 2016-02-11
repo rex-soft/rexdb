@@ -29,10 +29,6 @@ public class TestInsert{
 		String sql = "INSERT INTO R_STUDENT(NAME, SEX, BIRTHDAY, BIRTH_TIME, ENROLLMENT_TIME, MAJOR, PHOTO, REMARK, READONLY) "
 				+ "VALUES ('Jim', 1, '1990-01-01', '01:01:01', '2000-01-01 01:01:01', 10000, null, null, 0)";
 
-		if (sql == null){
-			throw new Exception("database not support.");
-		}
-
 		return DB.update(sql);
 	}
 

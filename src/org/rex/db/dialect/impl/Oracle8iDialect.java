@@ -1,7 +1,10 @@
 package org.rex.db.dialect.impl;
 
-import org.rex.db.Ps;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import org.rex.db.dialect.Dialect;
+import org.rex.db.dialect.LimitHandler;
 
 /**
  * Oracle8i
@@ -12,53 +15,62 @@ import org.rex.db.dialect.Dialect;
 public class Oracle8iDialect implements Dialect {
 
 	// ------------------------------------------------------------分页SQL
-	public String getLimitSql(String sql, int rows) {
-		return getLimitString(sql, false);
-	}
+	protected class OracleLimitHandler extends LimitHandler{
 
-	public String getLimitSql(String sql, int offset, int rows) {
-		return getLimitString(sql, true);
-	}
-
-	public Ps getLimitPs(Ps ps, int rows) {
-		if(ps==null) ps=new Ps();
-		return ps.add(rows);
-	}
-
-	public Ps getLimitPs(Ps ps, int offset, int rows) {
-		if(ps==null) ps=new Ps();
-		return ps.add(rows).add(offset + rows);
-	}
-
-	// 获取分页语句
-	protected String getLimitString(String sql, boolean hasOffset) {
-		sql = sql.trim();
-		boolean isForUpdate = false;
-		if (sql.toLowerCase().endsWith(" for update")) {
-			sql = sql.substring(0, sql.length() - 11);
-			isForUpdate = true;
+		public OracleLimitHandler(int rows) {
+			super(rows);
 		}
 
-		StringBuffer pagingSelect = new StringBuffer(sql.length() + 100);
-		if (hasOffset) {
-			pagingSelect
-					.append("select * from ( select row_.*, rownum rownum_ from ( ");
-		} else {
-			pagingSelect.append("select * from ( ");
+		public OracleLimitHandler(int offset, int rows) {
+			super(offset, rows);
 		}
-		pagingSelect.append(sql);
-		if (hasOffset) {
-			pagingSelect.append(" ) row_ ) where rownum_ <= ? and rownum_ > ?");
-		} else {
-			pagingSelect.append(" ) where rownum <= ?");
+		
+		public String wrapSql(String sql) {
+			sql = sql.trim();
+			boolean isForUpdate = false;
+			if (sql.toLowerCase().endsWith(" for update")) {
+				sql = sql.substring(0, sql.length() - 11);
+				isForUpdate = true;
+			}
+
+			StringBuffer pagingSelect = new StringBuffer(sql.length() + 100);
+			if (hasOffset()) {
+				pagingSelect
+						.append("select * from ( select row_.*, rownum rownum_ from ( ");
+			} else {
+				pagingSelect.append("select * from ( ");
+			}
+			pagingSelect.append(sql);
+			if (hasOffset()) {
+				pagingSelect.append(" ) row_ ) where rownum_ <= ? and rownum_ > ?");
+			} else {
+				pagingSelect.append(" ) where rownum <= ?");
+			}
+
+			if (isForUpdate) {
+				pagingSelect.append(" for update");
+			}
+
+			return pagingSelect.toString();
 		}
 
-		if (isForUpdate) {
-			pagingSelect.append(" for update");
+		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {
+			if(hasOffset()){
+				statement.setInt(parameterCount + 1, getRows());
+				statement.setInt(parameterCount + 2, getRows() + getOffset());
+			}else
+				statement.setInt(parameterCount + 1, getRows());
 		}
-
-		return pagingSelect.toString();
 	}
+	
+	public LimitHandler getLimitHandler(int rows) {
+		return new OracleLimitHandler(rows);
+	}
+
+	public LimitHandler getLimitHandler(int offset, int rows) {
+		return new OracleLimitHandler(offset, rows);
+	}
+	
 	// ------------------------------------------------------------数据库测试SQL
 	/**
 	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效

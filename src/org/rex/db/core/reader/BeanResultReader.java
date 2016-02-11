@@ -18,7 +18,6 @@ public class BeanResultReader<T> implements ResultReader<T> {
 	private ORUtil orUtil = new ORUtil();
 
 	private Ps ps;
-	boolean originalKey;
 
 	private T resultBean;
 	private List<T> results;
@@ -33,10 +32,9 @@ public class BeanResultReader<T> implements ResultReader<T> {
 	 * @param originalKey 是否按照结果集原始键处理
 	 * @param resultPojo
 	 */
-	public BeanResultReader(Ps ps, boolean originalKey, T resultBean) {
+	public BeanResultReader(Ps ps, T resultBean) {
 		this.results = new LinkedList<T>();
 		this.ps = ps;
-		this.originalKey = originalKey;
 		this.resultBean = resultBean;
 	}
 
@@ -57,7 +55,7 @@ public class BeanResultReader<T> implements ResultReader<T> {
 			
 			clone = (T)ReflectUtil.invokeMethod(resultBean, cloneMethod);
 		}
-		results.add(row2Bean(rs, rowNum++, ps, clone, originalKey));
+		results.add(row2Bean(rs, rowNum++, ps, clone));
 	}
 	
 	private Method getCloneMethod() throws DBException{
@@ -73,8 +71,8 @@ public class BeanResultReader<T> implements ResultReader<T> {
 	/**
 	 * OR映射
 	 */
-	protected T row2Bean(ResultSet rs, int rowNum, Ps ps, T bean, boolean originalKey) throws DBException {
-		return orUtil.rs2Object(rs, bean, originalKey);
+	protected T row2Bean(ResultSet rs, int rowNum, Ps ps, T bean) throws DBException {
+		return orUtil.rs2Object(rs, bean);
 	}
 	
 

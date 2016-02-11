@@ -3,6 +3,7 @@ package org.rex;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -23,15 +24,72 @@ import org.rex.db.exception.DBException;
  */
 public class DB {
 	
+	// --------------------------------------------- delegates
+	//-------------update
+	/**
+	 * get <tt>DBUpdate</tt> instance for the default data source 
+	 * @return DBUpdate
+	 * @throws DBException couldn't find default data source, or couldn't initialize DBUpdate instance
+	 */
+	private static DBUpdate getDBUpdate() throws DBException{
+		return DBUpdate.getInstance(getDefaultDataSource());
+	}
+	
+	/**
+	 * get <tt>DBUpdate</tt> instance for specified data source 
+	 * @param dataSourceId the data source configured in the configuration xml.
+	 * @return DBUpdate
+	 * @throws DBException couldn't find the data source, or couldn't initialize DBUpdate instance
+	 */
+	private static DBUpdate getDBUpdate(String dataSourceId) throws DBException{
+		return DBUpdate.getInstance(getDataSource(dataSourceId));
+	}
+
+	//-------------query
+	/**
+	 * get <tt>DBQuery</tt> instance for the default data source 
+	 * @return DBQuery
+	 * @throws DBException couldn't find default data source, or couldn't initialize DBQuery instance
+	 */
+	private static DBQuery getDBQuery() throws DBException{
+		return DBQuery.getInstance(getDefaultDataSource());
+	}
+	
+	/**
+	 * get <tt>DBQuery</tt> instance for specified data source 
+	 * @param dataSourceId the data source configured in the configuration xml.
+	 * @return DBQuery
+	 * @throws DBException couldn't find the data source, or couldn't initialize DBQuery instance
+	 */
+	private static DBQuery getDBQuery(String dataSourceId) throws DBException{
+		return DBQuery.getInstance(getDataSource(dataSourceId));
+	}
+	
+	//-------------call
+	/**
+	 * get <tt>DBCall</tt> instance for the default data source 
+	 * @return DBCall
+	 * @throws DBException couldn't find default data source, or couldn't initialize DBCall instance
+	 */
+	private static DBCall getDBCall() throws DBException{
+		return DBCall.getInstance(getDefaultDataSource());
+	}
+	
+	/**
+	 * get <tt>DBCall</tt> instance for specified data source 
+	 * @param dataSourceId the data source configured in the configuration xml.
+	 * @return DBCall
+	 * @throws DBException couldn't find the data source, or couldn't initialize DBCall instance
+	 */
+	private static DBCall getDBCall(String dataSourceId) throws DBException{
+		return DBCall.getInstance(getDataSource(dataSourceId));
+	}
+	
+	// --------------------------------------------- data sources and connections
 	private static DataSourceManager getDataSourceManager() throws DBException{
 		return Configuration.getCurrentConfiguration().getDataSourceManager();
 	}
 	
-	private static DialectManager getDialectManager() throws DBException{
-		return Configuration.getCurrentConfiguration().getDialectManager();
-	}
-
-	// --------------------------------------------- 0.1 数据源、数据库连接0
 	public static DataSource getDefaultDataSource() throws DBException {
 		DataSource defaultDataSource = getDataSourceManager().getDefault();
 		if(defaultDataSource == null)
@@ -61,8 +119,11 @@ public class DB {
 		return getDataSource(dataSource).getConnection();
 	}
 
-	// --------------------------------------------- 0.2 方言
-
+	// --------------------------------------------- dialects
+	private static DialectManager getDialectManager() throws DBException{
+		return Configuration.getCurrentConfiguration().getDialectManager();
+	}
+	
 	/**
 	 * 获取方言实现
 	 */
@@ -85,986 +146,455 @@ public class DB {
 	}
 
 	// --------------------------------------------- 查询
-	/**
-	 * 获取DBQuery对象
-	 * @param sql SQL语句
-	 * @return DBQuery对象
-	 * @throws DBException
-	 */
-	protected static DBQuery getQuery(String sql) throws DBException{
-		return getQuery(getDefaultDataSource(), sql);
-	}
-	
-	/**
-	 * 获取DBQuery对象
-	 * @param dataSource 数据源ID
-	 * @param sql SQL语句
-	 * @return DBQuery对象
-	 * @throws DBException
-	 */
-	protected static DBQuery getQuery(String dataSourceId, String sql) throws DBException{
-		return getQuery(getDataSource(dataSourceId), sql);
-	}
-	
-	/**
-	 * 获取DBQuery对象
-	 * @param dataSource 数据源
-	 * @param sql SQL语句
-	 * @return DBQuery对象
-	 * @throws DBException
-	 */
-	protected static DBQuery getQuery(DataSource dataSource, String sql) throws DBException{
-		return new DBQuery(dataSource, sql);
-	}
-	
 	//------------使用指定数据源
+	//---------------query one row for java bean
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T get(String dataSourceId, String sql, T bean) throws DBException{
-		return getQuery(dataSourceId, sql).get(bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T getOriginal(String dataSourceId, String sql, T bean) throws DBException{
-		return getQuery(dataSourceId, sql).get(bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T get(String dataSourceId, String sql, Ps ps, T bean) throws DBException{
-		return getQuery(dataSourceId, sql).get(ps, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T get(String dataSourceId, String sql, Object[] params, T bean) throws DBException{
-		return getQuery(dataSourceId, sql).get(params, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T get(String dataSourceId, String sql, Object param, T bean) throws DBException{
-		return getQuery(dataSourceId, sql).get(param, bean);
-	}	
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T getOriginal(String dataSourceId, String sql, Ps ps, T bean) throws DBException{
-		return getQuery(dataSourceId, sql).getOriginal(ps, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T getOriginal(String dataSourceId, String sql, Object[] params, T bean) throws DBException{
-		return getQuery(dataSourceId, sql).getOriginal(params, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T getOriginal(String dataSourceId, String sql, Object param, T bean) throws DBException{
-		return getQuery(dataSourceId, sql).getOriginal(param, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
 	public static <T> T get(String dataSourceId, String sql, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).get(resultClass);
+		return getDBQuery(dataSourceId).get(sql, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public static <T> T get(String dataSourceId, String sql, Ps parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).get(sql, parameters, resultClass);
 	}
 	
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T getOriginal(String dataSourceId, String sql, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getOriginal(resultClass);
+	public static <T> T get(String dataSourceId, String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).get(sql, parameterArray, resultClass);
 	}
 	
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T get(String dataSourceId, String sql, Ps ps, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).get(ps, resultClass);
+	public static <T> T get(String dataSourceId, String sql, Object parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).get(sql, parameters, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public static <T> T get(String dataSourceId, String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).get(sql, parameters, resultClass);
+	}
+	
+	//---------------query one row for RMap
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public static RMap<String, ?> getMap(String dataSourceId, String sql) throws DBException {
+		return getDBQuery(dataSourceId).getMap(sql);
 	}
 	
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T get(String dataSourceId, String sql, Object[] params, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).get(params, resultClass);
+	public static RMap<String, ?> getMap(String dataSourceId, String sql, Ps parameters) throws DBException {
+		return getDBQuery(dataSourceId).getMap(sql, parameters);
 	}
-	
+
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T get(String dataSourceId, String sql, Object param, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).get(param, resultClass);
+	public static RMap<String, ?> getMap(String dataSourceId, String sql, Object[] parameterArray) throws DBException {
+		return getDBQuery(dataSourceId).getMap(sql, parameterArray);
 	}
-	
+
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T getOriginal(String dataSourceId, String sql, Ps ps, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getOriginal(ps, resultClass);
+	public static RMap<String, ?> getMap(String dataSourceId, String sql, Object parameters) throws DBException {
+		return getDBQuery(dataSourceId).getMap(sql, parameters);
 	}
-	
+
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T getOriginal(String dataSourceId, String sql, Object[] params, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getOriginal(params, resultClass);
+	public static RMap<String, ?> getMap(String dataSourceId, String sql, Map<?, ?> parameters) throws DBException {
+		return getDBQuery(dataSourceId).getMap(sql, parameters);
 	}
-	
+
+	//---------------query a list of java bean
 	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
+	 * 执行查询, 获取多条记录
 	 */
-	public static <T> T getOriginal(String dataSourceId, String sql, Object param, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getOriginal(param, resultClass);
-	}
-	
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMap(String dataSourceId, String sql) throws DBException{
-		return getQuery(dataSourceId, sql).getMap();
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMapOriginal(String dataSourceId, String sql) throws DBException{
-		return getQuery(dataSourceId, sql).getMapOriginal();
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMap(String dataSourceId, String sql, Ps ps) throws DBException{
-		return getQuery(dataSourceId, sql).getMap(ps);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMap(String dataSourceId, String sql, Object[] params) throws DBException{
-		return getQuery(dataSourceId, sql).getMap(params);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMap(String dataSourceId, String sql, Object param) throws DBException{
-		return getQuery(dataSourceId, sql).getMap(param);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMapOriginal(String dataSourceId, String sql, Ps ps) throws DBException{
-		return getQuery(dataSourceId, sql).getMapOriginal(ps);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMapOriginal(String dataSourceId, String sql, Object[] params) throws DBException{
-		return getQuery(dataSourceId, sql).getMapOriginal(params);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMapOriginal(String dataSourceId, String sql, Object param) throws DBException{
-		return getQuery(dataSourceId, sql).getMapOriginal(param);
+	public static <T> List<T> getList(String dataSourceId, String sql, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, resultClass);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getList(resultClass);
+	public static <T> List<T> getList(String dataSourceId, String sql, Ps parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass);
 	}
-	
+
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(resultClass);
+	public static <T> List<T> getList(String dataSourceId, String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, parameterArray, resultClass);
 	}
-	
+
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Ps ps, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getList(ps, resultClass);
+	public static <T> List<T> getList(String dataSourceId, String sql, Object parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass);
 	}
-	
+
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Object[] params, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getList(params, resultClass);
+	public static <T> List<T> getList(String dataSourceId, String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass);
 	}
-	
+
+	//---------------query a list of RMap
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Object param, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getList(param, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Ps ps, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(ps, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Object[] params, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(params, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Object param, Class<T> resultClass) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(param, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getList(resultClass, offset, rows);
+	public static List<RMap> getMapList(String dataSourceId, String sql) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(resultClass, offset, rows);
+	public static List<RMap> getMapList(String dataSourceId, String sql, Ps parameters) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, parameters);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String dataSourceId, String sql, Object[] parameterArray) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, parameterArray);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String dataSourceId, String sql, Object parameters) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, parameters);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String dataSourceId, String sql, Map<?, ?> parameters) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, parameters);
+	}
+	
+	//---------------query a limit list of java bean
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static <T> List<T> getList(String dataSourceId, String sql, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Ps ps, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getList(ps, resultClass, offset, rows);
+	public static <T> List<T> getList(String dataSourceId, String sql, Ps parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass, offset, rows);
+	}
+	
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static <T> List<T> getList(String dataSourceId, String sql, Object[] parameterArray, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, parameterArray, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Object[] params, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getList(params, resultClass, offset, rows);
+	public static <T> List<T> getList(String dataSourceId, String sql, Object parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String dataSourceId, String sql, Object param, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getList(param, resultClass, offset, rows);
+	public static <T> List<T> getList(String dataSourceId, String sql, Map<?, ?> parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass, offset, rows);
+	}
+	
+	//---------------query a limit list of RMap
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String dataSourceId, String sql, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String dataSourceId, String sql, Ps parameters, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, parameters, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String dataSourceId, String sql, Object[] parameterArray, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, parameterArray, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String dataSourceId, String sql, Object parameters, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, parameters, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Ps ps, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(ps, resultClass, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Object[] params, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(params, resultClass, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public static <T> List<T> getListOriginal(String dataSourceId, String sql, Object param, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getListOriginal(param, resultClass, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String dataSourceId, String sql) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList();
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String dataSourceId, String sql) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal();
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String dataSourceId, String sql, Ps ps) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(ps);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String dataSourceId, String sql, Object[] params) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(params);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String dataSourceId, String sql, Object param) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(param);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Ps ps) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(ps);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Object[] params) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(params);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Object param) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(param);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String dataSourceId, String sql, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String dataSourceId, String sql, Ps ps, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(ps, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String dataSourceId, String sql, Object[] params, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(params, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String dataSourceId, String sql, Object param, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getMapList(param, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Ps ps, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(ps, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Object[] params, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(params, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String dataSourceId, String sql, Object param, int offset, int rows) throws DBException{
-		return getQuery(dataSourceId, sql).getMapListOriginal(param, offset, rows);
+	public static List<RMap> getMapList(String dataSourceId, String sql, Map<?, ?> parameters, int offset, int rows) throws DBException {
+		return getDBQuery(dataSourceId).getMapList(sql, parameters, offset, rows);
 	}
 
 	//------------使用默认数据源
-	
+	//---------------query one row for java bean
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T get(String sql, T bean) throws DBException{
-		return getQuery(sql).get(bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T getOriginal(String sql, T bean) throws DBException{
-		return getQuery(sql).get(bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T get(String sql, Ps ps, T bean) throws DBException{
-		return getQuery(sql).get(ps, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T get(String sql, Object[] params, T bean) throws DBException{
-		return getQuery(sql).get(params, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T get(String sql, Object param, T bean) throws DBException{
-		return getQuery(sql).get(param, bean);
-	}	
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T getOriginal(String sql, Ps ps, T bean) throws DBException{
-		return getQuery(sql).getOriginal(ps, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T getOriginal(String sql, Object[] params, T bean) throws DBException{
-		return getQuery(sql).getOriginal(params, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static <T> T getOriginal(String sql, Object param, T bean) throws DBException{
-		return getQuery(sql).getOriginal(param, bean);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
 	public static <T> T get(String sql, Class<T> resultClass) throws DBException{
-		return getQuery(sql).get(resultClass);
+		return getDBQuery().get(sql, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public static <T> T get(String sql, Ps parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery().get(sql, parameters, resultClass);
 	}
 	
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T getOriginal(String sql, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getOriginal(resultClass);
+	public static <T> T get(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
+		return getDBQuery().get(sql, parameterArray, resultClass);
 	}
 	
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T get(String sql, Ps ps, Class<T> resultClass) throws DBException{
-		return getQuery(sql).get(ps, resultClass);
+	public static <T> T get(String sql, Object parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery().get(sql, parameters, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public static <T> T get(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery().get(sql, parameters, resultClass);
+	}
+	
+	//---------------query one row for RMap
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public static RMap<String, ?> getMap(String sql) throws DBException {
+		return getDBQuery().getMap(sql);
 	}
 	
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T get(String sql, Object[] params, Class<T> resultClass) throws DBException{
-		return getQuery(sql).get(params, resultClass);
+	public static RMap<String, ?> getMap(String sql, Ps parameters) throws DBException {
+		return getDBQuery().getMap(sql, parameters);
 	}
-	
+
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T get(String sql, Object param, Class<T> resultClass) throws DBException{
-		return getQuery(sql).get(param, resultClass);
+	public static RMap<String, ?> getMap(String sql, Object[] parameterArray) throws DBException {
+		return getDBQuery().getMap(sql, parameterArray);
 	}
-	
+
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T getOriginal(String sql, Ps ps, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getOriginal(ps, resultClass);
+	public static RMap<String, ?> getMap(String sql, Object parameters) throws DBException {
+		return getDBQuery().getMap(sql, parameters);
 	}
-	
+
 	/**
 	 * 执行查询, 获取一条记录
-	 * @throws DBException 
 	 */
-	public static <T> T getOriginal(String sql, Object[] params, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getOriginal(params, resultClass);
+	public static RMap<String, ?> getMap(String sql, Map<?, ?> parameters) throws DBException {
+		return getDBQuery().getMap(sql, parameters);
 	}
-	
+
+	//---------------query a list of java bean
 	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
+	 * 执行查询, 获取多条记录
 	 */
-	public static <T> T getOriginal(String sql, Object param, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getOriginal(param, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMap(String sql) throws DBException{
-		return getQuery(sql).getMap();
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMapOriginal(String sql) throws DBException{
-		return getQuery(sql).getMapOriginal();
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMap(String sql, Ps ps) throws DBException{
-		return getQuery(sql).getMap(ps);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMap(String sql, Object[] params) throws DBException{
-		return getQuery(sql).getMap(params);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMap(String sql, Object param) throws DBException{
-		return getQuery(sql).getMap(param);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMapOriginal(String sql, Ps ps) throws DBException{
-		return getQuery(sql).getMapOriginal(ps);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMapOriginal(String sql, Object[] params) throws DBException{
-		return getQuery(sql).getMapOriginal(params);
-	}
-	
-	/**
-	 * 执行查询, 获取一条记录
-	 * @throws DBException 
-	 */
-	public static RMap getMapOriginal(String sql, Object param) throws DBException{
-		return getQuery(sql).getMapOriginal(param);
+	public static <T> List<T> getList(String sql, Class<T> resultClass) throws DBException {
+		return getDBQuery().getList(sql, resultClass);
 	}
 
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String sql, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getList(resultClass);
+	public static <T> List<T> getList(String sql, Ps parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery().getList(sql, parameters, resultClass);
 	}
-	
+
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getListOriginal(String sql, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getListOriginal(resultClass);
+	public static <T> List<T> getList(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
+		return getDBQuery().getList(sql, parameterArray, resultClass);
 	}
-	
+
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String sql, Ps ps, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getList(ps, resultClass);
+	public static <T> List<T> getList(String sql, Object parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery().getList(sql, parameters, resultClass);
 	}
-	
+
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String sql, Object[] params, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getList(params, resultClass);
+	public static <T> List<T> getList(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
+		return getDBQuery().getList(sql, parameters, resultClass);
 	}
-	
+
+	//---------------query a list of RMap
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static <T> List<T> getList(String sql, Object param, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getList(param, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static <T> List<T> getListOriginal(String sql, Ps ps, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getListOriginal(ps, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static <T> List<T> getListOriginal(String sql, Object[] params, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getListOriginal(params, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static <T> List<T> getListOriginal(String sql, Object param, Class<T> resultClass) throws DBException{
-		return getQuery(sql).getListOriginal(param, resultClass);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static <T> List<T> getList(String sql, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(sql).getList(resultClass, offset, rows);
+	public static List<RMap> getMapList(String sql) throws DBException {
+		return getDBQuery().getMapList(sql);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getListOriginal(String sql, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(sql).getListOriginal(resultClass, offset, rows);
+	public static List<RMap> getMapList(String sql, Ps parameters) throws DBException {
+		return getDBQuery().getMapList(sql, parameters);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String sql, Object[] parameterArray) throws DBException {
+		return getDBQuery().getMapList(sql, parameterArray);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String sql, Object parameters) throws DBException {
+		return getDBQuery().getMapList(sql, parameters);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String sql, Map<?, ?> parameters) throws DBException {
+		return getDBQuery().getMapList(sql, parameters);
+	}
+	
+	//---------------query a limit list of java bean
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static <T> List<T> getList(String sql, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery().getList(sql, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
 	 */
-	public static <T> List<T> getList(String sql, Ps ps, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(sql).getList(ps, resultClass, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public static <T> List<T> getList(String sql, Object[] params, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(sql).getList(params, resultClass, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public static <T> List<T> getList(String sql, Object param, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(sql).getList(param, resultClass, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public static <T> List<T> getListOriginal(String sql, Ps ps, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(sql).getListOriginal(ps, resultClass, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public static <T> List<T> getListOriginal(String sql, Object[] params, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(sql).getListOriginal(params, resultClass, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public static <T> List<T> getListOriginal(String sql, Object param, Class<T> resultClass, int offset, int rows) throws DBException{
-		return getQuery(sql).getListOriginal(param, resultClass, offset, rows);
+	public static <T> List<T> getList(String sql, Ps parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery().getList(sql, parameters, resultClass, offset, rows);
 	}
 	
 	
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static List<RMap> getMapList(String sql) throws DBException{
-		return getQuery(sql).getMapList();
+	public static <T> List<T> getList(String sql, Object[] parameterArray, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery().getList(sql, parameterArray, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static List<RMap> getMapListOriginal(String sql) throws DBException{
-		return getQuery(sql).getMapListOriginal();
+	public static <T> List<T> getList(String sql, Object parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery().getList(sql, parameters, resultClass, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static List<RMap> getMapList(String sql, Ps ps) throws DBException{
-		return getQuery(sql).getMapList(ps);
+	public static <T> List<T> getList(String sql, Map<?, ?> parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return getDBQuery().getList(sql, parameters, resultClass, offset, rows);
+	}
+	
+	//---------------query a limit list of RMap
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String sql, int offset, int rows) throws DBException {
+		return getDBQuery().getMapList(sql, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String sql, Ps parameters, int offset, int rows) throws DBException {
+		return getDBQuery().getMapList(sql, parameters, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String sql, Object[] parameterArray, int offset, int rows) throws DBException {
+		return getDBQuery().getMapList(sql, parameterArray, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public static List<RMap> getMapList(String sql, Object parameters, int offset, int rows) throws DBException {
+		return getDBQuery().getMapList(sql, parameters, offset, rows);
 	}
 	
 	/**
 	 * 执行查询, 获取多条记录
-	 * @throws DBException 
 	 */
-	public static List<RMap> getMapList(String sql, Object[] params) throws DBException{
-		return getQuery(sql).getMapList(params);
+	public static List<RMap> getMapList(String sql, Map<?, ?> parameters, int offset, int rows) throws DBException {
+		return getDBQuery().getMapList(sql, parameters, offset, rows);
 	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String sql, Object param) throws DBException{
-		return getQuery(sql).getMapList(param);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String sql, Ps ps) throws DBException{
-		return getQuery(sql).getMapListOriginal(ps);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String sql, Object[] params) throws DBException{
-		return getQuery(sql).getMapListOriginal(params);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String sql, Object param) throws DBException{
-		return getQuery(sql).getMapListOriginal(param);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String sql, int offset, int rows) throws DBException{
-		return getQuery(sql).getMapList(offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String sql, int offset, int rows) throws DBException{
-		return getQuery(sql).getMapListOriginal(offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String sql, Ps ps, int offset, int rows) throws DBException{
-		return getQuery(sql).getMapList(ps, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String sql, Object[] params, int offset, int rows) throws DBException{
-		return getQuery(sql).getMapList(params, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapList(String sql, Object param, int offset, int rows) throws DBException{
-		return getQuery(sql).getMapList(param, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String sql, Ps ps, int offset, int rows) throws DBException{
-		return getQuery(sql).getMapListOriginal(ps, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String sql, Object[] params, int offset, int rows) throws DBException{
-		return getQuery(sql).getMapListOriginal(params, offset, rows);
-	}
-	
-	/**
-	 * 执行查询, 获取多条记录
-	 * @throws DBException 
-	 */
-	public static List<RMap> getMapListOriginal(String sql, Object param, int offset, int rows) throws DBException{
-		return getQuery(sql).getMapListOriginal(param, offset, rows);
-	}
+
 	
 	// --------------------------------------------- 更新
-	
-	/**
-	 * 获取DBUpdate对象
-	 * @param sql SQL语句
-	 * @return DBUpdate对象
-	 * @throws DBException
-	 */
-	protected static DBUpdate getUpdate() throws DBException{
-		return new DBUpdate(getDefaultDataSource());
-	}
-	
-	/**
-	 * 获取DBUpdate对象
-	 * @param sql SQL语句
-	 * @return DBUpdate对象
-	 * @throws DBException
-	 */
-	protected static DBUpdate getUpdate(String sql) throws DBException{
-		return new DBUpdate(getDefaultDataSource(), sql);
-	}
-	
-	/**
-	 * 获取DBUpdate对象
-	 * @param dataSourceId 数据源编号
-	 * @return DBUpdate对象
-	 * @throws DBException
-	 */
-	protected static DBUpdate getUpdateByDataSourceId(String dataSourceId) throws DBException{
-		return new DBUpdate(getDataSource(dataSourceId));
-	}
-	
-	/**
-	 * 获取DBUpdate对象
-	 * @param dataSourceId 数据源编号
-	 * @param sql SQL语句
-	 * @return DBUpdate对象
-	 * @throws DBException
-	 */
-	protected static DBUpdate getUpdate(String dataSourceId, String sql) throws DBException{
-		return new DBUpdate(getDataSource(dataSourceId), sql);
-	}
-	
-	/**
-	 * 获取DBUpdate对象
-	 * @param dataSource 数据源
-	 * @param sql SQL语句
-	 * @return DBUpdate对象
-	 * @throws DBException
-	 */
-	protected static DBUpdate getUpdate(DataSource dataSource, String sql) throws DBException{
-		return new DBUpdate(dataSource, sql);
-	}
-	
 	//------------使用指定数据源
+	
 	/**
 	 * 执行更新
 	 * @throws DBException 
 	 */
 	public static int update(String dataSourceId, String sql) throws DBException{
-		return getUpdate(dataSourceId, sql).update();
+		return getDBUpdate(dataSourceId).update(sql);
 	}
 	
 	/**
@@ -1074,7 +604,7 @@ public class DB {
 	 * @throws DBException 
 	 */
 	public static int update(String dataSourceId, String sql, Ps ps) throws DBException{
-		return getUpdate(dataSourceId, sql).update(ps);
+		return getDBUpdate(dataSourceId).update(sql, ps);
 	}
 	
 	/**
@@ -1083,8 +613,8 @@ public class DB {
 	 * @return 受影响记录条数
 	 * @throws DBException 
 	 */
-	public static int update(String dataSourceId, String sql, Object[] params) throws DBException{
-		return getUpdate(dataSourceId, sql).update(params);
+	public static int update(String dataSourceId, String sql, Object[] parameterArray) throws DBException{
+		return getDBUpdate(dataSourceId).update(sql, parameterArray);
 	}
 	
 	/**
@@ -1093,8 +623,18 @@ public class DB {
 	 * @return 受影响记录条数
 	 * @throws DBException 
 	 */
-	public static int update(String dataSourceId, String sql, Object params) throws DBException{
-		return getUpdate(dataSourceId, sql).update(params);
+	public static int update(String dataSourceId, String sql, Map<?, ?> parameterMap) throws DBException{
+		return getDBUpdate(dataSourceId).update(sql, parameterMap);
+	}
+	
+	/**
+	 * 执行更新
+	 * @param params 预编译参数所在的Map或POJO对象
+	 * @return 受影响记录条数
+	 * @throws DBException 
+	 */
+	public static int update(String dataSourceId, String sql, Object parameterBean) throws DBException{
+		return getDBUpdate(dataSourceId).update(sql, parameterBean);
 	}
 	
 	/**
@@ -1103,8 +643,8 @@ public class DB {
 	 * @return 受影响记录条数
 	 * @throws DBException 
 	 */
-	public static int[] batchUpdate(String dataSourceId, String[] sql) throws DBException{
-		return getUpdateByDataSourceId(dataSourceId).batchUpdate(sql);
+	public static int[] batchUpdate(String dataSourceId, String[] sqls) throws DBException{
+		return getDBUpdate(dataSourceId).batchUpdate(sqls);
 	}
 	
 	/**
@@ -1112,8 +652,8 @@ public class DB {
 	 * @param ps 预编译参数
 	 * @return 受影响条数
 	 */
-	public static int[] batchUpdate(String dataSourceId, String sql, Ps[] ps) throws DBException{
-		return getUpdate(dataSourceId, sql).batchUpdate(ps);
+	public static int[] batchUpdate(String dataSourceId, String sql, Ps[] pss) throws DBException{
+		return getDBUpdate(dataSourceId).batchUpdate(sql, pss);
 	}
 	
 	/**
@@ -1122,8 +662,8 @@ public class DB {
 	 * @return 受影响条数
 	 * @throws DBException 
 	 */
-	public static int[] batchUpdate(String dataSourceId, String sql, Object[][] params) throws DBException{
-		return getUpdate(dataSourceId, sql).batchUpdate(params);
+	public static int[] batchUpdate(String dataSourceId, String sql, Object[][] parameterArrays) throws DBException{
+		return getDBUpdate(dataSourceId).batchUpdate(sql, parameterArrays);
 	}
 	
 	/**
@@ -1132,8 +672,18 @@ public class DB {
 	 * @return 受影响条数
 	 * @throws DBException 
 	 */
-	public static int[] batchUpdate(String dataSourceId, String sql, Object[] params) throws DBException{
-		return getUpdate(dataSourceId, sql).batchUpdate(params);
+	public static int[] batchUpdate(String dataSourceId, String sql, Map<?, ?>[] parameterMaps) throws DBException{
+		return getDBUpdate(dataSourceId).batchUpdate(sql, parameterMaps);
+	}
+	
+	/**
+	 * 执行批量更新
+	 * @param params 预编译参数
+	 * @return 受影响条数
+	 * @throws DBException 
+	 */
+	public static int[] batchUpdate(String dataSourceId, String sql, Object[] parameterBeans) throws DBException{
+		return getDBUpdate(dataSourceId).batchUpdate(sql, parameterBeans);
 	}
 	
 	//------------使用默认数据源
@@ -1142,7 +692,7 @@ public class DB {
 	 * @throws DBException 
 	 */
 	public static int update(String sql) throws DBException{
-		return getUpdate(sql).update();
+		return getDBUpdate().update(sql);
 	}
 	
 	/**
@@ -1152,7 +702,7 @@ public class DB {
 	 * @throws DBException 
 	 */
 	public static int update(String sql, Ps ps) throws DBException{
-		return getUpdate(sql).update(ps);
+		return getDBUpdate().update(sql, ps);
 	}
 	
 	/**
@@ -1161,18 +711,28 @@ public class DB {
 	 * @return 受影响记录条数
 	 * @throws DBException 
 	 */
-	public static int update(String sql, Object[] params) throws DBException{
-		return getUpdate(sql).update(params);
+	public static int update(String sql, Object[] parameterArray) throws DBException{
+		return getDBUpdate().update(sql, parameterArray);
 	}
 	
 	/**
 	 * 执行更新
-	 * @param params 预编译参数所在的Map或POJO对象
+	 * @param params 预编译参数所在的Map对象
 	 * @return 受影响记录条数
 	 * @throws DBException 
 	 */
-	public static int update(String sql, Object params) throws DBException{
-		return getUpdate(sql).update(params);
+	public static int update(String sql, Map<?, ?> parameterMap) throws DBException{
+		return getDBUpdate().update(sql, parameterMap);
+	}
+	
+	/**
+	 * 执行更新
+	 * @param params 预编译参数所在的POJO对象
+	 * @return 受影响记录条数
+	 * @throws DBException 
+	 */
+	public static int update(String sql, Object parameterBean) throws DBException{
+		return getDBUpdate().update(sql, parameterBean);
 	}
 	
 	/**
@@ -1182,7 +742,7 @@ public class DB {
 	 * @throws DBException 
 	 */
 	public static int[] batchUpdate(String[] sql) throws DBException{
-		return getUpdate().batchUpdate(sql);
+		return getDBUpdate().batchUpdate(sql);
 	}
 	
 	/**
@@ -1190,8 +750,8 @@ public class DB {
 	 * @param ps 预编译参数
 	 * @return 受影响条数
 	 */
-	public static int[] batchUpdate(String sql, Ps[] ps) throws DBException{
-		return getUpdate(sql).batchUpdate(ps);
+	public static int[] batchUpdate(String sql, Ps[] pss) throws DBException{
+		return getDBUpdate().batchUpdate(sql, pss);
 	}
 	
 	/**
@@ -1200,8 +760,8 @@ public class DB {
 	 * @return 受影响条数
 	 * @throws DBException 
 	 */
-	public static int[] batchUpdate(String sql, Object[][] params) throws DBException{
-		return getUpdate(sql).batchUpdate(params);
+	public static int[] batchUpdate(String sql, Object[][] parameterArrays) throws DBException{
+		return getDBUpdate().batchUpdate(sql, parameterArrays);
 	}
 	
 	/**
@@ -1210,52 +770,28 @@ public class DB {
 	 * @return 受影响条数
 	 * @throws DBException 
 	 */
-	public static int[] batchUpdate(String sql, Object[] params) throws DBException{
-		return getUpdate(sql).batchUpdate(params);
+	public static int[] batchUpdate(String sql, Map<?, ?>[] parameterMaps) throws DBException{
+		return getDBUpdate().batchUpdate(sql, parameterMaps);
+	}
+	
+	/**
+	 * 执行批量更新
+	 * @param params 预编译参数
+	 * @return 受影响条数
+	 * @throws DBException 
+	 */
+	public static int[] batchUpdate(String sql, Object[] parameterBeans) throws DBException{
+		return getDBUpdate().batchUpdate(sql, parameterBeans);
 	}
 
 	// --------------------------------------------- 存储过程
-	
-	/**
-	 * 获取DBUpdate对象
-	 * @param dataSourceId 数据源编号
-	 * @param sql SQL语句
-	 * @return DBUpdate对象
-	 * @throws DBException
-	 */
-	protected static DBCall getCall(String sql) throws DBException{
-		return new DBCall(getDefaultDataSource(), sql);
-	}
-	
-	/**
-	 * 获取DBUpdate对象
-	 * @param dataSourceId 数据源编号
-	 * @param sql SQL语句
-	 * @return DBUpdate对象
-	 * @throws DBException
-	 */
-	protected static DBCall getCall(String dataSourceId, String sql) throws DBException{
-		return new DBCall(getDataSource(dataSourceId), sql);
-	}
-	
-	/**
-	 * 获取DBUpdate对象
-	 * @param dataSource 数据源
-	 * @param sql SQL语句
-	 * @return DBUpdate对象
-	 * @throws DBException
-	 */
-	protected static DBCall getCall(DataSource dataSource, String sql) throws DBException{
-		return new DBCall(dataSource, sql);
-	}
-	
 	//------------使用指定数据源
 	/**
 	 * 调用存储过程
 	 * @throws DBException 
 	 */
-	public static RMap call(DataSource dataSource, String sql) throws DBException{
-		return getCall(dataSource, sql).call();
+	public static RMap<String, ?> call(String dataSourceId, String sql) throws DBException{
+		return getDBCall(dataSourceId).call(sql);
 	}
 	
 	/**
@@ -1263,8 +799,8 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static RMap call(DataSource dataSource, String sql, Ps ps) throws DBException{
-		return getCall(dataSource, sql).call(ps);
+	public static RMap<String, ?> call(String dataSourceId, String sql, Object[] parameterArray) throws DBException{
+		return getDBCall(dataSourceId).call(sql, parameterArray);
 	}
 	
 	/**
@@ -1272,8 +808,17 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static RMap call(DataSource dataSource, String sql, Object[] params) throws DBException{
-		return getCall(dataSource, sql).call(params);
+	public static RMap<String, ?> call(String dataSourceId, String sql, Ps parameters) throws DBException{
+		return getDBCall(dataSourceId).call(sql, parameters);
+	}
+
+	/**
+	 * 调用存储过程
+	 * @param ps 参数
+	 * @throws DBException 
+	 */
+	public static RMap<String, ?> call(String dataSourceId, String sql, Map<?, ?> parameters) throws DBException{
+		return getDBCall(dataSourceId).call(sql, parameters);
 	}
 	
 	/**
@@ -1281,44 +826,8 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static RMap call(DataSource dataSource, String sql, Object param) throws DBException{
-		return getCall(dataSource, sql).call(param);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public static RMap callOriginal(DataSource dataSource, String sql) throws DBException{
-		return getCall(dataSource, sql).callOriginal();
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public static RMap callOriginal(DataSource dataSource, String sql, Ps ps) throws DBException{
-		return getCall(dataSource, sql).callOriginal(ps);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public static RMap callOriginal(DataSource dataSource, String sql, Object[] params) throws DBException{
-		return getCall(dataSource, sql).callOriginal(params);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public static RMap callOriginal(DataSource dataSource, String sql, Object param) throws DBException{
-		return getCall(dataSource, sql).callOriginal(param);
+	public static RMap<String, ?> call(String dataSourceId, String sql, Object parameters) throws DBException{
+		return getDBCall(dataSourceId).call(sql, parameters);
 	}
 	
 	//------------使用默认数据源
@@ -1326,8 +835,8 @@ public class DB {
 	 * 调用存储过程
 	 * @throws DBException 
 	 */
-	public static RMap call(String sql) throws DBException{
-		return getCall(sql).call();
+	public static RMap<String, ?> call(String sql) throws DBException{
+		return getDBCall().call(sql);
 	}
 	
 	/**
@@ -1335,8 +844,8 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static RMap call(String sql, Ps ps) throws DBException{
-		return getCall(sql).call(ps);
+	public static RMap<String, ?> call(String sql, Object[] parameterArray) throws DBException{
+		return getDBCall().call(sql, parameterArray);
 	}
 	
 	/**
@@ -1344,8 +853,17 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static RMap call(String sql, Object[] params) throws DBException{
-		return getCall(sql).call(params);
+	public static RMap<String, ?> call(String sql, Ps parameters) throws DBException{
+		return getDBCall().call(sql, parameters);
+	}
+
+	/**
+	 * 调用存储过程
+	 * @param ps 参数
+	 * @throws DBException 
+	 */
+	public static RMap<String, ?> call(String sql, Map<?, ?> parameters) throws DBException{
+		return getDBCall().call(sql, parameters);
 	}
 	
 	/**
@@ -1353,44 +871,8 @@ public class DB {
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public static RMap call(String sql, Object param) throws DBException{
-		return getCall(sql).call(param);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public static RMap callOriginal(String sql) throws DBException{
-		return getCall(sql).callOriginal();
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public static RMap callOriginal(String sql, Ps ps) throws DBException{
-		return getCall(sql).callOriginal(ps);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public static RMap callOriginal(String sql, Object[] params) throws DBException{
-		return getCall(sql).callOriginal(params);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public static RMap callOriginal(String sql, Object param) throws DBException{
-		return getCall(sql).callOriginal(param);
+	public static RMap<String, ?> call(String sql, Object parameters) throws DBException{
+		return getDBCall().call(sql, parameters);
 	}
 
 	// --------------------------------------------- 事务

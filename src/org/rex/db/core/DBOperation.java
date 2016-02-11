@@ -8,64 +8,78 @@ import org.rex.db.dialect.DialectManager;
 import org.rex.db.exception.DBException;
 
 /**
- * 数据库操作基类
+ * Base DB Operation
  */
 public class DBOperation {
 	
-	private String sql;
 	private DBTemplate template;
-	private Dialect dialect;
 	
-	protected DBTemplate getTemplate() {
-		return template;
-	}
-	
-	public void setTemplate(DBTemplate template) {
-		this.template = template;
-		this.dialect = null;
-	}
-	
-	public void setDataSource(DataSource dataSource) throws DBException {
+	public DBOperation(DataSource dataSource) throws DBException{
 		if(dataSource == null)
 			throw new DBException("DB-C0008");
 		
-		this.template = new DBTemplate(dataSource);
-		this.dialect = null;
+		template = new DBTemplate(dataSource);
 	}
 	
 	/**
-	 * 设置SQL
+	 * get <tt>DBTemplate</tt> for this instance 
+	 * @return DBTemplate
 	 */
-	public void setSql(String sql) throws DBException {
-		if (sql == null)
-			throw new DBException("DB-C0009");
-		
-		this.sql = sql;
-	}
-
-	/**
-	 * 获取SQL
-	 */
-	public String getSql() {
-		return sql;
+	protected DBTemplate getTemplate(){
+		return template;
 	}
 	
 	/**
-	 * 获取方言
-	 */
-	protected Dialect getDialect() throws DBException{
-		if(dialect == null){
-			dialect = getDialectManager().getDialect(template.getDataSource());
-		}
-		
-		return dialect;
-	}
-	
-	/**
-	 * 获取方言管理器
+	 * get <tt>Dialect</tt> for this instance 
+	 * @return Dialect
 	 * @throws DBException 
 	 */
-	private DialectManager getDialectManager() throws DBException{
-		return Configuration.getCurrentConfiguration().getDialectManager();
+	protected Dialect getDialect() throws DBException{
+		DialectManager manager = Configuration.getCurrentConfiguration().getDialectManager();
+		return manager.getDialect(template.getDataSource());
 	}
+	
+//	
+//	/**
+//	 * get <tt>DBTemplate</tt> for the specified <tt>DataSource</tt> 
+//	 * @param dataSourceId the data source configured in the configuration xml.
+//	 * @return DBTemplate a new <tt>DBTemplate</tt> for the data source
+//	 * @throws DBException couldn't find the data source, or couldn't initialize DB template.
+//	 */
+//	protected DBTemplate getTemplate(String dataSourceId) throws DBException{
+//		return getTemplate(getDataSource(dataSourceId));
+//	}
+//	
+//	/**
+//	 * get <tt>DBTemplate</tt> for the specified <tt>DataSource</tt> 
+//	 * @param dataSource specified <tt>DataSource</tt> object
+//	 * @return DBTemplate a new <tt>DBTemplate</tt> for the data source
+//	 * @throws DBException couldn't initialize DB template.
+//	 */
+//	protected DBTemplate getTemplate(DataSource dataSource) throws DBException{
+//		return new DBTemplate(dataSource);
+//	}
+//	
+//	//---------DataSources and Dialects
+//	private static DataSourceManager getDataSourceManager() throws DBException{
+//		return Configuration.getCurrentConfiguration().getDataSourceManager();
+//	}
+//	
+//	protected static DataSource getDataSource() throws DBException {
+//		DataSource defaultDataSource = getDataSourceManager().getDefault();
+//		if(defaultDataSource == null)
+//			throw new DBException("DB-00002");
+//		return defaultDataSource;
+//	}
+//	
+//	protected static DataSource getDataSource(String dataSourceId) throws DBException {
+//		DataSource dataSource = getDataSourceManager().get(dataSourceId);
+//		if(dataSource == null)
+//			throw new DBException("DB-00003", dataSourceId);
+//		return dataSource;
+//	}
+	
+//	private static DialectManager getDialectManager() throws DBException{
+//		return Configuration.getCurrentConfiguration().getDialectManager();
+//	}
 }

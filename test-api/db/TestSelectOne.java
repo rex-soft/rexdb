@@ -39,10 +39,6 @@ public class TestSelectOne extends Base{
 		//查询结果封装为Bean
 		Student result2 = DB.get(sql, Student.class);
 		System.out.println(result2);
-		
-		//为已经创建好的对象赋值
-		Student result3 = DB.get(sql, new Student());
-		System.out.println(result3);
 	}
 	
 	/**
@@ -58,10 +54,6 @@ public class TestSelectOne extends Base{
 		//查询结果封装为Bean
 		Student result2 = DB.get(sql, new Ps(1), Student.class);
 		System.out.println(result2);
-		
-		//为已经创建好的对象赋值
-		Student result3 = DB.get(sql, new Ps(1), new Student());
-		System.out.println(result3);
 	}
 	
 	/**
@@ -82,10 +74,6 @@ public class TestSelectOne extends Base{
 		Student result2 = DB.get(sql, paramMap, Student.class);
 		System.out.println(result2);
 		
-		//为已经创建好的对象赋值
-		Student result3 = DB.get(sql, paramMap, new Student());
-		System.out.println(result3);
-		
 		//---------使用Java对象传递参数
 		Student paramBean = new Student();
 		paramBean.setStudentId(1);
@@ -97,10 +85,5 @@ public class TestSelectOne extends Base{
 		//查询结果封装为Bean
 		Student result6 = DB.get(sql, paramBean, Student.class);
 		System.out.println(result6);
-		
-		//为已经创建好的对象赋值
-		Student result7 = DB.get(sql, paramBean, new Student());
-		System.out.println(result7);
-		
 	}
 }

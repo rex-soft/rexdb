@@ -1,12 +1,13 @@
 package org.rex.db;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.rex.RMap;
 import org.rex.db.core.DBOperation;
-import org.rex.db.core.DBTemplate;
 import org.rex.db.exception.DBException;
-import org.rex.db.sql.SqlParser;
 
 /**
  * 存储过程
@@ -14,54 +15,28 @@ import org.rex.db.sql.SqlParser;
  */
 public class DBCall extends DBOperation{
 	
-	//---------------------------------------构造函数
-	/**
-	 * 构造函数
-	 * @param dataSource 数据源
-	 * @throws DBException 
-	 */
-	public DBCall(DataSource dataSource, String spName) throws DBException{
-		setDataSource(dataSource);
-		setSql(spName);
+	// ------instances
+	private volatile static Map<DataSource, DBCall> calls = new HashMap<DataSource, DBCall>();
+
+	public static DBCall getInstance(DataSource dataSource) throws DBException {
+		if (!calls.containsKey(dataSource)) {
+			calls.put(dataSource, new DBCall(dataSource));
+		}
+		return calls.get(dataSource);
 	}
 
-	//---------------------------------------内部接口
-	/**
-	 * 执行存储过程调用
-	 */
-	protected RMap execute(Ps ps, boolean originalKey) throws DBException {
-		DBTemplate template = getTemplate();
-		return template.call(getSql(), ps, originalKey);
+	// -------constructors
+	public DBCall(DataSource dataSource) throws DBException {
+		super(dataSource);
 	}
 	
-	/**
-	 * 根据数组对象类型生成PS对象
-	 * @param params 预编译参数数组
-	 * @return PS对象
-	 */
-	protected Ps getPs(Object[] params){
-		return new Ps(params);
-	}
-	
-	/**
-	 * 解析带有EL标记
-	 * @param param 封装了预编译参数的对象
-	 * @return Ps
-	 * @throws DBException 
-	 */
-	protected Ps parseSqlEl(Object param) throws DBException{
-		SqlParser parser = new SqlParser(getSql(), param);
-		setSql(parser.getParsedSql());
-		return parser.getParsedPs();
-	}
-	
-	//---------------------------------------对外接口，调用存储过程时，仅返回Map对象
+	// -------public methods
 	/**
 	 * 调用存储过程
 	 * @throws DBException 
 	 */
-	public RMap call() throws DBException{
-		return execute(null, false);
+	public RMap<String, ?> call(String sql) throws DBException{
+		return templateCall(sql, null);
 	}
 	
 	/**
@@ -69,8 +44,8 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public RMap call(Ps ps) throws DBException{
-		return execute(ps, false);
+	public RMap<String, ?> call(String sql, Object[] parameterArray) throws DBException{
+		return templateCall(sql, parameterArray);
 	}
 	
 	/**
@@ -78,8 +53,17 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public RMap call(Object[] params) throws DBException{
-		return execute(getPs(params), false);
+	public RMap<String, ?> call(String sql, Ps ps) throws DBException{
+		return templateCall(sql, ps);
+	}
+
+	/**
+	 * 调用存储过程
+	 * @param ps 参数
+	 * @throws DBException 
+	 */
+	public RMap<String, ?> call(String sql, Map<?, ?> parameterMap) throws DBException{
+		return templateCall(sql, parameterMap);
 	}
 	
 	/**
@@ -87,43 +71,12 @@ public class DBCall extends DBOperation{
 	 * @param ps 参数
 	 * @throws DBException 
 	 */
-	public RMap call(Object param) throws DBException{
-		return execute(parseSqlEl(param), false);
+	public RMap<String, ?> call(String sql, Object parameterBean) throws DBException{
+		return templateCall(sql, parameterBean);
 	}
 	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public RMap callOriginal() throws DBException{
-		return execute(null, true);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public RMap callOriginal(Ps ps) throws DBException{
-		return execute(ps, true);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public RMap callOriginal(Object[] params) throws DBException{
-		return execute(getPs(params), true);
-	}
-	
-	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
-	 */
-	public RMap callOriginal(Object param) throws DBException{
-		return execute(parseSqlEl(param), true);
+	// -------private methods
+	private RMap<String, ?> templateCall(String sql, Object parameters) throws DBException{
+		return getTemplate().call(sql, parameters);
 	}
 }

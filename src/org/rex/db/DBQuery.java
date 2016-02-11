@@ -1,19 +1,18 @@
 package org.rex.db;
 
-import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.rex.RMap;
 import org.rex.db.core.DBOperation;
-import org.rex.db.core.DBTemplate;
-import org.rex.db.core.reader.BeanResultReader;
 import org.rex.db.core.reader.ClassResultReader;
 import org.rex.db.core.reader.MapResultReader;
 import org.rex.db.core.reader.ResultReader;
+import org.rex.db.dialect.LimitHandler;
 import org.rex.db.exception.DBException;
-import org.rex.db.sql.SqlParser;
 
 /**
  * 查询
@@ -21,1063 +20,308 @@ import org.rex.db.sql.SqlParser;
  */
 public class DBQuery extends DBOperation {
 
-	// ---------------------------------------构造函数
-	/**
-	 * 构造函数
-	 * 
-	 * @param dataSource 数据源
-	 * @param sql sql语句
-	 * @throws SQLException 当SQL语句方言翻译错误时抛出异常
-	 */
-	public DBQuery(DataSource dataSource, String sql) throws DBException {
-		setDataSource(dataSource);
-		setSql(sql);
-	}
+	// ------instances
+	private volatile static Map<DataSource, DBQuery> querys = new HashMap<DataSource, DBQuery>();
 
-	// ---------------------------------------与方言有关的内部方法
-	/**
-	 * 获取分页SQL
-	 * 
-	 * @param sql sql语句
-	 * @param rows 结果条目
-	 * @return 分页SQL语句
-	 */
-	protected String getLimitSql(String sql, int rows) throws DBException {
-		return getDialect().getLimitSql(sql, rows);
-	}
-
-	/**
-	 * 获取分页SQL
-	 * 
-	 * @param sql sql语句
-	 * @param offset 偏移
-	 * @param rows 结果条目
-	 * @return 分页SQL语句
-	 */
-	protected String getLimitSql(String sql, int offset, int rows) throws DBException {
-		return getDialect().getLimitSql(sql, offset, rows);
-	}
-
-	/**
-	 * 获取分页后的预编译参数
-	 * 
-	 * @param ps 预编译参数
-	 * @param rows 分页sql条目
-	 * @return
-	 * @throws SQLException
-	 */
-	protected Ps getLimitPs(Ps ps, int rows) throws DBException {
-		return getDialect().getLimitPs(ps, rows);
-	}
-
-	/**
-	 * 获取分页后的预编译参数
-	 * 
-	 * @param ps 预编译参数
-	 * @param offset 偏移
-	 * @param rows 分页sql条目
-	 * @return
-	 * @throws SQLException
-	 */
-	protected Ps getLimitPs(Ps ps, int offset, int rows) throws DBException {
-		return getDialect().getLimitPs(ps, offset, rows);
-	}
-
-	/**
-	 * 解析带有EL标记
-	 * 
-	 * @param param 封装了预编译参数的对象
-	 * @return Ps
-	 * @throws DBException 
-	 */
-	protected Ps parseSqlEl(Object param) throws DBException {
-		SqlParser parser = new SqlParser(getSql(), param);
-		setSql(parser.getParsedSql());
-		return parser.getParsedPs();
-	}
-
-	// ---------------------------------------私有内部方法
-
-	/**
-	 * 根据数组对象类型生成PS对象
-	 * 
-	 * @param params 预编译参数数组
-	 * @return PS对象
-	 */
-	protected Ps getPs(Object[] params) {
-		return new Ps(params);
-	}
-
-	// ---------------------------------------与查询有关的内部方法
-	/**
-	 * 执行查询
-	 */
-	private <T> List<T> execute(ResultReader<T> rr, Ps ps) throws DBException {
-		DBTemplate template = getTemplate();
-		if (ps == null)
-			template.query(getSql(), rr);
-		else {
-			template.query(getSql(), ps, rr);
+	public static DBQuery getInstance(DataSource dataSource) throws DBException {
+		if (!querys.containsKey(dataSource)) {
+			querys.put(dataSource, new DBQuery(dataSource));
 		}
-		return rr.getResults();
+		return querys.get(dataSource);
 	}
 
-	// ----------------查询多条记录
-	private <T> List<T> queryList(Ps ps, Class<T> resultClass, boolean originalKey) throws DBException {
-		ResultReader<T> rr = new ClassResultReader<T>(ps, originalKey, resultClass);
-		return execute(rr, ps);
+	// -------constructors
+	public DBQuery(DataSource dataSource) throws DBException {
+		super(dataSource);
 	}
 
-	private <T> List<T> queryList(Ps ps, T bean, boolean originalKey) throws DBException {
-		ResultReader<T> rr = new BeanResultReader<T>(ps, originalKey, bean);
-		return execute(rr, ps);
-	}
+	//=========public methods
 
-	private List<RMap> queryList(Ps ps, boolean originalKey) throws DBException {
-		ResultReader<RMap> rr = new MapResultReader(ps, originalKey);
-		return execute(rr, ps);
-	}
-
-	// ----------------查询1条记录
-	private <T> T query(Ps ps, Class<T> resultClass, boolean originalKey) throws DBException {
-		List<T> result = queryList(ps, resultClass, originalKey);
-		return fetchOne(result);
-	}
-
-	private <T> T query(Ps ps, T bean, boolean originalKey) throws DBException {
-		List<T> result = queryList(ps, bean, originalKey);
-		return fetchOne(result);
-	}
-
-	private RMap query(Ps ps, boolean originalKey) throws DBException {
-		List<RMap> result = queryList(ps, originalKey);
-		return fetchOne(result);
+	//---------------query one row for java bean
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public <T> T get(String sql, Class<T> resultClass) throws DBException {
+		return templateClassQueryForOneRow(sql, null, resultClass);
 	}
 
 	/**
-	 * 从结果集列表中获取一条记录，如果超过一条，抛出异常
-	 * 
-	 * @param list 结果集列表
-	 * @return 一条记录
-	 * @throws DBException
+	 * 执行查询, 获取一条记录
 	 */
-	private <T> T fetchOne(List<T> list) throws DBException {
-		if (list == null || list.size() == 0)
-			return null;
-		if (list.size() > 1)
+	public <T> T get(String sql, Ps parameters, Class<T> resultClass) throws DBException {
+		return templateClassQueryForOneRow(sql, parameters, resultClass);
+	}
+	
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public <T> T get(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
+		return templateClassQueryForOneRow(sql, parameterArray, resultClass);
+	}
+	
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public <T> T get(String sql, Object parameters, Class<T> resultClass) throws DBException {
+		return templateClassQueryForOneRow(sql, parameters, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public <T> T get(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
+		return templateClassQueryForOneRow(sql, parameters, resultClass);
+	}
+	
+	//---------------query one row for RMap
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public RMap<String, ?> getMap(String sql) throws DBException {
+		return templateMapQueryForOneRow(sql, null);
+	}
+	
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public RMap<String, ?> getMap(String sql, Ps parameters) throws DBException {
+		return templateMapQueryForOneRow(sql, parameters);
+	}
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public RMap<String, ?> getMap(String sql, Object[] parameterArray) throws DBException {
+		return templateMapQueryForOneRow(sql, parameterArray);
+	}
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public RMap<String, ?> getMap(String sql, Object parameters) throws DBException {
+		return templateMapQueryForOneRow(sql, parameters);
+	}
+
+	/**
+	 * 执行查询, 获取一条记录
+	 */
+	public RMap<String, ?> getMap(String sql, Map<?, ?> parameters) throws DBException {
+		return templateMapQueryForOneRow(sql, parameters);
+	}
+
+	//---------------query a list of java bean
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Class<T> resultClass) throws DBException {
+		return templateClassQuery(sql, null, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Ps parameters, Class<T> resultClass) throws DBException {
+		return templateClassQuery(sql, parameters, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
+		return templateClassQuery(sql, parameterArray, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Object parameters, Class<T> resultClass) throws DBException {
+		return templateClassQuery(sql, parameters, resultClass);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
+		return templateClassQuery(sql, parameters, resultClass);
+	}
+
+	//---------------query a list of RMap
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql) throws DBException {
+		return templateMapQuery(sql, null);
+	}
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, Ps parameters) throws DBException {
+		return templateMapQuery(sql, parameters);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, Object[] parameterArray) throws DBException {
+		return templateMapQuery(sql, parameterArray);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, Object parameters) throws DBException {
+		return templateMapQuery(sql, parameters);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, Map<?, ?> parameters) throws DBException {
+		return templateMapQuery(sql, parameters);
+	}
+	
+	//---------------query a limit list of java bean
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Class<T> resultClass, int offset, int rows) throws DBException {
+		return templateClassQuery(sql, null, resultClass, offset, rows);
+	}
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Ps parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return templateClassQuery(sql, parameters, resultClass, offset, rows);
+	}
+	
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Object[] parameterArray, Class<T> resultClass, int offset, int rows) throws DBException {
+		return templateClassQuery(sql, parameterArray, resultClass, offset, rows);
+	}
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Object parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return templateClassQuery(sql, parameters, resultClass, offset, rows);
+	}
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public <T> List<T> getList(String sql, Map<?, ?> parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		return templateClassQuery(sql, parameters, resultClass, offset, rows);
+	}
+	
+	//---------------query a limit list of RMap
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, int offset, int rows) throws DBException {
+		return templateMapQuery(sql, null, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, Ps parameters, int offset, int rows) throws DBException {
+		return templateMapQuery(sql, parameters, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, Object[] parameterArray, int offset, int rows) throws DBException {
+		return templateMapQuery(sql, parameterArray, offset, rows);
+	}
+
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, Object parameters, int offset, int rows) throws DBException {
+		return templateMapQuery(sql, parameters, offset, rows);
+	}
+	
+	/**
+	 * 执行查询, 获取多条记录
+	 */
+	public List<RMap> getMapList(String sql, Map<?, ?> parameters, int offset, int rows) throws DBException {
+		return templateMapQuery(sql, parameters, offset, rows);
+	}
+	
+	
+	//=========private methods
+	
+	//---------------tempalte query for java bean
+	protected <T> T templateClassQueryForOneRow(String sql, Object parameters, Class<T> resultClass) throws DBException {
+		List<T> list = templateClassQuery(sql, parameters, resultClass, null);
+		if(list.size() == 0) return null;
+		if(list.size() > 1)
 			throw new DBException("DB-Q10001", list.size());
 		return list.get(0);
 	}
-
-	// --------返回POJO实例，POJO实例作为参数
-	/**
-	 * 执行查询，获取一条记录
-	 * 
-	 * @param resultPojo 查询结果集实例
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected <T> T get(T bean, boolean originalKey) throws DBException {
-		return query(null, bean, originalKey);
+	
+	protected <T> List<T> templateClassQuery(String sql, Object parameters, Class<T> resultClass) throws DBException {
+		return templateClassQuery(sql, parameters, resultClass, null);
 	}
 	
-	protected <T> T get(Ps ps, T bean, boolean originalKey) throws DBException {
-		return query(ps, bean, originalKey);
-	}
-
-	/**
-	 * 执行查询，获取一条记录
-	 * 
-	 * @param params 预编译参数（数组形式）
-	 * @param resultPojo 查询结果集实例
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected <T> T getByParamArray(Object[] params, T bean, boolean originalKey) throws DBException {
-		return query(getPs(params), bean, originalKey);
-	}
-
-	/**
-	 * 执行查询，获取一条记录
-	 * 
-	 * @param param 预编译参数（对象形式）
-	 * @param resultPojo 查询结果集实例
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected <T> T getByEl(Object param, T bean, boolean originalKey) throws DBException {
-		return query(parseSqlEl(param), bean, originalKey);
-	}
-
-	// --------返回POJO实例，Class作为参数
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @param resultPojoClass 查询结果集类
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected <T> T get(Class<T> resultClass, boolean originalKey) throws DBException {
-		return query(null, resultClass, originalKey);
+	protected <T> List<T> templateClassQuery(String sql, Object parameters, Class<T> resultClass, int offset, int rows) throws DBException {
+		LimitHandler limitHandler = getDialect().getLimitHandler(offset, rows);
+		return templateClassQuery(sql, parameters, resultClass, limitHandler);
 	}
 	
-	protected <T> T get(Ps ps, Class<T> resultClass, boolean originalKey) throws DBException {
-		return query(ps, resultClass, originalKey);
-	}
-
 	/**
-	 * 执行查询, 获取一条记录
+	 * query for a list of java beans
 	 * 
-	 * @param params 预编译参数
-	 * @param resultPojoClass 查询结果集类
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
+	 * @param sql a query SQL that may contain one or more '?', or '#{
+	 *            <i>parameter name</i>}' IN parameter placeholders
+	 * @param parameters the prepared parameters
+	 * @param resultClass java bean that the SQL query for
+	 * @return a list of java beans
 	 * @throws DBException
 	 */
-	protected <T> T getByParamArray(Object[] params, Class<T> resultClass, boolean originalKey) throws DBException {
-		return query(getPs(params), resultClass, originalKey);
+	private <T> List<T> templateClassQuery(String sql, Object parameters, Class<T> resultClass, LimitHandler limitHandler) throws DBException {
+		ResultReader<T> resultReader = new ClassResultReader<T>(resultClass);
+		if (parameters == null && limitHandler == null)
+			getTemplate().query(sql, resultReader);
+		else
+			getTemplate().query(sql, parameters, limitHandler, resultReader);
+		return resultReader.getResults();
 	}
 
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param resultPojoClass 查询结果集类
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected <T> T getByEl(Object param, Class<T> resultClass, boolean originalKey) throws DBException {
-		return query(parseSqlEl(param), resultClass, originalKey);
-	}
-
-	// --------返回Map
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected RMap getMap(boolean originalKey) throws DBException {
-		return query(null, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected RMap getMap(Ps ps, boolean originalKey) throws DBException {
-		return query(ps, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected RMap getMapByParamArray(Object[] params, boolean originalKey) throws DBException {
-		return query(getPs(params), originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param originalKey 结果集实例的参数是否与列名完全相同（false则转换为java风格）
-	 * @return 结果集（未查询到记录时为null）
-	 * @throws DBException
-	 */
-	protected RMap getMapByEl(Object param, boolean originalKey) throws DBException {
-		return query(parseSqlEl(param), originalKey);
-	}
-
-	// ----------------结果集是多条记录
-	// --------返回POJO实例
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param resultPojoClass 结果类
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws DBException
-	 */
-	protected <T> List<T> getList(Class<T> resultClass, boolean originalKey) throws DBException {
-		return queryList(null, resultClass, originalKey);
+	//---------------template query for RMap
+	protected RMap<String, ?> templateMapQueryForOneRow(String sql, Object parameters) throws DBException {
+		List<RMap> list = templateMapQuery(sql, parameters, null);
+		if(list.size() == 0) return null;
+		if(list.size() > 1)
+			throw new DBException("DB-Q10001", list.size());
+		
+		return list.get(0);
 	}
 	
-	protected <T> List<T> getList(Ps ps, Class<T> resultClass, boolean originalKey) throws DBException {
-		return queryList(ps, resultClass, originalKey);
-	}
-
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param resultPojoClass 结果类
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws DBException
-	 */
-	protected <T> List<T> getListByParamArray(Object[] params, Class<T> resultClass, boolean originalKey) throws DBException {
-		return queryList(getPs(params), resultClass, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param param 预编译参数
-	 * @param resultPojoClass 结果类
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws DBException
-	 */
-	protected <T> List<T> getListByEl(Object param, Class<T> resultClass, boolean originalKey) throws DBException {
-		return queryList(parseSqlEl(param), resultClass, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param resultPojoClass 结果类
-	 * @param rows 记录条数
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws SQLException
-	 */
-	protected <T> List<T> getList(Class<T> resultClass, int rows, boolean originalKey) throws DBException {
-		return getLimitList(null, resultClass, -1, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param resultPojoClass 结果类
-	 * @param offset 记录偏移数
-	 * @param rows 记录条数
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws SQLException
-	 */
-	protected <T> List<T> getList(Class<T> resultClass, int offset, int rows, boolean originalKey) throws DBException {
-		return getLimitList(null, resultClass, offset, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param resultPojoClass 结果类
-	 * @param offset 记录偏移数, 该值小于0时忽略
-	 * @param rows 记录条数
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws SQLException
-	 * @throws DBException
-	 */
-	protected <T> List<T> getLimitList(Ps ps, Class<T> resultClass, int offset, int rows, boolean originalKey) throws DBException {
-		return queryList(wrapLimitPs(ps, offset, rows), resultClass, originalKey);
+	protected List<RMap> templateMapQuery(String sql, Object parameters) throws DBException {
+		return templateMapQuery(sql, parameters, null);
 	}
 	
-	protected List<RMap> getLimitList(Ps ps, int offset, int rows, boolean originalKey) throws DBException {
-		return queryList(wrapLimitPs(ps, offset, rows), originalKey);
+	protected List<RMap> templateMapQuery(String sql, Object parameters, int offset, int rows) throws DBException {
+		LimitHandler limitHandler = getDialect().getLimitHandler(offset, rows);
+		return templateMapQuery(sql, parameters, limitHandler);
 	}
-
-	private Ps wrapLimitPs(Ps ps, int offset, int rows) throws DBException{
-		String limitSql = getLimitSql(getSql(), offset, rows);
-		Ps limitPs = offset < 0 ? getLimitPs(ps, rows) : getLimitPs(ps, offset, rows);// 小于0的offset无视
-		setSql(limitSql);
-		return limitPs;
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param params 预编译参数
-	 * @param resultPojoClass 结果类
-	 * @param offset 记录偏移数, 该值小于0时忽略
-	 * @param rows 记录条数
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws SQLException
-	 */
-	protected <T> List<T> getListByParamArray(Object[] params, Class<T> resultClass, int offset, int rows, boolean originalKey) throws DBException {
-		return getLimitList(getPs(params), resultClass, offset, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param param 预编译参数
-	 * @param resultPojoClass 结果类
-	 * @param offset 记录偏移数, 该值小于0时忽略
-	 * @param rows 记录条数
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws SQLException
-	 */
-	protected <T> List<T> getListByEl(Object param, Class<T> resultClass, int offset, int rows, boolean originalKey) throws DBException {
-		return getLimitList(parseSqlEl(param), resultClass, offset, rows, originalKey);
-	}
-
-	// --------返回Map对象
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapList(boolean originalKey) throws DBException {
-		return queryList(null, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param rows 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws SQLException
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapList(int rows, boolean originalKey) throws DBException {
-		return getLimitList(null, -1, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param offset 结果集偏移数
-	 * @param rows 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return 结果记录
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapList(int offset, int rows, boolean originalKey) throws DBException {
-		return getLimitList(null, offset, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapList(Ps ps, boolean originalKey) throws DBException {
-		return queryList(ps, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param rows 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapList(Ps ps, int rows, boolean originalKey) throws DBException {
-		return getLimitList(ps, -1, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param ps 预编译参数
-	 * @param offset 结果集偏移数
-	 * @param rows 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapList(Ps ps, int offset, int rows, boolean originalKey) throws DBException {
-		return getLimitList(ps, offset, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param params 预编译参数
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapListByParamArray(Object[] params, boolean originalKey) throws DBException {
-		return queryList(getPs(params), originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param params 预编译参数
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapListByEl(Object param, boolean originalKey) throws DBException {
-		return queryList(parseSqlEl(param), originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param params 预编译参数
-	 * @param rows 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapListByParamArray(Object[] params, int rows, boolean originalKey) throws DBException {
-		return getLimitList(getPs(params), -1, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param params 预编译参数
-	 * @param rows 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapListByEl(Object param, int rows, boolean originalKey) throws DBException {
-		return getLimitList(parseSqlEl(param), -1, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param params 预编译参数
-	 * @param offset 结果集偏移数
-	 * @param rows 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapListByParamArray(Object[] params, int offset, int rows, boolean originalKey) throws DBException {
-		return getLimitList(getPs(params), offset, rows, originalKey);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @param params 预编译参数
-	 * @param offset 结果集偏移数
-	 * @param rows 数据条目
-	 * @param originalKey 结果类属性的命名方式是否使用数据库风格
-	 * @return
-	 * @throws DBException
-	 */
-	protected List<RMap> getMapListByEl(Object param, int offset, int rows, boolean originalKey) throws DBException {
-		return getLimitList(parseSqlEl(param), offset, rows, originalKey);
-	}
-
-	// ---------------------------------------执行查询，对外接口
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T get(T bean) throws DBException {
-		return get(bean, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T getOriginal(T bean) throws DBException {
-		return get(bean, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T get(Ps ps, T bean) throws DBException {
-		return get(ps, bean, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T get(Object[] params, T bean) throws DBException {
-		return getByParamArray(params, bean, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T get(Object param, T bean) throws DBException {
-		return getByEl(param, bean, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T getOriginal(Ps ps, T bean) throws DBException {
-		return get(ps, bean, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T getOriginal(Object[] params, T bean) throws DBException {
-		return getByParamArray(params, bean, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T getOriginal(Object param, T bean) throws DBException {
-		return getByEl(param, bean, true);
-	}
-
 	
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T get(Class<T> resultClass) throws DBException {
-		return get(null, resultClass, false);
+	private List<RMap> templateMapQuery(String sql, Object parameters, LimitHandler limitHandler) throws DBException {
+		MapResultReader resultReader = new MapResultReader();
+		if (parameters == null && limitHandler == null)
+			getTemplate().query(sql, resultReader);
+		else
+			getTemplate().query(sql, parameters, limitHandler, resultReader);
+		return resultReader.getResults();
 	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T getOriginal(Class<T> resultClass) throws DBException {
-		return get(resultClass, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T get(Ps ps, Class<T> resultClass) throws DBException {
-		return get(ps, resultClass, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T get(Object[] params, Class<T> resultClass) throws DBException {
-		return getByParamArray(params, resultClass, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T get(Object param, Class<T> resultClass) throws DBException {
-		return getByEl(param, resultClass, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T getOriginal(Ps ps, Class<T> resultClass) throws DBException {
-		return get(ps, resultClass, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T getOriginal(Object[] params, Class<T> resultClass) throws DBException {
-		return getByParamArray(params, resultClass, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> T getOriginal(Object param, Class<T> resultClass) throws DBException {
-		return getByEl(param, resultClass, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public RMap getMap() throws DBException {
-		return (RMap) getMap(false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public RMap getMapOriginal() throws DBException {
-		return (RMap) getMap(true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public RMap getMap(Ps ps) throws DBException {
-		return (RMap) getMap(ps, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public RMap getMap(Object[] params) throws DBException {
-		return (RMap) getMapByParamArray(params, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public RMap getMap(Object param) throws DBException {
-		return (RMap) getMapByEl(param, false);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public RMap getMapOriginal(Ps ps) throws DBException {
-		return (RMap) getMap(ps, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public RMap getMapOriginal(Object[] params) throws DBException {
-		return (RMap) getMapByParamArray(params, true);
-	}
-
-	/**
-	 * 执行查询, 获取一条记录
-	 * 
-	 * @throws DBException
-	 */
-	public RMap getMapOriginal(Object param) throws DBException {
-		return (RMap) getMapByEl(param, true);
-	}
-
-	// --------------------多条
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getList(Class<T> resultClass) throws DBException {
-		return getList(resultClass, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getListOriginal(Class<T> resultClass) throws DBException {
-		return getList(resultClass, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getList(Ps ps, Class<T> resultClass) throws DBException {
-		return getList(ps, resultClass, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getList(Object[] params, Class<T> resultClass) throws DBException {
-		return getListByParamArray(params, resultClass, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getList(Object param, Class<T> resultClass) throws DBException {
-		return getListByEl(param, resultClass, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getListOriginal(Ps ps, Class<T> resultClass) throws DBException {
-		return getList(ps, resultClass, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getListOriginal(Object[] params, Class<T> resultClass) throws DBException {
-		return getListByParamArray(params, resultClass, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getListOriginal(Object param, Class<T> resultClass) throws DBException {
-		return getListByEl(param, resultClass, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public <T> List<T> getList(Class<T> resultClass, int offset, int rows) throws DBException {
-		return getList(resultClass, offset, rows, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public <T> List<T> getListOriginal(Class<T> resultClass, int offset, int rows) throws DBException {
-		return getList(resultClass, offset, rows, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public <T> List<T> getList(Ps ps, Class<T> resultClass, int offset, int rows) throws DBException {
-		return getLimitList(ps, resultClass, offset, rows, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public <T> List<T> getList(Object[] params, Class<T> resultClass, int offset, int rows) throws DBException {
-		return getListByParamArray(params, resultClass, offset, rows, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public <T> List<T> getList(Object param, Class<T> resultClass, int offset, int rows) throws DBException {
-		return getListByEl(param, resultClass, offset, rows, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public <T> List<T> getListOriginal(Ps ps, Class<T> resultClass, int offset, int rows) throws DBException {
-		return getLimitList(ps, resultClass, offset, rows, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public <T> List<T> getListOriginal(Object[] params, Class<T> resultClass, int offset, int rows) throws DBException {
-		return getListByParamArray(params, resultClass, offset, rows, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 */
-	public <T> List<T> getListOriginal(Object param, Class<T> resultClass, int offset, int rows) throws DBException {
-		return getListByEl(param, resultClass, offset, rows, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapList() throws DBException {
-		return getMapList(false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapListOriginal() throws DBException {
-		return getMapList(true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapList(Ps ps) throws DBException {
-		return getMapList(ps, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapList(Object[] params) throws DBException {
-		return getMapListByParamArray(params, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapList(Object param) throws DBException {
-		return getMapListByEl(param, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapListOriginal(Ps ps) throws DBException {
-		return getMapList(ps, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapListOriginal(Object[] params) throws DBException {
-		return getMapListByParamArray(params, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapListOriginal(Object param) throws DBException {
-		return getMapListByEl(param, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapList(int offset, int rows) throws DBException {
-		return getMapList(offset, rows, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapListOriginal(int offset, int rows) throws DBException {
-		return getMapList(offset, rows, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapList(Ps ps, int offset, int rows) throws DBException {
-		return getMapList(ps, offset, rows, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapList(Object[] params, int offset, int rows) throws DBException {
-		return getMapListByParamArray(params, offset, rows, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapList(Object param, int offset, int rows) throws DBException {
-		return getMapListByEl(param, offset, rows, false);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapListOriginal(Ps ps, int offset, int rows) throws DBException {
-		return getMapList(ps, offset, rows, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapListOriginal(Object[] params, int offset, int rows) throws DBException {
-		return getMapListByParamArray(params, offset, rows, true);
-	}
-
-	/**
-	 * 执行查询, 获取多条记录
-	 * 
-	 * @throws DBException
-	 */
-	public List<RMap> getMapListOriginal(Object param, int offset, int rows) throws DBException {
-		return getMapListByEl(param, offset, rows, true);
-	}
-
+	
 }

@@ -13,7 +13,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.rex.RMap;
@@ -22,55 +21,34 @@ import org.rex.db.exception.DBException;
 public class ORUtil {
 
 	// -----------temporary caches
-	private String[] resultLabels;
-	private int[] resultTypes;
-	private Map<String, String> labelsRenamed;
-	private Map<Class<?>, Map<String, Method>> classWriters;
-
-	public ORUtil() {
-		labelsRenamed = new HashMap<String, String>();
-		classWriters = new HashMap<Class<?>, Map<String, Method>>();
-	}
+	private String[] rsLabels;
+	private int[] rsTypes;
+	private String[] rsLabelsRenamed;
 
 	// -----------result set to map
-	public RMap rs2Map(ResultSet rs, boolean inOriginal) throws DBException {
-		String[] labels = getResultLabels(rs);// 列名
-		int[] types = getResultTypes(rs);// 列类型
-
-		RMap results = new RMap();
-		for (int i = 0; i < labels.length; i++) {
-			String label = inOriginal ? labels[i].toUpperCase() : renameLabel(labels[i]);
-			Object value;
+	public RMap<String, ?> rs2Map(ResultSet rs) throws DBException {
+		readRsMeta(rs);
+		RMap<String, Object> results = new RMap<String, Object>();
+		for (int i = 0; i < rsLabels.length; i++) {
 			try {
-				value = getValue(rs, labels[i], types[i]);
-				results.put(label, value);
+				results.put(rsLabelsRenamed[i], getValue(rs, rsLabels[i], rsTypes[i]));
 			} catch (SQLException e) {
-				throw new DBException("UOR06", e, labels[i], e.getMessage());
+				throw new DBException("UOR06", e, rsLabels[i], e.getMessage());
 			}
 		}
-
 		return results;
 	}
 
 	// -----------result set to java bean
-	public <T> T rs2Object(ResultSet rs, T bean, boolean inOriginal) throws DBException {
-
-		// 读取结果集元信息
-		String[] labels = getResultLabels(rs);
-		int[] types = getResultTypes(rs);
-
-		// 遍历结果集
-		Map<String, Method> beanParams = getWriteableMethods(bean.getClass());
-		for (int i = 0; i < labels.length; i++) {
+	public <T> T rs2Object(ResultSet rs, T bean) throws DBException {
+		readRsMeta(rs);
+		Map<String, Method> beanParams = ReflectUtil.getWriteableMethods(bean.getClass());
+		for (int i = 0; i < rsLabels.length; i++) {
 			// 获取POJO写入方法
 			Method writer = null;
 
 			// 要求类属性必须和数据库列名一致，并且全为
-			if (inOriginal) 
-				writer = beanParams.get(labels[i].toUpperCase());
-			else 
-				writer = beanParams.get(renameLabel(labels[i]));
-			
+			writer = beanParams.get(rsLabelsRenamed[i]);
 			if (writer == null) continue;
 
 			Class<?> param0 = writer.getParameterTypes()[0];
@@ -79,12 +57,13 @@ public class ORUtil {
 			// 从结果集中取值并转换类型
 			Object value = null;
 			try {
-				value = getValue(rs, labels[i], types[i], paramClassName);
+				getValue(rs, rsLabels[i], rsTypes[i]);
+//				value = getValue(rs, rsLabels[i], rsTypes[i], paramClassName);
 			} catch (SQLException e) {
-				throw new DBException("UOR06", e, labels[i], e.getMessage());
+				throw new DBException("UOR06", e, rsLabels[i], e.getMessage());
 			}
 			// 赋值
-			ReflectUtil.invokeMethod(bean, writer, value);
+//			ReflectUtil.invokeMethod(bean, writer, value);
 		}
 
 		return bean;
@@ -97,22 +76,31 @@ public class ORUtil {
 	private Object getValue(ResultSet rs, String label, int type) throws SQLException, DBException {
 		Object value = null;
 		switch (type) {
-		case Types.BLOB:
-			value = readBlob(rs, label);
-			break;
-		case Types.CLOB:
-			value = readClob(rs, label);
-			break;
-		case Types.DATE:
-		case Types.TIMESTAMP:
-		case Types.TIME:
-			Timestamp timestamp = rs.getTimestamp(label);
-			if (timestamp != null) {
-				value = new java.util.Date(timestamp.getTime());
-			}
-			break;
-		default:
-			value = rs.getObject(label);
+			case Types.CHAR:
+			case Types.VARCHAR:
+				value = rs.getString(label);
+				break;
+			case Types.INTEGER:
+				value = rs.getInt(label);
+				break;
+			case Types.DOUBLE:
+				value = rs.getDouble(label);
+				break;
+			case Types.DATE:
+			case Types.TIMESTAMP:
+			case Types.TIME:
+				Timestamp timestamp = rs.getTimestamp(label);
+				if (timestamp != null) 
+					value = new java.util.Date(timestamp.getTime());
+				break;
+			case Types.BLOB:
+				value = readBlob(rs, label);
+				break;
+			case Types.CLOB:
+				value = readClob(rs, label);
+				break;
+			default:
+				value = rs.getObject(label);
 		}
 
 		return value;
@@ -139,7 +127,7 @@ public class ORUtil {
 		case Types.BOOLEAN:
 			if ("java.lang.Boolean".equals(paramClassName) || "boolean".equals(paramClassName))
 				value = new Boolean(rs.getBoolean(label));
-			else if ("java.lang.String".equals(paramClassName) || "String".equals(paramClassName))
+			else if ("java.lang.String".equals(paramClassName))
 				value = rs.getString(label);
 			else
 				throw new DBException("DB-UOR04", label, "sqlType.BOOLEAN", paramClassName);
@@ -148,7 +136,7 @@ public class ORUtil {
 		case Types.CHAR:
 		case Types.VARCHAR:
 
-			if ("java.lang.String".equals(paramClassName) || "String".equals(paramClassName)) {
+			if ("java.lang.String".equals(paramClassName)) {
 				value = rs.getString(label);
 			} else
 				throw new DBException("DB-UOR04", label, "sqlType.CHAR|VARCHAR", paramClassName);
@@ -176,7 +164,7 @@ public class ORUtil {
 				value = new Long(rs.getLong(label));
 			else if ("java.math.BigDecimal".equals(paramClassName))
 				value = rs.getBigDecimal(label);
-			else if ("java.lang.String".equals(paramClassName) || "String".equals(paramClassName))
+			else if ("java.lang.String".equals(paramClassName))
 				value = rs.getString(label);
 			else
 				throw new DBException("DB-UOR04", label, "sqlType.BIT|TINYINT|SMALLINT|INTEGER|BIGINT|REAL|FLOAT|DOUBLE|DECIMAL|NUMERIC",
@@ -296,36 +284,26 @@ public class ORUtil {
 	}
 
 	// -----------result set meta
-	private String[] getResultLabels(ResultSet rs) throws DBException {
-		if (resultLabels == null) {
+	private void readRsMeta(ResultSet rs) throws DBException {
+		if (rsLabels == null) {
 			try {
 				createMeta(rs.getMetaData());
 			} catch (SQLException e) {
 				throw new DBException("DB-UOR01", e, e.getMessage());
 			}
 		}
-		return resultLabels;
-	}
-
-	private int[] getResultTypes(ResultSet rs) throws DBException {
-		if (resultTypes == null)
-			try {
-				createMeta(rs.getMetaData());
-			} catch (SQLException e) {
-				throw new DBException("DB-UOR01", e, e.getMessage());
-			}
-
-		return resultTypes;
 	}
 
 	private void createMeta(ResultSetMetaData meta) throws SQLException {
 		int c = meta.getColumnCount();
-		resultLabels = new String[c];
-		resultTypes = new int[c];
+		rsLabels = new String[c];
+		rsTypes = new int[c];
+		rsLabelsRenamed = new String[c];
 
 		for (int i = 0; i < c; i++) {
-			resultLabels[i] = meta.getColumnLabel(i + 1);
-			resultTypes[i] = meta.getColumnType(i + 1);
+			rsLabels[i] = meta.getColumnLabel(i + 1);
+			rsTypes[i] = meta.getColumnType(i + 1);
+			rsLabelsRenamed[i] = renameLabel(rsLabels[i]);
 		}
 	}
 
@@ -333,10 +311,7 @@ public class ORUtil {
 	 * 处理掉label的下划线并转化大小写, 如CJXM_DM->cjxmDm;AA_BB_CC->aaBbCc
 	 */
 	private String renameLabel(String label) {
-		if (labelsRenamed.containsKey(label))
-			return (String) labelsRenamed.get(label);
-
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder(label.length());
 		char[] chars = label.toCharArray();
 		boolean last_ = false;
 		for (int i = 0; i < chars.length; i++) {
@@ -352,20 +327,7 @@ public class ORUtil {
 				result.append(Character.toLowerCase(chars[i]));
 		}
 
-		String labelRenamed = result.toString();
-		labelsRenamed.put(label, labelRenamed);
-		return labelRenamed;
+		return result.toString();
 	}
 
-	// -----------bean info
-	/**
-	 * 获取该类的所有可写方法
-	 */
-	private Map<String, Method> getWriteableMethods(Class<?> clazz) throws DBException {
-		if(!classWriters.containsKey(clazz)){
-			Map<String, Method> writers = ReflectUtil.getWriteableMethods(clazz);
-			classWriters.put(clazz, writers);
-		}
-		return classWriters.get(clazz);
-	}
 }

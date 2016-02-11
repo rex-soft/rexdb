@@ -93,7 +93,7 @@ public class ReflectUtil {
 		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
 		for (int i = 0; i < props.length; i++) {
 			String key = props[i].getName();
-			if (props[i].getReadMethod() != null)
+			if (!"class".equals(key) && props[i].getReadMethod() != null)
 				params.put(key, props[i].getReadMethod());
 		}
 		return params;

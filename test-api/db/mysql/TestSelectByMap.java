@@ -18,7 +18,6 @@ public class TestSelectByMap {
 		testSelectByMap.getBeanListByClass();
 		testSelectByMap.getMap();
 		testSelectByMap.getMapByClass();
-		testSelectByMap.getBeanbyBean();
 	}
 
 	public List<RMap> getMapList() throws DBException {
@@ -64,18 +63,6 @@ public class TestSelectByMap {
 		//查询结果封装为org.rex.WMap，列下标转换为java风格
 		//为已经创建好的对象赋值
 		Student result = DB.get(sql, paramMap, Student.class);
-		System.out.println(result);
-		return result;
-	}
-	
-	public Student getBeanbyBean() throws DBException{
-		String sql = "select * from r_student where student_id = #{studentId}";
-		// ---------使用Map对象传递参数
-		Map paramMap = new HashMap();
-		paramMap.put("studentId", 1);
-		//查询结果封装为org.rex.WMap，列下标转换为java风格
-		//为已经创建好的对象赋值
-		Student result = DB.get(sql, paramMap, new Student());
 		System.out.println(result);
 		return result;
 	}

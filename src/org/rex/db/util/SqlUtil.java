@@ -1,12 +1,105 @@
 package org.rex.db.util;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.rex.db.Ps;
 import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
 
 public class SqlUtil {
+	
+	private static final String PARAMETER_PREFIX = "#{";
+	
+	private static final String PARAMETER_SUFFIX = "}";
+	
+	private static final char PARAMETER = '?';
+	
+	private static final Map<String, String[]> sqlCache = new HashMap<String, String[]>();
+	
+	/**
+	 * set null for PreparedStatement
+	 */
+	public static void setNull(PreparedStatement preparedStatement, int index) throws SQLException{
+		preparedStatement.setObject(index, null, Types.NULL);
+	}
+	
+	
+	/**
+	 * set parameters for PreparedStatement
+	 */
+	public static void setParameter(PreparedStatement preparedStatement, int index, Object value) throws SQLException{
+		setParameter(preparedStatement, index, value, getSqlType(value));
+	}
+	
+	/**
+	 * set parameters for PreparedStatement
+	 */
+	public static void setParameter(PreparedStatement preparedStatement, int index, Object value, int sqlType) throws SQLException{
+		if (value == null) {
+			preparedStatement.setNull(index, sqlType);
+		}else {
+			switch (sqlType) {
+				case Types.VARCHAR : 
+					preparedStatement.setString(index, (String) value);
+					break;
+
+				default : 
+					preparedStatement.setObject(index, value, sqlType);
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * parse the sql with tags
+	 * @param sql sql to parse
+	 * @return string array, array[0] is parsed sql, array[1] until the last element is parsed parameters
+	 */
+	public static String[] parse(String sql) {
+		if(!sqlCache.containsKey(sql)){
+			StringBuilder builder = new StringBuilder();
+			List<String> all = new ArrayList<String>();
+			if (sql != null && sql.length() > 0) {
+				char[] src = sql.toCharArray();
+				int offset = 0;
+				int start = sql.indexOf(PARAMETER_PREFIX, offset);
+				while (start > -1) {
+					if (start > 0 && src[start - 1] == '\\') {
+						builder.append(src, offset, start - offset - 1).append(PARAMETER_PREFIX);
+						offset = start + PARAMETER_PREFIX.length();
+					} else {
+						int end = sql.indexOf(PARAMETER_SUFFIX, start);
+						if (end == -1) {
+							builder.append(src, offset, src.length - offset);
+							offset = src.length;
+						} else {
+							builder.append(src, offset, start - offset);
+							offset = start + PARAMETER_PREFIX.length();
+							String content = new String(src, offset, end - offset);
+							all.add(content);
+							builder.append(PARAMETER);
+							offset = end + PARAMETER_SUFFIX.length();
+						}
+					}
+					start = sql.indexOf(PARAMETER_PREFIX, offset);
+				}
+				if (offset < src.length) {
+					builder.append(src, offset, src.length - offset);
+				}
+			}
+			all.add(0, builder.toString());
+			String[] parsed = all.toArray(new String[all.size()]);
+			sqlCache.put(sql, parsed);
+			return parsed;
+		}
+		return sqlCache.get(sql);
+	}
 	
 	/**
 	 * 对SQL执行基本的校验，防止错误查询被发送到数据库。校验不通过时直接抛出异常
@@ -15,7 +108,7 @@ public class SqlUtil {
 	 */
 	public static void validate(String sql, Ps ps) throws DBException{
 		// 检查已经设定的预编译参数个数
-		int holderSize = SqlUtil.countParameterPlaceholders(sql, '?', '\'');
+		int holderSize = SqlUtil.countParameterPlaceholders(sql, PARAMETER, '\'');
 		int paramSize = ps == null ? 0 : ps.getParameters().size();
 		if (holderSize != paramSize)
 			throw new DBException("DB-S0001", sql, holderSize, paramSize);

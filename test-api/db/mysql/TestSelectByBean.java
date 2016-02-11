@@ -18,7 +18,6 @@ public class TestSelectByBean {
 		testSelectByBean.getMapList();
 		testSelectByBean.getBeanListByClass();
 		testSelectByBean.getMap();
-		testSelectByBean.getBeanByBean();
 		testSelectByBean.getBeanByClass();
 		testSelectByBean.getBeanByMap();
 		testSelectByBean.getBeanByPs();
@@ -57,17 +56,6 @@ public class TestSelectByBean {
 		return result;
 	}
 	
-	public Student getBeanByBean() throws DBException{
-		String sql = "select * from r_student where student_id = #{studentId}";
-		//---------使用Java对象传递参数
-		Student paramBean = new Student();
-		paramBean.setStudentId(1);
-		//为已经创建好的对象赋值
-		Student result = DB.get(sql, paramBean, new Student());
-		System.out.println(result);
-		return result;
-	}
-	
 	public Student getBeanByClass() throws DBException{
 		String sql = "select * from r_student where student_id = #{studentId}";
 		//---------使用Java对象传递参数
@@ -84,7 +72,7 @@ public class TestSelectByBean {
 		//---------使用Map对象传递参数
 		Map paramMap = new HashMap();
 		paramMap.put("studentId", 10);
-		Student result = DB.get(sql, paramMap, new Student());
+		Student result = DB.get(sql, paramMap, Student.class);
 		System.out.println(result);
 		return result;
 	}
@@ -92,7 +80,7 @@ public class TestSelectByBean {
 	public Student getBeanByPs() throws DBException{
 		String sql = "select * from r_student where student_id = ?";
 		//为已经创建好的对象赋值
-		Student result = DB.get(sql, new Ps(1), new Student());
+		Student result = DB.get(sql, new Ps(1), Student.class);
 		System.out.println(result);
 		return result;
 	}

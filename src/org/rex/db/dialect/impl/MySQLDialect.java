@@ -1,37 +1,49 @@
 package org.rex.db.dialect.impl;
 
-import org.rex.db.Ps;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import org.rex.db.dialect.Dialect;
+import org.rex.db.dialect.LimitHandler;
 
 /**
  * MySQL
  */
 public class MySQLDialect implements Dialect {
 
-
 	// ------------------------------------------------------------分页SQL
-	public String getLimitSql(String sql, int rows) {
-		return getLimitString(sql, false);
+	protected class MySQLLimitHandler extends LimitHandler{
+
+		public MySQLLimitHandler(int rows) {
+			super(rows);
+		}
+
+		public MySQLLimitHandler(int offset, int rows) {
+			super(offset, rows);
+		}
+		
+		public String wrapSql(String sql) {
+			return new StringBuilder(sql.length() + 30).append(sql)
+					.append(hasOffset() ? " limit ?, ?" : " limit ?").toString();
+		}
+
+		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {
+			if(hasOffset()){
+				statement.setInt(parameterCount + 1, getOffset());
+				statement.setInt(parameterCount + 2, getRows());
+			}else
+				statement.setInt(parameterCount + 1, getRows());
+		}
+	}
+	
+	public LimitHandler getLimitHandler(int rows) {
+		return new MySQLLimitHandler(rows);
 	}
 
-	public String getLimitSql(String sql, int offset, int rows) {
-		return getLimitString(sql, true);
+	public LimitHandler getLimitHandler(int offset, int rows) {
+		return new MySQLLimitHandler(offset, rows);
 	}
-
-	public Ps getLimitPs(Ps ps, int rows) {
-		if(ps==null) ps=new Ps();
-		return ps.add(rows);
-	}
-
-	public Ps getLimitPs(Ps ps, int offset, int rows) {
-		if(ps==null) ps=new Ps();
-		return ps.add(offset).add(rows);
-	}
-
-	protected String getLimitString(String sql, boolean hasOffset) {
-		return new StringBuffer(sql.length() + 20).append(sql)
-				.append(hasOffset ? " limit ?, ?" : " limit ?").toString();
-	}
+	
 	// ------------------------------------------------------------数据库测试SQL
 	/**
 	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
@@ -44,5 +56,10 @@ public class MySQLDialect implements Dialect {
 	public String getName() {
 		return "MYSQL";
 	}
+
+
+
+
+
 	
 }

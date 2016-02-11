@@ -21,6 +21,9 @@ import org.rex.db.util.SqlUtil;
  */
 public class Ps {
 	
+	public static final String CALL_OUT_DEFAULT_PREFIX = "out_";
+	public static final String CALL_RETURN_DEFAULT_PREFIX = "return_";
+	
 	/**
 	 * 所有参数（按照顺序对应sql中的预编译参数）
 	 */
@@ -172,32 +175,33 @@ public class Ps {
 			throw new DBRuntimeException("DB-C10041", value, index + 1, list.size()); 
 	}
 	
-	/**
-	 * 向ArrayList的指定位置插入值
-	 */
-	private List insert(List list, int index, Object value){
-		--index;
-		if(list.size() < index)
-			throw new DBRuntimeException("DB-00001", value, index + 1, list.size(), list);
-		
-		if(list.size() == index){
-			list.add(value);
-			return list;
-		}
-		
-		List newList = new ArrayList();
-		for(int i = 0; i < index; i++){
-			newList.add(list.get(i));
-		}
-		
-		newList.add(value);
-		
-		for(int i = index; i < list.size(); i++){
-			newList.add(list.get(i));
-		}
-		
-		return newList;
-	}
+//	/**
+//	 * 向ArrayList的指定位置插入值
+//	 */
+//	private List insert(List list, int index, Object value){
+//		list.add(index, value);
+////		--index;
+////		if(list.size() < index)
+////			throw new DBRuntimeException("DB-00001", value, index + 1, list.size(), list);
+////		
+////		if(list.size() == index){
+////			list.add(value);
+////			return list;
+////		}
+////		
+////		List newList = new ArrayList();
+////		for(int i = 0; i < index; i++){
+////			newList.add(list.get(i));
+////		}
+////		
+////		newList.add(value);
+////		
+////		for(int i = index; i < list.size(); i++){
+////			newList.add(list.get(i));
+////		}
+////		
+////		return newList;
+//	}
 	
 	//-------同时声明参数值、类型、是否输入参数
 	protected Ps setParameter(int index, Object value, int type){
@@ -366,7 +370,8 @@ public class Ps {
 	 * 插入预编译参数，根据对象的java类型设置预编译参数类型
 	 */
 	public Ps insert(int index, Object value){
-		parameters = insert(parameters, index, new SqlParameter(SqlUtil.getSqlType(value), value));
+		parameters.add(index, new SqlParameter(SqlUtil.getSqlType(value), value));
+//		parameters = insert(parameters, index, new SqlParameter(SqlUtil.getSqlType(value), value));
 		return this;
 	}
 

@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -18,9 +18,9 @@ import java.util.regex.Pattern;
  * A LinkedHashMap with type conversion methods.
  * @author z
  */
-public class RMap<K,V> extends LinkedHashMap<K,V> {
+public class RMap<K,V> extends HashMap<K,V> {
 
-	private static final long serialVersionUID = -2606902499614194563L;
+	private static final long serialVersionUID = 1L;
 
 	// -------------constructor
 	public RMap() {

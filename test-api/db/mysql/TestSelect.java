@@ -23,11 +23,11 @@ public class TestSelect {
 		return result;
 	}
 	
-	public RMap getMap() throws DBException{
+	public RMap<String,?> getMap() throws DBException{
 		String sql = "select * from r_student limit 1";
 
 		// 查询结果封装为org.rex.WMap，列下标转换为java风格
-		RMap result = DB.getMap(sql);
+		RMap<String,?> result = DB.getMap(sql);
 		System.out.println(result);
 		return result;
 	}
