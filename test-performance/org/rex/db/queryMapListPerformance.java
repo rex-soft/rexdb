@@ -30,7 +30,7 @@ public class queryMapListPerformance {
 	 * Run the test
 	 */
 	public static void main(String[] args) throws DBException, SQLException {
-		run(10000, 50);
+		run(20000, 50);
 	}
 	
 	/**

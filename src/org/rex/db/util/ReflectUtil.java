@@ -20,10 +20,13 @@ import org.rex.db.logger.LoggerFactory;
 public class ReflectUtil {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReflectUtil.class);
-
-	private static final Map<Class<?>, Map<String, Method>> getters = new HashMap<Class<?>, Map<String, Method>>();
 	
+	//writer methods
+	private static final Map<Class<?>, Map<String, Method>> getters = new HashMap<Class<?>, Map<String, Method>>();
+	//reader methods
 	private static final Map<Class<?>, Map<String, Method>> setters = new HashMap<Class<?>, Map<String, Method>>();
+	//parameter types
+	private static final Map<Class<?>, Map<String, Class<?>>> types = new HashMap<Class<?>, Map<String, Class<?>>>();
 	
 	private static volatile boolean cacheEnabled = true;
 	
@@ -52,6 +55,25 @@ public class ReflectUtil {
 	 */
 	public static boolean isCacheEnabled(){
 		return cacheEnabled;
+	}
+	
+	/**
+	 * 获取类变量的类型
+	 * 
+	 * @param clazz
+	 * @return
+	 * @throws DBException
+	 */
+	public static Map<String, Class<?>> getParameterTypes(Class<?> clazz) throws DBException {
+		if(cacheEnabled){
+			if(!types.containsKey(clazz)){
+				Map <String, Class<?>> p = getTypes(clazz);
+				types.put(clazz, p);
+				return p;
+			}else
+				return types.get(clazz);
+		}else
+			return getTypes(clazz);
 	}
 	
 	/**
@@ -86,6 +108,17 @@ public class ReflectUtil {
 				return setters.get(clazz);
 		}else
 			return getSetters(clazz);
+	}
+	
+	private static Map<String, Class<?>> getTypes(Class<?> clazz) throws DBException {
+		Map<String, Class<?>> params = new HashMap<String, Class<?>>();
+		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
+		for (int i = 0; i < props.length; i++) {
+			String key = props[i].getName();
+			if (!"class".equals(key) && props[i].getReadMethod() != null)
+				params.put(key, props[i].getPropertyType());
+		}
+		return params;
 	}
 	
 	private static Map<String, Method> getGetters(Class<?> clazz) throws DBException {

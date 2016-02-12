@@ -1,9 +1,14 @@
 package org.rex.db.core.reader;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.rex.db.configuration.Configuration;
+import org.rex.db.core.statement.dynamic.javassist.SampleSetter;
+import org.rex.db.core.statement.dynamic.javassist.StatementSetter;
+import org.rex.db.core.statement.dynamic.javassist.StatementSetterManager;
 import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
 import org.rex.db.util.ReflectUtil;
@@ -20,6 +25,18 @@ public class ClassResultReader<T> implements ResultReader<T> {
 
 	private int rowNum = 0;
 
+	
+	//----------settings
+	/**
+	 * user dynamic class
+	 * @throws DBException 
+	 */
+	private static boolean isDynamic() throws DBException{
+		return Configuration.getCurrentConfiguration().isDynamicClass();
+	}
+	
+
+	//--------construct
 	/**
 	 * 创建结果集读取类，适用于普通查询
 	 * 
@@ -41,6 +58,9 @@ public class ClassResultReader<T> implements ResultReader<T> {
 		return results;
 	}
 
+	// --------private parameter
+	int[] columnsCodeCacheForDynamic = null;
+
 	// --------private methods
 	/**
 	 * OR映射
@@ -48,9 +68,23 @@ public class ClassResultReader<T> implements ResultReader<T> {
 	private T row2Bean(ResultSet rs, int rowNum) throws DBException {
 		if (resultClass == null)
 			throw new DBException("DB-C0003");
+		
+		if(isDynamic()){
+			StatementSetter setter = StatementSetterManager.getConvertor(resultClass);
+			String[] rsLabelsRenamed = orUtil.getResultSetLabelsRenamed(rs);
+			if(columnsCodeCacheForDynamic == null)
+				columnsCodeCacheForDynamic = setter.getColumnCodes(rsLabelsRenamed);
 
-		T bean = ReflectUtil.instance(resultClass);
-//		T bean = (T)new Student();
-		return orUtil.rs2Object(rs, bean);
+			try {
+				return (T)setter.readResultSet(rs, orUtil, columnsCodeCacheForDynamic);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new DBException(e);
+			}
+		}else{
+			T bean = ReflectUtil.instance(resultClass);
+			return orUtil.rs2Object(rs, bean);
+		}
+		
 	}
 }

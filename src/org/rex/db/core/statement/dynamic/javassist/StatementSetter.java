@@ -1,19 +1,34 @@
 package org.rex.db.core.statement.dynamic.javassist;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+
+import org.rex.db.exception.DBException;
+import org.rex.db.util.ORUtil;
 
 public abstract class StatementSetter {
 
 	/**
-	 * 将实体类转换为Ps对象
-	 * @param bean
-	 * @return
+	 * set parameters from object to prepared statement
+	 * @param preparedStatement prepared statement to set values to
+	 * @param bean java bean that values store
+	 * @param requiredParam property name of java bean, 
+	 * @throws SQLException
 	 */
 	public abstract void setParameters(PreparedStatement preparedStatement, Object bean, String[] requiredParam) throws SQLException;
 	
+	public abstract int[] getColumnCodes(String[] rsLabelsRenamed);
 	
+	public abstract Object readResultSet(ResultSet rs, ORUtil orUtil, int[] requiredColumnCodes) throws SQLException, DBException;
+	
+	//-------------create bean utils
+	protected static Class getIntClass(){
+		return int.class;
+	}
+	
+	//-------------set parameter utils
 	protected static Object convertValue(Object o){
 		return o;
 	}
