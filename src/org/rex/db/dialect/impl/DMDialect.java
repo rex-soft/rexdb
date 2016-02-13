@@ -5,12 +5,16 @@ import java.sql.SQLException;
 
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.LimitHandler;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 /**
  * 达梦数据库
  */
 public class DMDialect implements Dialect {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(DMDialect.class);
+	
 	// ------------------------------------------------------------分页SQL
 	protected class DMLimitHandler extends LimitHandler {
 
@@ -48,10 +52,16 @@ public class DMDialect implements Dialect {
 				pagingSelect.append(" for update");
 			}
 
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
+			
 			return pagingSelect.toString();
 		}
 
 		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("setting paged prepared parameters {0}.", hasOffset() ? getRows()+", "+getOffset() : getRows());
+			
 			if (hasOffset()) {
 				statement.setInt(parameterCount + 1, getRows());
 				statement.setInt(parameterCount + 2, getOffset());

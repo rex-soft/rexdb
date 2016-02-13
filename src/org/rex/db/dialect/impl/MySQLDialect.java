@@ -5,11 +5,15 @@ import java.sql.SQLException;
 
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.LimitHandler;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 /**
  * MySQL
  */
 public class MySQLDialect implements Dialect {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MySQLDialect.class);
 
 	// ------------------------------------------------------------分页SQL
 	protected class MySQLLimitHandler extends LimitHandler{
@@ -23,11 +27,20 @@ public class MySQLDialect implements Dialect {
 		}
 		
 		public String wrapSql(String sql) {
-			return new StringBuilder(sql.length() + 30).append(sql)
-					.append(hasOffset() ? " limit ?, ?" : " limit ?").toString();
+			StringBuffer pagingSelect = new StringBuffer(sql.length() + 30).append(sql)
+					.append(hasOffset() ? " limit ?, ?" : " limit ?");
+			
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
+			
+			return pagingSelect.toString();
 		}
 
 		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {
+			
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("setting paged prepared parameters {0}.", hasOffset() ? getOffset()+", "+getRows() : getRows());
+			
 			if(hasOffset()){
 				statement.setInt(parameterCount + 1, getOffset());
 				statement.setInt(parameterCount + 2, getRows());

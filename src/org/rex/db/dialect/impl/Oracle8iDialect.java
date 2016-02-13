@@ -5,6 +5,8 @@ import java.sql.SQLException;
 
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.LimitHandler;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 /**
  * Oracle8i
@@ -14,6 +16,8 @@ import org.rex.db.dialect.LimitHandler;
  */
 public class Oracle8iDialect implements Dialect {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Oracle8iDialect.class);
+	
 	// ------------------------------------------------------------分页SQL
 	protected class OracleLimitHandler extends LimitHandler{
 
@@ -51,10 +55,17 @@ public class Oracle8iDialect implements Dialect {
 				pagingSelect.append(" for update");
 			}
 
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
+			
 			return pagingSelect.toString();
 		}
 
 		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {
+			
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("setting paged prepared parameters {0}.", hasOffset() ? getRows()+", "+ (getRows() + getOffset()) : getRows());
+			
 			if(hasOffset()){
 				statement.setInt(parameterCount + 1, getRows());
 				statement.setInt(parameterCount + 2, getRows() + getOffset());

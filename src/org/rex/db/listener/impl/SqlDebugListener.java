@@ -3,7 +3,6 @@ package org.rex.db.listener.impl;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import org.rex.db.Ps;
 import org.rex.db.listener.DBListener;
 import org.rex.db.listener.SqlContext;
 import org.rex.db.listener.TransactionContext;
@@ -72,7 +71,7 @@ public class SqlDebugListener implements DBListener{
 			return null;
 		
 		String[] sql = context.getSql();
-		Ps[] ps = context.getPs();
+		Object parameters = context.getParameters();
 		
 		StringBuffer sb = new StringBuffer();
 		if(results != null){
@@ -81,12 +80,14 @@ public class SqlDebugListener implements DBListener{
 			.append(", costs=")
 			.append(Calendar.getInstance().getTimeInMillis() - context.getCreateTime().getTime())
 			.append("ms");
+		}else{
+			sb.append(", sql=")
+			.append(sql.length == 1 ? sql[0] : Arrays.toString(sql))
+			.append(", parameters=")
+			.append(parameters)
+			.append(", limitHandler=")
+			.append(context.getLimitHandler());
 		}
-		
-		sb.append(", sql=")
-		.append(sql.length == 1 ? sql[0] : Arrays.toString(sql))
-		.append(", ps=")
-		.append(ps==null ? null : Arrays.toString(ps));
 		
 		sb.append(", context-id=")
 		.append(context.getContextId());

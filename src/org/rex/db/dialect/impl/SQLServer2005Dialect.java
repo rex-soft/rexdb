@@ -4,8 +4,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.rex.db.dialect.LimitHandler;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 public class SQLServer2005Dialect extends SQLServerDialect {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SQLServer2005Dialect.class);
 	
 	//------------------------------------------------------------分页SQL
 	protected class SQLServer2005LimitHandler extends LimitHandler{
@@ -55,6 +59,9 @@ public class SQLServer2005Dialect extends SQLServerDialect {
 				.append(" AND __row_nr__ <").append(rows)
 				.append(" ORDER BY __row_nr__");
 
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("wrapped paged sql {0}.", result);
+			
 			return result.toString();
 		}
 

@@ -1,4 +1,4 @@
-package org.rex.db.core.statement.dynamic.javassist;
+package org.rex.db.dynamic.javassist;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -15,16 +15,16 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
-public class StatementSetterManager {
+public class BeanConvertorManager {
 	
-	private static final String PACKAGE = "org.rex.db.core.statement.dynamic";
+	private static final String PACKAGE = "org.rex.db.dynamic";
 	
 	private static final String CLASS_PREFIX = "JSetterFor";
 	
 	/**
 	 * 动态类转换
 	 */
-	private static final Map<Class<?>, StatementSetter> convertors = new HashMap<Class<?>, StatementSetter>();
+	private static final Map<Class<?>, BeanConvertor> convertors = new HashMap<Class<?>, BeanConvertor>();
 	
 	/**
 	 * 获取一个类转换器
@@ -32,7 +32,7 @@ public class StatementSetterManager {
 	 * @return
 	 * @throws DBException 
 	 */
-	public static StatementSetter getConvertor(Class<?> beanClass){
+	public static BeanConvertor getConvertor(Class<?> beanClass){
 		if(!convertors.containsKey(beanClass)){
 			try {
 				convertors.put(beanClass, build(beanClass));
@@ -62,7 +62,7 @@ public class StatementSetterManager {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	private static StatementSetter build(Class<?> clazz) throws NotFoundException, DBException, CannotCompileException, InstantiationException, IllegalAccessException {
+	private static BeanConvertor build(Class<?> clazz) throws NotFoundException, DBException, CannotCompileException, InstantiationException, IllegalAccessException {
 
 		ClassPool pool = ClassPool.getDefault();
 		pool.importPackage("java.sql.PreparedStatement");
@@ -73,7 +73,7 @@ public class StatementSetterManager {
 		pool.importPackage("org.rex.db.exception.DBException");
 
 		CtClass ctClass = pool.makeClass(PACKAGE + "." + CLASS_PREFIX + genClassName(clazz));
-		ctClass.setSuperclass(pool.get("org.rex.db.core.statement.dynamic.javassist.StatementSetter"));
+		ctClass.setSuperclass(pool.get("org.rex.db.dynamic.javassist.BeanConvertor"));
 
 		//method setParameters
         CtMethod setParametersMethod = CtMethod.make(buildSetParametersMethodString(clazz), ctClass);
@@ -89,7 +89,7 @@ public class StatementSetterManager {
         
         //generate instance
         Class<?> cl = ctClass.toClass();  
-        return (StatementSetter)cl.newInstance();
+        return (BeanConvertor)cl.newInstance();
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public class StatementSetterManager {
 			String key = entry.getKey();
 			Method setter = entry.getValue();
 			Class<?> type = types.get(key);
-			String[] typeClassNameAndSuffix = getClassName(type);
+			String[] typeClassNameAndSuffix = getClassName(type == null ? setter.getParameterTypes()[0] : type);
 			
 			sb.append("case ").append(i++).append(":\n");
 			sb.append("bean.").append(setter.getName()).append("(((").append(typeClassNameAndSuffix[0])

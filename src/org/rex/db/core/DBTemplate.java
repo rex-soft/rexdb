@@ -8,9 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -35,7 +33,7 @@ import org.rex.db.util.DataSourceUtil;
 import org.rex.db.util.JdbcUtil;
 
 /**
- * 数据库模板，封装了框架支持的数据库操作
+ * framework kernel executive
  */
 public class DBTemplate {
 	
@@ -64,25 +62,24 @@ public class DBTemplate {
 	 * 执行不带预编译的SQL并处理结果集
 	 */
 	public void query(String sql, ResultReader<?> resultReader) throws DBException {
-//		validateSql(sql);
-//		SqlContext context = fireOnEvent(SqlContext.SQL_QUERY, false, getDataSource(), new String[]{sql}, null);
+		SqlContext context = fireOnEvent(SqlContext.SQL_QUERY, false, getDataSource(), new String[]{sql}, null, null);
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
 			stmt = statementCreatorManager.get().createStatement(con);
-//			applyTimeout(stmt, dataSource);
+			applyTimeout(stmt, dataSource);
 
 			rs = executor.executeQuery(stmt, sql);
 			resultSetIterator.read(resultReader, rs);
 			
-//			checkWarnings(con, stmt, rs);
+			checkWarnings(con, stmt, rs);
 		}catch (SQLException e) {
 			throw new DBException("DB-C0005", e, sql, null, e.getMessage());
 		}finally {
 			close(con, stmt, rs);
-//			fireAfterEvent(context, resultReader.getResults());
+			fireAfterEvent(context, resultReader.getResults());
 		}
 	}
 
@@ -97,8 +94,7 @@ public class DBTemplate {
 	 * 执行预编译SQL
 	 */
 	public void query(String sql, Object parameters, LimitHandler limitHandler, ResultReader<?> resultReader) throws DBException {
-//		validateSql(sql, ps);
-//		SqlContext context = fireOnEvent(SqlContext.SQL_QUERY, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
+		SqlContext context = fireOnEvent(SqlContext.SQL_QUERY, false, getDataSource(), new String[]{sql}, parameters, limitHandler);
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		PreparedStatement preparedStatement = null;
@@ -106,14 +102,16 @@ public class DBTemplate {
 		try {
 			preparedStatement = statementCreatorManager.get(parameters).createPreparedStatement(con, sql, parameters, limitHandler);
 			applyTimeout(preparedStatement, this.dataSource);
+			
 			rs = executor.executeQuery(preparedStatement);
 			resultSetIterator.read(resultReader, rs);
+			
 			checkWarnings(con, preparedStatement, rs);
 		}catch (SQLException e) {
 			throw new DBException("DB-C0005", e, sql, parameters, e.getMessage());
 		}finally {
 			close(con, preparedStatement, rs);
-//			fireAfterEvent(context, resultReader.getResults());
+			fireAfterEvent(context, resultReader.getResults());
 		}
 	}
 	//--------------------update
@@ -121,8 +119,7 @@ public class DBTemplate {
 	 * 通过PreparedStatementCreator执行多条SQL（非批处理方式）
 	 */
 	public int update(String sql) throws DBException {
-//		validateSql(sql);
-//		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, null);
+		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, null, null);
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		Statement statement = null;
@@ -138,7 +135,7 @@ public class DBTemplate {
 			throw new DBException("DB-C0005", e, sql, null, e.getMessage());
 		}finally {
 			close(con, statement, null);
-//			fireAfterEvent(context, retval);
+			fireAfterEvent(context, retval);
 		}
 	}
 	
@@ -146,8 +143,7 @@ public class DBTemplate {
 	 * 通过PreparedStatementCreator执行多条SQL（非批处理方式）
 	 */
 	public int update(String sql, Object parameters) throws DBException {
-//		validateSql(sql, ps);
-//		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
+		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, parameters, null);
 		
 		Connection connection = DataSourceUtil.getConnection(this.dataSource);
 		PreparedStatement statement = null;
@@ -164,7 +160,7 @@ public class DBTemplate {
 			throw new DBException("DB-C0005", e, sql, parameters, e.getMessage());
 		}finally {
 			close(connection, statement, null);
-//			fireAfterEvent(context, retval);
+			fireAfterEvent(context, retval);
 		}
 	}
 	
@@ -173,8 +169,7 @@ public class DBTemplate {
 	 * 执行批处理SQL
 	 */
 	public int[] batchUpdate(String sql, Object[] parametersArray) throws DBException {
-//		validateSql(sql, ps);
-//		SqlContext context = fireOnEvent(SqlContext.SQL_BATCH_UPDATE, false, getDataSource(), new String[]{sql}, ps);
+		SqlContext context = fireOnEvent(SqlContext.SQL_BATCH_UPDATE, false, getDataSource(), new String[]{sql}, parametersArray, null);
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		PreparedStatement preparedStatement = null;
@@ -193,7 +188,7 @@ public class DBTemplate {
 			throw new DBException("DB-C0005", e, sql, psList, e.getMessage());
 		}finally {
 			close(con, preparedStatement, null);
-//			fireAfterEvent(context, retvals);
+			fireAfterEvent(context, retvals);
 		}
 	}
 	
@@ -201,8 +196,7 @@ public class DBTemplate {
 	 * 批量执行多条SQL
 	 */
 	public int[] batchUpdate(String sql[]) throws DBException{
-//		validateSql(sql);
-//		SqlContext context = fireOnEvent(SqlContext.SQL_BATCH_UPDATE, false, getDataSource(), sql, null);
+		SqlContext context = fireOnEvent(SqlContext.SQL_BATCH_UPDATE, false, getDataSource(), sql, null, null);
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		Statement statement = null;
@@ -220,7 +214,7 @@ public class DBTemplate {
 			throw new DBException("DB-C0005", e, sqlList, null, e.getMessage());
 		} finally {
 			close(con, statement, null);
-//			fireAfterEvent(context, retvals);
+			fireAfterEvent(context, retvals);
 		}
 	}
 
@@ -229,8 +223,7 @@ public class DBTemplate {
 	 * 通过CallableStatement执行查询，通常用于调用存储过程
 	 */
 	public RMap<String, ?> call(String sql, Object parameters) throws DBException {
-//		validateSql(sql, ps);
-//		SqlContext context = fireOnEvent(SqlContext.SQL_CALL, false, getDataSource(), new String[]{sql}, new Ps[]{ps});
+		SqlContext context = fireOnEvent(SqlContext.SQL_CALL, false, getDataSource(), new String[]{sql}, parameters, null);
 		
 		Connection con = DataSourceUtil.getConnection(this.dataSource);
 		CallableStatement cs = null;
@@ -257,7 +250,7 @@ public class DBTemplate {
 			throw new DBException("DB-C0005", e, sql, parameters, e.getMessage());
 		}finally {
 			close(con, cs, null);
-//			fireAfterEvent(context, outs);
+			fireAfterEvent(context, outs);
 		}
 	}
 
@@ -412,11 +405,11 @@ public class DBTemplate {
 	 * 执行SQL前监听
 	 * @throws DBException 
 	 */
-	private SqlContext fireOnEvent(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Ps[] ps) throws DBException{
+	private SqlContext fireOnEvent(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Object parameters, LimitHandler limitHandler) throws DBException{
 		SqlContext context = null;
 		ListenerManager listenerManager = getListenerManager();
 		if(listenerManager.hasListener()){
-			context = getContext(sqlType, betweenTransaction, dataSource, sql, ps);
+			context = getContext(sqlType, betweenTransaction, dataSource, sql, parameters, limitHandler);
 			listenerManager.fireOnExecute(context);
 		}
 		return context;
@@ -432,51 +425,19 @@ public class DBTemplate {
 		}
 	}
 	
-	private SqlContext getContext(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Ps[] ps){
-		return new SqlContext(sqlType, betweenTransaction, dataSource, sql, ps);
+	private SqlContext getContext(int sqlType, boolean onTransaction, DataSource dataSource, String[] sql, Object parameters, LimitHandler limitHandler){
+		return new SqlContext(sqlType, onTransaction, dataSource, sql, parameters, limitHandler);
 	}
 	
 	private ListenerManager getListenerManager() throws DBException{
 		return Configuration.getCurrentConfiguration().getListenerManager();
 	}
+	
 	//------------------Check warnings
 	private void checkWarnings(Connection connection, Statement statement, ResultSet resultSet) throws DBException{
 		boolean isCheck = Configuration.getCurrentConfiguration().isCheckWarnings();
 		if(isCheck)
 			JdbcUtil.checkWarnings(connection, statement, resultSet);
 	}
-	
-	//------------------Sql validate
-//	private boolean isValidateSql() throws DBException{
-//		return Configuration.getCurrentConfiguration().isValidateSql();
-//	}
-//
-//	/**
-//	 * 在执行SQL前进行基本的校验
-//	 * @param sql
-//	 * @param ps
-//	 * @throws DBException 
-//	 */
-//	private void validateSql(String sql, Ps ps) throws DBException{
-//		if(isValidateSql())
-//			SqlParser.validate(sql, ps);
-//	}
-//	
-//	private void validateSql(String sql, Ps[] ps) throws DBException{
-//		for (int i = 0; i < ps.length; i++) {
-//			validateSql(sql, ps[i]);
-//		}
-//	}
-//	
-//	private void validateSql(String sql) throws DBException{
-//		if(isValidateSql())
-//			SqlParser.validate(sql, null);
-//	}
-//	
-//	private void validateSql(String[] sql) throws DBException{
-//		for (int i = 0; i < sql.length; i++) {
-//			if(isValidateSql())
-//				SqlParser.validate(sql[i], null);
-//		}
-//	}
+
 }

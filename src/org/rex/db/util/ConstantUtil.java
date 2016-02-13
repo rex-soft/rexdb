@@ -34,7 +34,7 @@ public class ConstantUtil {
 					Object value = f.get(null);
 					constants.put(name, value);
 				} catch (IllegalAccessException ex) {
-					LOGGER.warn("Failed to read constant property {0} of {1}, {2}.", name, clazz.getName(), ex.getMessage());
+					LOGGER.warn("could not read constant property {0} of {1}, {2}.", name, clazz.getName(), ex.getMessage());
 				}
 			}
 		}

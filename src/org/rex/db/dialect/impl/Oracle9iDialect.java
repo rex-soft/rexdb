@@ -1,11 +1,15 @@
 package org.rex.db.dialect.impl;
 
 import org.rex.db.dialect.LimitHandler;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 /**
  * Oracle9i
  */
 public class Oracle9iDialect extends Oracle8iDialect {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Oracle9iDialect.class);
 	
 	//------------------------------------------------------------分页SQL
 	protected class Oracle9iLimitHandler extends OracleLimitHandler{
@@ -49,6 +53,9 @@ public class Oracle9iDialect extends Oracle8iDialect {
 				pagingSelect.append( forUpdateClause );
 			}
 
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
+			
 			return pagingSelect.toString();
 		}
 

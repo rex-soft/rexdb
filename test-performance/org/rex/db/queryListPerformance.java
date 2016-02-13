@@ -73,21 +73,21 @@ public class queryListPerformance {
 	}
 	
 	static void warmUp(int number) throws DBException, SQLException{
-		System.out.println("warming up test...insert "+number+" rows for query.");
-//		DB.beginTransaction();
-//		for (int i = 0; i < number; i++) {
-//			DB.update(INSERT, new Ps("Jim", 1, new Date(), new Date(), new Date(), 10, null, null, 1));
-//		}
-//		DB.commit();
+		System.out.println("preparing test...insert "+number+" rows for query.");
+		DB.beginTransaction();
+		for (int i = 0; i < number; i++) {
+			DB.update(INSERT, new Ps("Jim", 1, new Date(), new Date(), new Date(), 10, null, null, 1));
+		}
+		DB.commit();
 		
 		rexdbQuery();
 		jdbcQuery();
 	}
 	
 	static void cleanAll() throws DBException{
-//		System.out.println("cleaning up... delete all rows.");
-//		int r = DB.update(CLEAN);
-//		System.out.println(r +" rows deleted.");		
+		System.out.println("cleaning up... delete all rows.");
+		int r = DB.update(CLEAN);
+		System.out.println(r +" rows deleted.");		
 	}
 	
 	//------------------------------------rexdb

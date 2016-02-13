@@ -76,7 +76,7 @@ public class XMLConfigurationLoader {
 			try {
 				inputStream.close();
 			} catch (IOException e) {
-				LOGGER.warn("Error on closing input stream of xml configuration, {0}.", e.getMessage());
+				LOGGER.warn("could not close input stream of xml configuration, {0}.", e.getMessage());
 			}
 		}
 		return configuration;

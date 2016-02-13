@@ -23,6 +23,22 @@ public class SqlUtil {
 	private static final Map<String, String[]> sqlCache = new HashMap<String, String[]>();
 	
 	/**
+	 * 对SQL执行基本的校验，防止错误查询被发送到数据库。校验不通过时直接抛出异常
+	 * @param sql 待校验的SQL语句
+	 * @throws DBException 
+	 */
+	public static void validate(String sql, Ps ps) throws DBException{
+		validate(sql, ps == null ? 0 : ps.getParameters().size());
+	}
+	
+	public static void validate(String sql, int expectedParameterSize) throws DBException{
+		int holderSize = SqlUtil.countParameterPlaceholders(sql, PARAMETER, '\'');
+		if (holderSize != expectedParameterSize)
+			throw new DBException("DB-S0001", sql, holderSize, expectedParameterSize);
+	}
+	
+	
+	/**
 	 * set null for PreparedStatement
 	 */
 	public static void setNull(PreparedStatement preparedStatement, int index) throws SQLException{
@@ -100,19 +116,7 @@ public class SqlUtil {
 		}
 		return sqlCache.get(sql);
 	}
-	
-	/**
-	 * 对SQL执行基本的校验，防止错误查询被发送到数据库。校验不通过时直接抛出异常
-	 * @param sql 待校验的SQL语句
-	 * @throws DBException 
-	 */
-	public static void validate(String sql, Ps ps) throws DBException{
-		// 检查已经设定的预编译参数个数
-		int holderSize = SqlUtil.countParameterPlaceholders(sql, PARAMETER, '\'');
-		int paramSize = ps == null ? 0 : ps.getParameters().size();
-		if (holderSize != paramSize)
-			throw new DBException("DB-S0001", sql, holderSize, paramSize);
-	}
+
 
 	/**
 	 * 检查文本中字符个数

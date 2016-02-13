@@ -27,14 +27,14 @@ public class DataSourceManager {
 		defaultDataSource = dataSource;
 		
 		if(LOGGER.isDebugEnabled())
-			LOGGER.debug("Default datasource[{0}] registed.", dataSource.hashCode());
+			LOGGER.debug("default datasource[{0}] registed.", dataSource.hashCode());
 	}
 	
 	public void add(String id, DataSource dataSource){
 		dataSourses.put(id, dataSource);
 		
 		if(LOGGER.isDebugEnabled())
-			LOGGER.debug("Datasource[{0}] of id {1} registed.", dataSource.hashCode(), id);
+			LOGGER.debug("datasource[{0}] {1} registed.", dataSource.hashCode(), id);
 	}
 	
 	public DataSource get(String id){

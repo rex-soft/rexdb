@@ -159,13 +159,13 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 				con.setReadOnly(false);
 			}
 		}catch (Exception ex) {
-			LOGGER.warn("Reseting connection state failed after transaction, {0}.", ex, ex.getMessage());
+			LOGGER.warn("reseting connection state failed after transaction, {0}.", ex, ex.getMessage());
 		}
 
 		try {
 			DataSourceUtil.closeConnectionIfNotTransaction(con, this.dataSource);
 		}catch (DBException ex) {
-			LOGGER.warn("Closing connection failed after transaction, {0}.", ex, ex.getMessage());
+			LOGGER.warn("closing connection failed after transaction, {0}.", ex, ex.getMessage());
 		}
 	}
 

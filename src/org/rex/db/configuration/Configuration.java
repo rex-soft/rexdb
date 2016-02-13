@@ -8,13 +8,13 @@ import javax.sql.DataSource;
 import org.rex.db.datasource.DataSourceManager;
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.DialectManager;
+import org.rex.db.dynamic.javassist.BeanConvertorManager;
 import org.rex.db.exception.DBException;
 import org.rex.db.exception.ExceptionResourceFactory;
 import org.rex.db.listener.DBListener;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
-import org.rex.db.sql.dynamic.ConvertorManager;
 import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.ResourceUtil;
 
@@ -111,11 +111,11 @@ public class Configuration {
 	
 	static{
 		try {
-			LOGGER.info("Start loading default configuration {0}.", DEFAULT_CONFIG_PATH);
+			LOGGER.info("loading default configuration {0}.", DEFAULT_CONFIG_PATH);
 			loadDefaultConfiguration();
-			LOGGER.info("Default configuration {0} loaded.", DEFAULT_CONFIG_PATH);
+			LOGGER.info("default configuration {0} loaded.", DEFAULT_CONFIG_PATH);
 		} catch (DBException e) {
-			LOGGER.error("Error loading default configuration {0}.", e);
+			LOGGER.error("error loading default configuration {0}.", e);
 		}
 	}
 	
@@ -136,7 +136,7 @@ public class Configuration {
 		
 		InputStream inputStream = ResourceUtil.getResourceAsStream(DEFAULT_CONFIG_PATH);
 		if(inputStream == null){
-			LOGGER.warn("Default configuration {0} wasn't found in classpath.", DEFAULT_CONFIG_PATH);
+			LOGGER.warn("could not find configuration {0} in classpath.", DEFAULT_CONFIG_PATH);
 		}else
 			instance = new XMLConfigurationLoader().load(inputStream);
 	}
@@ -231,7 +231,7 @@ public class Configuration {
 	}
 
 	public void setValidateSql(boolean validateSql) {
-		LOGGER.info("Sql validate has switched to {0}.", validateSql);
+		LOGGER.info("sql validate has switched to {0}.", validateSql);
 		this.validateSql = validateSql;
 	}
 
@@ -240,7 +240,7 @@ public class Configuration {
 	}
 
 	public void setCheckWarnings(boolean checkWarnings) {
-		LOGGER.info("Check warnings has switched to {0}.", validateSql);
+		LOGGER.info("check warnings has switched to {0}.", validateSql);
 		this.checkWarnings = checkWarnings;
 	}
 	
@@ -291,10 +291,10 @@ public class Configuration {
 	public void setDynamicClass(boolean dynamicClass) {
 		if(dynamicClass){//test dynamic
 			try{
-				ConvertorManager.getConvertor(this.getClass());
+				BeanConvertorManager.getConvertor(this.getClass());
 				this.dynamicClass = true;
 			}catch(Exception e){
-				LOGGER.warn("Dynamic class is set to true, but the test failed, {0}, has automatically switched to false.", e, e.getMessage());
+				LOGGER.warn("dynamic class setting is true, but could not pass the validation test, {0}, now automatically switch to false.", e, e.getMessage());
 			}
 		}
 	}

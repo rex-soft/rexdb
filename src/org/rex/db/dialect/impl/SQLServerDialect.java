@@ -6,12 +6,16 @@ import java.sql.SQLException;
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.LimitHandler;
 import org.rex.db.exception.DBRuntimeException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 /**
  * PostgreSQL
  */
 public class SQLServerDialect implements Dialect {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(SQLServerDialect.class);
+	
 	// ------------------------------------------------------------分页SQL
 	protected class SQLServerLimitHandler extends LimitHandler {
 
@@ -28,7 +32,12 @@ public class SQLServerDialect implements Dialect {
 			if (getOffset() > 0) {
 				throw new DBRuntimeException("DB-A0003", getName());
 			}
-			return new StringBuilder(sql.length() + 12).append(sql).insert(getAfterSelectInsertPoint(sql), " top " + getRows()).toString();
+			StringBuffer pagingSelect = new StringBuffer(sql.length() + 12).append(sql).insert(getAfterSelectInsertPoint(sql), " top " + getRows());
+			
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
+			
+			return pagingSelect.toString();
 		}
 
 		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {

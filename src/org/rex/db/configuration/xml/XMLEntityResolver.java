@@ -58,7 +58,7 @@ public class XMLEntityResolver implements EntityResolver {
 				in = ResourceUtil.getResourceAsStream(path);
 				source = new InputSource(in);
 			} catch (DBException e) {
-				LOGGER.warn("Failed to load dtd file {0}, {1}", e, path, e.getMessage());
+				LOGGER.warn("failed to load dtd file {0}, {1}.", e, path, e.getMessage());
 			}
 		}
 		return source;

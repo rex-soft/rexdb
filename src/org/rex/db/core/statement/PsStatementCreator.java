@@ -4,11 +4,14 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.rex.db.Ps;
 import org.rex.db.dialect.LimitHandler;
 import org.rex.db.exception.DBException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.SqlUtil;
 
 /**
@@ -19,6 +22,8 @@ import org.rex.db.util.SqlUtil;
  * parameters: new Ps("100", "M");
  */
 public class PsStatementCreator extends AbstractStatementCreator{
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PsStatementCreator.class);
 	
 	//----------Prepared Statement
 	public PreparedStatement createPreparedStatement(Connection connection, String sql, Object parameters) throws DBException, SQLException {
@@ -31,8 +36,13 @@ public class PsStatementCreator extends AbstractStatementCreator{
 	}
 	
 	private PreparedStatement createPreparedStatement(Connection conn, String sql, Ps ps, LimitHandler limitHandler) throws DBException, SQLException{
+		validateSql(sql, ps);
+		
 		if(limitHandler != null)
 			sql = limitHandler.wrapSql(sql);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("preparing Statement for sql {0} of Connection[{1}].", sql, conn.hashCode());
 		
 		PreparedStatement preparedStatement = conn.prepareStatement(sql);
 		if(ps != null)
@@ -49,10 +59,18 @@ public class PsStatementCreator extends AbstractStatementCreator{
 		return createCallableStatement(connection, sql, (Ps)parameters);
 	}
 	
-	private CallableStatement createCallableStatement(Connection conn, String sql, Ps ps) throws SQLException {
+	private CallableStatement createCallableStatement(Connection conn, String sql, Ps ps) throws SQLException, DBException {
+		validateSql(sql, ps);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("preparing CallableStatement for sql {0} of Connection[{1}].", sql, conn.hashCode());
+		
 		CallableStatement cs = conn.prepareCall(sql);
 		
 		if(ps == null) return cs;
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("setting Ps parameters {0}.", ps);
 		
 		List<Ps.SqlParameter> parameters = ps.getParameters();
 		for (int i = 0; i < parameters.size(); i++) {
@@ -83,6 +101,11 @@ public class PsStatementCreator extends AbstractStatementCreator{
 	}
 	
 	private PreparedStatement createBatchPreparedStatement(Connection conn, String sql, Ps[] ps) throws DBException, SQLException {
+		validateSql(sql, ps);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("preparing batch PreparedStatement for sql {0} of Connection[{1}].", sql, conn.hashCode());
+		
 		PreparedStatement preparedStatement = conn.prepareStatement(sql);
 		
 		if(ps != null){
@@ -104,6 +127,9 @@ public class PsStatementCreator extends AbstractStatementCreator{
 	private void setParameters(PreparedStatement preparedStatement, Ps ps) throws DBException, SQLException{
 		List<Ps.SqlParameter> parameters = ps.getParameters();
 
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("setting Ps parameters {0} for statement[{1}].", ps, preparedStatement.hashCode());
+		
 		for (int i = 0; i < parameters.size(); i++) {
 			Ps.SqlParameter parameter = parameters.get(i);
 			if(parameter instanceof Ps.SqlOutParameter)

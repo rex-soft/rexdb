@@ -29,7 +29,7 @@ public class DialectManager {
 		dialectInstances.put(String.valueOf(dataSource.hashCode()), dialect);
 		
 		if(LOGGER.isDebugEnabled())
-			LOGGER.debug("Dialect[{0}] for datasource[{1}] registed.", dialect.getName(), dataSource.hashCode());
+			LOGGER.debug("dialect[{0}] for datasource[{1}] registed.", dialect.getName(), dataSource.hashCode());
 	}
 	
 	/**

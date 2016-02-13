@@ -42,4 +42,9 @@ public abstract class LimitHandler{
 	public abstract String wrapSql(String sql);
 	
 	public abstract void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException;
+
+	//---------toString
+	public String toString() {
+		return "offset=" + offset + ", rows=" + rows;
+	}
 }

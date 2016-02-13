@@ -1,4 +1,4 @@
-package org.rex.db.core.statement.dynamic.javassist;
+package org.rex.db.dynamic.javassist;
 
 import java.util.Date;
 
@@ -23,6 +23,5 @@ public class SampleBean {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
 	
 }

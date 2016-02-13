@@ -15,8 +15,8 @@
 		<property name="dynamicClass" value="true" />
 		<property name="dateAdjust" value="true" />
 	</settings>
-	<!-- Mysql  -->
-	<dataSource class="org.apache.commons.dbcp.BasicDataSource">
+	<!-- Mysql  class="org.apache.commons.dbcp.BasicDataSource" -->
+	<dataSource>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
 		<property name="username" value="root" />
@@ -36,6 +36,6 @@
 		<property name="password" value="123456" />
 	</dataSource>-->
 	<dataSource jndi=""/>
-	<listener class="org.rex.db.listener.impl.SqlDebugListener"/>
+ 	<listener class="org.rex.db.listener.impl.SqlDebugListener"/> 
 <!-- 	<listener class="org.rex.db.listener.impl.SqlConsolePrinterListener" /> -->
 </configuration>

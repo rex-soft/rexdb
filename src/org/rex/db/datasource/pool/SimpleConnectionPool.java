@@ -1,7 +1,6 @@
 package org.rex.db.datasource.pool;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -71,7 +70,7 @@ public class SimpleConnectionPool {
 	 */
 	public SimpleConnectionPool(Properties properties) throws DBException  {
 		if (LOGGER.isInfoEnabled()) {
-			LOGGER.info("Starting simple connection pool[{0}] of properties {1}", this.hashCode(), DataSourceUtil.hiddenPassword(properties));
+			LOGGER.info("starting simple connection pool[{0}] of properties {1}.", this.hashCode(), DataSourceUtil.hiddenPassword(properties));
 		}
 
 		extractProperties(properties);
@@ -89,7 +88,7 @@ public class SimpleConnectionPool {
 		initDriverManager();
 		initConnectionPool();
 
-		LOGGER.info("Simple connection pool[{0}] for database {1}@{2} has been started{3}.", this.hashCode(), username, url, latestException==null?"":" with errors");
+		LOGGER.info("simple connection pool[{0}] started{3}.", this.hashCode(), username, url, latestException==null?"":" with errors");
 	}
 
 	// -----------property
@@ -115,7 +114,7 @@ public class SimpleConnectionPool {
 				}
 			}
 			if (!hasField) {
-				LOGGER.warn("Property [{0}: {1}] not support for simple connection pool[{2}], ignore.", key, value, this.hashCode());
+				LOGGER.warn("simple connection pool[{0}] dose not support property [{1}: {2}], the property has been ignored.", this.hashCode(), key, value);
 			}
 		}
 	}
@@ -137,13 +136,13 @@ public class SimpleConnectionPool {
 				try {
 					field.setInt(this, Integer.parseInt(value));
 				} catch (NumberFormatException e) {
-					LOGGER.warn("Value of property [{0}: {1}] for simple connection pool[{2}] is not a number, ignore.", field.getName(), value, this.hashCode());
+					LOGGER.warn("property [{0}: {1}] for simple connection pool[{2}] is not a number, ignore.", field.getName(), value, this.hashCode());
 				}
 			} else if ("boolean".equals(fieldType)) {
 				field.setBoolean(this, Boolean.parseBoolean(value));
 			}
 		} catch (Exception e) {
-			LOGGER.warn("Couldn't set property [{0}: {1}] for simple connection pool[{2}]: {3}, ignore.", field.getName(), value, this.hashCode(), e.getMessage());
+			LOGGER.warn("could not set property [{0}: {1}] for simple connection pool[{2}]: {3}, ignore.", field.getName(), value, this.hashCode(), e.getMessage());
 		}
 	}
 
@@ -181,7 +180,7 @@ public class SimpleConnectionPool {
 	 */
 	public Connection getConnection() throws SQLException {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Getting connection from simple pool[{0}], current idle pool size is {1}/{2}.", this.hashCode(),
+			LOGGER.debug("getting connection from simple pool[{0}], current idle pool size is {1}/{2}.", this.hashCode(),
 					inactiveConnectionCount.get(), totalConnectionsCount.get());
 		}
 
@@ -218,7 +217,7 @@ public class SimpleConnectionPool {
 //				}
 				
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Connection[{0}] has been obtained.", connection.hashCode());
+					LOGGER.debug("connection[{0}] has been obtained.", connection.hashCode());
 				}
 				return connection;
 			} while (timeout > 0);
@@ -241,7 +240,7 @@ public class SimpleConnectionPool {
 				inactiveConnections.put(connectionProxy);
 			} catch (InterruptedException e) {
 				closeConnection(connectionProxy);
-				LOGGER.warn("Release connection failed, connection pool[{0}] queue interrupted: {1}. connection {2} has bean closed.", this.hashCode(), 
+				LOGGER.warn("could not release connection, connection pool[{0}] queue interrupted, {1}. the connection[{2}] has bean closed.", this.hashCode(), 
 						e.getMessage(), connectionProxy.hashCode());
 			}
 		} else {
@@ -291,7 +290,7 @@ public class SimpleConnectionPool {
 			addConnection();
 
 		if (totalConnectionsCount.get() < initSize) {
-			LOGGER.error("Init simple connection pool[{0}] for database {1}@{2} failed, the last exception is:", 
+			LOGGER.error("init simple connection pool[{0}] for database {1}@{2} failed, the last exception has been recorded.", 
 					this.hashCode(), latestException, username, url);
 		}
 	}
@@ -311,7 +310,7 @@ public class SimpleConnectionPool {
 	 */
 	private void addConnection() {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Start adding connection to simple pool[{0}].", this.hashCode());
+			LOGGER.debug("adding connection to simple pool[{0}].", this.hashCode());
 		}
 
 		int retries = 0;
@@ -325,25 +324,25 @@ public class SimpleConnectionPool {
 					inactiveConnections.add(connection);
 
 					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("Connection [{0}] has been added to simple pool[{1}], current idle pool size is {2}/{3}.",
+						LOGGER.debug("connection [{0}] has been added to simple pool[{1}], current idle pool size is {2}/{3}.",
 								this.hashCode(), connection.hashCode(), inactiveConnectionCount.get(), totalConnectionsCount.get());
 					}
 					break;
 				} else {
 					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("Conection is not alive, will retest in {0} ms, current idle pool size is{1}/{2}.", connection.hashCode(),
+						LOGGER.debug("conection is not alive, which will retest in {0} ms, current idle pool size is{1}/{2}.", connection.hashCode(),
 								this.retryInterval, inactiveConnectionCount.get(), totalConnectionsCount.get());
 					}
 
 					Thread.sleep(this.retryInterval);
 				}
 			} catch (Exception e) {
-				LOGGER.warn("Getting connection from database failed: {0}, current idle pool size is {1}/{2}.", e.getMessage(),
+				LOGGER.warn("could not get connection from database, {0}, current idle pool size is {1}/{2}.", e.getMessage(),
 						inactiveConnectionCount.get(), totalConnectionsCount.get());
 
 				latestException = e;
 				if (retries++ >= this.retries - 1) {
-					LOGGER.warn("Reached maximum number of retries: {0}, stop trying to get this connection, current idle pool size is {1}/{2}.", this.retries,
+					LOGGER.warn("reached maximum number of retries {0}, now stop trying getting this connection, current idle pool size is {1}/{2}.", this.retries,
 							inactiveConnectionCount.get(), totalConnectionsCount.get());
 					break;
 				}
@@ -362,7 +361,7 @@ public class SimpleConnectionPool {
 	 */
 	private ConnectionProxy newConnection() throws SQLException {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Getting connection from database {0}@{1}.", username, url);
+			LOGGER.debug("getting connection from database {0}@{1}.", username, url);
 		}
 
 		Connection conn = DriverManager.getConnection(url, username, password);
@@ -383,7 +382,7 @@ public class SimpleConnectionPool {
 			return true;
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Testing connection[{0}].", connection.hashCode());
+			LOGGER.debug("testing connection[{0}].", connection.hashCode());
 		}
 
 		int timeout = (int) Math.ceil(testTimeout / 1000);
@@ -394,7 +393,7 @@ public class SimpleConnectionPool {
 					testSql = getTestSqlFromDialect(connection);
 
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Detect the JDK version is 1.5, testing connection with sql: {0}.", testSql);
+					LOGGER.debug("current JDK version is 1.5, testing connection with sql: {0}.", testSql);
 				}
 
 				// 执行查询测试连接
@@ -413,13 +412,13 @@ public class SimpleConnectionPool {
 				isAlive = (Boolean)ReflectUtil.invokeMethod(connection, Connection.class, "isValid", new Class[]{int.class}, new Object[]{timeout});
 			}
 		} catch (DBException e) {
-			LOGGER.warn("Exception occurred while getting dialect: {0}.", e.getMessage());
+			LOGGER.warn("could not get dialect, {0}.", e.getMessage());
 		} catch (SQLException e) {
-			LOGGER.warn("Exception occurred while testing connection: {0}.", e.getMessage());
+			LOGGER.warn("exception occurred while testing the connection, {0}.", e.getMessage());
 		}
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Connection[{0}] is {1}.", connection.hashCode(), isAlive ? "alive" : "dead");
+			LOGGER.debug("connection[{0}] is {1}.", connection.hashCode(), isAlive ? "alive" : "dead");
 		}
 		
 		return isAlive;
@@ -432,14 +431,14 @@ public class SimpleConnectionPool {
 
 	private void closeConnection(ConnectionProxy connectionProxy) {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Closing connection[{0}] from database.", connectionProxy.hashCode());
+			LOGGER.debug("closing connection[{0}].", connectionProxy.hashCode());
 		}
 
 		try {
 			totalConnectionsCount.decrementAndGet();
 			connectionProxy.closeConnection();
 		} catch (SQLException e) {
-			LOGGER.warn("Exception occurred while closing connection: {0}.", e.getMessage());
+			LOGGER.warn("could not close connection, {0}.", e.getMessage());
 			return;
 		}
 	}
@@ -457,13 +456,13 @@ public class SimpleConnectionPool {
 			this.maxLifetime = maxLifetime;
 
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Timer task for {0}@{1} enabled.", username, url);
+				LOGGER.debug("timer task for {0}@{1} enabled.", username, url);
 			}
 		}
 
 		public void run() {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Timer task started.");
+				LOGGER.debug("timer task started.");
 			}
 
 			timer.purge();// 移除所有任务
@@ -484,7 +483,7 @@ public class SimpleConnectionPool {
 					closeConnection(connectionProxy);
 
 					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("Connection[{0}] reached max lifetime, closed.", connectionProxy.hashCode());
+						LOGGER.debug("connection[{0}] has reached max lifetime, which has been closed.", connectionProxy.hashCode());
 					}
 				} else {
 					inactiveConnectionCount.incrementAndGet();

@@ -4,9 +4,12 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import org.rex.db.dialect.LimitHandler;
 import org.rex.db.exception.DBException;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.SqlUtil;
 
 /**
@@ -17,6 +20,8 @@ import org.rex.db.util.SqlUtil;
  * parameters: new String[]{"100", "M"}, or new Object[]{100, "M"};
  */
 public class ArrayStatementCreator extends AbstractStatementCreator{
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ArrayStatementCreator.class);
 	
 	//----------Prepared Statement
 	public PreparedStatement createPreparedStatement(Connection connection, String sql, Object parameters) throws DBException, SQLException {
@@ -29,8 +34,13 @@ public class ArrayStatementCreator extends AbstractStatementCreator{
 	}
 	
 	private PreparedStatement createPreparedStatement(Connection conn, String sql, Object[] parameterArray, LimitHandler limitHandler) throws DBException, SQLException{
+		validateSql(sql, parameterArray);
+		
 		if(limitHandler != null)
 			sql = limitHandler.wrapSql(sql);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("preparing Statement for sql {0} of Connection[{1}].", sql, conn.hashCode());
 		
 		PreparedStatement statement = conn.prepareStatement(sql);
 		setParameters(statement, parameterArray);
@@ -46,6 +56,11 @@ public class ArrayStatementCreator extends AbstractStatementCreator{
 	}
 	
 	private CallableStatement createCallableStatement(Connection conn, String sql, Object[] parameterArray) throws SQLException, DBException {
+		validateSql(sql, parameterArray);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("preparing CallableStatement for sql {0} of Connection[{1}].", sql, conn.hashCode());
+		
 		CallableStatement statement = conn.prepareCall(sql);
 		setParameters(statement, parameterArray);
 		return statement;
@@ -58,6 +73,11 @@ public class ArrayStatementCreator extends AbstractStatementCreator{
 	}
 	
 	private PreparedStatement createBatchPreparedStatement(Connection conn, String sql, Object[][] parametersArray) throws DBException, SQLException {
+		validateSql(sql, parametersArray);
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("preparing batch PreparedStatement for sql {0} of Connection[{1}].", sql, conn.hashCode());
+		
 		PreparedStatement statement = conn.prepareStatement(sql);
 		for (int i = 0; i < parametersArray.length; i++) {
 			setParameters(statement, parametersArray[i]);
@@ -72,6 +92,10 @@ public class ArrayStatementCreator extends AbstractStatementCreator{
 	 */
 	private void setParameters(PreparedStatement preparedStatement, Object[] parameterArray) throws DBException, SQLException{
 		if(preparedStatement == null || parameterArray == null) return;
+		
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("setting array parameters {0} for statement[{1}].", Arrays.toString(parameterArray), preparedStatement.hashCode());
+		
 		for (int i = 0; i < parameterArray.length; i++) {
 			if(parameterArray[i] == null)
 				SqlUtil.setNull(preparedStatement, i + 1);

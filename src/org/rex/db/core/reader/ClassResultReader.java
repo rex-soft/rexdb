@@ -6,9 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.rex.db.configuration.Configuration;
-import org.rex.db.core.statement.dynamic.javassist.SampleSetter;
-import org.rex.db.core.statement.dynamic.javassist.StatementSetter;
-import org.rex.db.core.statement.dynamic.javassist.StatementSetterManager;
+import org.rex.db.dynamic.javassist.BeanConvertor;
+import org.rex.db.dynamic.javassist.BeanConvertorManager;
 import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
 import org.rex.db.util.ReflectUtil;
@@ -70,7 +69,7 @@ public class ClassResultReader<T> implements ResultReader<T> {
 			throw new DBException("DB-C0003");
 		
 		if(isDynamic()){
-			StatementSetter setter = StatementSetterManager.getConvertor(resultClass);
+			BeanConvertor setter = BeanConvertorManager.getConvertor(resultClass);
 			String[] rsLabelsRenamed = orUtil.getResultSetLabelsRenamed(rs);
 			if(columnsCodeCacheForDynamic == null)
 				columnsCodeCacheForDynamic = setter.getColumnCodes(rsLabelsRenamed);

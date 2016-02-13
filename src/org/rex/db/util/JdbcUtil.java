@@ -29,9 +29,9 @@ public class JdbcUtil {
 		try {
 			SQLWarning warning = connection.getWarnings();
 			if (warning != null) 
-				LOGGER.warn("Connection Warning was found, {0}.", warning, warning.getMessage());
+				LOGGER.warn("connection Warning was found, {0}.", warning, warning.getMessage());
 		} catch (SQLException e) {
-			LOGGER.warn("Couldn't get connection warning, {0}.", e, e.getMessage());
+			LOGGER.warn("could not get connection warning, {0}.", e, e.getMessage());
 		}
 	}
 	
@@ -42,9 +42,9 @@ public class JdbcUtil {
 		try {
 			SQLWarning warning = statement.getWarnings();
 			if (warning != null) 
-				LOGGER.warn("Statement Warning was found, {0}.", warning, warning.getMessage());
+				LOGGER.warn("statement warning was found, {0}.", warning, warning.getMessage());
 		} catch (SQLException e) {
-			LOGGER.warn("Couldn't get statement warning, {0}.", e, e.getMessage());
+			LOGGER.warn("could not get statement warning, {0}.", e, e.getMessage());
 		}
 	}
 	
@@ -55,9 +55,9 @@ public class JdbcUtil {
 		try {
 			SQLWarning warning = resultSet.getWarnings();
 			if (warning != null) 
-				LOGGER.warn("ResultSet Warning was found, {0}.", warning, warning.getMessage());
+				LOGGER.warn("result set warning was found, {0}.", warning, warning.getMessage());
 		} catch (SQLException e) {
-			LOGGER.warn("Couldn't get resultset warning, {0}.", e, e.getMessage());
+			LOGGER.warn("could not get result set warning, {0}.", e, e.getMessage());
 		}
 	}
 }

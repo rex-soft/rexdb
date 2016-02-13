@@ -73,7 +73,7 @@ public class queryMapListPerformance {
 	}
 	
 	static void warmUp(int number) throws DBException, SQLException{
-		System.out.println("warming up test...insert "+number+" rows for query.");
+		System.out.println("preparing test...insert "+number+" rows for query.");
 		DB.beginTransaction();
 		for (int i = 0; i < number; i++) {
 			DB.update(INSERT, new Ps("Jim", 1, new Date(), new Date(), new Date(), 10, null, null, 1));

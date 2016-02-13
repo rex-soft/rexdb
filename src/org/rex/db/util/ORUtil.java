@@ -55,12 +55,19 @@ public class ORUtil {
 	// -----------result set to java bean
 	public <T> T rs2Object(ResultSet rs, T bean) throws DBException {
 		readRsMeta(rs);
-		Map<String, Method> writers = ReflectUtil.getWriteableMethods(bean.getClass());
-		Map<String, Class<?>> types = ReflectUtil.getParameterTypes(bean.getClass());
+		Class<?> beanClass = bean.getClass();
+		Map<String, Method> writers = ReflectUtil.getWriteableMethods(beanClass);
+		Map<String, Class<?>> types = ReflectUtil.getParameterTypes(beanClass);
 		for (int i = 0; i < rsLabels.length; i++) {
 			Method writer = writers.get(rsLabelsRenamed[i]);
 			Class<?> type = types.get(rsLabelsRenamed[i]);
-			if(writer == null || type == null) continue;
+			if(writer == null) continue;
+			if(type == null){//no class member variable matches the writer
+				type = writer.getParameterTypes()[0];
+				if(type == null) continue;
+				else
+					types.put(rsLabelsRenamed[i], type);
+			}
 			
 			Object value = null;
 			try {

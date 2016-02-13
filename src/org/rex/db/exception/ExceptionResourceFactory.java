@@ -66,7 +66,7 @@ public class ExceptionResourceFactory {
 			try{
 				resources.put(entry.getKey(), new ExceptionResource(loadProperties(entry.getValue(), PROPERTIES_ENCODING)));
 			}catch(Exception e){
-				LOGGER.warn("Error loading exception resource {0}, {1}.", entry.getValue(), e.getMessage());
+				LOGGER.warn("could not load exception resource {0}, {1}.", entry.getValue(), e.getMessage());
 			}
 		}
 	}

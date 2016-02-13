@@ -57,7 +57,7 @@ public class DialectFactory {
 			Dialect dialect = resolveDialectInternal(dbmd);
 			
 			if(LOGGER.isDebugEnabled())
-				LOGGER.debug("Dialect resolved as {0} for connection[{1}]", dialect.getName(), connection.hashCode());
+				LOGGER.debug("dialect resolved as {0} for connection[{1}]", dialect.getName(), connection.hashCode());
 			
 			return dialect;
 		} catch (SQLException e) {

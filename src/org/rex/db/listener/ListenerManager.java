@@ -27,7 +27,7 @@ public class ListenerManager {
 		listeners.addElement(listener);
 		
 		if(LOGGER.isDebugEnabled())
-			LOGGER.debug("Listener {0} registed.", listener.getClass().getName());
+			LOGGER.debug("listener {0} registed.", listener.getClass().getName());
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class ListenerManager {
 		listeners.remove(listener);
 		
 		if(LOGGER.isDebugEnabled())
-			LOGGER.debug("Listener {0} removed.", listener.getClass().getName());
+			LOGGER.debug("listener {0} removed.", listener.getClass().getName());
 	}
 
 	/**

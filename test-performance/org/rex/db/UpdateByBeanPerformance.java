@@ -73,7 +73,7 @@ public class UpdateByBeanPerformance {
 	}
 	
 	static void warmUp() throws DBException, SQLException{
-		System.out.println("warming up test...do some operation.");
+		System.out.println("preparing test...do some operation.");
 		rexdbUpdateByBean(makeStudents(100));
 		jdbcUpdate(100);
 	}

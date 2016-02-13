@@ -35,7 +35,7 @@ public class ReflectUtil {
 	 */
 	public static void setCacheEnabled(boolean isCacheEnabled){
 		if(cacheEnabled != isCacheEnabled){
-			LOGGER.info("Reflect cache is {0}.", cacheEnabled ? "enabled" : "disabled");
+			LOGGER.info("reflect cache is {0}.", cacheEnabled ? "enabled" : "disabled");
 			cacheEnabled = isCacheEnabled;
 			if(!cacheEnabled) clearCache();
 		}
@@ -237,8 +237,7 @@ public class ReflectUtil {
 
 			if (!writers.containsKey(key)) {
 				if (ignoreMismatches) {
-					LOGGER.warn("Property [{0}: {1}] not supported for {2}[{3}], no writer method found, ignore.", key, value,
-							bean.getClass().getName(), bean.hashCode());
+					LOGGER.warn("{0}[{1}] dose not support property [{2}: {3}], no writer method found, the property has been ignored.", bean.getClass().getName(), bean.hashCode(), key, value);
 					continue;
 				} else
 					throw new DBException("URF02", bean.getClass().getName(), key, value);
@@ -274,7 +273,7 @@ public class ReflectUtil {
 				invokeMethod(bean, writer, Long.parseLong(value));
 			} else {
 				if (ignoreMismatches)
-					LOGGER.warn("Value of property [{0}: {1}] for {2}[{3}] is String, couldn't convert to {4}, ignore.", key, value,
+					LOGGER.warn("property [{0}: {1}] for {2}[{3}] is String, couldn't convert to {4}, which has been ignored.", key, value,
 							bean.getClass().getName(), bean.hashCode(), paramTypeName);
 				else
 					throw new DBException("DB-URF03", key.getClass().getName(), paramType.getName(), key, value);

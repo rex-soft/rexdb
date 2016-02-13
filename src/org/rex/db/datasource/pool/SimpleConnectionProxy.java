@@ -35,6 +35,7 @@ public class SimpleConnectionProxy implements InvocationHandler {
 	private ConnectionProxy proxy;
 
 	private static final Set<String> SQL_ERRORS = new HashSet<String>(){
+		private static final long serialVersionUID = 1L;
 		{
 			add("57P01"); // ADMIN SHUTDOWN
 			add("57P02"); // CRASH SHUTDOWN

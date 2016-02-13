@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
-import org.rex.db.Ps;
+import org.rex.db.dialect.LimitHandler;
 import org.rex.db.util.ConstantUtil;
 
 /**
@@ -45,15 +45,18 @@ public class SqlContext extends BaseContext{
 	
 	private String[] sql;
 	
-	private Ps[] ps;
+	private Object parameters;
 	
-	public SqlContext(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Ps[] ps){
+	private LimitHandler limitHandler;
+	
+	public SqlContext(int sqlType, boolean betweenTransaction, DataSource dataSource, String[] sql, Object parameters, LimitHandler limitHandler){
 		super();
 		this.sqlType = sqlType;
 		this.betweenTransaction = betweenTransaction;
 		this.dataSource = dataSource;
 		this.sql = sql;
-		this.ps = ps;
+		this.parameters = parameters;
+		this.limitHandler = limitHandler;
 	}
 
 	public int getSqlType() {
@@ -72,8 +75,12 @@ public class SqlContext extends BaseContext{
 		return sql;
 	}
 
-	public Ps[] getPs() {
-		return ps;
+	public Object getParameters() {
+		return parameters;
+	}
+	
+	public LimitHandler getLimitHandler() {
+		return limitHandler;
 	}
 
 	public String toString() {
@@ -86,8 +93,8 @@ public class SqlContext extends BaseContext{
 			.append(dataSource)
 			.append(", sql=")
 			.append(Arrays.toString(sql))
-			.append(", ps=")
-			.append(Arrays.toString(ps));
+			.append(", parameters=")
+			.append(parameters);
 		
 		return sb.toString();
 	}

@@ -175,34 +175,6 @@ public class Ps {
 			throw new DBRuntimeException("DB-C10041", value, index + 1, list.size()); 
 	}
 	
-//	/**
-//	 * 向ArrayList的指定位置插入值
-//	 */
-//	private List insert(List list, int index, Object value){
-//		list.add(index, value);
-////		--index;
-////		if(list.size() < index)
-////			throw new DBRuntimeException("DB-00001", value, index + 1, list.size(), list);
-////		
-////		if(list.size() == index){
-////			list.add(value);
-////			return list;
-////		}
-////		
-////		List newList = new ArrayList();
-////		for(int i = 0; i < index; i++){
-////			newList.add(list.get(i));
-////		}
-////		
-////		newList.add(value);
-////		
-////		for(int i = index; i < list.size(); i++){
-////			newList.add(list.get(i));
-////		}
-////		
-////		return newList;
-//	}
-	
 	//-------同时声明参数值、类型、是否输入参数
 	protected Ps setParameter(int index, Object value, int type){
 		set(parameters, index, new SqlParameter(type, value));

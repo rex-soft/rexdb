@@ -5,11 +5,15 @@ import java.sql.SQLException;
 
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.LimitHandler;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 
 /**
  * DB2
  */
 public class DB2Dialect implements Dialect {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DB2Dialect.class);
 
 	// ------------------------------------------------------------分页SQL
 	protected class DB2LimitHandler extends LimitHandler{
@@ -43,11 +47,18 @@ public class DB2Dialect implements Dialect {
 			} else {
 				pagingSelect.append("<= ?");
 			}
+			
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
 
 			return pagingSelect.toString();
 		}
 
 		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {
+			
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("setting paged prepared parameters {0}.", hasOffset() ? getOffset()+", "+getRows() : getRows());
+			
 			if(hasOffset()){
 				statement.setInt(parameterCount + 1, getOffset());
 				statement.setInt(parameterCount + 2, getRows());

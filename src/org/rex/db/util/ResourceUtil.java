@@ -3,8 +3,6 @@ package org.rex.db.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -58,34 +56,6 @@ public class ResourceUtil {
 		return getProperties(resource, getResourceAsStream(resource), encoding);
 	}
 
-//	/**
-//	 * 从类路径中加载Reader
-//	 */
-//	public static Reader getResourceAsReader(String resource) throws DBException {
-//		return getResourceAsReader(null, resource, null);
-//	}
-//
-//	public static Reader getResourceAsReader(String resource, String encoding) throws DBException {
-//		return getResourceAsReader(null, resource, encoding);
-//	}
-//
-//	public static Reader getResourceAsReader(ClassLoader loader, String resource) throws DBException {
-//		return getResourceAsReader(loader, resource, null);
-//	}
-//
-//	public static Reader getResourceAsReader(ClassLoader loader, String resource, String encoding) throws DBException {
-//		if (encoding != null) {
-//			try {
-//				return new InputStreamReader(getResourceAsStream(loader, resource), encoding);
-//			} catch (UnsupportedEncodingException e) {
-//				LOGGER.warn("Error on loading resource {0} as {1}, {2}, the resource will be loaded as default encoding.", resource, encoding,
-//						e.getMessage());
-//			}
-//		}
-//
-//		return new InputStreamReader(getResourceAsStream(loader, resource));
-//	}
-
 	/**
 	 * 从类路径中加载File
 	 */
@@ -125,24 +95,6 @@ public class ResourceUtil {
 		}
 	}
 
-//	/**
-//	 * 从URL中加载Reader
-//	 */
-//	public static Reader getUrlAsReader(String urlString) throws DBException {
-//		return getUrlAsReader(urlString, null);
-//	}
-//
-//	public static Reader getUrlAsReader(String urlString, String encoding) throws DBException {
-//		if (encoding != null) {
-//			try {
-//				return new InputStreamReader(getUrlAsStream(urlString), encoding);
-//			} catch (UnsupportedEncodingException e) {
-//				LOGGER.warn("Error on loading url{0} as {1}, {2}, the url will be loaded as default encoding.", urlString, encoding, e.getMessage());
-//			}
-//		}
-//		return new InputStreamReader(getUrlAsStream(urlString));
-//	}
-//
 	public static Properties getUrlAsProperties(String urlString) throws DBException {
 		return getUrlAsProperties(urlString, null);
 	}
@@ -152,23 +104,6 @@ public class ResourceUtil {
 		return getProperties(urlString, inputStream, encoding);
 	}
 
-//	private static Properties getProperties(String path, Reader reader) throws DBException {
-//		Properties props = new Properties();
-//		try {
-//			props.load(reader);
-//		} catch (IOException e) {
-//			throw new DBException("DB-URS02", e, path, e.getMessage());
-//		} finally {
-//			try {
-//				reader.close();
-//			} catch (IOException e) {
-//				LOGGER.warn("Error on closing input stream of {0}, {1}.", path, e.getMessage());
-//			}
-//		}
-//
-//		return props;
-//	}
-	
 	private static Properties getProperties(String path, InputStream inputStream, String encoding) throws DBException {
 		Properties props = new Properties();
 		try {
@@ -179,7 +114,7 @@ public class ResourceUtil {
 			try {
 				inputStream.close();
 			} catch (IOException e) {
-				LOGGER.warn("Error on closing input stream of {0}, {1}.", path, e.getMessage());
+				LOGGER.warn("could not close input stream of {0}, {1}.", path, e.getMessage());
 			}
 		}
 		

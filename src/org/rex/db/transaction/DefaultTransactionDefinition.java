@@ -52,7 +52,7 @@ public class DefaultTransactionDefinition implements TransactionDefinition {
 		try{
 			setTimeout(config.getTransactionTimeout());
 		}catch(Exception e){
-			LOGGER.warn("Configuration's transaction timeout is invalid, {0}, ignore.", e.getMessage());
+			LOGGER.warn("configuration setting transaction timeout is invalid, {0}, which has been ignored.", e.getMessage());
 		}
 		
 		try{
@@ -60,7 +60,7 @@ public class DefaultTransactionDefinition implements TransactionDefinition {
 				setIsolationLevel(config.getTransactionIsolation());
 		}catch(Exception e){
 			e.printStackTrace();
-			LOGGER.warn("Configuration's isolation level is invalid, {0}, ignore.", e.getMessage());
+			LOGGER.warn("configuration setting isolation level is invalid, {0}, which has been ignored.", e.getMessage());
 		}
 	}
 

@@ -1,4 +1,4 @@
-package org.rex.db.core.statement.dynamic.javassist;
+package org.rex.db.dynamic.javassist;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
 
-public abstract class StatementSetter {
+public abstract class BeanConvertor {
 
 	/**
 	 * set parameters from object to prepared statement
@@ -22,11 +22,6 @@ public abstract class StatementSetter {
 	public abstract int[] getColumnCodes(String[] rsLabelsRenamed);
 	
 	public abstract Object readResultSet(ResultSet rs, ORUtil orUtil, int[] requiredColumnCodes) throws SQLException, DBException;
-	
-	//-------------create bean utils
-	protected static Class getIntClass(){
-		return int.class;
-	}
 	
 	//-------------set parameter utils
 	protected static Object convertValue(Object o){
