@@ -7,17 +7,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.rex.DB;
-import org.rex.RMap;
 import org.rex.db.exception.DBException;
+
+import db.Student;
 
 /**
  * test update api using Map as parameters
  */
-public class queryMapListPerformance {
+public class QueryListPerformance {
 	
 	static final String INSERT = "INSERT INTO R_STUDENT(NAME, SEX, BIRTHDAY, BIRTH_TIME, ENROLLMENT_TIME, MAJOR, PHOTO, REMARK, READONLY) VALUES (?,?,?,?,?,?,?,?,?)";
 	
@@ -97,7 +97,8 @@ public class queryMapListPerformance {
 	 * @throws DBException
 	 */
 	public static void rexdbQuery() throws DBException{
-		List<RMap> list = DB.getMapList(QUERY);
+		List<Student> list = DB.getList(QUERY, Student.class);
+//		System.out.println(list.get(0));
 	}
 	
 	//-------------------------------------jdbc
@@ -111,24 +112,24 @@ public class queryMapListPerformance {
 	}
 	
 	public static void jdbcQuery() throws SQLException {
-		List<Map> list = new ArrayList<Map>();
+		List<Student> list = new ArrayList<Student>();
 		Connection conn = null;
 		try{
 			conn = bds.getConnection();
 			PreparedStatement ps = conn.prepareStatement(QUERY);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
-				Map student = new RMap();
-				student.put("studentId", rs.getObject("STUDENT_ID"));
-				student.put("name", rs.getObject("NAME"));
-				student.put("sex", rs.getObject("SEX"));
-				student.put("birthday", rs.getTimestamp("BIRTHDAY"));
-				student.put("birthTime", rs.getTimestamp("BIRTH_TIME"));
-				student.put("enrollmentTime", rs.getTimestamp("ENROLLMENT_TIME"));
-				student.put("major", rs.getObject("MAJOR"));
-				student.put("photo", rs.getObject("PHOTO"));
-				student.put("remark", rs.getObject("REMARK"));
-				student.put("readonly", rs.getObject("READONLY"));
+				Student student = new Student();
+				student.setStudentId(rs.getInt("STUDENT_ID"));
+				student.setName(rs.getString("NAME"));
+				student.setSex(rs.getInt("SEX"));
+				student.setBirthday(rs.getDate("BIRTHDAY"));
+				student.setBirthTime(rs.getTime("BIRTH_TIME"));
+				student.setEnrollmentTime(rs.getTimestamp("ENROLLMENT_TIME"));
+				student.setMajor(rs.getInt("MAJOR"));
+				student.setPhoto(rs.getBytes("PHOTO"));
+				student.setRemark(rs.getString("REMARK"));
+				student.setReadonly(rs.getInt("READONLY"));
 				list.add(student);
 			}
 		}finally{

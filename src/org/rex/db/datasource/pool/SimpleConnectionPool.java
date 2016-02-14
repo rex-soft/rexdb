@@ -391,7 +391,7 @@ public class SimpleConnectionPool {
 			if (IS_JDK5) {
 				if (testSql == null)
 					testSql = getTestSqlFromDialect(connection);
-
+				
 				if (LOGGER.isDebugEnabled()) {
 					LOGGER.debug("current JDK version is 1.5, testing connection with sql: {0}.", testSql);
 				}

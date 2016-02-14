@@ -69,10 +69,5 @@ public class MySQLDialect implements Dialect {
 	public String getName() {
 		return "MYSQL";
 	}
-
-
-
-
-
 	
 }

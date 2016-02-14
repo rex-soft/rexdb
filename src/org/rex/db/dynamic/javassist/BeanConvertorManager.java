@@ -74,6 +74,7 @@ public class BeanConvertorManager {
 
 		CtClass ctClass = pool.makeClass(PACKAGE + "." + CLASS_PREFIX + genClassName(clazz));
 		ctClass.setSuperclass(pool.get("org.rex.db.dynamic.javassist.BeanConvertor"));
+		
 
 		//method setParameters
         CtMethod setParametersMethod = CtMethod.make(buildSetParametersMethodString(clazz), ctClass);

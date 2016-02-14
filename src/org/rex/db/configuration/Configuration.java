@@ -21,7 +21,6 @@ import org.rex.db.util.ResourceUtil;
 public class Configuration {
 	
 	//-----------------------------singlon instance
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 	
 	private static final String DEFAULT_CONFIG_PATH = "rexdb.xml";
@@ -293,8 +292,8 @@ public class Configuration {
 			try{
 				BeanConvertorManager.getConvertor(this.getClass());
 				this.dynamicClass = true;
-			}catch(Exception e){
-				LOGGER.warn("dynamic class setting is true, but could not pass the validation test, {0}, now automatically switch to false.", e, e.getMessage());
+			}catch(Throwable e){
+				LOGGER.warn("dynamic class setting is true, but could not pass the validation test, now automatically switch to false, {0}", e, e.getMessage());
 			}
 		}
 	}
