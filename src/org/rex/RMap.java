@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * A LinkedHashMap with type conversion methods.
+ * A HashMap with java type conversion methods.
  * @author z
  */
 public class RMap<K,V> extends HashMap<K,V> {

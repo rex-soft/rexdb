@@ -9,9 +9,7 @@ import org.rex.db.core.DBOperation;
 import org.rex.db.exception.DBException;
 
 /**
- * Database update interface, used for Executing INSERT, UPDATE, or DELETE
- * statement
- * 
+ * Database updating operation, such as INSERT, UPDATE, DELETE, etc.
  * @author z
  */
 public class DBUpdate extends DBOperation {
