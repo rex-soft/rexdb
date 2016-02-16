@@ -8,16 +8,17 @@ Rexdb的运行环境需要满足以下要求：
 
 1. JDK1.5及以上版本；
 
-同时，您需要准备好相关数据库，以及该数据库的jdbc驱动包，并了解该数据库的驱动类和URL格式。如果您不了解，可以参考[常见数据库的JDBC驱动、驱动类及URL格式](http://#)。
+同时，您需要安装好相关数据库，并获取该数据库对应的jdbc驱动包，并了解该数据库的驱动类和URL格式。如果您不了解，可以参考[常见数据库的JDBC驱动、驱动类及URL格式](http://#)。
 
 准备就绪后，将rexdb-1.0.0.jar及数据库jdbc驱动包拷贝至环境变量classpath路径中。以Mysql为例，这时您的classpath中应有以下2个jar包：
 > rexdb-1.0.0.jar<br/>
 > mysql-connector-java-5.1.26-bin.jar（或其它的Mysql驱动包）
 
-同时，Rexdb还可以选配其它第三方包，以实现更多功能，请参见[附录3：可选的第三方包](#f3)
+您还可以在classpath中增加其它第三方包，以启用更多功能，请参见[附录3：Rexdb可选配的第三方包](#f3)。
 
 ## 编写全局配置文件 ##
-Rexdb依赖一个全局配置文件，在初始化时会自动加载该配置，并初始化连接池、日志、监听等模块。<br/>
+Rexdb依赖一个全局配置文件，在初始化时会自动加载该配置，并初始化连接池、日志、监听等模块。
+
 接下来在classpath根目录中新建一个文件，名称为**rexdb.xml**，内容为：
 
     <?xml version="1.0" encoding="UTF-8"?> 
@@ -46,9 +47,11 @@ Rexdb依赖一个全局配置文件，在初始化时会自动加载该配置，
 
 请确保该文件名称为**rexdb.xml**并在classpath根目录中，Rexdb会自动查找该文件。更多的配置选项请参考[Rexdb配置](http://#)。
 
-## 执行建表SQL ##
+## 创建一个测试表 ##
 
-配置完成后，就可以执行SQL了，编写一个Java类，名称为**TestCreate.java**，内容如下（以Mysql为例）：
+配置完成后，就可以执行SQL了。为了后续方便演示，我们首先调用接口创建一张测试用表。
+
+编写一个Java类，名称为**TestCreate.java**，内容如下（以Mysql为例）：
     
     import org.rex.DB;
     import org.rex.db.exception.DBException;
@@ -61,7 +64,7 @@ Rexdb依赖一个全局配置文件，在初始化时会自动加载该配置，
     	}
     }
 
-org.rex.DB类是Rexdb的接口提供类，数据库查询、更新、调用等接口均直接调用该类即可。update(String sql)是该类的一个方法，用于在数据库中执行一条更新SQL。
+org.rex.DB类是Rexdb的接口类，提供数据库查询、更新、调用、事物等功能。update(String sql)是该类的一个方法，用于在数据库中执行一条更新SQL。
 
 接下来编译并执行该类：
 
@@ -72,12 +75,13 @@ org.rex.DB类是Rexdb的接口提供类，数据库查询、更新、调用等�
 
     table created.
 
-使用查询工具连接数据库，可以确认表REX_TABLE已经被创建。<br/>
-如果数据库配置错误，如密码错误，在执行该类时，将会在若干秒的延迟后才会输出结果。这是由于Rexdb内置的连接池具有重试机制，会反复尝试几次连接，全部失败后才会输出异常。
+此时，使用查询工具连接数据库，可以确认表REX_TABLE已经被创建。
+
+请注意，如果数据库配置错误，如地址无法连接、密码错误等。在执行该类时，将会有若干秒的等待，之后才会输出错误信息。这是由于Rexdb内置连接池具有重试机制，会在一定间隔内，反复尝试几次连接，全部失败后才会抛出异常。这是连接池的容错策略，是正常现象。
 
 ## 执行插入/更新/删除SQL ##
 
-编写类TestUpdate，内容如下：
+接下来调用Rexdb的接口，在数据库中执行插入操作。编写类TestUpdate，内容如下：
 
     import java.util.Date;
     
@@ -92,20 +96,21 @@ org.rex.DB类是Rexdb的接口提供类，数据库查询、更新、调用等�
     	}
     }
 
-DB类的update(String sql, Object[] parameterArray)方法用于执行一个带有预编译参数的更新SQL。其中parameterArray参数是一个数组，数组中的元素按顺序对应SQL语句中的“?”标记。Rexdb将按照顺序对预编译参数赋值并执行SQL。
+DB类的update(String sql, Object[] parameterArray)方法用于执行一个带有预编译参数的更新SQL。其中，parameterArray参数是一个数组，数组中的元素按顺序对应SQL语句中的“?”标记。Rexdb将按照顺序对预编译参数进行赋值，并执行SQL。
 
-编译并执行该类后，控制台输出：
+编译并执行该类后，控制台将输出：
 
     1 row inserted.
 
-除Object[]可以作为预编译参数外，Rexdb还内置了一个预编译参数的封装类*org.rex.db.Ps*，并支持常见的Java对象类型，其它类型的示例如下：
+除Object[]可以作为预编译参数外，Rexdb还内置了一个预编译参数的封装类*org.rex.db.Ps*，它具有丰富的操作接口，可以用于封装、传递预编译参数，它可以指定字段类型、按照下标赋值，还可以为存储过程调用设置输出、输入输出参数。该类的接口设计较为灵活，您可以根据实际情况选用。除此之外，Rexdb还支持Map和自定义的Java实体类作为参数。
+
+各种类型的参数示例如下：
 
 1）使用内置的*org.rex.db.Ps*类作为预编译参数：
 
     String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)";
     int i = DB.update(sql, new Ps(1, "test", new Date()));
 
-org.rex.db.Ps具有丰富的操作接口，可以指定字段类型、按照下标赋值，还可以为存储过程调用设置输出参数，或是输入输出参数。它也是Rexdb推荐使用的预编译参数封装类。
 
 2）使用Map作为预编译参数：
 
@@ -118,11 +123,7 @@ org.rex.db.Ps具有丰富的操作接口，可以指定字段类型、按照下�
 	
 	int i = DB.update(sql, prameters);
 
-使用Map类封装预编译参数时，SQL语句中的预编译参数标记不再是“?”，而是被“#{*参数名称*}”取代，Rexdb在执行时，会根据“#{ }”标记中的*参数名称*查找Map对应的属性值。
-
-3）使用实体类作为预编译参数：
-
-更多时候，编程人员可能更加习惯于使用实体类传递参数。首先编写一个实体类：
+3）使用实体类作为预编译参数。首先我们编写一个数据表对应的实体类：
 
     import java.util.Date;
     
@@ -166,22 +167,30 @@ org.rex.db.Ps具有丰富的操作接口，可以指定字段类型、按照下�
     	}
     }
 
-接下来可以使用该类作为预编译参数：
+然后使用该类作为参数，在数据库中执行插入操作：
 
 	String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (#{id}, #{name}, #{createTime})";
-
 	RexTest rexTest = new RexTest(1, "test", new Date());
 	int i = DB.update(sql, rexTest);
 
-使用实体类封装预编译参数时，SQL语句中的预编译参数使用“#{*参数名称*}”标记，Rexdb在执行时，会根据“#{ }”标记中的*参数名称*查找实体类对应的属性值。
+请注意，在使用Map类、Java实体类作为预编译参数时，SQL语句中的预编译参数标记不再是“?”，而是被“#{*参数名称*}”取代，Rexdb在执行时，会根据“#{ }”标记中的*参数名称*查找Map、实体类中对应的属性值。数据库字段名称和Java对象参数名称对应规则如下所示：
 
-请注意，在使用实体类作为预编译参数时，实体类**必须**满足如下条件，才能被Rexdb正常调用：
+    数据库字段名称		Map.Entry.key、实体类属性名称
+	ID					id
+	NAME				name
+	CREATE_TIME			createTime
+
+在使用实体类作为预编译参数时，还需要额外注意的是，实体类**必须**满足如下条件，才能被Rexdb正常调用：
 
 - 类必须是可以访问的
-- 必须有一个无参的构造函数（启用动态字节码时需要使用）
+- 必须有一个无参的构造函数（启用动态字节码选项时需要调用）
 - 参数必须有标准的getter方法
 
-## 执行查询SQL ##
+DB.update接口总体设置如下图所示：
+
+![](resource/quick-start-update.png)
+
+## 查询多行记录 ##
 
 编写类TestQuery，该类用于查询出表REX_TEST中的所有记录：
 
@@ -212,7 +221,7 @@ DB类的getMapList(String sql)方法用于执行一条查询SQL，并返回一�
 	String sql = "SELECT * FROM REX_TEST";
 	List<RexTest> list = DB.getList(sql, RexTest.class);
 
-如果您希望根据条件查询列表，可以使用如下代码（以数组做参数为例）：
+如果您希望查询出符合条件的实体类，可以使用如下代码（以数组做参数为例）：
 
 	String sql = "SELECT * FROM REX_TEST limit ?";
 	RexTest rexTest = DB.get(sql, new Object[] { 1 }, RexTest.class);
@@ -227,6 +236,20 @@ DB类的getMapList(String sql)方法用于执行一条查询SQL，并返回一�
 
     SELECT * FROM REX_TEST limit ?, ?
 
+
+
+除示例中的接口外，Rexdb对每一类查询都提供了丰富的接口。接口总体设计如下所示。
+
+1）如果您没有编写结果集对应的实体类，可以使用图示中的参数组合查询出包含RMap的List对象：
+
+![](resource/quick-start-getmaplist.png)
+
+2）如果您已经编写了结果集对应的实体类，则只需要在上述接口中增加一个*实体类.class*参数，即可查询出包含实体类的List，如图所示：
+
+![](resource/quick-start-getlist.png)
+
+## 查询单行记录 ##
+
 如果您只希望查询一个实体类，可以使用如下接口：
 
 	String sql = "SELECT * FROM REX_TEST limit 1";
@@ -234,9 +257,7 @@ DB类的getMapList(String sql)方法用于执行一条查询SQL，并返回一�
 
 此时，请确保您的SQL只能查询出1条，或者0条记录。当查询出的记录数超过1调试，Rexdb将会抛出异常信息。
 
-除示例中的接口外，Rexdb对每一类查询都提供了丰富的接口，请参见开发手册。
-
-## 启用事物 ##
+## 事物 ##
 
 编写类TestTransaction，内容如下：
 
@@ -264,18 +285,38 @@ DB类的getMapList(String sql)方法用于执行一条查询SQL，并返回一�
 
 Rexdb支持Jta事物，详情请参见用户手册。
 
-## 函数和存储过程调用 ##
+## 调用函数和存储过程 ##
 
 Rexdb支持函数和存储过程调用，可以处理输入、输出、输入输出参数和返回结果。
 
-例如，Mysql中已经创建了如下存储过程：
+例如，Mysql中有如下存储过程：
+	
+	CREATE PROCEDURE `proc` ()  BEGIN
+		--do something
+	END$$
+
+可以使用Rexdb的调用接口执行该存储过程：
+
+	DB.call("{call proc_in()}");
+
+当存储过程有输入参数时，例如：
+
+	CREATE PROCEDURE `proc_in` (IN `id` INT)  BEGIN
+		--do something
+	END$$
+
+则可以使用数组、Map、Ps对象、实体类等作为输入参数。Ps对象为例：
+
+	RMap result = DB.call("{call proc_in(?)}", new Ps(1));
+
+当存在输出参数、输入输出参数时，需要使用Ps对象作为参数，并明确指定参数类型。例如，Mysql中有如下存储过程：
 
     CREATE PROCEDURE `proc_in_out` (IN `i` INT, OUT `s` INT)  
 	BEGIN 
     	SELECT COUNT(*) INTO s FROM REX_TEST WHERE ID > i;  
     END$$
 
-可以使用如下代码调用该存储过程并返回输出参数：
+可以使用如下代码调用该存储过程，并获取输出：
 
 	Ps ps = new Ps();
 	ps.add(0);
@@ -283,7 +324,9 @@ Rexdb支持函数和存储过程调用，可以处理输入、输出、输入输
 
 	RMap result = DB.call(sql, ps);
 
-更多用法请参见用户手册
+更多用法请参见用户手册。
+
+
 
 ## <div id="f3">附录3：可选的第三方包</div> ##
 
