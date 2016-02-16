@@ -68,11 +68,11 @@ public class TestCall extends Base {
 		String sql = "{call proc_in_out(?,?)}";
 
 		//输出参数按照序号命名
-		Ps ps1 = new Ps();
-		ps1.add(1);
-		ps1.addOutInt();
+	Ps ps1 = new Ps();
+	ps1.add(1);
+	ps1.addOutInt();
 
-		RMap result1 = DB.call(sql, ps1);
+	RMap result1 = DB.call(sql, ps1);
 		System.out.println(result1);
 
 		//为输出参数重命名
