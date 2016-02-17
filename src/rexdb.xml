@@ -29,12 +29,12 @@
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 	</dataSource> -->
-<!--	<dataSource>
+	<dataSource id="oracleDs">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
 		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:orcl" />
 		<property name="username" value="test" />
 		<property name="password" value="123456" />
-	</dataSource>-->
+	</dataSource>
 	<dataSource jndi=""/>
  	<listener class="org.rex.db.listener.impl.SqlDebugListener"/> 
 <!-- 	<listener class="org.rex.db.listener.impl.SqlConsolePrinterListener" /> -->
