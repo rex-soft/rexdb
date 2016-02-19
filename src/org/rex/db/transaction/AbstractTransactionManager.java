@@ -13,9 +13,9 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	/**
 	 * 开始事物
 	 */
-	public void begin(TransactionDefinition definition) throws DBException {
+	public void begin(Definition definition) throws DBException {
 		if (definition == null)
-			definition = new DefaultTransactionDefinition();
+			definition = new DefaultDefinition();
 
 		try {
 			TransactionContext context = fireOnEvent(TransactionContext.TRANSACTION_BEGIN, definition);
@@ -74,7 +74,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 		return fireOnEvent(event, null);
 	}
 	
-	protected TransactionContext fireOnEvent(int event, TransactionDefinition definition) throws DBException{
+	protected TransactionContext fireOnEvent(int event, Definition definition) throws DBException{
 		TransactionContext context = null;
 		ListenerManager listenerManager = getListenerManager();
 		if(listenerManager.hasListener()){
@@ -93,7 +93,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 		}
 	}
 	
-	protected TransactionContext getContext(int event, TransactionDefinition definition){
+	protected TransactionContext getContext(int event, Definition definition){
 		return new TransactionContext(event, definition);
 	}
 	
@@ -106,7 +106,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	/**
 	 * 开始事物
 	 */
-	protected abstract void doBegin(TransactionDefinition definition) throws DBException;
+	protected abstract void doBegin(Definition definition) throws DBException;
 
 	/**
 	 * 提交事务

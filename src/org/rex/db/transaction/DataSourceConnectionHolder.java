@@ -12,22 +12,22 @@ public class DataSourceConnectionHolder extends ConnectionHolder{
 	/**
 	 * 事物配置
 	 */
-	private TransactionDefinition definition;
+	private Definition definition;
 
 	public DataSourceConnectionHolder(Connection connection) {
 		super(connection);
 	}
 	
-	public DataSourceConnectionHolder(Connection connection, TransactionDefinition definition) {
+	public DataSourceConnectionHolder(Connection connection, Definition definition) {
 		super(connection);
 		this.definition = definition;
 	}
 	
-	public TransactionDefinition getDefinition() {
+	public Definition getDefinition() {
 		return definition;
 	}
 
-	public void setDefinition(TransactionDefinition definition) {
+	public void setDefinition(Definition definition) {
 		this.definition = definition;
 	}
 

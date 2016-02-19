@@ -1,6 +1,6 @@
 package org.rex.db.listener;
 
-import org.rex.db.transaction.TransactionDefinition;
+import org.rex.db.transaction.Definition;
 import org.rex.db.util.ConstantUtil;
 
 /**
@@ -31,19 +31,19 @@ public class TransactionContext extends BaseContext {
 	/**
 	 * 事物配置
 	 */
-	private TransactionDefinition definition;
+	private Definition definition;
 
 	/**
 	 * 执行事件：TRANSACTION_BEGIN、TRANSACTION_COMMIT、TRANSACTION_ROLLBACK
 	 */
 	private int event;
 	
-	public TransactionContext(int event, TransactionDefinition definition){
+	public TransactionContext(int event, Definition definition){
 		this.event = event;
 		this.definition = definition;
 	}
 
-	public TransactionDefinition getDefinition() {
+	public Definition getDefinition() {
 		return definition;
 	}
 

@@ -49,9 +49,8 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	/**
 	 * 开始事务
 	 */
-	protected void doBegin(TransactionDefinition definition) throws DBException {
+	protected void doBegin(Definition definition) throws DBException {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
-		
 		if (connectionHolder == null) {
 			Connection con = DataSourceUtil.getConnection(dataSource);
 			connectionHolder = new DataSourceConnectionHolder(con, definition);
@@ -73,12 +72,11 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	 * @param definition
 	 * @throws SQLException
 	 */
-	private void beginTransaction(DataSourceConnectionHolder connectionHolder, TransactionDefinition definition) throws SQLException{
+	private void beginTransaction(DataSourceConnectionHolder connectionHolder, Definition definition) throws SQLException{
 		Connection conn = connectionHolder.getConnection();
 		// 设置隔离级别
-		if (definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT) {
+		if (definition.getIsolationLevel() != Definition.ISOLATION_DEFAULT) {
 			connectionHolder.setPreviousIsolationLevel(conn.getTransactionIsolation());
-			System.out.println("======"+conn.getClass().getName()+" === " +conn.getTransactionIsolation());
 			conn.setTransactionIsolation(definition.getIsolationLevel());
 		}
 
@@ -91,7 +89,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 		conn.setAutoCommit(false);
 
 		// 注册事物超时时间
-		if (definition.getTimeout() != TransactionDefinition.TIMEOUT_DEFAULT) {
+		if (definition.getTimeout() != Definition.TIMEOUT_DEFAULT) {
 			connectionHolder.setTimeoutInSeconds(definition.getTimeout());
 		}
 	}

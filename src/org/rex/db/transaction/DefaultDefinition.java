@@ -9,14 +9,14 @@ import org.rex.db.util.ConstantUtil;
 /**
  * 定义事物运行参数
  */
-public class DefaultTransactionDefinition implements TransactionDefinition {
+public class DefaultDefinition implements Definition {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTransactionDefinition.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDefinition.class);
 	
 	/** 
 	 * 用于读取事物定义常量 
 	 */
-	private static final ConstantUtil CONSTANTS = new ConstantUtil(TransactionDefinition.class);
+	private static final ConstantUtil CONSTANTS = new ConstantUtil(Definition.class);
 	
 	/**
 	 * 隔离级别
@@ -39,7 +39,7 @@ public class DefaultTransactionDefinition implements TransactionDefinition {
 	private boolean autoRollback = false;
 	
 	//--------construction
-	public DefaultTransactionDefinition() throws DBException{
+	public DefaultDefinition() throws DBException{
 		applyConfigrations();
 	}
 	

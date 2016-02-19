@@ -17,6 +17,7 @@ import org.rex.db.datasource.DataSourceManager;
 import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.DialectManager;
 import org.rex.db.exception.DBException;
+import org.rex.db.transaction.DefaultDefinition;
 
 /**
  * This class contains various methods for database operations, including
@@ -927,21 +928,35 @@ public class DB {
 	 * 开始事物
 	 */
 	public static void beginTransaction() throws DBException {
-		beginTransaction(getDefaultDataSource());
+		beginTransaction(getDefaultDataSource(), null);
 	}
 
 	/**
 	 * 开始事物
 	 */
 	public static void beginTransaction(String dataSourceId) throws DBException {
-		beginTransaction(getDataSource(dataSourceId));
+		beginTransaction(getDataSource(dataSourceId), null);
+	}
+	
+	/**
+	 * 开始事物
+	 */
+	public static void beginTransaction(DefaultDefinition definition) throws DBException {
+		beginTransaction(getDefaultDataSource(), definition);
 	}
 
 	/**
 	 * 开始事物
 	 */
-	public static void beginTransaction(DataSource dataSource) throws DBException {
-		DBTransaction.begin(dataSource, null);
+	public static void beginTransaction(String dataSourceId, DefaultDefinition definition) throws DBException {
+		beginTransaction(getDataSource(dataSourceId), definition);
+	}
+
+	/**
+	 * 开始事物
+	 */
+	private static void beginTransaction(DataSource dataSource, DefaultDefinition definition) throws DBException {
+		DBTransaction.begin(dataSource, definition);
 	}
 
 	/**
@@ -961,7 +976,7 @@ public class DB {
 	/**
 	 * 提交事物
 	 */
-	public static void commit(DataSource dataSource) throws DBException {
+	private static void commit(DataSource dataSource) throws DBException {
 		DBTransaction.commit(dataSource);
 	}
 
@@ -982,7 +997,7 @@ public class DB {
 	/**
 	 * 回滚事务
 	 */
-	public static void rollback(DataSource dataSource) throws DBException {
+	private static void rollback(DataSource dataSource) throws DBException {
 		DBTransaction.rollback(dataSource);
 	}
 
@@ -997,13 +1012,13 @@ public class DB {
 	 * 获取事物中的连接
 	 */
 	public static Connection getTransactionConnection(String dataSourceId) throws DBException {
-		return getTransactionConnection(getDataSource(dataSourceId));
+		return DBTransaction.getTransactionConnection(getDataSource(dataSourceId));
 	}
 
 	/**
 	 * 获取事物中的连接
 	 */
-	public static Connection getTransactionConnection(DataSource dataSource) throws DBException {
+	private static Connection getTransactionConnection(DataSource dataSource) throws DBException {
 		return DBTransaction.getTransactionConnection(dataSource);
 	}
 

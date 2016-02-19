@@ -12,7 +12,7 @@ public interface TransactionManager {
 	/**
 	 * 返回当前事物状态
 	 */
-	void begin(TransactionDefinition definition) throws DBException;
+	void begin(Definition definition) throws DBException;
 
 	/**
 	 * 提交事务

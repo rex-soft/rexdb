@@ -32,7 +32,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	/**
 	 * 开始事物
 	 */
-	protected void doBegin(TransactionDefinition definition) throws DBException {
+	protected void doBegin(Definition definition) throws DBException {
 		try {
 			applyTimeout(definition.getTimeout());
 			doGetTransaction().begin();
@@ -50,7 +50,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	 * @throws SystemException
 	 */
 	protected void applyTimeout(int timeout) throws DBException, SystemException {
-		if (timeout > TransactionDefinition.TIMEOUT_DEFAULT) {
+		if (timeout > Definition.TIMEOUT_DEFAULT) {
 			doGetTransaction().setTransactionTimeout(timeout);
 		}
 	}

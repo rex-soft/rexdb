@@ -5,7 +5,7 @@ import java.sql.Connection;
 /**
  * 事物定义
  */
-public interface TransactionDefinition {
+public interface Definition {
 
 	String ISOLATION_CONSTANT_PREFIX = "ISOLATION";
 

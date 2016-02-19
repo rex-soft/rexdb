@@ -1,12 +1,14 @@
 package org.rex.db;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.rex.db.core.DBOperation;
 import org.rex.db.exception.DBException;
+import org.rex.db.exception.DBRuntimeException;
 
 /**
  * Database updating operation, such as INSERT, UPDATE, DELETE, etc.
@@ -215,6 +217,44 @@ public class DBUpdate extends DBOperation {
 	 */
 	public int[] batchUpdate(String sql, Object[] parameterBeans) throws DBException {
 		return templateBatchUpdate(sql, parameterBeans);
+	}
+	
+	//---list parameter
+	/**
+	 * 执行批量更新
+	 * 
+	 * @param params 预编译参数
+	 * @return 受影响条数
+	 * @throws DBException
+	 */
+	public int[] batchUpdate(String sql, List<?> parameterList) throws DBException {
+		if(parameterList == null)
+			templateBatchUpdate(sql, null);
+		
+		Class<?> clazz = validateListElementsType(parameterList);
+		if(Ps.class.isAssignableFrom(clazz))
+			return templateBatchUpdate(sql, parameterList.toArray(new Ps[parameterList.size()]));
+		else if(Map.class.isAssignableFrom(clazz))
+			return templateBatchUpdate(sql, parameterList.toArray(new Map[parameterList.size()]));
+		else if(Object[].class.isAssignableFrom(clazz))
+			return templateBatchUpdate(sql, parameterList.toArray(new Object[parameterList.size()][]));
+		else
+			return templateBatchUpdate(sql, parameterList.toArray(new Object[parameterList.size()]));
+	}
+	
+	private Class<?> validateListElementsType(List<?> parameterList){
+		Class<?> clazz = null;
+		for (int i = 0; i < parameterList.size(); i++) {
+			Object el = parameterList.get(i);
+			if(el == null) continue;
+			if(clazz == null)
+				clazz = el.getClass();
+			else{
+				if(el.getClass() != clazz)
+					throw new DBRuntimeException("DB-00004", clazz.getClass().getName(), el.getClass().getName());
+			}
+		}
+		return clazz;
 	}
 
 	// ----------------------private methods

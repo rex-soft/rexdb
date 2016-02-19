@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 
 import org.rex.db.exception.DBException;
 import org.rex.db.transaction.DataSourceTransactionManager;
-import org.rex.db.transaction.DefaultTransactionDefinition;
+import org.rex.db.transaction.DefaultDefinition;
 import org.rex.db.transaction.JtaTransactionManager;
 import org.rex.db.transaction.TransactionManager;
 
@@ -17,7 +17,7 @@ import org.rex.db.transaction.TransactionManager;
  * 
  * @author z
  */
-public class DBTransaction extends DefaultTransactionDefinition {
+public class DBTransaction extends DefaultDefinition {
 
 	protected static Map<DataSource, TransactionManager> managers = new HashMap<DataSource, TransactionManager>();
 	
@@ -52,7 +52,7 @@ public class DBTransaction extends DefaultTransactionDefinition {
 	/**
 	 * 开始事物
 	 */
-	public static void begin(DataSource dataSource, DefaultTransactionDefinition definition) throws DBException {
+	public static void begin(DataSource dataSource, DefaultDefinition definition) throws DBException {
 		getTransactionManager(dataSource).begin(definition);
 	}
 
@@ -82,7 +82,7 @@ public class DBTransaction extends DefaultTransactionDefinition {
 	/**
 	 * 开始事物
 	 */
-	public static void beginJta(DefaultTransactionDefinition definition) throws DBException {
+	public static void beginJta(DefaultDefinition definition) throws DBException {
 		getJtaTransactionManager().begin(definition);
 	}
 

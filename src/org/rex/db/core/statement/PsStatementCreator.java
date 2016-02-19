@@ -66,7 +66,6 @@ public class PsStatementCreator extends AbstractStatementCreator{
 			LOGGER.debug("preparing CallableStatement for sql {0} of Connection[{1}].", sql, conn.hashCode());
 		
 		CallableStatement cs = conn.prepareCall(sql);
-		
 		if(ps == null) return cs;
 		
 		if(LOGGER.isDebugEnabled())
