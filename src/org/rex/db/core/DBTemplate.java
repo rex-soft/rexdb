@@ -306,20 +306,23 @@ public class DBTemplate {
 	 * 调用存储过程后，解析返回结果
 	 */
 	private RMap<String, Object> extractReturnedResultSets(CallableStatement cs, Ps ps) throws DBException, SQLException {
+		List<Class<?>> returnResultTypes = ps.getReturnResultTypes();
 		RMap<String, Object> returns = new RMap<String, Object>();
 		int rsIndx = 0;
-		ResultReader reader = null;
 		do {
 			ResultSet rs = null;
 			try {
 				rs = cs.getResultSet();
 				if(rs != null){
-					if(reader == null)
+					ResultReader reader = null;
+					if(returnResultTypes == null || returnResultTypes.size() < rsIndx + 1 || returnResultTypes.get(rsIndx) == null)
 						reader = newResultReader(null);
+					else
+						reader = newResultReader(returnResultTypes.get(rsIndx));
 					
 					resultSetIterator.read(reader, rs);
 					List list = reader.getResults();
-					returns.put(Ps.CALL_RETURN_DEFAULT_PREFIX + rsIndx, list);
+					returns.put(Ps.CALL_RETURN_DEFAULT_PREFIX + (rsIndx + 1), list);
 				}
 			}catch (SQLException e) {
 				throw new DBException("DB-C0007", e, e.getMessage(), ps);

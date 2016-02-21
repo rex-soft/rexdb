@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -19,11 +20,15 @@ import org.rex.db.datasource.SimpleDataSourceFactory;
 import org.rex.db.dialect.Dialect;
 import org.rex.db.exception.DBException;
 import org.rex.db.listener.DBListener;
+import org.rex.db.logger.Logger;
+import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.ResourceUtil;
 import org.rex.db.util.StringUtil;
 
 public class XMLConfigParser {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigParser.class);
 
 	private XPathParser parser;
 	protected final Configuration configuration;
@@ -63,16 +68,32 @@ public class XMLConfigParser {
 	 * 解析XML
 	 */
 	private void parseConfiguration(XNode root) throws DBException {
-			parsePropertiesNode(root.evalNode("properties"));
-			parseSettingsNode(root.evalNode("settings"));
+			parsePropertiesNodes(root.evalNodes("properties"));
+			parseSettingsNodes(root.evalNodes("settings"));
 			configuration.applySettings();
 			
-			parseDataSource(root.evalNode("dataSource"));
-			parseListener(root.evalNode("listener"));
+			parseDataSources(root.evalNodes("dataSource"));
+			parseListeners(root.evalNodes("listener"));
+	}
+	
+	/**
+	 * 解析所有properties节点
+	 * @param context
+	 * @throws DBException
+	 */
+	private void parsePropertiesNodes(List<XNode> nodes) throws DBException {
+		if(nodes == null) return;
+		for (XNode xNode : nodes) {
+			try{
+				parsePropertiesNode(xNode);
+			}catch(Exception e){
+				LOGGER.error("could not read configration properties, {0} ignored.", e, e.getMessage());
+			}
+		}
 	}
 
 	/**
-	 * 解析properties节点
+	 * 解析一个properties节点
 	 */
 	private void parsePropertiesNode(XNode context) throws DBException {
 		if (context == null)
@@ -99,6 +120,16 @@ public class XMLConfigParser {
 		parser.addVariables(properties);
 		configuration.addVariables(properties);
 	}
+	
+	/**
+	 * 解析Settings节点
+	 */
+	private void parseSettingsNodes(List<XNode> nodes) throws DBException {
+		if(nodes == null) return;
+		for (XNode xNode : nodes) {
+			parseSettingsNode(xNode);
+		}
+	}
 
 	/**
 	 * 解析Settings节点
@@ -112,11 +143,26 @@ public class XMLConfigParser {
 		for (Iterator<?> iterator = props.keySet().iterator(); iterator.hasNext();) {
 			String key = String.valueOf(iterator.next());
 			if(!writers.containsKey(key)){
-				throw new DBException("DB-F0005", "settings", key);
+				LOGGER.error("configuration {0} unexpected, property {1} is not supported, ignored.", "settings", key);
+//				throw new DBException("DB-F0005", "settings", key);
 			}
 		}
 
 		ReflectUtil.setProperties(configuration, props, true, true);
+	}
+	
+	/**
+	 * 解析dataSource节点
+	 */
+	private void parseDataSources(List<XNode> nodes) throws DBException  {
+		if(nodes == null) return;
+		for (XNode xNode : nodes) {
+			try{
+				parseDataSource(xNode);
+			}catch(Exception e){
+				LOGGER.error("could not load data source, {0} ignored.", e, e.getMessage());
+			}
+		}
 	}
 	
 	/**
@@ -131,6 +177,7 @@ public class XMLConfigParser {
 			clazz = context.getStringAttribute("class"),
 			jndi = context.getStringAttribute("jndi"),
 			dialect = context.getStringAttribute("dialect");
+		
 		boolean hasJndi = !StringUtil.isEmptyString(jndi),
 				hasClass = !StringUtil.isEmptyString(clazz);
 
@@ -160,6 +207,20 @@ public class XMLConfigParser {
 			configuration.setDataSource(id, dataSource);
 	}
 
+	/**
+	 * 解析listener节点
+	 */
+	private void parseListeners(List<XNode> nodes) throws DBException {
+		if(nodes == null) return;
+		for (XNode xNode : nodes) {
+			try{
+				parseListener(xNode);
+			}catch(Exception e){
+				LOGGER.error("could not initialize listener, {0} ignored.", e, e.getMessage());
+			}
+		}
+	}
+	
 	/**
 	 * 解析listener节点
 	 */

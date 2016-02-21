@@ -40,9 +40,9 @@ public class SimpleConnectionPool {
 	private int initSize = 1;// 初始化时创建的连接数
 	private int minSize = 3; // 连接池保持的最小连接数
 	private int maxSize = 10; // 连接池最大连接数
-	private int increment = 3; // 每次增长的连接数
+	private int increment = 1; // 每次增长的连接数
 
-	private int retries = 3; // 获取数据库连接失败后的重试次数
+	private int retries = 2; // 获取数据库连接失败后的重试次数
 	private int retryInterval = 750; // 增长连接失败后重试间隔
 
 	private int getConnectionTimeout = 5000; // 连接超时时间（毫秒）
@@ -191,10 +191,9 @@ public class SimpleConnectionPool {
 				if (inactiveConnectionCount.get() == 0) {
 					addConnections();
 				}
-
 				ConnectionProxy connectionProxy = inactiveConnections.poll(timeout, TimeUnit.MILLISECONDS);
 				if (connectionProxy == null) {
-					throw new SQLException("Couldn't get connection from simple pool "+username + '@' + url+", current idle pool size is "+
+					throw new SQLException("couldn't get connection from simple pool "+username + '@' + url+", current idle pool size is "+
 							inactiveConnectionCount.get()+"/"+totalConnectionsCount.get()+"，the latest exception is: "+(latestException == null ? "" : latestException.getMessage()));
 				}
 
@@ -222,7 +221,7 @@ public class SimpleConnectionPool {
 				return connection;
 			} while (timeout > 0);
 			
-			throw new SQLException("Couldn't get connection from simple pool "+username + '@' + url+", current idle pool size is "+
+			throw new SQLException("couldn't get connection from simple pool "+username + '@' + url+", current idle pool size is "+
 					inactiveConnectionCount.get()+"/"+totalConnectionsCount.get()+"，the latest exception is: "+(latestException == null ? "" : latestException.getMessage()));
 		} catch (InterruptedException e) {
 			return null;
@@ -290,8 +289,8 @@ public class SimpleConnectionPool {
 			addConnection();
 
 		if (totalConnectionsCount.get() < initSize) {
-			LOGGER.error("init simple connection pool[{0}] for database {1}@{2} failed, the last exception has been recorded.", 
-					this.hashCode(), latestException, username, url);
+			LOGGER.error("init simple connection pool[{0}] for database {1}@{2} failed, the last exception has been recorded.", latestException,
+					String.valueOf(this.hashCode()), username, url);
 		}
 	}
 

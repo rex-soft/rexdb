@@ -8,7 +8,9 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.rex.db.configuration.Configuration;
 import org.rex.db.exception.DBException;
@@ -33,6 +35,11 @@ public class Ps {
 	 * all declared parameters
 	 */
 	private List<SqlParameter> parameters;
+	
+	/**
+	 * declare return result set class type
+	 */
+	private List<Class<?>> returnResultTypes;
 
 	public Ps() {
 		parameters = new ArrayList<SqlParameter>();
@@ -213,6 +220,13 @@ public class Ps {
 		return parameters;
 	}
 
+	/**
+	 * get declared return result set bean class types
+	 * @return
+	 */
+	public List<Class<?>> getReturnResultTypes(){
+		return returnResultTypes;
+	}
 	// -----------------------------------------declare prepared parameters
 	// ----------------------------declare parameters at the specified position
 
@@ -909,6 +923,30 @@ public class Ps {
 		return addInOutParameter(paramName, time, Types.TIMESTAMP);
 	}
 
+	// -------
+	/**
+	 * declare return result set class type
+	 * @param beanClass class type which result set is converted
+	 * @return Ps
+	 */
+	public Ps addReturnType(Class<?> beanClass){
+		if(returnResultTypes == null)
+			returnResultTypes = new ArrayList<Class<?>>();
+		returnResultTypes.add(beanClass);
+		return this;
+	}
+	
+	public Ps setReturnType(int index, Class<?> resultBeanClass){
+		if(returnResultTypes == null)
+			returnResultTypes = new ArrayList<Class<?>>();
+		if(returnResultTypes.size() < index - 1){
+			for(int i = returnResultTypes.size(); i < index - 1; i++)
+				returnResultTypes.add(null);
+		}
+		returnResultTypes.add(resultBeanClass);
+		return this;
+	}
+	
 	// -------------------------------------------toString
 	public String toString() {
 		List values = new ArrayList();

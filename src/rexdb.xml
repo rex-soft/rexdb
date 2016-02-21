@@ -3,7 +3,7 @@
 <configuration>
 	<!-- <properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" /> -->
 	<settings>
-		<property name="lang" value="zh-cn"/>
+		<property name="lang" value="en"/>
 		<property name="nolog" value="false" />
 		<property name="validateSql" value="false" />
  		<property name="checkWarnings" value="false" />
@@ -35,7 +35,7 @@
 		<property name="username" value="test" />
 		<property name="password" value="123456" />
 	</dataSource>
-	<dataSource jndi=""/>
+	<!-- <dataSource jndi=""/> -->
  	<listener class="org.rex.db.listener.impl.SqlDebugListener"/> 
 <!-- 	<listener class="org.rex.db.listener.impl.SqlConsolePrinterListener" /> -->
 </configuration>
