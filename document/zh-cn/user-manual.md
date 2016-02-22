@@ -24,16 +24,60 @@ Rexdb具有如下功能：
 
 Rexdb的使用较为简单，一般遵循如下过程即可：
 
-1. 下载Rexdb编译好的jar包并拷贝至开发环境（如果使用Rexdb的扩展功能，还需要拷贝相关的jar包）。例如，当您在JavaEE Web应用中使用Rexdb时，需要将**rexdb-1.0.0.jar**（或其它版本）包拷贝至应用根目录的*/WEB-INF/lib*下。
-2. 在classpath中增加全局配置文件**rexdb.xml**，并配置数据库连接。例如，将**rexdb.xml**拷贝到JavaEE Web应用中的*/WEB-INF/classes*目录，并增加一个默认的数据源配置。
-3. 在Java程序中直接调用Rexdb的接口操作数据库。
+1. 下载Rexdb的jar包，并拷贝至开发/运行环境；
+2. 在classpath中增加全局配置文件**rexdb.xml**，并在文件中配置数据库连接；
+3. 在Java程序中直接调用Rexdb的接口操作数据库；
 
-### Rexdb依赖的包 ###
 
-下载Rexdb的压缩包并解压后，可以得到Rexdb的
+## 下载和安装 ##
 
-## 配置文件 ##
+Rexdb的官方网站提供了下载衔接，下载并解压后，可以得到编译好的jar包和全局配置文件的示例：
+
+- rexdb-1.0.0.jar（或其它版本）
+- rexdb.xml
+
+**rexdb-1.0.0.jar**（或其它版本）是运行Rexdb必须的包，请确保它在开发/运行环境的classpath中。例如，当您在JavaEE Web应用中使用Rexdb时，需要将该文件拷贝至应用根目录下的“*/WEB-INF/lib*”中。
+
+由于Rexdb直接调用JDBC的接口，所以您还需要在classpath中设置好数据库的驱动。如果要使用Rexdb的扩展功能，还需在运行环境中增加其它jar包。具体请参考[扩展](http://#)。
+
+**rexdb.xml**是Rexdb的全局配置文件，默认放置在开发/运行环境的classpath中。例如，在JavaEE Web应用中，该文件应当放置在应用根目录下的“*/WEB-INF/classes*”中。
+
+如果需要将该配置文件放置在其它位置，需要编写程序加载指定位置的文件。具体请参考[加载配置](http://#)。
+
+## 全局配置文件 ##
+
+Rexdb需要一个全局配置文件**rexdb.xml**。例如，一个典型的配置内容为：
+
+	<?xml version="1.0" encoding="UTF-8"?> 
+	<!DOCTYPE configuration PUBLIC "-//rex-soft.org//REXDB DTD 1.0//EN" "http://www.rex-soft.org/dtd/rexdb-1-config.dtd">
+	<configuration>
+		<properties path="rexdb-settings.properties" />
+		<settings>
+			<property name="lang" value="${setting.lang}"/>
+			<property name="nolog" value="true" />
+			<property name="reflectCache" value="true" />
+			<property name="dynamicClass" value="true" />
+		</settings>
+		<dataSource>
+			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+			<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
+			<property name="username" value="root" />
+			<property name="password" value="12345678" />
+		</dataSource>
+		<dataSource id="oracleDs" jndi=""/>
+	 	<listener class="org.rex.db.listener.impl.SqlDebugListener"/> 
+	</configuration>
+
+各节点的含义如下：
+
+- /configuration：配置文件根节点；
+- /configuration/properties：
+
+
 ### 加载配置 ###
+
+
+
 ### 引用资源文件 ###
 ### 全局设置 ###
 ### 数据源 ###
@@ -51,3 +95,6 @@ Rexdb的使用较为简单，一般遵循如下过程即可：
 带有Rexdb标记的SQL
 
 ## 扩展 ##
+### 监听 ###
+
+### 日志 ###
