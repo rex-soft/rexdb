@@ -2,6 +2,7 @@ import java.util.List;
 
 import org.rex.DB;
 import org.rex.RMap;
+import org.rex.db.configuration.Configuration;
 import org.rex.db.exception.DBException;
 
 public class TestQuery {
@@ -48,8 +49,9 @@ public class TestQuery {
 	}
 
 	public static void main(String[] args) throws DBException {
+		Configuration.loadConfigurationFromClasspath("rexdb.xml.1");
 		String sql = "SELECT 1 FROM DUAL";
-		RMap map = DB.getMap("oracleDs", sql);
+		RMap map = DB.getMap(sql);
 		System.out.println(map);
 	}
 }

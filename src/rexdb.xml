@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!DOCTYPE configuration PUBLIC "-//rex-soft.org//REXDB DTD 1.0//EN" "http://www.rex-soft.org/dtd/rexdb-1-config.dtd">
 <configuration>
-	<!-- <properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" /> -->
+	<properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" url=""/>
 	<settings>
 		<property name="lang" value="en"/>
 		<property name="nolog" value="false" />

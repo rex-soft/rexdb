@@ -114,7 +114,7 @@ public class Configuration {
 			loadDefaultConfiguration();
 			LOGGER.info("default configuration {0} loaded.", DEFAULT_CONFIG_PATH);
 		} catch (DBException e) {
-			LOGGER.error("error loading default configuration {0}.", e);
+			LOGGER.warn("could not load default configuration {0} from classpath, rexdb is not initialized, cause {1}", DEFAULT_CONFIG_PATH, e.getMessage());
 		}
 	}
 	
@@ -148,7 +148,10 @@ public class Configuration {
 	public synchronized static void loadConfigurationFromClasspath(String path) throws DBException{
 		if(instance != null)
 			throw new DBException("DB-F0007", path);
+		
+		LOGGER.info("loading configuration {0} from classpath.", path);
 		instance = new XMLConfigurationLoader().loadFromClasspath(path);
+		LOGGER.info("configuration {0} loaded.", path);
 	}
 	
 	/**
@@ -159,7 +162,10 @@ public class Configuration {
 	public synchronized static void loadConfigurationFromFileSystem(String path) throws DBException{
 		if(instance != null)
 			throw new DBException("DB-F0007", path);
+		
+		LOGGER.info("loading configuration {0} from file system.", path);
 		instance = new XMLConfigurationLoader().loadFromFileSystem(path);
+		LOGGER.info("configuration {0} loaded.", path);
 	}
 
 	/**
