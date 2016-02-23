@@ -71,14 +71,15 @@ Rexdb需要一个全局配置文件**rexdb.xml**。例如，一个典型的配�
 各节点的含义如下：
 
 - /configuration：配置文件根节点；
-- /configuration/properties：
+- /configuration/properties：外部资源文件，可以在该文件中定义常量，并在其余节点中以${*常量键*}引用常量的值；
+- /configuration/settings：Rexdb的设置选项；
 
 
 ### 加载配置 ###
 
 
 
-### 引用资源文件 ###
+### 外部资源文件 ###
 ### 全局设置 ###
 ### 数据源 ###
 ### 监听 ###
