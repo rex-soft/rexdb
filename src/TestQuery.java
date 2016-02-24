@@ -49,7 +49,6 @@ public class TestQuery {
 	}
 
 	public static void main(String[] args) throws DBException {
-		Configuration.loadConfigurationFromClasspath("rexdb.xml.1");
 		String sql = "SELECT 1 FROM DUAL";
 		RMap map = DB.getMap(sql);
 		System.out.println(map);

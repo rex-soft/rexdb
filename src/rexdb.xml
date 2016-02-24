@@ -21,6 +21,11 @@
 		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
 		<property name="username" value="root" />
 		<property name="password" value="12345678" />
+		
+		<property name="initSize" value="3"/>
+		<property name="increment" value="3"/>
+		<property name="retries" value="3"/>
+		<property name="testConnection" value="false"/>
 	</dataSource>
 	<!-- h2 -->
 <!--<dataSource>
@@ -36,6 +41,9 @@
 		<property name="password" value="123456" />
 	</dataSource>
 	<!-- <dataSource jndi=""/> -->
- 	<listener class="org.rex.db.listener.impl.SqlDebugListener"/> 
+ 	<listener class="org.rex.db.listener.impl.SqlDebugListener">
+ 		<property name="level" value="debug"/>
+ 		<property name="simple" value="true"/>
+ 	</listener> 
 <!-- 	<listener class="org.rex.db.listener.impl.SqlConsolePrinterListener" /> -->
 </configuration>

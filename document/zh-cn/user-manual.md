@@ -1,27 +1,27 @@
 <style type="text/css">
-table.tbl {
-	font-family: verdana,arial,sans-serif;
-	font-size:12px;
-	color:#333333;
-	border-width: 1px;
-	border-color: #666666;
-	border-collapse: collapse;
-	width: 100%;
-}
-table.tbl th {
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #666666;
-	background-color: #dedede;
-}
-table.tbl td {
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #666666;
-	background-color: #ffffff;
-}
+	table.tbl {
+		font-family: verdana,arial,sans-serif;
+		font-size:12px;
+		color:#333333;
+		border-width: 1px;
+		border-color: #666666;
+		border-collapse: collapse;
+		width: 100%;
+	}
+	table.tbl th {
+		border-width: 1px;
+		padding: 8px;
+		border-style: solid;
+		border-color: #666666;
+		background-color: #dedede;
+	}
+	table.tbl td {
+		border-width: 1px;
+		padding: 8px;
+		border-style: solid;
+		border-color: #666666;
+		background-color: #ffffff;
+	}
 </style>
 
 # 用户手册 #
@@ -166,7 +166,8 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 
 Rexdb支持的所有配置项有：
 
-<table class="tbl">
+
+<table class="table table-bordered table-striped table-condensed">
 	<tr>
 		<th width="60">配置项</th>
 		<th width="40">必填</th>
@@ -282,7 +283,14 @@ Rexdb支持的所有配置项有：
 
 ### 数据源 ###
 
-*/configuration/dataSource*节点用于配置数据源。例如，一个典型的数据源配置节点内容如下：
+*/configuration/dataSource*节点用于配置数据源。该节点有如下可选属性：
+
+- id：数据源编号，不设置时为Rexdb的默认数据源，配置文件中只允许出现一个默认数据源；
+- class：数据源实现类，不设置时使用Rexdb的内置数据源，不能与jndi属性一同出现；
+- jndi：上下文中的JNDI数据源，不能与class属性一同出现；
+- dialect：为该数据源指定的数据库方言，不设置时将由Rexdb根据元数据信息自动选择内置的方言，请参见[方言接口](#class-dialect)；
+
+例如，一个典型的数据源配置节点内容如下：
 
 	<dataSource>
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
@@ -298,27 +306,19 @@ Rexdb支持的所有配置项有：
 	</dataSource>
 	<dataSource id="oracleDs" jndi="java:/comp/env/oracleDb"/>
 
-以上节点配置了3个数据源，分别是：
+以上配置了3个数据源，按照顺序分别是：
 
 - 连接Oracle数据库的默认数据源，使用Rexdb自带的数据源和连接池；
 - 连接Mysql数据库的数据源，编号为“mysqlDs”，使用了Apache DBCP数据源；
 - 连接Oracle的数据源，编号为“oracleDs”，使用JNDI方式查找容器自带的数据源；
 
-在Java程序中，可以使用org.rex.DB类中的接口指定执行SQL的数据源，例如使用以上数据源执行查询时：
+在Java程序中，可以使用org.rex.DB类中的接口指定执行SQL的数据源，例如，使用以上数据源执行查询时：
 
 	DB.getMap("SELECT * FROM REX_TEST");			//使用默认数据源执行查询
 	DB.getMap("mysqlDs", "SELECT * FROM REX_TEST");	//使用mysqlDs数据源执行查询
 	DB.getMap("oracleDs", "SELECT * FROM REX_TEST");//使用oracleDs数据源执行查询
 
-该节点有如下可选属性：
-
-- id：数据源编号，不设置时为Rexdb的默认数据源，配置文件中只允许出现一个默认数据源；
-- class：数据源实现类，不设置时使用Rexdb的内置数据源，不能与jndi属性一同出现；
-- jndi：上下文中的JNDI数据源，不能与class属性一同出现；
-- dialect：为该数据源指定的数据库方言，不设置时将由Rexdb根据元数据信息自动选择内置的方言。详细的方言接口请参见；
-
-节点中的*property*属性用于设置数据源所需的参数，Rexdb内置的数据源有如下可选参数：
-
+当使用Rexdb默认数据源时，可以设置一个或多个*property*子节点，每个*property*节点可以设置一个数据源的初始化参数。Rexdb内置的数据源支持如下初始化参数：
 
 <table class="tbl">
 	<tr>
@@ -439,14 +439,125 @@ Rexdb支持的所有配置项有：
 		<td>boolean</td>
 		<td>true, false</td>
 		<td>true</td>
-		<td>。</td>
+		<td>开启新的数据库连接后，是否测试连接可用。当运行环境为JDK1.6及以上版本时，Rexdb将使用JDBC的测试接口执行测试；当JDK低于1.5时，如果未指定测试SQL，将调用方言接口获取测试SQL，如果能成功执行，则测试通过。</td>
+	</tr>
+	<tr>
+		<td>testSql</td>
+		<td>否</td>
+		<td>String</td>
+		<td>SQL语句</td>
+		<td>-</td>
+		<td>指定测试连接是否活跃的SQL语句。</td>
+	</tr>
+	<tr>
+		<td>testTimeout</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>500</td>
+		<td>测试连接的超时时间。</td>
 	</tr>
 </table>
 
+例如，当您希望修改数据源的初始化连接数为3、每次增长3个连接、重试次数设置为3、不再测试连接活跃性时，可以采用如下配置：
+
+	<dataSource>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
+		<property name="username" value="root" />
+		<property name="password" value="12345678" />
+		
+		<property name="initSize" value="3"/>
+		<property name="increment" value="3"/>
+		<property name="retries" value="3"/>
+		<property name="testConnection" value="false"/>
+	</dataSource>
+
+类似Rexdb内置的数据源，其它开源数据源（例如Apache DBCP、C3P0等），通常也支持设置多个初始化参数，具体请参考各自的用户手册。
+
 ### 监听 ###
 
-## Java接口 ##
+*/configuration/listener*节点用于设置监听程序。监听程序可以跟踪Rexdb的SQL执行、事物等事件，该节点支持如下属性：
+
+- class：监听程序实现类；
+
+如果监听类定义了可以设置的属性，并且具备getter方法，还可以在配置中设置值。
+
+Rexdb内置了用于输出SQL和事物的监听类，分别是：
+
+- org.rex.db.listener.impl.SqlDebugListener：使用日志包输出待执行的SQL和已执行的结果，以及事物信息。该监听类支持如下配置选项：
+
+<table class="tbl">
+	<tr>
+		<th width="60">选项</th>
+		<th width="40">必填</th>
+		<th width="60">类型</th>
+		<th width="80">可选值</th>
+		<th width="60">默认值</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td>level</td>
+		<td>否</td>
+		<td>String</td>
+		<td>debug, info</td>
+		<td>debug</td>
+		<td>设置日志的输出级别。</td>
+	</tr>
+	<tr>
+		<td>simple</td>
+		<td>否</td>
+		<td>boolean</td>
+		<td>true, false</td>
+		<td>false</td>
+		<td>是否启用简易的日志输出，当设置为true时，仅在SQL或事物完成后输出日志；设置为false时，在SQL和事物执行前后均会输出日志。</td>
+	</tr>
+</table>
+
+- org.rex.db.listener.impl.SqlConsolePrinterListener：将SQL和事物执行信息输出到控制台。该监听类支持如下配置选项：
+
+<table class="tbl">
+	<tr>
+		<th width="60">选项</th>
+		<th width="40">必填</th>
+		<th width="60">类型</th>
+		<th width="80">可选值</th>
+		<th width="60">默认值</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td>simple</td>
+		<td>否</td>
+		<td>boolean</td>
+		<td>true, false</td>
+		<td>false</td>
+		<td>是否启用简易的日志输出，当设置为true时，仅在SQL或事物完成后输出日志；设置为false时，在SQL和事物执行前后均会输出日志。</td>
+	</tr>
+</table>
+
+如果要使用内置的监听类，可以参考如下配置：
+
+ 	<listener class="org.rex.db.listener.impl.SqlDebugListener">
+ 		<property name="simple" value="true"/>
+ 	</listener> 
+
+以上配置设置了一个监听，以DEBUG级别输出简要的日志信息。如果您需要自定义监听程序，例如记录每个SQL的执行时间，可以自行编写监听类，详情请查看[监听接口](#class-listener)。
+
+需要注意的是，监听程序并非线程安全，且不运行于独立线程，在编程时需要注意线程安全和性能问题。
+
+## 执行数据库操作 ##
+
+定义好全局配置文件后，就可以使用Rexdb执行数据库操作了。Rexdb提供了如下类，可以协助您快速完成需要的操作：
+
+- org.rex.DB：执行SQL、事物、存储过程等的接口类；
+- org.rex.RMap：继承了*java.util.HashMap*，并提供了Java类型转换功能；
+- org.rex.db.Ps：用于封装预编译参数，支持声明输出、输入输出参数。
+
 ### 插入/更新/删除 ###
+
+
+
+
 ### 批量处理 ###
 ### 查询 ###
 ### 调用 ###
@@ -513,4 +624,7 @@ Rexdb支持的所有配置项有：
 	<b>抛出:</b><br/>
 	DBException - 无法加载配置文件
 
-### <div id="class-Configuration">接口org.rex.db.dialect.Dialect</div> ###
+### <div id="class-dialect">接口org.rex.db.dialect.Dialect</div> ###
+
+
+### <div id="class-listener">接口org.rex.db.listener.DBListener</div> ###

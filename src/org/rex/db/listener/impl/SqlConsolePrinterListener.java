@@ -17,7 +17,8 @@ public class SqlConsolePrinterListener extends SqlDebugListener{
 	}
 
 	public void onExecute(SqlContext context) {
-		System.out.println("On execute " + serializeSqlContext(context));
+		if(!simple)
+			System.out.println("On execute " + serializeSqlContext(context));
 	}
 
 	public void afterExecute(SqlContext context, Object results) {
@@ -25,7 +26,8 @@ public class SqlConsolePrinterListener extends SqlDebugListener{
 	}
 
 	public void onTransaction(TransactionContext context) {
-		System.out.println("On transaction " + serializeTransactionContext(context));
+		if(!simple)
+			System.out.println("On transaction " + serializeTransactionContext(context));
 	}
 
 	public void afterTransaction(TransactionContext context) {

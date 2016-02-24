@@ -20,7 +20,7 @@ public class SqlDebugListener implements DBListener{
 	private String level = "debug";
 	
 	//输出精简的日志
-	private boolean simple = false;
+	protected boolean simple = false;
 
 	public void setLevel(String level) {
 		if("debug".equals(level) || "info".equals(level)){
