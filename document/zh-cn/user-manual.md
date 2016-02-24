@@ -169,13 +169,15 @@ Rexdb支持的所有配置项有：
 <table class="tbl">
 	<tr>
 		<th width="60">配置项</th>
-		<th width="60">类型</th>
-		<th width="120">可选值</th>
+		<th width="40">必填</th>
+		<th width="40">类型</th>
+		<th width="100">可选值</th>
 		<th width="60">默认值</th>
 		<th width="">说明</th>
 	</tr>
 	<tr>
 		<td>lang</td>
+		<td>否</td>
 		<td>String</td>
 		<td>en, zh-cn</td>
 		<td>en</td>
@@ -183,6 +185,7 @@ Rexdb支持的所有配置项有：
 	</tr>
 	<tr>
 		<td>nolog</td>
+		<td>否</td>
 		<td>boolean</td>
 		<td>true, false</td>
 		<td>false</td>
@@ -190,6 +193,7 @@ Rexdb支持的所有配置项有：
 	</tr>
 	<tr>
 		<td>validateSql</td>
+		<td>否</td>
 		<td>boolean</td>
 		<td>true, false</td>
 		<td>false</td>
@@ -197,63 +201,248 @@ Rexdb支持的所有配置项有：
 	</tr>
 	<tr>
 		<td>checkWarnings</td>
+		<td>否</td>
 		<td>boolean</td>
 		<td>true, false</td>
 		<td>false</td>
-		<td>在执行SQL后，是否检查状态中的警告。当设置为true时，将执行检查，如果发现有警告信息，则抛出异常。开启该选项可能会大幅降低Rexdb的性能。</td>
+		<td>在执行SQL后，是否检查状态中的警告。当设置为true时，将执行检查，如果发现有警告信息，则抛出异常。请注意，开启该选项可能会大幅降低Rexdb的性能。</td>
 	</tr>
 	<tr>
 		<td>queryTimeout</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>否</td>
+		<td>int</td>
+		<td>任意整数</td>
+		<td>-1</td>
+		<td>执行SQL的超时秒数，当小于或等于0时，不设置超时时间。当同时设置了事物超时时间时，Rexdb会自动选择一个较短的时间作为执行SQL的超时秒数。</td>
 	</tr>
 	<tr>
 		<td>transactionTimeout</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>否</td>
+		<td>int</td>
+		<td>任意整数</td>
+		<td>-1</td>
+		<td>执行事务的超时秒数，当小于或等于0时，不设置超时时间。要注意的是，Rexdb通过设置事物中每个SQL的执行时间来控制整体事物的时间，如果事物中有与SQL执行无关的操作，且在执行该操作时超时，事物超时时间将不起作用。</td>
 	</tr>
 	<tr>
 		<td>transactionIsolation</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>否</td>
+		<td>String</td>
+		<td>
+			DEFAULT<br/>
+			READ_UNCOMMITTED<br/>
+			READ_COMMITTED<br/>
+			REPEATABLE_READ<br/>
+			SERIALIZABLE<br/>
+		</td>
+		<td>DEFAULT</td>
+		<td>
+			定义事物的隔离级别，仅在非JTA事物中时有效。各参数含义如下：<br/>
+			- DEFAULT：使用数据库默认的事务隔离级别；<br/>
+			- READ_UNCOMMITTED：一个事务可以看到其它事务未提交的数据<br/>
+			- READ_COMMITTED：一个事务修改的数据提交后才能被另外一个事务读取；<br/>
+			- REPEATABLE_READ：同一事务的多个实例在并发读取数据时，会看到同样的数据行；<br/>
+			- SERIALIZABLE：通过强制事务排序，使事物之间不可能相互冲突。
+		</td>
 	</tr>
 	<tr>
 		<td>autoRollback</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>否</td>
+		<td>boolean</td>
+		<td>true, false</td>
+		<td>false</td>
+		<td>
+			事务提交失败时是否自动回滚。
+		</td>
 	</tr>
 	<tr>
 		<td>reflectCache</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>否</td>
+		<td>boolean</td>
+		<td>true, false</td>
+		<td>true</td>
+		<td>是否启用反射缓存。当启用时，Rexdb将会缓存类的参数、函数等信息。开启该选项可以大幅提升Rexdb的性能。</td>
 	</tr>
 	<tr>
 		<td>dynamicClass</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>否</td>
+		<td>boolean</td>
+		<td>true, false</td>
+		<td>true</td>
+		<td>是否启用动态字节码功能。当开启该选项时，Rexdb将使用javassist的生成中间类。启用该选项可以大幅提高Rexdb在查询Java对象时的性能。要注意的是，该选项需要配合jboss javassist包使用，Rexdb会在加载全局配置时检测javassist环境，当环境不可用时，该配置项会被自动切换为false。</td>
 	</tr>
 	<tr>
 		<td>dateAdjust</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>否</td>
+		<td>boolean</td>
+		<td>true, false</td>
+		<td>true</td>
+		<td>写入数据时，是否自动将日期类型的参数转换为Timestamp类型。开启此选项可以有效避免日期、时间数据的丢失，以及因类型、格式不匹配而产生的异常。</td>
 	</tr>
 </table>
 
 ### 数据源 ###
+
+*/configuration/dataSource*节点用于配置数据源。例如，一个典型的数据源配置节点内容如下：
+
+	<dataSource>
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:orcl" />
+		<property name="username" value="test" />
+		<property name="password" value="123456" />
+	</dataSource>
+	<dataSource id="mysqlDs" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
+		<property name="username" value="root" />
+		<property name="password" value="12345678" /
+	</dataSource>
+	<dataSource id="oracleDs" jndi="java:/comp/env/oracleDb"/>
+
+以上节点配置了3个数据源，分别是：
+
+- 连接Oracle数据库的默认数据源，使用Rexdb自带的数据源和连接池；
+- 连接Mysql数据库的数据源，编号为“mysqlDs”，使用了Apache DBCP数据源；
+- 连接Oracle的数据源，编号为“oracleDs”，使用JNDI方式查找容器自带的数据源；
+
+在Java程序中，可以使用org.rex.DB类中的接口指定执行SQL的数据源，例如使用以上数据源执行查询时：
+
+	DB.getMap("SELECT * FROM REX_TEST");			//使用默认数据源执行查询
+	DB.getMap("mysqlDs", "SELECT * FROM REX_TEST");	//使用mysqlDs数据源执行查询
+	DB.getMap("oracleDs", "SELECT * FROM REX_TEST");//使用oracleDs数据源执行查询
+
+该节点有如下可选属性：
+
+- id：数据源编号，不设置时为Rexdb的默认数据源，配置文件中只允许出现一个默认数据源；
+- class：数据源实现类，不设置时使用Rexdb的内置数据源，不能与jndi属性一同出现；
+- jndi：上下文中的JNDI数据源，不能与class属性一同出现；
+- dialect：为该数据源指定的数据库方言，不设置时将由Rexdb根据元数据信息自动选择内置的方言。详细的方言接口请参见；
+
+节点中的*property*属性用于设置数据源所需的参数，Rexdb内置的数据源有如下可选参数：
+
+
+<table class="tbl">
+	<tr>
+		<th width="60">选项</th>
+		<th width="40">必填</th>
+		<th width="60">类型</th>
+		<th width="80">可选值</th>
+		<th width="60">默认值</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td>driverClassName</td>
+		<td>是</td>
+		<td>String</td>
+		<td>-</td>
+		<td>-</td>
+		<td>JDBC驱动类。</td>
+	</tr>
+	<tr>
+		<td>url</td>
+		<td>是</td>
+		<td>String</td>
+		<td>-</td>
+		<td>-</td>
+		<td>数据库连接URL。</td>
+	</tr>
+	<tr>
+		<td>username</td>
+		<td>是</td>
+		<td>String</td>
+		<td>-</td>
+		<td>-</td>
+		<td>数据库用户。</td>
+	</tr>
+	<tr>
+		<td>password</td>
+		<td>是</td>
+		<td>String</td>
+		<td>-</td>
+		<td>-</td>
+		<td>数据库密码。</td>
+	</tr>
+	<tr>
+		<td>initSize</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>1</td>
+		<td>初始化连接池时创建的连接数。</td>
+	</tr>
+	<tr>
+		<td>minSize</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>3</td>
+		<td>连接池保持的最小连接数。连接池将定期检查持有的连接数，达不到该数量时将开启新的空闲连接。</td>
+	</tr>
+	<tr>
+		<td>maxSize</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>10</td>
+		<td>连接池的最大连接数。当程序所需连接超出此数量时，将置于等待状态，直到有新的空闲连接。</td>
+	</tr>
+	<tr>
+		<td>increment</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>1</td>
+		<td>每次增长的连接数。当连接池的连接数量不足，需要开启新的连接时，将一次性增长该参数指定的连接数。</td>
+	</tr>
+	<tr>
+		<td>retries</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>2</td>
+		<td>获取新的数据库连接失败后的重试次数。Rexdb不会判定失败原因，只要无法创建新的连接，即重试指定的次数。</td>
+	</tr>
+	<tr>
+		<td>retryInterval</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>750</td>
+		<td>创建新的数据库连接失败后的重试间隔，单位为毫秒。即当获取一个新的数据库连接失败，直到下一次重试的等待时间.</td>
+	</tr>
+	<tr>
+		<td>getConnectionTimeout</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>5000</td>
+		<td>获取连接的超时时间，单位为毫秒。当程序从Rexdb数据源中申请一个新的连接，且当前无空闲连接时，程序的等待时间。当超过改时间后，Rexdb会抛出一个超时的异常信息。</td>
+	</tr>
+	<tr>
+		<td>inactiveTimeout</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>600000</td>
+		<td>数据库连接的最长空闲时间，单位为毫秒。当数据库连接的空闲时间超过该参数的值时，连接会被关闭。</td>
+	</tr>
+	<tr>
+		<td>maxLifetime</td>
+		<td>否</td>
+		<td>int</td>
+		<td>大于0的整数</td>
+		<td>1800000</td>
+		<td>数据库连接的最长时间，单位为毫秒。当数据库连接开启时间超过该参数的值时，连接会被关闭。</td>
+	</tr>
+	<tr>
+		<td>testConnection</td>
+		<td>否</td>
+		<td>boolean</td>
+		<td>true, false</td>
+		<td>true</td>
+		<td>。</td>
+	</tr>
+</table>
+
 ### 监听 ###
 
 ## Java接口 ##
@@ -323,3 +512,5 @@ Rexdb支持的所有配置项有：
 	path - 文件系统中的配置路径，包含文件名称<br/>
 	<b>抛出:</b><br/>
 	DBException - 无法加载配置文件
+
+### <div id="class-Configuration">接口org.rex.db.dialect.Dialect</div> ###

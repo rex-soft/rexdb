@@ -49,7 +49,7 @@ public class SimpleConnectionPool {
 	private int inactiveTimeout = 600000; // 允许的连接空闲时间，超出时将被关闭
 	private int maxLifetime = 1800000; // 允许的连接最长时间，超出时将被重置
 
-	private boolean testConnection = true; // 使用JDBC接口测试连接（1.6以上版本有效）
+	private boolean testConnection = true; // 使用JDBC接口测试连接
 	private String testSql; // 测试连接有效性SQL
 	private int testTimeout = 500;// 测试连接有效性的超时时间
 

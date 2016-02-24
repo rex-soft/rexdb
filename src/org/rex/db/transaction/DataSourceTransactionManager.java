@@ -89,7 +89,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 		conn.setAutoCommit(false);
 
 		// 注册事物超时时间
-		if (definition.getTimeout() != Definition.TIMEOUT_DEFAULT) {
+		if (definition.getTimeout() > 0) {
 			connectionHolder.setTimeoutInSeconds(definition.getTimeout());
 		}
 	}

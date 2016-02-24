@@ -59,7 +59,7 @@ public class DefaultDefinition implements Definition {
 			if(config.getTransactionIsolation() != null)
 				setIsolationLevel(config.getTransactionIsolation());
 		}catch(Exception e){
-			e.printStackTrace();
+//			e.printStackTrace();
 			LOGGER.warn("configuration setting isolation level is invalid, {0}, which has been ignored.", e.getMessage());
 		}
 	}

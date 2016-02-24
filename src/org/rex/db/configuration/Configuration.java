@@ -15,6 +15,7 @@ import org.rex.db.listener.DBListener;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
+import org.rex.db.transaction.Definition;
 import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.ResourceUtil;
 
@@ -278,7 +279,7 @@ public class Configuration {
 	}
 
 	public void setTransactionIsolation(String transactionIsolation) {
-		this.transactionIsolation = transactionIsolation;
+		this.transactionIsolation = Definition.ISOLATION_CONSTANT_PREFIX + '_' +transactionIsolation;
 	}
 	
 	public boolean isReflectCache() {
