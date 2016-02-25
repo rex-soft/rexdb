@@ -1,5 +1,5 @@
 <style type="text/css">
-	table.tbl {
+	table {
 		font-family: verdana,arial,sans-serif;
 		font-size:12px;
 		color:#333333;
@@ -8,14 +8,14 @@
 		border-collapse: collapse;
 		width: 100%;
 	}
-	table.tbl th {
+	table th {
 		border-width: 1px;
 		padding: 8px;
 		border-style: solid;
 		border-color: #666666;
 		background-color: #dedede;
 	}
-	table.tbl td {
+	table td {
 		border-width: 1px;
 		padding: 8px;
 		border-style: solid;
@@ -166,8 +166,7 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 
 Rexdb支持的所有配置项有：
 
-
-<table class="table table-bordered table-striped table-condensed">
+<table>
 	<tr>
 		<th width="60">配置项</th>
 		<th width="40">必填</th>
