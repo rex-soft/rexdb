@@ -548,12 +548,127 @@ Rexdb内置了用于输出SQL和事物的监听类，分别是：
 
 定义好全局配置文件后，就可以使用Rexdb执行数据库操作了。Rexdb提供了如下类，可以协助您快速完成需要的操作：
 
-- org.rex.DB：执行SQL、事物、存储过程等的接口类；
-- org.rex.RMap：继承了*java.util.HashMap*，并提供了Java类型转换功能；
-- org.rex.db.Ps：用于封装预编译参数，支持声明输出、输入输出参数。
+- org.rex.DB：执行SQL、事物、存储过程等的接口类，Rexdb操作数据库的类；
+- org.rex.RMap：继承了*java.util.HashMap*，并提供了Java类型转换功能，当使用Rexdb查询Map的接口时，使用该类封装查询结果；
+- org.rex.db.Ps：用于封装预编译参数，也支持声明输出、输入输出参数，提供了比Object数组更灵活的接口。
 
 ### 插入/更新/删除 ###
 
+在Rexdb中，数据库的插入/更新/删除操作，以及执行创建表、删除表等DDL SQL时，使用的是同一类接口，接口列表如下：
+
+
+
+
+接下来以插入为例，演示接口的使用方法。
+
+编写类**TestUpdate**，内容如下：
+```Java
+import java.util.Date;
+
+import org.rex.DB;
+import org.rex.db.exception.DBException;
+
+public class TestUpdate {
+	public static void main(String[] args) throws DBException {
+		String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)";
+		int i = DB.update(sql, new Object[]{1, "test", new Date()});
+		System.out.println( i + " row inserted.");
+	}
+}
+```
+DB.update(String sql, Object[] parameterArray)方法用于执行一个带有预编译参数的插入/更新/删除SQL。其中，parameterArray参数是一个数组，数组中的元素按照顺序对应SQL语句中的“?”标记。Rexdb将按照顺序从数组中取值，并调用JDBC相关接口赋值，然后执行SQL。
+
+编译并执行该类后，控制台将输出：
+
+    1 row inserted.
+
+除Object[]数组可以作为执行SQL的参数外，Rexdb还内置了一个类*org.rex.db.Ps*，它拥有丰富的操作接口，可以用于封装预编译参数。它可以指定字段类型、按照下标赋值，还可以为存储过程调用声明输出、输入输出参数，您可以根据实际情况选用。除此之外，Rexdb还支持Map和自定义的Java实体类作为执行SQL的参数。
+
+除数组外，各种类型的参数调用示例如下：
+
+1）使用内置的*org.rex.db.Ps*类作为预编译参数：
+```Java
+String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)";
+int i = DB.update(sql, new Ps(1, "test", new Date()));
+```
+
+2）使用*Map*作为预编译参数：
+```Java
+String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (#{id}, #{name}, #{createTime})";
+Map prameters = new HashMap();
+prameters.put("id", 1);
+prameters.put("name", "test");
+prameters.put("createTime", new Date());
+
+int i = DB.update(sql, prameters);
+```
+3）使用实体类作为预编译参数。首先需要编写一个表*REX_TEST*对应的实体类：
+```Java
+import java.util.Date;
+
+public class RexTest {
+	
+	private int id;
+	private String name;
+	private Date createTime;
+
+	public RexTest() {
+	}    
+
+	public RexTest(int id, String name, Date createTime) {
+		this.id = id;
+		this.name = name;
+		this.createTime = createTime;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+}
+```
+然后使用该类作为执行SQL的参数：
+```Java
+String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (#{id}, #{name}, #{createTime})";
+RexTest rexTest = new RexTest(1, "test", new Date());
+
+int i = DB.update(sql, rexTest);
+```
+请注意，在使用Map类、Java实体类作为预编译参数时，SQL语句中的预编译参数标记不再是JDBC标准的“?”，而是被“#{*参数名称*}”取代，Rexdb在执行时，会根据标记中的*参数名称*查找Map、实体类中对应的属性值。其中，数据库字段名称和Java对象参数名称对应规则如下所示：
+
+    数据库字段名称		Map.Entry.key、实体类属性名称
+	ID					id
+	NAME				name
+	CREATE_TIME			createTime
+
+还需要额外注意的是，在使用实体类作为预编译参数时，实体类**必须**满足如下条件，才能被Rexdb正常调用：
+
+- 类是可以访问的
+- 可以使用无参的构造函数创建类实例（启用动态字节码选项时需要调用）
+- 参数需要有标准的getter方法
+
+为便于描述，我们总结了*DB.update*接口中SQL和参数的组合方式，如下图所示：
+
+![](resource/quick-start-update.png)
 
 
 
