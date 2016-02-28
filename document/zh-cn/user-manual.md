@@ -804,7 +804,7 @@ int i = DB.update(sql, rexTest);
 - 类具备无参的构造函数（启用动态字节码选项时需要调用）
 
 
-下图形象的表示了*DB.update*接口中SQL语句和参数的组合方式：
+下图展示了*DB.update*接口中SQL语句和参数的组合方式：
 
 ![](resource/quick-start-update.png)
 
