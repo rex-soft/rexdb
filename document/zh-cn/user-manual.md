@@ -810,33 +810,200 @@ int i = DB.update(sql, rexTest);
 
 ### 批量更新 ###
 
-Rexdb支持批量更新操作，以下接口
+Rexdb的批量更新接口如下：
 
-编写类TestUpdateBatch，内容如下：
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String[] sql)</td>
+		<td>将一批SQL提交至数据库执行，如果全部成功，则返回更新计数组成的数组。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String sql, Object[][] parameterArrays)</td>
+		<td>将一组`java.lang.Object数组`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句以“?”标记预编译参数，`Object数组`中的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String sql, Ps[] parameters)</td>
+		<td>将一组`org.rex.db.Ps对象`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句以“?”标记预编译参数，`Ps对象`内置的元素按照顺序与其对应。。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String sql, Map<?, ?>[] parameterMaps)</td>
+		<td>将一组`java.util.Map`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句需要以“${*key*}”的格式标记预编译参数，Map对象中键为*key*的值与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String sql, Object[] parameterBeans)</td>
+		<td>将一组`java.lang.Object对象`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句需要以“${*key*}”的格式标记预编译参数，`Object对象`中的属性名称与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String sql, List<?> parameterList)</td>
+		<td>将一个`java.util.List对象`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。`List`中的元素类型必须相同，Rexdb将根据类型确定SQL中预编译参数标记方式，以及取值方式。</td>
+	</tr>
+</table>
+
+在使用批量更新接口时，需要预先准备好多个SQL或参数。然后直接调用DB.batchUpdate接口提交至数据库执行。例如，以`org.rex.db.Ps`数组做参数时：
+
 ```Java
-import java.util.Date;
-
-import org.rex.DB;
-import org.rex.db.Ps;
-import org.rex.db.exception.DBException;
-
-public class TestUpdateBatch {
-	public static void main(String[] args) throws DBException {
-		String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)";
-		Ps[] pss = new Ps[10];
-		for (int i = 0; i < 10; i++)
-			pss[i] = new Ps(i, "name", new Date());
-		DB.batchUpdate(sql, pss);
-	}
-}
+	String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)";
+	Ps[] pss = new Ps[10];
+	for (int i = 0; i < 10; i++)
+		pss[i] = new Ps(i, "name", new Date());
+	DB.batchUpdate(sql, pss);
 ```
-在上面的类中，以*org.rex.db.Ps*数组作为批量插入的参数，数组中的每个元素都代表一条记录。执行后*DB.batchUpdate(String sql, Ps[] pss)*，数据库将写入10条记录。
+执行成功后，数据库将写入10条记录。
 
-除*Ps*数组外，Rexdb还支持*Object*二维数组、*Map*数组、实体类数组以及*List*作为参数，或者直接执行多条SQL语句。使用不同类型的参数时，对应的SQL的写法与单条记录的插入/更新/删除相同，SQL语句和参数的组合关系如图所示：
+要注意的是，当您需要写入大量记录时（例如1万多条记录），可以将考虑将数据拆分成多份，多次调用批量更新接口，以减少内存占用。
+
+下图展示了*DB.batchUpdate*接口中SQL语句和参数的组合方式：
 
 ![](resource/quick-start-batchupdate.png)
 
-### 查询 ###
+### 查询多行记录 ###
+
+Rexdb查询多条记录时，将返回一个`java.util.List`对象。根据参数不同，其元素可能是`org.rex.RMap`，或者是指定类型的`Java对象`。当未查询到符合条件的记录时，`List`对象的长度将是0，即调用`size()`接口的返回值是0。
+
+`org.rex.RMap`对象是`java.util.HashMap`的子类，提供了Java类型转换功能，可以直接获取指定类型的元素值。其接口请查阅类[org.rex.RMap](#class-rmap)。
+
+- 如果希望查询出`java.util.Map`列表时，可以使用`org.rex.DB`的下列接口：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Ps parameters)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Object[] parameterArray)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Object parameters)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Map<?, ?> parameters)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Ps parameters, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Object[] parameterArray, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Object parameters, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Map<?, ?> parameters, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+- 如果希望查询出指定类型的`Java对象`列表时，可以使用下列接口：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>get(String sql, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>get(String sql, Ps parameters, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>get(String sql, Object[] parameterArray, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>get(String sql, Object parameters, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>get(String sql, Map<?, ?> parameters, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>getList(String sql, Class<T> resultClass, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>getList(String sql, Ps parameters, Class<T> resultClass, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>getList(String sql, Object[] parameterArray, Class<T> resultClass, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>getList(String sql, Object parameters, Class<T> resultClass, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td><code>getList(String sql, Map<?, ?> parameters, Class<T> resultClass, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+Rexdb内置了数据库方言，在查询指定条目的结果时，会根据数据库类型自动封装相应的SQL语句，详情请见[接口org.rex.db.dialect.Dialect](#class-dialect)。
+
+例如，如果要查询表`REX_TEST`中的记录，可以使用如下代码：
+
+	List<RMap> list = DB.getMapList("SELECT * FROM REX_TEST");						//查询包含Map对象的列表
+	List<RMap> list = DB.getMapList("SELECT * FROM REX_TEST", 0, 10);				//查询前10条记录，获取包含Map对象的列表
+	List<RexTest> list = DB.getList("SELECT * FROM REX_TEST", RexTest.class);		//查询指定的对象
+	List<RexTest> list = DB.getList("SELECT * FROM REX_TEST", RexTest.class, 0, 10);//查询前10条记录，获取指定的对象
+
+
+
 ### 调用 ###
 
 ## SQL语句和预编译参数 ##
@@ -907,3 +1074,5 @@ public class TestUpdateBatch {
 ### <div id="class-listener">接口org.rex.db.listener.DBListener</div> ###
 
 ### <div id="class-ps">接口org.rex.db.Ps</div> ###
+
+### <div id="class-rmap">类org.rex.RMap</div> ###
