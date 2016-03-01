@@ -869,71 +869,11 @@ Rexdb的批量更新接口如下：
 
 ### 查询多行记录 ###
 
-Rexdb查询多条记录时，将返回一个`java.util.List`对象。根据参数不同，其元素可能是`org.rex.RMap`，或者是指定类型的`Java对象`。当未查询到符合条件的记录时，`List`对象的长度将是0，即调用`size()`接口的返回值是0。
+类`org.rex.DB`中的`getList`用于查询多条记录，返回值是一个`java.util.List`对象，其元素为`指定类型Java对象`，每个元素对应一条数据库记录。`getMapList`方法也可以查询多条记录，返回值是一个元素为`org.rex.RMap`的`java.util.List`对象。其中，`org.rex.RMap`对象是`java.util.HashMap`的子类，提供了类型转换方法，可以直接获取指定Java类型的值，详情请查阅类[org.rex.RMap](#class-rmap)。
 
-`org.rex.RMap`对象是`java.util.HashMap`的子类，提供了Java类型转换功能，可以直接获取指定类型的元素值。其接口请查阅类[org.rex.RMap](#class-rmap)。
+当未查询到符合条件的记录时，将返回一个空的`List`，即调用其`size()`接口的返回值是0。
 
-- 如果希望查询出`java.util.Map`列表时，可以使用`org.rex.DB`的下列接口：
-
-<table class="tbl">
-	<tr>
-		<th width="60">返回值</th>
-		<th width="300">接口</th>
-		<th width="">说明</th>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Ps parameters)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Object[] parameterArray)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Object parameters)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Map<?, ?> parameters)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, int offset, int rows)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Ps parameters, int offset, int rows)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Object[] parameterArray, int offset, int rows)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Object parameters, int offset, int rows)</code></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Map<?, ?> parameters, int offset, int rows)</code></td>
-		<td></td>
-	</tr>
-</table>
-
-- 如果希望查询出指定类型的`Java对象`列表时，可以使用下列接口：
+- 希望查询出`指定类型的Java对象`列表时，您需要在接口中指定对象类型，可以使用下面的接口：
 
 <table class="tbl">
 	<tr>
@@ -993,9 +933,69 @@ Rexdb查询多条记录时，将返回一个`java.util.List`对象。根据参�
 	</tr>
 </table>
 
+- 希望查询出`java.util.Map`列表时，可以使用下列接口：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Ps parameters)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Object[] parameterArray)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Object parameters)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Map<?, ?> parameters)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Ps parameters, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Object[] parameterArray, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Object parameters, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td><code>getMapList(String sql, Map<?, ?> parameters, int offset, int rows)</code></td>
+		<td></td>
+	</tr>
+</table>
+
 Rexdb内置了数据库方言，在查询指定条目的结果时，会根据数据库类型自动封装相应的SQL语句，详情请见[接口org.rex.db.dialect.Dialect](#class-dialect)。
 
-例如，如果要查询表`REX_TEST`中的记录，可以使用如下代码：
+例如，如下代码使用了多种方式查询表`REX_TEST`：
 
 	List<RMap> list = DB.getMapList("SELECT * FROM REX_TEST");						//查询包含Map对象的列表
 	List<RMap> list = DB.getMapList("SELECT * FROM REX_TEST", 0, 10);				//查询前10条记录，获取包含Map对象的列表
@@ -1003,8 +1003,150 @@ Rexdb内置了数据库方言，在查询指定条目的结果时，会根据数
 	List<RexTest> list = DB.getList("SELECT * FROM REX_TEST", RexTest.class, 0, 10);//查询前10条记录，获取指定的对象
 
 
+### <div id="c7">查询单行记录</div> ###
 
-### 调用 ###
+与查询多行记录类似，类`org.rex.DB`的方法`get`和`getMap`方法分别用于查询一个`指定类型的Java对象`和`org.rex.RMap`对象。要注意的是，如果未查询到记录，将返回`null`；如果查询出了多条记录，由于Rexdb无法确定需要哪一条，因此会抛出异常信息。
+
+- 如果希望查询出`指定类型的Java对象`，可以使用下面的接口：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>T</code></td>
+		<td><code>get(String sql, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>T</code></td>
+		<td><code>get(String sql, Ps parameters, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>T</code></td>
+		<td><code>get(String sql, Object[] parameterArray, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>T</code></td>
+		<td><code>get(String sql, Object parameters, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>T</code></td>
+		<td><code>get(String sql, Map<?, ?> parameters, Class<T> resultClass)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+- 希望查询出`Map`类型的结果时象，可以使用下面的接口：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>getMap(String sql)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>getMap(String sql, Ps parameters)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>getMap(String sql, Object[] parameterArray)</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>RMap</code></td>
+		<td><code>getMap(String sql, Object parameters)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>getMap(String sql, Map<?, ?> parameters)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+例如：
+
+	RMap rexTest = DB.getMap("SELECT * FROM REX_TEST limit 1");					//查询Map类型的对象
+	RexTest rexTest = DB.get("SELECT * FROM REX_TEST limit 1", RexTest.class);	//查询指定类型的Java对象
+
+### <div id="c9">调用</div> ###
+
+Rexdb支持存储过程和函数调用，类`org.rex.DB`中的调用方法如下：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>call(String sql)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>call(String sql, Object[] parameterArray)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>call(String sql, Map<?, ?> parameterMap)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>call(String sql, Object parameterBean)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>RMap</code></td>
+		<td><code>call(String sql, Ps ps)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+例如，以下代码调用了存储过程`test_proc`：
+
+	RMap result = DB.call("{call test_proc()}");
+
+当`test_proc`有返回值时，Rexdb会自动对其进行O/R映射，并按照返回值的顺序存放在返回的`RMap`对象中，键分别为"`return_0`"、"`return_1`"等。
+
+当需要获取输出参数的值时，必须使用`org.rex.db.Ps`对象作为调用参数，并在调用前声明参数。在执行成功后，可以在返回的`RMap`对象中获取输出参数的值，键分别为"`out_0`"、"`out_1`"等。`Ps`对象还支持对输出参数设置别名，在设置了别名后，返回的`RMap`对象中还可以以别名获取输出参数的值，详情请参见[类org.rex.db.Ps](#class-ps)。
+
+例如，以下代码声明了1个输出参数，调用成功后可以在返回的`RMap`对象中取值：
+
+	Ps ps = new Ps();
+	ps.addOutInt();										//将第1个参数声明为int类型的输出参数
+	RMap result = DB.call("{call proc_out(?)}", ps);	//调用存储该过程
+	int out = result.getInt("out_0");					//获取输出参数的值
+
+为取值方便，也可以在声明输出参数时设置一个别名，例如：
+	
+	Ps ps = new Ps().addOutInt("age");					//将第1个参数声明为int类型的输出参数，并设置别名"age"
+	RMap result = DB.call("{call proc_out(?)}", ps);	//调用存储该过程
+	int out = result.getInt("age");						//使用别名获取输出参数的值
+
+与输出参数类似，`Ps`对象还可以声明输入输出参数，例如：
+
+	Ps ps = new Ps().addInOut(1);
+	RMap result = DB.call("{call proc_inout(?)}", ps1);
+
+### <div id="c8">事物</div> ###
+
+
 
 ## SQL语句和预编译参数 ##
 普通SQL

@@ -46,12 +46,13 @@ public class TestCall extends Base {
 
 		String sql = "{call proc_out(?)}";
 		Ps ps = new Ps();
-		ps.addOutInt();
+		ps.addOutInt("age");
 
 		// ps.setOutResultSet(0, oracle.jdbc.OracleTypes.CURSOR);
 		// ps.setOutResultSet(0, oracle.jdbc.OracleTypes.CURSOR, Student.class);
 
 		RMap result = DB.call(sql, ps);
+		int out = result.getInt("out_0");
 		System.out.println(result);
 	}
 
