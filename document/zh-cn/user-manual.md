@@ -1122,9 +1122,9 @@ Rexdb支持存储过程和函数调用，类`org.rex.DB`中的调用方法如下
 
 	RMap result = DB.call("{call test_proc()}");
 
-当`test_proc`有返回值时，Rexdb会自动对其进行O/R映射，并按照返回值的顺序存放在返回的`RMap`对象中，键分别为"`return_0`"、"`return_1`"等。
+当`test_proc`有返回值时，Rexdb会自动对返回值进行O/R映射，并按照顺序存放在返回的`RMap`对象中，键分别为"`return_0`"、"`return_1`"等。
 
-当需要获取输出参数的值时，必须使用`org.rex.db.Ps`对象作为调用参数，并在调用前声明参数。在执行成功后，可以在返回的`RMap`对象中获取输出参数的值，键分别为"`out_0`"、"`out_1`"等。`Ps`对象还支持对输出参数设置别名，在设置了别名后，返回的`RMap`对象中还可以以别名获取输出参数的值，详情请参见[类org.rex.db.Ps](#class-ps)。
+当需要获取输出参数的值时，必须使用`org.rex.db.Ps`对象作为调用参数，并在调用前声明输出参数。在执行成功后，可以在返回的`RMap`对象中获取输出参数的值，键分别为"`out_0`"、"`out_1`"等。`Ps`对象还支持对输出参数设置别名，在设置了别名后，返回的`RMap`对象中还可以以别名获取输出参数的值，详情请参见[类org.rex.db.Ps](#class-ps)。
 
 例如，以下代码声明了1个输出参数，调用成功后可以在返回的`RMap`对象中取值：
 
@@ -1146,25 +1146,260 @@ Rexdb支持存储过程和函数调用，类`org.rex.DB`中的调用方法如下
 
 ### <div id="c8">事物</div> ###
 
+Rexdb支持事物和标准的JTA事物，org.rex.DB中与事物有关的接口有：
 
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>beginTransaction()</code></td>
+		<td>在默认数据源中开启事物。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>beginTransaction(DefaultDefinition definition)</code></td>
+		<td>在默认数据源中开启事物，并设置配置参数。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>commit()</code></td>
+		<td>提交默认数据源的事物。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>rollback()</code></td>
+		<td>回滚默认数据源事物</td>
+	</tr>
+	<tr>
+		<td><code>java.sql.Connection</code></td>
+		<td><code>getTransactionConnection()</code></td>
+		<td>获取默认数据源事物所在的连接。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>beginTransaction(String dataSourceId)</code></td>
+		<td>在指定数据源中开启事物。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>beginTransaction(String dataSourceId, DefaultDefinition definition)</code></td>
+		<td>在指定数据源中开启事物，并设置配置参数。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>commit(String dataSourceId)</code></td>
+		<td>提交指定数据源的事物。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>rollback(String dataSourceId)</code></td>
+		<td>回滚指定数据源事物</td>
+	</tr>
+	<tr>
+		<td><code>java.sql.Connection</code></td>
+		<td><code>getTransactionConnection(String dataSourceId)</code></td>
+		<td>获取指定数据源事物所在的连接。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>beginJtaTransaction()</code></td>
+		<td>开启JTA事物。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>commitJta()</code></td>
+		<td>提交JTA事物。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>rollbackJta()</code></td>
+		<td>回滚JTA事物。</td>
+	</tr>
+</table>
 
-## SQL语句和预编译参数 ##
-普通SQL
-带有预编译标记的SQL
-带有Rexdb标记的SQL
+在使用Rexdb事物接口时，需要遵循`try...catch...`的写法，以防事物开启后未被提交或回滚。一个基于数据源的事物例子如下：
+
+	DB.beginTransaction();
+	try{
+		DB.update("DELETE FROM REX_TEST");
+		DB.update("INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)", new Ps(1, "test", new Date()));
+		DB.commit();
+	}catch(Exception e){//一般来说，应捕获Exception异常，以防程序抛出预期外的异常，导致事物未被回滚
+		DB.rollback();
+	}
+
+在启用事物前，也可以设置超时时间、隔离级别等。可以通过实例化一个`org.rex.db.transaction.DefaultDefinition`对象，并在调用开启事物方法时将其作为参数，详情请见类[DefaultDefinition](#class-defaultDefinition)。例如：
+
+	DefaultDefinition definition = new DefaultDefinition();
+	definition.setTimeout(10);													//设置事物超时时间为10秒
+	definition.setIsolationLevel(DefaultDefinition.ISOLATION_READ_COMMITTED);	//设置事物的隔离级别为"READ_COMMITTED"
+	DB.beginTransaction(definition);
 
 ## 扩展 ##
 ### 监听 ###
 
+可以通过配置监听程序，实现SQL、事物执行事件的捕获。Rexdb已经内置了以下监听类（详情请查看[全局配置-监听](#)）：
+
+<table class="tbl">
+	<tr>
+		<th width="300">监听类</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td>org.rex.db.listener.impl.SqlDebugListener</td>
+		<td>使用日志包输出SQL和事物信息。</td>
+	</tr>
+	<tr>
+		<td>org.rex.db.listener.impl.SqlConsolePrinterListener</td>
+		<td>将SQL和事物信息输出到终端。</td>
+	</tr>
+</table>
+
+当需要实现一个新的监听时，首先编写监听程序，实现[接口org.rex.db.listener.DBListener](#class-listener)。例如，如果希望打印出执行时间超过10秒的所有SQL语句，则可以编写如下监听类：
+	
+	package test;
+
+	import org.rex.db.listener.DBListener;
+	import org.rex.db.listener.SqlContext;
+	import org.rex.db.listener.TransactionContext;
+	
+	public class CustomListener implements DBListener{
+		public void onExecute(SqlContext context) {
+		}
+	
+		public void afterExecute(SqlContext context, Object results) {
+			long costs = System.currentTimeMillis() - context.getCreateTime().getTime();
+			if(costs > 10000){									//当执行时间超过10秒时
+				String[] sql = context.getSql();				//获取已经执行的SQL
+				Object parameters = context.getParameters();	//获取预编译参数
+				System.out.println("more than 10s: " + sql[0] + " : " + parameters);
+			}
+		}
+	
+		public void onTransaction(TransactionContext context) {
+		}
+		public void afterTransaction(TransactionContext context) {
+		}
+	}
+
+然后将将该监听类加入到全局配置文件即可：
+
+	<listener class="test.CustomListener" />
+
+### 方言 ###
+
+Rexdb支持数据库方言功能，用于支持自动的分页查询等功能。已经内置的方言有：
+
+<table class="tbl">
+	<tr>
+		<th width="100">数据库</th>
+		<th width="">方言类</th>
+	</tr>
+	<tr>
+		<td>DB2</td>
+		<td width="">org.rex.db.dialect.impl.DB2Dialect</td>
+	</tr>
+	<tr>
+		<td>Derby</td>
+		<td width="">org.rex.db.dialect.impl.DerbyDialect</td>
+	</tr>
+	<tr>
+		<td>DM</td>
+		<td width="">org.rex.db.dialect.impl.DMDialect</td>
+	</tr>
+	<tr>
+		<td>H2</td>
+		<td width="">org.rex.db.dialect.impl.H2Dialect</td>
+	</tr>
+	<tr>
+		<td>HSQL</td>
+		<td width="">org.rex.db.dialect.impl.HSQLDialect</td>
+	</tr>
+	<tr>
+		<td>MySQL</td>
+		<td width="">org.rex.db.dialect.impl.MySQLDialect</td>
+	</tr>
+	<tr>
+		<td>Oracle</td>
+		<td width="">
+			org.rex.db.dialect.impl.Oracle8iDialect<br/>
+			org.rex.db.dialect.impl.Oracle9iDialect
+		</td>
+	</tr>
+	<tr>
+		<td>PostgreSQL</td>
+		<td width="">org.rex.db.dialect.impl.PostgreSQLDialect</td>
+	</tr>
+	<tr>
+		<td>SQLServer</td>
+		<td width="">
+			org.rex.db.dialect.impl.SQLServerDialect<br/>
+			org.rex.db.dialect.impl.SQLServer2005Dialect
+		</td>
+	</tr>
+</table>
+
+Rexdb会根据数据库的类型和版本选择合适的方言。如果您使用的数据库不在列表中，可以编写一个实现[接口org.rex.db.dialect.Dialect](#class-dialect)的方言类，并将其增加到[全局配置文件-数据源](#)中
+
 ### 日志 ###
+
+Rexdb支持如下日志包：
+
+<table class="tbl">
+	<tr>
+		<th width="40">序号</th>
+		<th width="100">日志</th>
+		<th width="">官方网址</th>
+	</tr>
+	<tr>
+		<td>1</td>
+		<td>log4j-1.x</td>
+		<td>
+			<a href="http://logging.apache.org/log4j">http://logging.apache.org/log4j</a>
+		</td>
+	</tr>
+	<tr>
+		<td>2</td>
+		<td>slf4j</td>
+		<td>
+			<a href="http://www.slf4j.org/">http://www.slf4j.org/</a>
+		</td>
+	</tr>
+	<tr>
+		<td>3</td>
+		<td>log4j-2.x</td>
+		<td>
+			<a href="http://logging.apache.org/log4j">http://logging.apache.org/log4j</a>
+		</td>
+	</tr>
+	<tr>
+		<td>4</td>
+		<td>JDK Logger</td>
+		<td>
+			-
+		</td>
+	</tr>
+</table>
+
+当Rexdb在加载类时，会按照上面的顺序检测日志支持环境，并使用第1个可用的日志接口。如果希望禁用日志，可以在[全局配置文件-全局设置](#)中将`nolog`属性设置为`true`。
+
+### 动态字节码   ###
+
+Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/javassist/](http://jboss-javassist.github.io/javassist/)）的动态字节码编译功能。当[全局配置文件-全局设置](#)中的`dynamicClass`属性为`true`，且检测到javassist环境可用时，Rexdb框架将会启动动态字节码功能。
+
+启用动态字节码后，在查询`指定类型的Java对象`时将有大幅的性能提升，因此建议开启此扩展功能。
+
+我们注意到，在javassist的官方网址下载的新版jar包均是基于新版JDK编译。因此，如果您的JDK运行环境较低，可以下载源代码并重新编译。同时，我们在Rexdb的下载包中也内置了一个基于JDK1.5编译的新版javassist，您可以根据实际情况选用。
 
 ## 接口列表 ##
 
 ### <div id="class-Configuration">类org.rex.db.configuration.Configuration</div> ###
 
-用于加载Rexdb全局配置文件。
-
-> 接口摘要
+该类主要用于加载Rexdb的全局配置文件，提供了如下接口：
 
 <table class="tbl">
 	<tr>
@@ -1189,32 +1424,185 @@ Rexdb支持存储过程和函数调用，类`org.rex.DB`中的调用方法如下
 	</tr>
 </table>
 
-> 详细信息
-
-- **loadDefaultConfiguration() throws DBException**
-	从classpath中加载名称为rexdb.xml配置文件
-	<b>抛出:</b>
-	DBException - 无法加载配置文件
-
-- **loadConfigurationFromClasspath(String path) throws DBException**
-	从classpath中加载配置文件
-	<b>参数:</b>
-	path - classpath中的文件路径，包含文件名称
-	<b>抛出:</b>
-	DBException - 无法加载配置文件
-
-- **loadConfigurationFromFileSystem(String path) throws DBException**
-	从文件系统中加载配置文件
-	<b>参数:</b>
-	path - 文件系统中的配置路径，包含文件名称
-	<b>抛出:</b>
-	DBException - 无法加载配置文件
+请注意，在类加载时，Rexdb将调用`loadDefaultConfiguration()`方法加载默认配置文件。当默认配置文件不存在时，才能调用接口加载其它位置的配置。
 
 ### <div id="class-dialect">接口org.rex.db.dialect.Dialect</div> ###
 
+该接口用于定义数据库方言，框架将在执行分页查询、测试活跃连接时调用数据库方言接口，方言接口定义如下：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>LimitHandler</code></td>
+		<td><code>getLimitHandler(int rows)</code></td>
+		<td>获取一个分页查询SQL封装类，用于包装带有行数限制的查询。</td>
+	</tr>
+	<tr>
+		<td><code>LimitHandler</code></td>
+		<td><code>getLimitHandler(int offset, int rows)</code></td>
+		<td>获取一个分页查询SQL封装类，用于包装带有偏移数和行数限制的查询。</td>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>getTestSql()</code></td>
+		<td>获取测试SQL语句，通常用于测试数据库连接的有效性。</td>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>getName()</code></td>
+		<td>获取数据库名称。例如，oracle数据库方言将返回"<code>ORACLE</code>"。</td>
+	</tr>
+</table>
+
+其中，抽象类`org.rex.db.dialect.LimitHandler`用于封装分页查询语句，方言实现类的`getLimitHandler`方法需要返回相应数据库的实现。该抽象类需要实现的接口如下：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>wrapSql(String sql)</code></td>
+		<td>包装分页查询SQL，分页相关的预编译参数必须设置在其它预编译参数后。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>afterSetParameters(PreparedStatement statement, int parameterCount)</code></td>
+		<td>设置分页相关的预编译参数，这个方法将在设置完其它预编译参数后调用。</td>
+	</tr>
+</table>
 
 ### <div id="class-listener">接口org.rex.db.listener.DBListener</div> ###
+
+该接口用于定义一个数据库监听类，接口如下：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>onExecute(SqlContext context)</code></td>
+		<td>SQL执行前调用该方法。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>afterExecute(SqlContext context, Object results)</code></td>
+		<td>SQL执行后调用该方法。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>onTransaction(TransactionContext context)</code></td>
+		<td>开始事物前调用该方法。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>afterTransaction(TransactionContext context)</code></td>
+		<td>提交、回滚事物后调用该方法。</td>
+	</tr>
+</table>
+
+其中，类`org.rex.db.listener.SqlContext`中包含了与SQL执行相关的参数，常量和接口如下：
+
+<table class="tbl">
+	<tr>
+		<th width="60">类型/返回值</th>
+		<th width="200">常量/接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>SQL_QUERY</code></td>
+		<td>这个常量表示当前执行的是查询。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>SQL_UPDATE</code></td>
+		<td>这个常量表示当前执行的是更新。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>SQL_BATCH_UPDATE</code></td>
+		<td>这个常量表示当前执行的是批处理。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>SQL_CALL</code></td>
+		<td>这个常量表示当前执行的是调用。</td>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>getContextId()</code></td>
+		<td>获取唯一的SQL上下文编号。由于监听事件的调用是多线程的，因此这个参数可以用于区分属于一次执行的多个事件。</td>
+	</tr>
+	<tr>
+		<td><code>Date</code></td>
+		<td><code>getCreateTime()</code></td>
+		<td>获取实例的创建时间。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>getSqlType()</code></td>
+		<td>获取执行SQL的类型。返回值是常量<code>SQL_QUERY</code>、<code>SQL_UPDATE</code>、<code>SQL_BATCH_UPDATE</code>、<code>SQL_CALL</code>中的一个。</td>
+	</tr>
+	<tr>
+		<td><code>boolean</code></td>
+		<td><code>isBetweenTransaction()</code></td>
+		<td>当前数据库操作是否在事物中。</td>
+	</tr>
+	<tr>
+		<td><code>DataSource</code></td>
+		<td><code>getDataSource()</code></td>
+		<td>执行SQL所在的数据源。</td>
+	</tr>
+	<tr>
+		<td><code>String[]</code></td>
+		<td><code>getSql()</code></td>
+		<td>获取待执行的SQL。当执行一条SQL语句时，返回的数组元素个数为1.</td>
+	</tr>
+	<tr>
+		<td><code>Object</code></td>
+		<td><code>getParameters()</code></td>
+		<td>获取执行SQL的预编译参数</td>
+	</tr>
+	<tr>
+		<td><code>LimitHandler</code></td>
+		<td><code>getLimitHandler()</code></td>
+		<td>获取当前查询的分页对象。如果当前执行的不是分页查询，返回<code>null</code>。</td>
+	</tr>
+</table>
+
+类`org.rex.db.listener.TransactionContext`中包含了与事物相关的参数，接口如下：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>getContextId()</code></td>
+		<td>获取唯一的SQL上下文编号。由于监听事件的调用是多线程的，因此这个参数可以用于区分属于一次执行的多个事件。</td>
+	</tr>
+	<tr>
+		<td><code>Date</code></td>
+		<td><code>getCreateTime()</code></td>
+		<td>获取实例的创建时间。</td>
+	</tr>
+
+</table>
 
 ### <div id="class-ps">接口org.rex.db.Ps</div> ###
 
 ### <div id="class-rmap">类org.rex.RMap</div> ###
+
+### <div id="class-defaultDefinition">类org.rex.db.transaction.DefaultDefinition</div> ###
