@@ -1510,7 +1510,7 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 	</tr>
 </table>
 
-其中，类`org.rex.db.listener.SqlContext`中包含了与SQL执行相关的参数，常量和接口如下：
+类`org.rex.db.listener.SqlContext`中包含了与SQL执行相关的参数，常量和接口如下：
 
 <table class="tbl">
 	<tr>
@@ -1580,13 +1580,28 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 	</tr>
 </table>
 
-类`org.rex.db.listener.TransactionContext`中包含了与事物相关的参数，接口如下：
+类`org.rex.db.listener.TransactionContext`中包含了与事物相关的参数，常量和方法如下：
 
 <table class="tbl">
 	<tr>
-		<th width="60">返回值</th>
-		<th width="200">接口</th>
+		<th width="60">类型/返回值</th>
+		<th width="200">常量/接口</th>
 		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>TRANSACTION_BEGIN</code></td>
+		<td>当前事务操作类型为开始事务。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>TRANSACTION_COMMIT</code></td>
+		<td>当前事务操作类型为提交。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>TRANSACTION_ROLLBACK</code></td>
+		<td>当前事务操作类型为回滚。</td>
 	</tr>
 	<tr>
 		<td><code>String</code></td>
@@ -1598,10 +1613,870 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 		<td><code>getCreateTime()</code></td>
 		<td>获取实例的创建时间。</td>
 	</tr>
-
+	<tr>
+		<td><code>Definition</code></td>
+		<td><code>getDefinition()</code></td>
+		<td>获取事务设置。仅在启用事务时有效，提交、回滚事务时该方法将返回<code>null</code>。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>getEvent()</code></td>
+		<td>获取事务事件类型。值为常量<code>TRANSACTION_BEGIN</code>、<code>TRANSACTION_COMMIT</code>、<code>TRANSACTION_ROLLBACK</code>中的一种。</td>
+	</tr>
 </table>
 
-### <div id="class-ps">接口org.rex.db.Ps</div> ###
+### <div id="class-ps">类org.rex.db.Ps</div> ###
+
+类`org.rex.db.Ps`是Rexdb内置的用于封装预编译参数的类，它可以用于设置输入、输出、输入输出预编译参数。与`Java数组`相比，可以在指定位置设置预编译参数，还可以设置输出参数，使用更加灵活。
+
+- 该类中定义的常量有：
+
+<table class="tbl">
+	<tr>
+		<th width="60">类型</th>
+		<th width="200">常量</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>CALL_OUT_DEFAULT_PREFIX</code></td>
+		<td>调用接口的返回值中，输出参数的前缀。</td>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>CALL_RETURN_DEFAULT_PREFIX</code></td>
+		<td>调用接口的返回值中，返回值的前缀。</td>
+	</tr>
+</table>
+
+- 构造函数：
+
+<table class="tbl">
+	<tr>
+		<th width="200">构造函数</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>public Ps()</code></td>
+		<td>初始化一个空的Ps对象。</td>
+	</tr>
+	<tr>
+		<td><code>public Ps(Object... parameters)</code></td>
+		<td>初始化一个Ps对象，并按照参数顺序设置预编译参数。</td>
+	</tr>
+</table>
+
+- 按顺序增加预编译参数的方法
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(Object value)</code></td>
+		<td>增加一个预编译参数。预编译参数类型将根据<code>value</code>的类型自动匹配。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, Object value, int sqlType)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addNull(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, String value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, boolean value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, BigDecimal value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, int value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, long value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, double value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, float value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, Blob value)</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, Clob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, java.util.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, java.sql.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, Time time)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>add(int index, Timestamp time)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+- 在指定位置设置预编译参数的方法
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, Object value)</code></td>
+		<td>在指定位置设置预编译参数。<code>index</code>参数起始于1，预编译参数类型将根据<code>value</code>的类型自动匹配。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, Object value, int sqlType)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setNull(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, String value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, boolean value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, BigDecimal value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, int value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, long value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, double value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, float value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, Blob value)</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, Clob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, java.util.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, java.sql.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, Time time)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>set(int index, Timestamp time)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+- 按顺序声明输出参数的方法
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutResultSet(int sqlType)</code></td>
+		<td>声明一个结果集类型的输出参数。参数<code>sqlType</code>需要设置为JDBC驱动中定义的结果集类型。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutResultSet(int sqlType, Class pojoClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutString()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutBoolean()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutBigDecimal()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutInt()</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutLong()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutFloat()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutDouble()</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutBlob()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutClob()</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutDate()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutTime()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutTimestamp()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutResultSet(String paramName, int sqlType)</code></td>
+		<td>声明一个结果集类型的输出参数。参数<code>sqlType</code>需要设置为JDBC驱动中定义的结果集类型。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutResultSet(String paramName, int sqlType, Class pojoClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutString(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutBoolean(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutBigDecimal(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutInt(String paramName)</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutLong(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutFloat(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutDouble(String paramName)</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutBlob(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutClob(String paramName)</code></td>
+		<td></td>
+	</tr>	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutDate(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutTime(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addOutTimestamp(String paramName)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+- 声明指定位置输出参数的方法
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutResultSet(int index, int sqlType)</code></td>
+		<td>声明指定位置的结果集输出参数。参数<code>sqlType</code>需要设置为JDBC驱动中定义的结果集类型。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutResultSet(int index, int sqlType, Class<?> pojoClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutString(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutBoolean(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutBigDecimal(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutInt(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutLong(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutFloat(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutDouble(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutBlob(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutClob(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutDate(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutTime(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutTimestamp(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutResultSet(int index, String paramName, int sqlType)</code></td>
+		<td>声明指定位置的结果集输出参数。参数<code>sqlType</code>需要设置为JDBC驱动中定义的结果集类型。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutResultSet(int index, String paramName, int sqlType, Class<?> pojoClass)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutString(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutBoolean(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutBigDecimal(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutInt(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutLong(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutFloat(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutDouble(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutBlob(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutClob(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutDate(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutTime(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setOutTimestamp(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+- 按顺序声明输入输出参数的方法
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(Object value)</code></td>
+		<td>声明一个输入输出参数。预编译参数类型根据<code>value</code>的值自动匹配。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(Object value, int type)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOutNull()</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(boolean value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(BigDecimal value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(int value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(long value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(float value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(double value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(Blob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(Clob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(java.util.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(java.sql.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(Time time)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(Timestamp time)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, Object value)</code></td>
+		<td>声明一个输入输出参数。预编译参数类型根据<code>value</code>的值自动匹配。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, Object value, int type)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOutNull(String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, String value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, boolean value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, BigDecimal value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, int value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, long value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, float value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, double value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, Blob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, Clob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, java.util.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, java.sql.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, Time time)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>addInOut(String paramName, Timestamp time)</code></td>
+		<td></td>
+	</tr>
+</table>
+
+- 声明指定位置输出参数的方法
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, Object value)</code></td>
+		<td>声明指定位置的输入输出参数。参数<code>index</code>起始于1，预编译参数类型根据<code>value</code>的值自动匹配。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, Object value, int type)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOutNull(int index)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, boolean value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, BigDecimal value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, int value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, long value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, double value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, float value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, Blob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, Clob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, java.sql.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, Time time)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, Timestamp time)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, Object value)</code></td>
+		<td>声明指定位置的输入输出参数。参数<code>index</code>起始于1，预编译参数类型根据<code>value</code>的值自动匹配。</td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, Object value, int type)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOutNull(int index, String paramName)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, String value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, boolean value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, BigDecimal value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, int value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, long value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, double value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, float value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, Blob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, Clob value)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, java.sql.Date date)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, Time time)</code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code>Ps</code></td>
+		<td><code>setInOut(int index, String paramName, Timestamp time)</code></td>
+		<td></td>
+	</tr>
+</table>
 
 ### <div id="class-rmap">类org.rex.RMap</div> ###
 
