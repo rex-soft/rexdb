@@ -29,9 +29,7 @@
 ## 概述 ##
 ### 简介 ###
 
-Rexdb是一款使用Java语言编写的，开放源代码的持久层框架。它具有管理数据源、执行SQL、调用函数和存储过程、处理事务等功能。
-
-使用Rexdb时，不需要像JDBC一样编写繁琐的代码，也不需要编写数据表映射文件，只要将SQL和Java对象等参数传递至框架接口，即可获取需要的结果。
+Rexdb是一款使用Java语言编写的，开放源代码的持久层框架。它具有管理数据源、执行SQL、调用函数和存储过程、处理事务等功能。Rexdb不需要像JDBC一样编写繁琐的代码，也不需要编写映射文件，只要将SQL和Java对象等参数传递至框架接口，即可获取需要的结果。
 
 Rexdb的官方网站地址为：[http://db.rex-soft.org](http://db.rex-soft.org)
 
@@ -39,42 +37,41 @@ Rexdb的官方网站地址为：[http://db.rex-soft.org](http://db.rex-soft.org)
 
 Rexdb具有如下功能：
 
-- 数据库查询、更新、批量处理、函数和存储过程调用、事物和JTA事物等；
-- ORM映射，可以使用数组、Map、Java对象作为预编译参数，也可以自动将结果集转换为Map、Java对象；
+- 数据库查询、更新、批量处理、调用、事物和JTA事物等，支持`Java数组`、`Map`、`自定义的Java对象`作为预编译参数；
+- O/R映射，自动将结果集转换为`Map`、`Java对象`；
 - 数据源管理，拥有内置的连接池和数据源，支持第三方数据源和JNDI；
-- 数据库方言，自动封装分页查询和常用函数，支持Oracle、DB2、SQL Server、Mysql、达梦等数据库；
+- 数据库方言，自动封装分页查询和常用函数，支持`Oracle`、`DB2`、`SQL Server`、`Mysql`、`达梦`等数据库；
 - 支持对框架初始化、SQL执行、事物等事件的监听；
 - 统一的异常管理、异常信息的国际化支持等；
 
-### 一般使用过程 ###
-
-Rexdb的使用较为简单，一般遵循如下过程即可：
-
-1. 下载Rexdb的jar包，并拷贝至开发/运行环境；
-2. 在classpath中增加全局配置文件**rexdb.xml**，并在文件中配置数据库连接；
-3. 在Java程序中直接调用Rexdb的接口操作数据库；
-
-
-## 下载和安装 ##
+## 开发环境配置 ##
 
 Rexdb的官方网站提供了下载衔接，下载并解压后，可以得到编译好的jar包和全局配置文件的示例：
 
 - rexdb-1.0.0.jar（或其它版本）
 - rexdb.xml
 
-**rexdb-1.0.0.jar**（或其它版本）是运行Rexdb必须的包，请确保它在开发/运行环境的classpath中。例如，当您在JavaEE Web应用中使用Rexdb时，需要将该文件拷贝至应用根目录下的“*/WEB-INF/lib*”中。
+**rexdb-1.0.0.jar**（或其它版本）是运行Rexdb必须的包，请确保它在开发/运行环境的`classpath`中。由于Rexdb直接调用JDBC的接口，所以您还需要在`classpath`中设置好待连接数据库的驱动。如果要使用Rexdb的扩展功能，还需在运行环境中增加其它jar包。具体请参考[扩展](http://#)。
 
-由于Rexdb直接调用JDBC的接口，所以您还需要在classpath中设置好数据库的驱动。如果要使用Rexdb的扩展功能，还需在运行环境中增加其它jar包。具体请参考[扩展](http://#)。
+**rexdb.xml**是Rexdb的全局配置文件，默认需要放置在开发/运行环境的`classpath`中。如果需要放置在其它位置，需要编写程序加载指定位置的文件。具体请参考[全局配置文件-加载配置](http://#)。
 
-**rexdb.xml**是Rexdb的全局配置文件，默认放置在开发/运行环境的classpath中。例如，在JavaEE Web应用中，该文件应当放置在应用根目录下的“*/WEB-INF/classes*”中。
+例如，在JavaEE Web应用中，**rexdb-1.0.0.jar**（或其它版本）应当放置在应用根目录下的“`/WEB-INF/lib`”文件夹中，**rexdb.xml**默认应当放置在“`/WEB-INF/classes`”中。
 
-如果需要将该配置文件放置在其它位置，需要编写程序加载指定位置的文件。具体请参考[加载配置](http://#)。
 
 ## 全局配置文件 ##
 
-Rexdb需要一个全局配置文件**rexdb.xml**，用于设置运行选项、配置数据源、监听程序等。例如，一个典型的配置为：
+Rexdb需要一个全局配置文件**rexdb.xml**，用于设置运行选项、配置数据源、监听程序等。该文件是XML格式，各节点的含义如下：
+
+- `/configuration`：根节点；
+- `/configuration/properties`：外部资源文件，可以在该文件中定义`key-value`对，并在其余配置中以“`${key}`”的格式引用`value`；
+- `/configuration/settings`：全局设置选项，用于配置Rexdb的全局选项，例如异常信息语言、日志、反射缓存等；
+- `/configuration/dataSource`：数据源配置；
+- `/configuration/listener`：监听程序配置，可以使用监听程序跟踪SQL执行、事物等事件。
+
+例如，某应用中的**rexdb.xml**文件内容如下：
 
 ```xml
+
 	<?xml version="1.0" encoding="UTF-8"?> 
 	<!DOCTYPE configuration PUBLIC "-//rex-soft.org//REXDB DTD 1.0//EN" "http://www.rex-soft.org/dtd/rexdb-1-config.dtd">
 	<configuration>
@@ -91,22 +88,16 @@ Rexdb需要一个全局配置文件**rexdb.xml**，用于设置运行选项、�
 			<property name="username" value="root" />
 			<property name="password" value="12345678" />
 		</dataSource>
-		<dataSource id="oracleDs" jndi=""/>
+		<dataSource id="oracleDs" jndi="java:/comp/env/oracleDb"/>
 	 	<listener class="org.rex.db.listener.impl.SqlDebugListener"/> 
 	</configuration>
 ```
 
-各节点的含义如下：
-
-- **/configuration**：配置文件根节点；
-- **/configuration/properties**：外部资源文件，可以在该文件中定义键值，并在XML的其余配置中以“${*键*}”的格式引用值；
-- **/configuration/settings**：Rexdb的设置选项，可以设置异常语言；
-- **/configuration/dataSource**：数据源，支持自定义数据源和JNDI；
-- **/configuration/listener**：自定义的监听程序，用于跟踪框架的初始化、SQL执行、事物等事件。
+配置文件中引用了一个外部资源文件**rexdb-settings.properties**，并设置了异常信息语言、禁用了日志输出等全局选项；配置了一个默认数据源和一个`oracleDs`数据源；启用了Rexdb内置的`SqlDebugListener`监听。各节点的详细含义和配置方法请参见下面的章节。
 
 ### 加载配置文件 ###
 
-**rexdb.xml**文件的默认的路径为运行环境的*classpath*根目录。Rexdb会在类加载时自动读取该文件，并完成配置项、数据源、监听程序的初始化。如果您启用了日志，将会在日志的输出中看到类似如下内容（输出格式取决于您的日志配置）：
+**rexdb.xml**的默认存放路径是运行环境的`classpath`根目录。Rexdb会在类加载时自动读取该文件，并完成框架的初始化工作。如果您启用了日志，将在日志输出中看到类似如下内容（输出格式取决于您的日志配置）：
 
 ```bash
     [INFO][2016-02-23 21:26:55] configuration.Configuration[main] - loading default configuration rexdb.xml.
@@ -114,7 +105,7 @@ Rexdb需要一个全局配置文件**rexdb.xml**，用于设置运行选项、�
 	[INFO][2016-02-23 21:26:59] configuration.Configuration[main] - default configuration rexdb.xml loaded.
 ```
 
-在默认路径中无法找到**rexdb.xml**文件时，会输出如下日志：
+当在默认路径中无法找到**rexdb.xml**文件时，会输出如下日志：
 
 ```bash
 	[INFO][2016-02-23 22:18:36] configuration.Configuration[main] - loading default configuration rexdb.xml.
@@ -156,34 +147,7 @@ Rexdb需要一个全局配置文件**rexdb.xml**，用于设置运行选项、�
 
 ### 外部资源文件 ###
 
-全局配置文件的*/configuration/properties*节点用于引用一个外部资源文件，在该文件中定义的配置可以被其它节点以“${*key*}”引用。例如，放置在classpath根目录的资源文件**rexdb-database-sample.properties**内容如下：
-
-```bash
-	driver=com.mysql.jdbc.Driver
-	url=jdbc:mysql://localhost:3306/rexdb
-	username=root
-	password=12345678
-```
-
-**rexdb.xml**的配置如下：
-
-```xml
-	<?xml version="1.0" encoding="UTF-8"?> 
-	<!DOCTYPE configuration PUBLIC "-//rex-soft.org//REXDB DTD 1.0//EN" "http://www.rex-soft.org/dtd/rexdb-1-config.dtd">
-	<configuration>
-		<properties path="rexdb-database-sample.propertie" />
-		<dataSource>
-			<property name="driverClassName" value="${driver}" />
-			<property name="url" value="${url}" />
-			<property name="username" value="${username}" />
-			<property name="password" value="${password}" />
-		</dataSource>
-	</configuration>
-```
-
-Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的内容。在解析其余节点时，如果发现其内容符合"${...}"的格式，则会替换为资源文件中配置的值。例如，*dataSource*节点的属性*driverClassName*的值是“${driver}”，符合替换条件，则会被替换为资源文件中*driver*对应的值“com.mysql.jdbc.Driver”。
-
-*/configuration/properties*节点有如下可选属性：
+全局配置文件的*/configuration/properties*节点用于引用一个外部资源文件，在该文件中定义的`key-value`配置可以被其它节点以`${key}`的格式引用。该节点有如下可选属性：
 
 <table>
 	<tr>
@@ -206,17 +170,36 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 	</tr>
 </table>
 
-### 全局设置 ###
+例如，放置在`classpath`根目录的资源文件**rexdb-database-sample.properties**内容如下：
 
-全局配置文件的*/configuration/settings*节点用于设置Rexdb的运行参数。例如，如果要设置Rexdb抛出异常时的语言为中文，可以使用如下配置：
-
-```xml
-	<settings>
-		<property name="lang" value="en"/>
-	</settings>
+```bash
+	driver=com.mysql.jdbc.Driver
+	url=jdbc:mysql://localhost:3306/rexdb
+	username=root
+	password=12345678
 ```
 
-Rexdb支持的所有配置项有：
+**rexdb.xml**中的配置如下：
+
+```xml
+	<?xml version="1.0" encoding="UTF-8"?> 
+	<!DOCTYPE configuration PUBLIC "-//rex-soft.org//REXDB DTD 1.0//EN" "http://www.rex-soft.org/dtd/rexdb-1-config.dtd">
+	<configuration>
+		<properties path="rexdb-database-sample.propertie" />
+		<dataSource>
+			<property name="driverClassName" value="${driver}" />
+			<property name="url" value="${url}" />
+			<property name="username" value="${username}" />
+			<property name="password" value="${password}" />
+		</dataSource>
+	</configuration>
+```
+
+Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的内容。在解析**rexdb.xml**时，如果发现其内容符合`${...}`的格式，则会替换为资源文件中配置的值。在上面的示例中，`dataSource`节点的属性`driverClassName`的值是`${driver}`，则会被替换为资源文件中`driver`对应的值`com.mysql.jdbc.Driver`。
+
+### 全局设置 ###
+
+全局配置文件的`/configuration/settings`节点用于设置Rexdb的运行参数，可用的配置选项有：
 
 <table>
 	<tr>
@@ -228,111 +211,120 @@ Rexdb支持的所有配置项有：
 		<th width="">说明</th>
 	</tr>
 	<tr>
-		<td>lang</td>
+		<td><code>lang</code></td>
 		<td>否</td>
-		<td>String</td>
-		<td>en, zh-cn</td>
-		<td>en</td>
-		<td>设置Rexdb异常信息的语言。要注意的是，中文异常在某些linux系统中可能输出为乱码。</td>
+		<td><code>String</code></td>
+		<td><code>en</code>, <code>zh-cn</code></td>
+		<td><code>en</code></td>
+		<td>设置Rexdb异常信息的语言。要注意的是，在Linux系统中，中文异常信息在输出至控制台可能会出现乱码。</td>
 	</tr>
 	<tr>
-		<td>nolog</td>
+		<td><code>nolog</code></td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>false</td>
-		<td>是否禁用所有日志输出，当设置为true时，Rexdb将不再输出任何日志。</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>false</code></td>
+		<td>是否禁用所有日志输出，当设置为<code>true</code>时，Rexdb将不再输出任何日志。</td>
 	</tr>
 	<tr>
-		<td>validateSql</td>
+		<td><code>validateSql</code></td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>false</td>
-		<td>是否对SQL语句进行简单的校验。通常Rexdb只校验SQL中带有“?”标记的个数是否与的预编译参数个数相同。</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>false</code></td>
+		<td>是否对SQL语句进行简单的校验。通常Rexdb只校验SQL中带有<code>?</code>标记的个数是否与的预编译参数个数相同。</td>
 	</tr>
 	<tr>
-		<td>checkWarnings</td>
+		<td><code>checkWarnings</code></td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>false</td>
-		<td>在执行SQL后，是否检查状态中的警告。当设置为true时，将执行检查，如果发现有警告信息，则抛出异常。请注意，开启该选项可能会大幅降低Rexdb的性能。</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>false</code></td>
+		<td>在执行SQL后，是否检查状态中的警告。当设置为<code>true</code>时，将执行检查，当发现警告信息时抛出异常。要注意的是，开启该选项可能会大幅降低Rexdb的性能。</td>
 	</tr>
 	<tr>
-		<td>queryTimeout</td>
+		<td><code>queryTimeout</code></td>
 		<td>否</td>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>任意整数</td>
-		<td>-1</td>
+		<td><code>-1</code></td>
 		<td>执行SQL的超时秒数，当小于或等于0时，不设置超时时间。当同时设置了事物超时时间时，Rexdb会自动选择一个较短的时间作为执行SQL的超时秒数。</td>
 	</tr>
 	<tr>
-		<td>transactionTimeout</td>
+		<td><code>transactionTimeout</code></td>
 		<td>否</td>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>任意整数</td>
-		<td>-1</td>
+		<td><code>-1</code></td>
 		<td>执行事务的超时秒数，当小于或等于0时，不设置超时时间。要注意的是，Rexdb通过设置事物中每个SQL的执行时间来控制整体事物的时间，如果事物中有与SQL执行无关的操作，且在执行该操作时超时，事物超时时间将不起作用。</td>
 	</tr>
 	<tr>
-		<td>transactionIsolation</td>
+		<td><code>transactionIsolation</code></td>
 		<td>否</td>
 		<td>String</td>
 		<td>
-			DEFAULT<br/>
-			READ_UNCOMMITTED<br/>
-			READ_COMMITTED<br/>
-			REPEATABLE_READ<br/>
-			SERIALIZABLE<br/>
+			<code>DEFAULT</code><br/>
+			<code>READ_UNCOMMITTED</code><br/>
+			<code>READ_COMMITTED</code><br/>
+			<code>REPEATABLE_READ</code><br/>
+			<code>SERIALIZABLE</code><br/>
 		</td>
-		<td>DEFAULT</td>
+		<td><code>DEFAULT</td>
 		<td>
 			定义事物的隔离级别，仅在非JTA事物中时有效。各参数含义如下：<br/>
-			- DEFAULT：使用数据库默认的事务隔离级别；<br/>
-			- READ_UNCOMMITTED：一个事务可以看到其它事务未提交的数据<br/>
-			- READ_COMMITTED：一个事务修改的数据提交后才能被另外一个事务读取；<br/>
-			- REPEATABLE_READ：同一事务的多个实例在并发读取数据时，会看到同样的数据行；<br/>
-			- SERIALIZABLE：通过强制事务排序，使事物之间不可能相互冲突。
+			- <code>DEFAULT</code>：使用数据库默认的事务隔离级别；<br/>
+			- <code>READ_UNCOMMITTED</code>：一个事务可以看到其它事务未提交的数据<br/>
+			- <code>READ_COMMITTED</code>：一个事务修改的数据提交后才能被另外一个事务读取；<br/>
+			- <code>REPEATABLE_READ</code>：同一事务的多个实例在并发读取数据时，会看到同样的数据行；<br/>
+			- <code>SERIALIZABLE</code>：通过强制事务排序，使事物之间不可能相互冲突。
 		</td>
 	</tr>
 	<tr>
-		<td>autoRollback</td>
+		<td><code>autoRollback</code></td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>false</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>false</code></td>
 		<td>
 			事务提交失败时是否自动回滚。
 		</td>
 	</tr>
 	<tr>
-		<td>reflectCache</td>
+		<td><code>reflectCache</code></td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>true</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>true</code></td>
 		<td>是否启用反射缓存。当启用时，Rexdb将会缓存类的参数、函数等信息。开启该选项可以大幅提升Rexdb的性能。</td>
 	</tr>
 	<tr>
-		<td>dynamicClass</td>
+		<td><code>dynamicClass</code></td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>true</td>
-		<td>是否启用动态字节码功能。当开启该选项时，Rexdb将使用javassist的生成中间类。启用该选项可以大幅提高Rexdb在查询Java对象时的性能。要注意的是，该选项需要配合jboss javassist包使用，Rexdb会在加载全局配置时检测javassist环境，当环境不可用时，该配置项会被自动切换为false。</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>true</code></td>
+		<td>是否启用动态字节码功能。当开启该选项时，Rexdb将使用javassist的生成中间类。启用该选项可以大幅提高Rexdb在查询<code>Java对象</code>时的性能。要注意的是，该选项需要配合jboss javassist包使用，Rexdb会在加载全局配置时检测javassist环境，当环境不可用时，该配置项会被自动切换为false。</td>
 	</tr>
 	<tr>
-		<td>dateAdjust</td>
+		<td><code>dateAdjust</code></td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>true</td>
-		<td>写入数据时，是否自动将日期类型的参数转换为Timestamp类型。开启此选项可以有效避免日期、时间数据的丢失，以及因类型、格式不匹配而产生的异常。</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>true</code></td>
+		<td>写入数据时，是否自动将日期类型的参数转换为<code>java.sql.Timestamp</code>类型。开启此选项可以有效避免日期、时间数据的丢失，以及因类型、格式不匹配而产生的异常。</td>
 	</tr>
 </table>
 
-要注意的是，如果设置项不被Rexdb支持，或者值的格式、值域不正确，则会被忽略并使用默认值。
+例如，如果要设置Rexdb抛出异常时的语言为中文，并且禁用日志，可以使用如下配置：
+
+```xml
+	<settings>
+		<property name="lang" value="en"/>
+		<property name="nolog" value="false" />
+	</settings>
+```
+
+要注意的是，如果设置项不被Rexdb支持，或者值的格式、值域不正确，则该设置会被忽略并使用默认值。
 
 ### 数据源 ###
 
@@ -346,32 +338,175 @@ Rexdb支持的所有配置项有：
 		<th width="">说明</th>
 	</tr>
 	<tr>
-		<td>id</td>
+		<td><code>id</code></td>
 		<td>否</td>
-		<td>String</td>
-		<td>数据源编号，不设置时为Rexdb的默认数据源，配置文件中只允许出现一个默认数据源。</td>
+		<td><code>String</code></td>
+		<td>数据源编号。不设置时为Rexdb的默认数据源，配置文件中只允许出现一个默认数据源。</td>
 	</tr>
 	<tr>
-		<td>class</td>
+		<td><code>class</code></td>
 		<td>否</td>
-		<td>String</td>
-		<td>数据源实现类，不设置时使用Rexdb的内置数据源，不能与jndi属性一同出现。</td>
+		<td><code>String</code></td>
+		<td>数据源实现类，不设置时使用Rexdb的内置数据源，不能与<code>jndi</code>属性一同出现。</td>
 	</tr>
 	<tr>
-		<td>jndi</td>
+		<td><code>jndi</code></td>
 		<td>否</td>
-		<td>String</td>
-		<td>上下文中的JNDI数据源，不能与class属性一同出现。</td>
+		<td><code>String</code></td>
+		<td>上下文中的数据源JNDI，不能与<code>class</code>属性一同出现。</td>
 	</tr>
 	<tr>
-		<td>dialect</td>
+		<td><code>dialect</code></td>
 		<td>否</td>
-		<td>String</td>
+		<td><code>String</code></td>
 		<td>为该数据源指定的数据库方言，不设置时将由Rexdb根据元数据信息自动选择内置的方言，请参见[方言接口](#class-dialect)。</td>
 	</tr>
 </table>
 
-还可以为dataSource节点设置一个或多个*property*子节点，每个子节点可以设置一个数据源支持的的初始化参数。例如，以下代码配置了3个数据源：
+也可以通过`property`节点为数据源初始化参数。当不设置`class`和`jndi`属性时，Rexdb将使用内置的数据源`org.rex.db.datasource.SimpleDataSource`。该数据源支持如下初始化参数：
+
+<table class="tbl">
+	<tr>
+		<th width="60">选项</th>
+		<th width="40">必填</th>
+		<th width="60">类型</th>
+		<th width="80">可选值</th>
+		<th width="60">默认值</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>driverClassName</code></td>
+		<td>是</td>
+		<td><code>String</code></td>
+		<td>-</td>
+		<td>-</td>
+		<td>JDBC驱动类。</td>
+	</tr>
+	<tr>
+		<td><code>url</code></td>
+		<td>是</td>
+		<td><code>String</code></td>
+		<td>-</td>
+		<td>-</td>
+		<td>数据库连接URL。</td>
+	</tr>
+	<tr>
+		<td><code>username</code></td>
+		<td>是</td>
+		<td><code>String</code></td>
+		<td>-</td>
+		<td>-</td>
+		<td>数据库用户。</td>
+	</tr>
+	<tr>
+		<td><code>password</code></td>
+		<td>是</td>
+		<td><code>String</code></td>
+		<td>-</td>
+		<td>-</td>
+		<td>数据库密码。</td>
+	</tr>
+	<tr>
+		<td><code>initSize</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>1</code></td>
+		<td>初始化连接池时创建的连接数。</td>
+	</tr>
+	<tr>
+		<td><code>minSize</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>3</code></td>
+		<td>连接池保持的最小连接数。连接池将定期检查持有的连接数，达不到该数量时将开启新的空闲连接。</td>
+	</tr>
+	<tr>
+		<td><code>maxSize</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>10</code></td>
+		<td>连接池的最大连接数。当程序所需连接超出此数量时，将置于等待状态，直到有新的空闲连接。</td>
+	</tr>
+	<tr>
+		<td><code>increment</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>1</code></td>
+		<td>每次增长的连接数。当连接池的连接数量不足，需要开启新的连接时，将一次性增长该参数指定的连接数。</td>
+	</tr>
+	<tr>
+		<td><code>retries</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>2</code></td>
+		<td>获取新的数据库连接失败后的重试次数。Rexdb不会判定失败原因，只要无法创建新的连接，即重试指定的次数。</td>
+	</tr>
+	<tr>
+		<td><code>retryInterval</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>750</code></td>
+		<td>创建新的数据库连接失败后的重试间隔，单位为毫秒。即当获取一个新的数据库连接失败，直到下一次重试的等待时间.</td>
+	</tr>
+	<tr>
+		<td><code>getConnectionTimeout</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>5000</code></td>
+		<td>获取连接的超时时间，单位为毫秒。当程序从Rexdb数据源中申请一个新的连接，且当前无空闲连接时，程序的等待时间。当超过改时间后，Rexdb会抛出一个超时的异常信息。</td>
+	</tr>
+	<tr>
+		<td><code>inactiveTimeout</td>
+		<td>否</td>
+		<td><code>int</td>
+		<td>大于0的整数</td>
+		<td><code>600000</td>
+		<td>数据库连接的最长空闲时间，单位为毫秒。当数据库连接的空闲时间超过该参数的值时，连接会被关闭。</td>
+	</tr>
+	<tr>
+		<td><code>maxLifetime</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>1800000</code></td>
+		<td>数据库连接的最长时间，单位为毫秒。当数据库连接开启时间超过该参数的值时，连接会被关闭。</td>
+	</tr>
+	<tr>
+		<td><code>testConnection</code></td>
+		<td>否</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>true</code></td>
+		<td>开启新的数据库连接后，是否测试连接可用。当运行环境为JDK1.6及以上版本时，Rexdb将使用JDBC的测试接口执行测试；当JDK低于1.5时，如果未指定测试SQL，将调用方言接口获取测试SQL，如果能成功执行，则测试通过。</td>
+	</tr>
+	<tr>
+		<td><code>testSql</code></td>
+		<td>否</td>
+		<td><code>String</code></td>
+		<td>SQL语句</td>
+		<td>-</td>
+		<td>指定测试连接是否活跃的SQL语句。</td>
+	</tr>
+	<tr>
+		<td><code>testTimeout</code></td>
+		<td>否</td>
+		<td><code>int</code></td>
+		<td>大于0的整数</td>
+		<td><code>500</code></td>
+		<td>测试连接的超时时间。</td>
+	</tr>
+</table>
+
+类似于Rexdb内置的数据源，其它开源数据源（例如Apache DBCP、C3P0等），通常也支持设置多个初始化参数，具体请参考各自的用户手册。
+
+例如，以下代码配置了3个数据源：
 
 ```xml
 	<dataSource>
@@ -395,163 +530,14 @@ Rexdb支持的所有配置项有：
 - 连接Mysql数据库的数据源，编号为“mysqlDs”，使用了Apache DBCP数据源；
 - 连接Oracle的数据源，编号为“oracleDs”，使用JNDI方式查找容器自带的数据源；
 
-在Java程序中，使用org.rex.DB类进行SQL执行、事务处理等操作时，都可以指定数据源。例如，在执行查询时：
-
-```java
-	DB.getMap("SELECT * FROM REX_TEST");			//使用默认数据源执行查询
-	DB.getMap("mysqlDs", "SELECT * FROM REX_TEST");	//使用mysqlDs数据源执行查询
-	DB.getMap("oracleDs", "SELECT * FROM REX_TEST");//使用oracleDs数据源执行查询
-```
-
-不为dataSource节点设置class属性时，默认使用内置数据源。内置的数据源支持如下初始化参数：
-
-<table class="tbl">
-	<tr>
-		<th width="60">选项</th>
-		<th width="40">必填</th>
-		<th width="60">类型</th>
-		<th width="80">可选值</th>
-		<th width="60">默认值</th>
-		<th width="">说明</th>
-	</tr>
-	<tr>
-		<td>driverClassName</td>
-		<td>是</td>
-		<td>String</td>
-		<td>-</td>
-		<td>-</td>
-		<td>JDBC驱动类。</td>
-	</tr>
-	<tr>
-		<td>url</td>
-		<td>是</td>
-		<td>String</td>
-		<td>-</td>
-		<td>-</td>
-		<td>数据库连接URL。</td>
-	</tr>
-	<tr>
-		<td>username</td>
-		<td>是</td>
-		<td>String</td>
-		<td>-</td>
-		<td>-</td>
-		<td>数据库用户。</td>
-	</tr>
-	<tr>
-		<td>password</td>
-		<td>是</td>
-		<td>String</td>
-		<td>-</td>
-		<td>-</td>
-		<td>数据库密码。</td>
-	</tr>
-	<tr>
-		<td>initSize</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>1</td>
-		<td>初始化连接池时创建的连接数。</td>
-	</tr>
-	<tr>
-		<td>minSize</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>3</td>
-		<td>连接池保持的最小连接数。连接池将定期检查持有的连接数，达不到该数量时将开启新的空闲连接。</td>
-	</tr>
-	<tr>
-		<td>maxSize</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>10</td>
-		<td>连接池的最大连接数。当程序所需连接超出此数量时，将置于等待状态，直到有新的空闲连接。</td>
-	</tr>
-	<tr>
-		<td>increment</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>1</td>
-		<td>每次增长的连接数。当连接池的连接数量不足，需要开启新的连接时，将一次性增长该参数指定的连接数。</td>
-	</tr>
-	<tr>
-		<td>retries</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>2</td>
-		<td>获取新的数据库连接失败后的重试次数。Rexdb不会判定失败原因，只要无法创建新的连接，即重试指定的次数。</td>
-	</tr>
-	<tr>
-		<td>retryInterval</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>750</td>
-		<td>创建新的数据库连接失败后的重试间隔，单位为毫秒。即当获取一个新的数据库连接失败，直到下一次重试的等待时间.</td>
-	</tr>
-	<tr>
-		<td>getConnectionTimeout</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>5000</td>
-		<td>获取连接的超时时间，单位为毫秒。当程序从Rexdb数据源中申请一个新的连接，且当前无空闲连接时，程序的等待时间。当超过改时间后，Rexdb会抛出一个超时的异常信息。</td>
-	</tr>
-	<tr>
-		<td>inactiveTimeout</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>600000</td>
-		<td>数据库连接的最长空闲时间，单位为毫秒。当数据库连接的空闲时间超过该参数的值时，连接会被关闭。</td>
-	</tr>
-	<tr>
-		<td>maxLifetime</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>1800000</td>
-		<td>数据库连接的最长时间，单位为毫秒。当数据库连接开启时间超过该参数的值时，连接会被关闭。</td>
-	</tr>
-	<tr>
-		<td>testConnection</td>
-		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>true</td>
-		<td>开启新的数据库连接后，是否测试连接可用。当运行环境为JDK1.6及以上版本时，Rexdb将使用JDBC的测试接口执行测试；当JDK低于1.5时，如果未指定测试SQL，将调用方言接口获取测试SQL，如果能成功执行，则测试通过。</td>
-	</tr>
-	<tr>
-		<td>testSql</td>
-		<td>否</td>
-		<td>String</td>
-		<td>SQL语句</td>
-		<td>-</td>
-		<td>指定测试连接是否活跃的SQL语句。</td>
-	</tr>
-	<tr>
-		<td>testTimeout</td>
-		<td>否</td>
-		<td>int</td>
-		<td>大于0的整数</td>
-		<td>500</td>
-		<td>测试连接的超时时间。</td>
-	</tr>
-</table>
-
-例如，当您希望修改数据源的初始化连接数为3、每次增长3个连接、重试次数设置为3、不再测试连接活跃性时，可以采用如下配置：
+默认数据源使用了Rexdb自带的数据源，如果希望将其配置为初始化连接数为3、每次增长3个连接、重试次数设置为3、不再测试连接活跃性时，可以调整为如下配置：
 
 ```xml
 	<dataSource>
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
-		<property name="username" value="root" />
-		<property name="password" value="12345678" />
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:orcl" />
+		<property name="username" value="test" />
+		<property name="password" value="123456" />
 		
 		<property name="initSize" value="3"/>
 		<property name="increment" value="3"/>
@@ -560,7 +546,13 @@ Rexdb支持的所有配置项有：
 	</dataSource>
 ```
 
-类似于Rexdb内置的数据源，其它开源数据源（例如Apache DBCP、C3P0等），通常也支持设置多个初始化参数，具体请参考各自的用户手册。
+在配置好数据源后，调用类`org.rex.DB`的执行SQL、处理事务等接口时，都可以指定数据源。例如，在执行查询时：
+
+```java
+	DB.getMap("SELECT * FROM REX_TEST");			//使用默认数据源执行查询
+	DB.getMap("mysqlDs", "SELECT * FROM REX_TEST");	//使用mysqlDs数据源执行查询
+	DB.getMap("oracleDs", "SELECT * FROM REX_TEST");//使用oracleDs数据源执行查询
+```
 
 ### 监听 ###
 
@@ -1666,7 +1658,7 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 	</tr>
 </table>
 
-- 按顺序增加预编译参数的方法
+- 按顺序增加预编译参数
 
 <table class="tbl">
 	<tr>
@@ -1755,7 +1747,7 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 	</tr>
 </table>
 
-- 在指定位置设置预编译参数的方法
+- 在指定位置设置预编译参数
 
 <table class="tbl">
 	<tr>
@@ -1844,7 +1836,7 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 	</tr>
 </table>
 
-- 按顺序声明输出参数的方法
+- 按顺序声明输出参数
 
 <table class="tbl">
 	<tr>
@@ -1988,7 +1980,7 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 	</tr>
 </table>
 
-- 声明指定位置输出参数的方法
+- 声明指定位置输出参数
 
 <table class="tbl">
 	<tr>
@@ -2138,7 +2130,7 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 	</tr>
 </table>
 
-- 按顺序声明输入输出参数的方法
+- 按顺序声明输入输出参数
 
 <table class="tbl">
 	<tr>
@@ -2480,4 +2472,268 @@ Rexdb支持jboss javassist（官方网址：[http://jboss-javassist.github.io/ja
 
 ### <div id="class-rmap">类org.rex.RMap</div> ###
 
+类`org.rex.RMap`是`java.util.HashMap`的子类，额外提供了获取指定Java类型值的接口，。Rexdb查询`Map`的方法均返回该类型的对象，更便于开发人员使用。
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>getString(String key, boolean emptyAsNull)</code></td>
+		<td>从获取String类型的值。当emptyAsNull参数设置为true，且Map条目中的实际值为""时，会返回一个null值。</td>
+	</tr>
+	<tr>
+		<td><code>String</code></td>
+		<td><code>getString(String key)</code></td>
+		<td>获取String类型的值。当Map条目中原有数据类型不是String时，将进行格式转换；原条目为数组时，将返回类似于“[值1, 值2, 值3]”这样的格式。</td>
+	</tr>
+	<tr>
+		<td><code>boolean</code></td>
+		<td><code>getBoolean(String key)</code></td>
+		<td>获取boolean类型的值。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>getInt(String key)</code></td>
+		<td>获取int类型的值。当Map条目中的值无法转换为int时，将抛出NumberFormatException异常。</td>
+	</tr>
+	<tr>
+		<td><code>long</code></td>
+		<td><code>getLong(String key)</code></td>
+		<td>获取long类型的值。当Map条目中的值无法转换为long时，将抛出NumberFormatException异常。</td>
+	</tr>
+	<tr>
+		<td><code>float</code></td>
+		<td><code>getFloat(String key)</code></td>
+		<td>获取float类型的值。当Map条目中的值无法转换为float时，将抛出NumberFormatException异常。</td>
+	</tr>
+	<tr>
+		<td><code>double</code></td>
+		<td><code>getDouble(String key)</code></td>
+		<td>获取double类型的值。当Map条目中的值无法转换为double时，将抛出NumberFormatException异常。</td>
+	</tr>
+	<tr>
+		<td><code>BigDecimal</code></td>
+		<td><code>getBigDecimal(String key)</code></td>
+		<td>获取BigDecimal类型的值。当Map条目中的值无法转换为BigDecimal时，将抛出NumberFormatException异常。</td>
+	</tr>
+	<tr>
+		<td><code>java.util.Date</code></td>
+		<td><code>getDate(String key)</code></td>
+		<td>获取java.util.Date类型的值。如果Map条目中的值不是Date类型或其子类时，将按照常见的日期格式进行格式化。如果无法匹配格式，将抛出异常。</td>
+	</tr>
+	<tr>
+		<td><code>java.sql.Date</code></td>
+		<td><code>getDateForSql(String key)</code></td>
+		<td>获取java.sql.Date类型的值。如果Map条目中的值不是Date类型或其子类时，将按照常见的日期格式进行格式化。如果无法匹配格式，将抛出异常。</td>
+	</tr>
+	<tr>
+		<td><code>Time</code></td>
+		<td><code>getTime(String key)</code></td>
+		<td>获取java.sql.Time类型的值。如果Map条目中的值不是Date类型或其子类时，将按照常见的日期格式进行格式化。如果无法匹配格式，将抛出异常。</td>
+	</tr>
+	<tr>
+		<td><code>Timestamp</code></td>
+		<td><code>getTimestamp(String key)</code></td>
+		<td>获取java.sql.Timestamp类型的值。如果Map条目中的值不是Date类型或其子类时，将按照常见的日期格式进行格式化。如果无法匹配格式，将抛出异常。</td>
+	</tr>
+	<tr>
+		<td><code>String[]</code></td>
+		<td><code>getStringArray(String key)</code></td>
+		<td>获取String[]类型的值。当Map条目中的值不是String[]类型时，将进行类型转换。</td>
+	</tr>
+	<tr>
+		<td><code>Object</code></td>
+		<td><code>set(K key, V value)</code></td>
+		<td>设置一个值，等同于Map.put(K key, V value)</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>setAll(Map<K, V> m)</code></td>
+		<td>合并Map对象，等同于Map.putAll(Map<K, V> m)</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>addDateFormat(String pattern, String format)</code></td>
+		<td>新增一个日期格式识别表达式。</td>
+	</tr>
+</table>
+
+在获取日期类型的值时，Rexdb可以自动识别日期格式的字符串，如果识别成功，将自动进行类型转换。支持的日期格式如下：
+
+<table class="tbl">
+	<tr>
+		<th width="150">日期格式</th>
+		<th width="">示例</th>
+	</tr>
+	<tr>
+		<td><code>yyyy-MM-dd HH-mm-ss</code></td>
+		<td><code>2016-02-02 02:02:02, 2016/2/2 2:2:2, 2016年2月2日 2时2分2秒</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyy-MM-dd HH-mm</code></td>
+		<td><code>2016-02-02 02:02</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyy-MM-dd HH</code></td>
+		<td><code>2016-02-02 02</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyy-MM-dd</code></td>
+		<td><code>2016-02-02, 2016年02月02日</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyy-MM</code></td>
+		<td><code>2016-02</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyy</code></td>
+		<td><code>2016</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyyMMddHHmmss</code></td>
+		<td><code>20160202020202</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyyMMddHHmm</code></td>
+		<td><code>201602020202</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyyMMddHH</code></td>
+		<td><code>2016020202</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyyMMdd</code></td>
+		<td><code>20160202</code></td>
+	</tr>
+	<tr>
+		<td><code>yyyyMM</code></td>
+		<td><code>201602</code></td>
+	</tr>
+	<tr>
+		<td><code>HH:mm:ss</code></td>
+		<td><code>02:02:02</code></td>
+	</tr>
+	<tr>
+		<td><code>HH:mm</code></td>
+		<td><code>02:02</code></td>
+	</tr>
+	<tr>
+		<td><code>yy-MM-dd</code></td>
+		<td><code>02.02.02</code></td>
+	</tr>
+	<tr>
+		<td><code>dd-MM</code></td>
+		<td><code>02.02</code></td>
+	</tr>
+	<tr>
+		<td><code>dd-MM-yyyy</code></td>
+		<td><code>02.02.2016</code></td>
+	</tr>
+	<tr>
+		<td><code>java.text.DateFormat</code><br/>支持的格式</td>
+		<td><code>07/10/96 4:5 PM, PDT</code></td>
+	</tr>
+</table>
+
 ### <div id="class-defaultDefinition">类org.rex.db.transaction.DefaultDefinition</div> ###
+
+类`org.rex.db.transaction.DefaultDefinition`用于设置事物选项。
+
+该类声明了如下常量：
+
+<table class="tbl">
+	<tr>
+		<th width="60">类型</th>
+		<th width="200">常量</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>ISOLATION_DEFAULT</code></td>
+		<td>默认事物的隔离级别。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>ISOLATION_READ_UNCOMMITTED</code></td>
+		<td>指示防止发生脏读的常量；不可重复读和虚读有可能发生。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>ISOLATION_READ_COMMITTED</code></td>
+		<td>指示可以发生脏读 (dirty read)、不可重复读和虚读 (phantom read) 的常量。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>ISOLATION_REPEATABLE_READ</code></td>
+		<td>指示防止发生脏读和不可重复读的常量；虚读有可能发生。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>ISOLATION_SERIALIZABLE</code></td>
+		<td> 指示防止发生脏读、不可重复读和虚读的常量。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>TIMEOUT_DEFAULT</code></td>
+		<td>默认的超时时间。</td>
+	</tr>
+</table>
+
+该类有如下接口：
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="200">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>getIsolationLevel()</code></td>
+		<td>获取事物的隔离级别。返回的值是类中以“ISOLATION_”开头的常量之一。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>getTimeout()</code></td>
+		<td>获取事物超时时间。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>isReadOnly()</code></td>
+		<td>是否是只读事务。</td>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
+		<td><code>isAutoRollback()</code></td>
+		<td>提交失败时是否自动回滚。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>setIsolationLevel(String isolationLevelName)</code></td>
+		<td>设置事物的隔离级别名称。参数isolationLevelName是类中以“ISOLATION_”开头的常量名称之一。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>setIsolationLevel(int isolationLevel)</code></td>
+		<td>设置事物的隔离级别。参数isolationLevelName是类中以“ISOLATION_”开头的常量之一。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>setTimeout(int timeout)</code></td>
+		<td>设置事物超时时间。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>setReadOnly(boolean readOnly)</code></td>
+		<td>是否将事物设置为只读。</td>
+	</tr>
+	<tr>
+		<td><code>void</code></td>
+		<td><code>setAutoRollback(boolean autoRollback)</code></td>
+		<td>是否将事物设置为提交失败后自动回滚。</td>
+	</tr>
+</table>

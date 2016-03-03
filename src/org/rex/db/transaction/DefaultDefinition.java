@@ -65,42 +65,42 @@ public class DefaultDefinition implements Definition {
 	}
 
 	//--------事物隔离级别
-	public final void setIsolationLevel(String isolationLevelName) throws DBException {
+	public void setIsolationLevel(String isolationLevelName) throws DBException {
 		if (isolationLevelName == null || !isolationLevelName.startsWith(ISOLATION_CONSTANT_PREFIX)) {
 			throw new DBException("DB-T0001", isolationLevelName);
 		}
 		setIsolationLevel(CONSTANTS.asNumber(isolationLevelName).intValue());
 	}
 
-	public final void setIsolationLevel(int isolationLevel) throws DBException {
+	public void setIsolationLevel(int isolationLevel) throws DBException {
 		if (!CONSTANTS.getValues(ISOLATION_CONSTANT_PREFIX).contains(new Integer(isolationLevel))) {
 			throw new DBException("DB-T0001", isolationLevel);
 		}
 		this.isolationLevel = isolationLevel;
 	}
 
-	public final int getIsolationLevel() {
+	public int getIsolationLevel() {
 		return isolationLevel;
 	}
 
 	//--------超时时间
-	public final void setTimeout(int timeout) throws DBException {
+	public void setTimeout(int timeout) throws DBException {
 		if (timeout < TIMEOUT_DEFAULT) {
 			throw new DBException("DB-T0002", timeout);
 		}
 		this.timeout = timeout;
 	}
 
-	public final int getTimeout() {
+	public int getTimeout() {
 		return timeout;
 	}
 
 	//--------设置只读
-	public final void setReadOnly(boolean readOnly) {
+	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
 
-	public final boolean isReadOnly() {
+	public boolean isReadOnly() {
 		return readOnly;
 	}
 
