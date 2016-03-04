@@ -530,7 +530,7 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 - 连接Mysql数据库的数据源，编号为“mysqlDs”，使用了Apache DBCP数据源；
 - 连接Oracle的数据源，编号为“oracleDs”，使用JNDI方式查找容器自带的数据源；
 
-默认数据源使用了Rexdb自带的数据源，如果希望将其配置为初始化连接数为3、每次增长3个连接、重试次数设置为3、不再测试连接活跃性时，可以调整为如下配置：
+上面的示例中，默认数据源使用了Rexdb自带的数据源，如果希望将其配置为初始化连接数为3、每次增长3个连接、重试次数设置为3、不再测试连接活跃性时，可以调整为如下配置：
 
 ```xml
 	<dataSource>
@@ -546,7 +546,7 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 	</dataSource>
 ```
 
-在配置好数据源后，调用类`org.rex.DB`的执行SQL、处理事务等接口时，都可以指定数据源。例如，在执行查询时：
+在配置好数据源后，在调用类`org.rex.DB`的方法执行SQL、处理事务时，可以指定数据源。例如，在执行查询时：
 
 ```java
 	DB.getMap("SELECT * FROM REX_TEST");			//使用默认数据源执行查询
@@ -556,7 +556,7 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 
 ### 监听 ###
 
-*/configuration/listener*节点用于设置监听程序。监听程序可以跟踪Rexdb的SQL执行、事物等事件，该节点支持如下属性：
+*/configuration/listener*节点用于设置监听程序。监听程序可以跟踪SQL执行、事物等事件，该节点支持如下属性：
 
 <table>
 	<tr>
@@ -566,16 +566,16 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 		<th width="">说明</th>
 	</tr>
 	<tr>
-		<td>class</td>
+		<td><code>class</code></td>
 		<td>否</td>
-		<td>String</td>
+		<td><code>String</code></td>
 		<td>监听程序实现类。</td>
 	</tr>
 </table>
 
-如果监听类定义了可以设置的属性，还可以通过设置*property*子节点为属性赋值。Rexdb内置了用于输出SQL和事物的监听类，分别是：
+如果监听类定义了可以设置的属性，还可以通过设置`property`节点设置值。Rexdb内置了用于输出SQL和事物信息的监听类，分别是：
 
-- org.rex.db.listener.impl.SqlDebugListener：使用日志包输出SQL和事物信息。该监听类支持如下配置选项：
+-` org.rex.db.listener.impl.SqlDebugListener`：使用日志接口输出SQL和事物信息。该监听类支持如下配置选项：
 
 <table class="tbl">
 	<tr>
@@ -587,24 +587,24 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 		<th width="">说明</th>
 	</tr>
 	<tr>
-		<td>level</td>
+		<td><code>level</code></td>
 		<td>否</td>
-		<td>String</td>
-		<td>debug, info</td>
-		<td>debug</td>
+		<td><code>String</code></td>
+		<td><code>debug</code>, <code>info</code></td>
+		<td><code>debug</code></td>
 		<td>设置日志的输出级别。</td>
 	</tr>
 	<tr>
-		<td>simple</td>
+		<td><code>simple</td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>false</td>
-		<td>是否启用简易的日志输出，当设置为true时，仅在SQL或事物完成后输出日志；设置为false时，在SQL和事物执行前后均会输出日志。</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>false</code></td>
+		<td>是否启用简易的日志输出。当设置为<code>true</code>时，仅在SQL或事物完成后输出简要的日志；设置为<code>false</code>时，在SQL和事物执行前后均会输出日志。</td>
 	</tr>
 </table>
 
-- org.rex.db.listener.impl.SqlConsolePrinterListener：将SQL和事物信息输出到终端。该监听类支持如下配置选项：
+- `org.rex.db.listener.impl.SqlConsolePrinterListener`：将SQL和事物信息输出到`System.out`终端。该监听类支持如下配置选项：
 
 <table class="tbl">
 	<tr>
@@ -616,16 +616,16 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 		<th width="">说明</th>
 	</tr>
 	<tr>
-		<td>simple</td>
+		<td><code>simple</code></td>
 		<td>否</td>
-		<td>boolean</td>
-		<td>true, false</td>
-		<td>false</td>
-		<td>是否启用简易的日志输出，当设置为true时，仅在SQL或事物完成后输出日志；设置为false时，在SQL和事物执行前后均会输出日志。</td>
+		<td><code>boolean</code></td>
+		<td><code>true</code>, <code>false</code></td>
+		<td><code>false</code></td>
+		<td>是否启用简易的日志输出，当设置为<code>true</code>时，仅在SQL或事物完成后输出日志；设置为<code>false</code>时，在SQL和事物执行前后均会输出日志。</td>
 	</tr>
 </table>
 
-例如，一个使用内置的监听类的示例如下：
+例如，一下代码配置了一个监听：
 
 ```xml
  	<listener class="org.rex.db.listener.impl.SqlDebugListener">
@@ -633,17 +633,29 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
  	</listener>
 ```
 
-以上配置使用了Rexdb内置的SqlDebugListener监听，并以DEBUG级别输出简要的日志信息。如果您需要自定义监听程序，例如记录每个SQL的执行时间，可以自行编写监听类，详情请查看[监听接口](#class-listener)。
+上面的配置使用了Rexdb内置的`SqlDebugListener`监听类，并以DEBUG级别输出简要的日志信息。如果您需要自行定义监听程序，例如记录每个SQL的执行时间，可以编写程序实现监听接口，详情请查看[扩展-监听](#class-listener)。
 
 需要注意的是，监听程序并非线程安全，且不运行于独立线程，在编程时需要注意线程安全和性能问题。
 
 ## 执行数据库操作 ##
 
-定义好全局配置文件后，就可以使用Rexdb的接口执行数据库操作了。
+定义好全局配置文件后，就可以执行数据库操作了。Rexdb将数据库操作接口集中在类`org.rex.DB`中，且都是静态的，可以直接调用。根据SQL类型的不同，可以将接口分类如下：
+    
+- 插入/更新/删除操作：`DB.update(...)`系列接口；
+- 批量更新：`DB.batchUpdate(...)`系列接口；
+- 查询多行记录：`DB.getList(...)`和`DB.getMapList(...)`系列接口；
+- 查询单行记录：`DB.get(...)`和`DB.getMap(...)`系列接口；
+- 调用：`DB.call(...)`系列接口；
+- 事物：`DB.beginTransaction(...)`, `DB.commit(...)`, `DB.rollback(...)`等接口
+- 其它：`getDataSource(...)`, `getConnection(...)`等接口
+
+如果您在开发时使用了Eclipse等IDE工具，可以方便的由工具提示出可用的接口列表，直接选择需要的接口使用即可。
 
 ### 插入/更新/删除 ###
 
-在Rexdb中，数据库的插入/更新/删除操作，以及执行创建表、删除表等DDL SQL时，均使用org.rex.DB的如下接口：
+类`org.rex.DB`的下列接口负责执行数据库的插入/更新/删除操作，以及执行创建表、删除表等DDL SQL：
+
+> 使用默认数据源
 
 <table class="tbl">
 	<tr>
@@ -652,77 +664,100 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 		<th width="">说明</th>
 	</tr>
 	<tr>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>update(String sql)</td>
-		<td>在默认数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。</td>
+		<td>执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。</td>
 	</tr>
 	<tr>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>update(String sql, Object[] parameterArray)</td>
-		<td>在默认数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以“?”标记预编译参数，Object数组中的元素按照顺序与其对应。</td>
+		<td>执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>update(String sql, Ps ps)</td>
-		<td>在默认数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以“?”标记预编译参数，Ps对象内置的元素按照顺序与其对应。</td>
+		<td>执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
-		<td>int</td>
-		<td>update(String sql, Map<?, ?> parameterMap)</td>
-		<td>在默认数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以“${*key*}”的格式标记预编译参数，Map对象中键为*key*的值与其对应。当Map对象中没有键*key*时，将赋值为null。</td>
+		<td><code>int</code></td>
+		<td>update(String sql, Map<?, ?parameterMap)</td>
+		<td>执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
 	</tr>
 	<tr>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>update(String sql, Object parameterBean)</td>
-		<td>在默认数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以“${*key*}”的格式标记预编译参数，Rexdb将在Object对象中查找*key*对应的getter方法，通过该方法取值后作为相应的预编译参数。当Object对象中没有相应的getter方法时，将赋值为null。</td>
+		<td>执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
 	</tr>
+</table>
 
+> 使用指定的数据源
+
+<table class="tbl">
 	<tr>
-		<td>int</td>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>int</code></td>
 		<td>update(String dataSourceId, String sql)</td>
 		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。</td>
 	</tr>
 	<tr>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>update(String dataSourceId, String sql, Object[] parameterArray)</td>
-		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以“?”标记预编译参数，Object数组中的元素按照顺序与其对应。</td>
+		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>update(String dataSourceId, String sql, Ps ps)</td>
-		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以“?”标记预编译参数，Ps对象内置的元素按照顺序与其对应。</td>
+		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
-		<td>int</td>
-		<td>update(String dataSourceId, String sql, Map<?, ?> parameterMap)</td>
-		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以“${*key*}”的格式标记预编译参数，Map对象中键为*key*的值与其对应。当Map对象中没有键*key*时，将赋值为null。</td>
+		<td><code>int</code></td>
+		<td>update(String dataSourceId, String sql, Map<?, ?parameterMap)</td>
+		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
 	</tr>
 	<tr>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>update(String dataSourceId, String sql, Object parameterBean)</td>
-		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以“${*key*}”的格式标记预编译参数，Rexdb将在Object对象中查找*key*对应的getter方法，通过该方法取值后作为相应的预编译参数。当Object对象中没有相应的getter方法时，将赋值为null。</td>
+		<td>在指定的数据源中执行一个SQL语句，例如INSERT、UPDATE、DELETE或DDL语句。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在Object对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
 	</tr>
 </table>
 
-例如，需要向数据库中插入一行记录时，可以编写如下代码：
+在执行带有预编译参数的SQL时，`数组`、`org.rex.db.Ps`、`Map`和`Java对象`都可以作为预编译参数。
+
+当使用`数组`做参数时，SQL语句以`?`作为预编译参数标记，数组元素按照顺序与其对应。Rexdb还内置了类`org.rex.db.Ps`，提供了比数组更加丰富的操作接口，可以按照下标赋值，还可以声明输出参数等，详情请参见[类org.rex.db.Ps](#class-ps)。`Ps`对象中内置的元素同样按照顺序与SQL语句中的`?`标记对应。
+
+Rexdb支持`java.util.Map`作为执行SQL的参数。此时，SQL语句中的预编译参数需要声明为`#{key}`的格式，`Map`中键为`key`的值将作为对应的预编译参数，当`Map`中没有键`key`时，预编译参数将被设置为`null`。
+
+Rexdb还支持`Java类`作为预编译参数，与`Map`类似，SQL语句中的预编译参数需要声明为`${key}`的格式，Rexdb将通过调用getter方法获取`key`的值，并将其作为预编译参数。当无法取值时，预编译参数将设置为`null`。需要注意的是，实体类还需要满足如下条件，才能被Rexdb正常调用：
+
+- 类是可以访问的；
+- 参数需要有标准的getter方法；
+- 类具备无参的构造函数（启用动态字节码选项时需要调用）
+
+以下是使用各种类型的参数执行SQL的示例：
+
+以下代码直接执行了一个没有预编译参数的SQL：
 
 	DB.update("INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (1, 'Jim', now())"); //Mysql
 
-当希望以预编译方式执行SQL时，可以将参数按照顺序放置在Object数组中，并调用update接口：
+当使用`数组`作为执行SQL的参数时，可以使用如下代码：
 
 ```Java
 	String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)";
 	int i = DB.update(sql, new Object[]{1, "test", new Date()});
 ```
 
-Rexdb内置了一个类*org.rex.db.Ps*，它可以取代Object数组作为执行SQL的参数。它可以指定字段类型、按照下标赋值，还可以声明输出参数，在使用中更加灵活，详情请参见[类org.rex.db.Ps](#class-ps)。例如，以下代码直接调用了该对象的构造函数，设置了预编译参数：
+与数组类似，当使用`Ps`对象作为参数时：
 
 ```Java
 String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)";
 int i = DB.update(sql, new Ps(1, "test", new Date()));
 ```
 
-Rexdb支持*java.util.Map*作为执行SQL的参数。此时，SQL语句中的预编译参数需要声明为"${*key*}"的格式，Map中键为*key*的值将作为预编译参数，当没有*key*时，预编译参数将设置为null。例如：
+当使用`Map`对象做参数时，SQL语句中需要以`#{key}`的格式标记预编译参数，例如：
 
 ```Java
 String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (#{id}, #{name}, #{createTime})";
@@ -734,7 +769,7 @@ prameters.put("createTime", new Date());
 int i = DB.update(sql, prameters);
 ```
 
-Rexdb还支持Java实体类作为预编译参数时，同Map类似，SQL语句中的预编译参数需要声明为"${*key*}"的格式，Rexdb将调用ava实体类中key对应的getter方法，成功取值后作为相应的预编译参数，找不到对应的getter方法时，预编译参数将设置为null。例如，Java实体类如下：
+使用自定义的`Java对象`做参数时，首先需要编写一个成员变量能够与表的字段对应的类：
 
 ```Java
 import java.util.Date;
@@ -789,20 +824,15 @@ RexTest rexTest = new RexTest(1, "test", new Date());
 int i = DB.update(sql, rexTest);
 ```
 
-在使用实体类作为预编译参数时，需要注意的是，实体类需要满足如下条件，才能被Rexdb正常调用：
-
-- 类是可以访问的；
-- 参数需要有标准的getter方法；
-- 类具备无参的构造函数（启用动态字节码选项时需要调用）
-
-
-下图展示了*DB.update*接口中SQL语句和参数的组合方式：
+下图展示了`DB.update(...)`接口中SQL语句和各种类型参数的组合方式：
 
 ![](resource/quick-start-update.png)
 
 ### 批量更新 ###
 
-Rexdb的批量更新接口如下：
+当插入多条记录时，使用批量更新接口可以获得更好的执行效率。类`org.rex.DB`中的批量更新接口如下：
+
+> 使用默认数据源
 
 <table class="tbl">
 	<tr>
@@ -818,31 +848,73 @@ Rexdb的批量更新接口如下：
 	<tr>
 		<td><code>int[]</code></td>
 		<td>batchUpdate(String sql, Object[][] parameterArrays)</td>
-		<td>将一组`java.lang.Object数组`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句以“?”标记预编译参数，`Object数组`中的元素按照顺序与其对应。</td>
+		<td>将一组<code>java.lang.Object数组</code>作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>int[]</code></td>
 		<td>batchUpdate(String sql, Ps[] parameters)</td>
-		<td>将一组`org.rex.db.Ps对象`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句以“?”标记预编译参数，`Ps对象`内置的元素按照顺序与其对应。。</td>
+		<td>将一组<code>org.rex.db.Ps对象</code>作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>int[]</code></td>
 		<td>batchUpdate(String sql, Map<?, ?>[] parameterMaps)</td>
-		<td>将一组`java.util.Map`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句需要以“${*key*}”的格式标记预编译参数，Map对象中键为*key*的值与其对应。</td>
+		<td>将一组<code>java.util.Map</code>作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>int[]</code></td>
 		<td>batchUpdate(String sql, Object[] parameterBeans)</td>
-		<td>将一组`java.lang.Object对象`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句需要以“${*key*}”的格式标记预编译参数，`Object对象`中的属性名称与其对应。</td>
+		<td>将一组<code>Object</code>对象作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Object</code>对象中的属性名称与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>int[]</code></td>
 		<td>batchUpdate(String sql, List<?> parameterList)</td>
-		<td>将一个`java.util.List对象`作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。`List`中的元素类型必须相同，Rexdb将根据类型确定SQL中预编译参数标记方式，以及取值方式。</td>
+		<td>将一个<code>java.util.List</code>对象作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。<code>List</code>中的元素类型必须相同，Rexdb将根据类型确定SQL中预编译参数标记方式和取值方式。</td>
 	</tr>
 </table>
 
-在使用批量更新接口时，需要预先准备好多个SQL或参数。然后直接调用DB.batchUpdate接口提交至数据库执行。例如，以`org.rex.db.Ps`数组做参数时：
+> 使用指定的数据源
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String dataSourceId, String[] sql)</td>
+		<td>在指定数据源中执行一批SQL语句，如果全部成功，则返回更新计数组成的数组。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String dataSourceId, String sql, Object[][] parameterArrays)</td>
+		<td>在指定数据源中将一组<code>java.lang.Object数组</code>作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String dataSourceId, String sql, Ps[] parameters)</td>
+		<td>将一组<code>org.rex.db.Ps对象</code>作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String dataSourceId, String sql, Map<?, ?>[] parameterMaps)</td>
+		<td>在指定数据源中将一组<code>java.util.Map</code>作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String dataSourceId, String sql, Object[] parameterBeans)</td>
+		<td>在指定数据源中将一组<code>Object</code>对象作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Object</code>对象中的属性名称与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>int[]</code></td>
+		<td>batchUpdate(String dataSourceId, String sql, List<?> parameterList)</td>
+		<td>在指定数据源中将一个<code>java.util.List</code>对象作为参数提交至数据库执行，如果全部成功，则返回更新计数组成的数组。<code>List</code>中的元素类型必须相同，Rexdb将根据类型确定SQL中预编译参数标记方式和取值方式。</td>
+	</tr>
+</table>
+
+在使用批量更新接口时，需要预先准备好多个SQL或参数。当需要写入大量记录时，可以将考虑拆分成多份后多次调用批量更新接口，以减少内存占用。
+
+以`org.rex.db.Ps`数组做参数为例，可以使用如下代码执行批量更新：
 
 ```Java
 	String sql = "INSERT INTO REX_TEST(ID, NAME, CREATE_TIME) VALUES (?, ?, ?)";
@@ -851,22 +923,30 @@ Rexdb的批量更新接口如下：
 		pss[i] = new Ps(i, "name", new Date());
 	DB.batchUpdate(sql, pss);
 ```
+
 执行成功后，数据库将写入10条记录。
 
-要注意的是，当您需要写入大量记录时（例如1万多条记录），可以将考虑将数据拆分成多份，多次调用批量更新接口，以减少内存占用。
-
-下图展示了*DB.batchUpdate*接口中SQL语句和参数的组合方式：
+下图展示了`DB.batchUpdate(...)`系列接口的SQL语句和参数组合方式：
 
 ![](resource/quick-start-batchupdate.png)
 
 ### 查询多行记录 ###
 
-类`org.rex.DB`中的`getList`用于查询多条记录，返回值是一个`java.util.List`对象，其元素为`指定类型Java对象`，每个元素对应一条数据库记录。`getMapList`方法也可以查询多条记录，返回值是一个元素为`org.rex.RMap`的`java.util.List`对象。其中，`org.rex.RMap`对象是`java.util.HashMap`的子类，提供了类型转换方法，可以直接获取指定Java类型的值，详情请查阅类[org.rex.RMap](#class-rmap)。
+类`org.rex.DB`中的`getList(...)`系列接口用于查询多条记录。返回值是一个`java.util.ArrayList`列表，列表中的元素为调用接口时指定类型的`Java对象`，每个元素对应一条数据库记录。如果没有找到符合条件的记录，将返回一个空的`ArrayList`。
 
-当未查询到符合条件的记录时，将返回一个空的`List`，即调用其`size()`接口的返回值是0。
+如果没有编写结果集对应的`Java对象`，也可以使用`getMapList(...)`系列方法查询一个包含`java.util.Map`的列表。列表中的元素类型为`org.rex.RMap`，是`java.util.HashMap`的子类，该类的具体接口请查阅类[org.rex.RMap](#class-rmap)。
 
-- 希望查询出`指定类型的Java对象`列表时，您需要在接口中指定对象类型，可以使用下面的接口：
+Rexdb在进行O/R映射时，会读取结果集中元数据，并将标签（Label）名称转换为Java风格的命名（具体的转换规则为“分析小写的标签名称，将字符`_`后的首字母转换为大写后，再移除字符`_`”），再根据转换后的名称为`Java对象`或`Map`赋值。例如：
 
+    列名			->	Map的key/Java对象的属性名称
+    ABC			->	abc
+    ABC_DE		->	abcDe
+    ABC_DE_F	->	abcDeF
+
+- 如果希望查询指定类型的`Java对象`，可以使用如下接口：
+
+> 使用默认数据源
+ 
 <table class="tbl">
 	<tr>
 		<th width="60">返回值</th>
@@ -875,57 +955,119 @@ Rexdb的批量更新接口如下：
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>get(String sql, Class<T> resultClass)</code></td>
-		<td></td>
+		<td>get(String sql, Class&lt;T&gt; resultClass)</td>
+		<td>执行查询，获取元素类型为resultClass的Java对象列表。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>get(String sql, Ps parameters, Class<T> resultClass)</code></td>
-		<td></td>
+		<td>get(String sql, Object[] parameterArray, Class&lt;T&gt; resultClass)</td>
+		<td>执行查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>get(String sql, Object[] parameterArray, Class<T> resultClass)</code></td>
-		<td></td>
+		<td>get(String sql, Ps parameters, Class&lt;T&gt; resultClass)</td>
+		<td>执行查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>get(String sql, Object parameters, Class<T> resultClass)</code></td>
-		<td></td>
+		<td>get(String sql, Map&lt;?, ?&gt; parameters, Class&lt;T&gt; resultClass)</td>
+		<td>执行查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>get(String sql, Map<?, ?> parameters, Class<T> resultClass)</code></td>
-		<td></td>
+		<td>get(String sql, Object parameters, Class&lt;T&gt; resultClass)</td>
+		<td>执行查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>getList(String sql, Class<T> resultClass, int offset, int rows)</code></td>
-		<td></td>
+		<td>getList(String sql, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>执行分页查询，获取元素类型为resultClass的Java对象列表。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>getList(String sql, Ps parameters, Class<T> resultClass, int offset, int rows)</code></td>
-		<td></td>
+		<td>getList(String sql, Object[] parameterArray, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>执行分页查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>getList(String sql, Object[] parameterArray, Class<T> resultClass, int offset, int rows)</code></td>
-		<td></td>
+		<td>getList(String sql, Ps parameters, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>执行分页查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>getList(String sql, Object parameters, Class<T> resultClass, int offset, int rows)</code></td>
-		<td></td>
+		<td>getList(String sql, Map&lt;?, ?&gt; parameters, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>执行分页查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;T&gt;</code></td>
-		<td><code>getList(String sql, Map<?, ?> parameters, Class<T> resultClass, int offset, int rows)</code></td>
-		<td></td>
+		<td>getList(String sql, Object parameters, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>执行分页查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
 	</tr>
 </table>
 
-- 希望查询出`java.util.Map`列表时，可以使用下列接口：
+> 使用指定的数据源
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>get(String dataSourceId, String sql, Class&lt;T&gt; resultClass)</td>
+		<td>在指定数据源中执行查询，获取元素类型为resultClass的Java对象列表。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>get(String dataSourceId, String sql, Object[] parameterArray, Class&lt;T&gt; resultClass)</td>
+		<td>在指定数据源中执行查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>get(String dataSourceId, String sql, Ps parameters, Class&lt;T&gt; resultClass)</td>
+		<td>在指定数据源中执行查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>get(String dataSourceId, String sql, Map&lt;?, ?&gt; parameters, Class&lt;T&gt; resultClass)</td>
+		<td>在指定数据源中执行查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>get(String dataSourceId, String sql, Object parameters, Class&lt;T&gt; resultClass)</td>
+		<td>在指定数据源中执行查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>getList(String dataSourceId, String sql, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素类型为resultClass的Java对象列表。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>getList(String dataSourceId, String sql, Object[] parameterArray, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>getList(String dataSourceId, String sql, Ps parameters, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>getList(String dataSourceId, String sql, Map&lt;?, ?&gt; parameters, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;T&gt;</code></td>
+		<td>getList(String dataSourceId, String sql, Object parameters, Class&lt;T&gt; resultClass, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素类型为resultClass的Java对象列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
+	</tr>
+</table>
+
+- 如果希望查询出元素为`java.util.Map`的列表，可以使用下列接口：
+
+> 使用默认数据源
 
 <table class="tbl">
 	<tr>
@@ -935,53 +1077,113 @@ Rexdb的批量更新接口如下：
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql)</code></td>
-		<td></td>
+		<td>getMapList(String sql)</td>
+		<td>执行查询，获取元素为<code>Map</code>的列表。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Ps parameters)</code></td>
-		<td></td>
+		<td>getMapList(String sql, Object[] parameterArray)</td>
+		<td>执行查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Object[] parameterArray)</code></td>
-		<td></td>
+		<td>getMapList(String sql, Ps parameters)</td>
+		<td>执行查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Object parameters)</code></td>
-		<td></td>
+		<td>getMapList(String sql, Map&lt;?, ?&gt; parameters)</td>
+		<td>执行查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Map<?, ?> parameters)</code></td>
-		<td></td>
+		<td>getMapList(String sql, Object parameters)</td>
+		<td>执行查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, int offset, int rows)</code></td>
-		<td></td>
+		<td>getMapList(String sql, int offset, int rows)</td>
+		<td>执行分页查询，获取元素为<code>Map</code>的列表。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Ps parameters, int offset, int rows)</code></td>
-		<td></td>
+		<td>getMapList(String sql, Object[] parameterArray, int offset, int rows)</td>
+		<td>执行分页查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Object[] parameterArray, int offset, int rows)</code></td>
-		<td></td>
+		<td>getMapList(String sql, Ps parameters, int offset, int rows)</td>
+		<td>执行分页查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Object parameters, int offset, int rows)</code></td>
-		<td></td>
+		<td>getMapList(String sql, Map&lt;?, ?&gt; parameters, int offset, int rows)</td>
+		<td>执行分页查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
 	</tr>
 	<tr>
 		<td><code>List&lt;RMap&gt;</code></td>
-		<td><code>getMapList(String sql, Map<?, ?> parameters, int offset, int rows)</code></td>
-		<td></td>
+		<td>getMapList(String sql, Object parameters, int offset, int rows)</td>
+		<td>执行分页查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
+	</tr>
+</table>
+
+> 使用指定的数据源
+
+<table class="tbl">
+	<tr>
+		<th width="60">返回值</th>
+		<th width="300">接口</th>
+		<th width="">说明</th>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql)</td>
+		<td>在指定数据源中执行查询，获取元素为<code>Map</code>的列表。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, Object[] parameterArray)</td>
+		<td>在指定数据源中执行查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, Ps parameters)</td>
+		<td>在指定数据源中执行查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, Map&lt;?, ?&gt; parameters)</td>
+		<td>在指定数据源中执行查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, Object parameters)</td>
+		<td>在指定数据源中执行查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素为<code>Map</code>的列表。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, Object[] parameterArray, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Object数组</code>中的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, Ps parameters, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>?</code>标记预编译参数，<code>Ps</code>对象内置的元素按照顺序与其对应。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, Map&lt;?, ?&gt; parameters, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，<code>Map</code>对象中键为<code>key</code>的值与其对应。当<code>Map</code>对象中没有键<code>key</code>时，将赋值为<code>null</code>。</td>
+	</tr>
+	<tr>
+		<td><code>List&lt;RMap&gt;</code></td>
+		<td>getMapList(String dataSourceId, String sql, Object parameters, int offset, int rows)</td>
+		<td>在指定数据源中执行分页查询，获取元素为<code>Map</code>的列表。SQL语句需要以<code>${key}</code>的格式标记预编译参数，Rexdb将在<code>Object</code>对象中查找<code>key</code>对应的getter方法，通过该方法取值后作为相应的预编译参数。当<code>Object</code>对象中没有相应的getter方法时，将赋值为<code>null</code>。</td>
 	</tr>
 </table>
 
