@@ -406,8 +406,8 @@ public class Ps {
 		return this;
 	}
 
-	public Ps setOutResultSet(int index, String paramName, int sqlType, Class<?> pojoClass) {
-		set(parameters, index, new SqlOutParameter(sqlType, paramName, pojoClass, true));
+	public Ps setOutResultSet(int index, String paramName, int sqlType, Class<?> resultClass) {
+		set(parameters, index, new SqlOutParameter(sqlType, paramName, resultClass, true));
 		return this;
 	}
 
@@ -421,8 +421,8 @@ public class Ps {
 		return setOutResultSet(index, null, sqlType, null);
 	}
 
-	public Ps setOutResultSet(int index, int sqlType, Class<?> pojoClass) {
-		return setOutResultSet(index, null, sqlType, pojoClass);
+	public Ps setOutResultSet(int index, int sqlType, Class<?> resultClass) {
+		return setOutResultSet(index, null, sqlType, resultClass);
 	}
 
 	public Ps setOutString(int index) {
@@ -531,8 +531,8 @@ public class Ps {
 		return addOutResultSet(null, sqlType, null);
 	}
 
-	public Ps addOutResultSet(int sqlType, Class pojoClass) {
-		return addOutResultSet(null, sqlType, pojoClass);
+	public Ps addOutResultSet(int sqlType, Class<?> resultClass) {
+		return addOutResultSet(null, sqlType, resultClass);
 	}
 
 	public Ps addOutString() {
