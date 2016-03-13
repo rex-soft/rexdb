@@ -81,8 +81,8 @@ public class ArrayStatementCreator extends AbstractStatementCreator{
 		PreparedStatement statement = conn.prepareStatement(sql);
 		for (int i = 0; i < parametersArray.length; i++) {
 			setParameters(statement, parametersArray[i]);
+			statement.addBatch();
 		}
-		statement.addBatch();
 		return statement;
 	}
 	

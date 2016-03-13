@@ -111,9 +111,9 @@ public class PsStatementCreator extends AbstractStatementCreator{
 	        for(int i = 0; i < ps.length; i++){
 	        	if(ps[i] != null){
 	        		setParameters(preparedStatement, ps[i]);
+	        		preparedStatement.addBatch();
 	        	}
 	        }
-	        preparedStatement.addBatch();
 		}
 		
         return preparedStatement;

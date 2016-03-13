@@ -85,8 +85,8 @@ public class BeanStatementCreator extends AbstractStatementCreator{
 		PreparedStatement statement = connection.prepareStatement(all[0]);
 		for (int i = 0; i < parametersArray.length; i++) {
 			fillStatement(statement, tokens, parametersArray[i]);
+			statement.addBatch();
 		}
-		statement.addBatch();
 		return statement;
 	}
 
