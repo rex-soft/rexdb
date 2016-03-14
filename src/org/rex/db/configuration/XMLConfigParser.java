@@ -52,7 +52,8 @@ public class XMLConfigParser {
 
 	private XMLConfigParser(XPathParser parser, Properties props) {
 		this.configuration = new Configuration();
-		this.configuration.setVariables(props);
+		if(props != null)
+			this.configuration.addVariables(props);
 		this.parser = parser;
 	}
 
