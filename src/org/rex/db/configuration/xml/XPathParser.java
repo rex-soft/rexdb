@@ -249,7 +249,7 @@ public class XPathParser {
 			});
 			return builder.parse(inputSource);
 		} catch (Exception e) {
-			throw new DBRuntimeException("DB-C10054", e, e.getMessage());
+			throw new DBRuntimeException("DB-F0009", e, e.getMessage());
 		}
 	}
 

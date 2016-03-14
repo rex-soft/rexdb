@@ -60,13 +60,14 @@ public class ORUtil {
 		Map<String, Class<?>> types = ReflectUtil.getParameterTypes(beanClass);
 		for (int i = 0; i < rsLabels.length; i++) {
 			Method writer = writers.get(rsLabelsRenamed[i]);
-			Class<?> type = types.get(rsLabelsRenamed[i]);
 			if(writer == null) continue;
+			Class<?> type = types.get(rsLabelsRenamed[i]);
 			if(type == null){//no class member variable matches the writer
 				type = writer.getParameterTypes()[0];
 				if(type == null) continue;
-				else
+				else{
 					types.put(rsLabelsRenamed[i], type);
+				}
 			}
 			
 			Object value = null;

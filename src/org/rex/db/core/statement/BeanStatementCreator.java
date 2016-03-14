@@ -87,7 +87,6 @@ public class BeanStatementCreator extends AbstractStatementCreator{
 			fillStatement(statement, tokens, parametersArray[i]);
 			statement.addBatch();
 		}
-		
 		return statement;
 	}
 

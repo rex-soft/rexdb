@@ -77,7 +77,6 @@ public class ClassResultReader<T> implements ResultReader<T> {
 			try {
 				return (T)setter.readResultSet(rs, orUtil, columnsCodeCacheForDynamic);
 			} catch (SQLException e) {
-				e.printStackTrace();
 				throw new DBException(e);
 			}
 		}else{

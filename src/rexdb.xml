@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!DOCTYPE configuration PUBLIC "-//rex-soft.org//REXDB DTD 1.0//EN" "http://www.rex-soft.org/dtd/rexdb-1-config.dtd">
 <configuration>
-	<properties path="org/w11/db/configuration/rexdb-1-config-sample.properties" url=""/>
 	<settings>
 		<property name="lang" value="en"/>
 		<property name="nolog" value="false" />
@@ -16,34 +15,10 @@
 		<property name="dateAdjust" value="true" />
 	</settings>
 	<!-- Mysql  class="org.apache.commons.dbcp.BasicDataSource" -->
-	<dataSource>
+	<dataSource class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
 		<property name="username" value="root" />
 		<property name="password" value="12345678" />
-		
-		<property name="initSize" value="3"/>
-		<property name="increment" value="3"/>
-		<property name="retries" value="3"/>
-		<property name="testConnection" value="false"/>
 	</dataSource>
-	<!-- h2 -->
-<!--<dataSource>
-		<property name="driverClassName" value="org.h2.Driver" />
-		<property name="url" value="jdbc:h2:file:D:/h2/data/rexdb" />
-		<property name="username" value="sa" />
-		<property name="password" value="" />
-	</dataSource> -->
-	<dataSource id="oracleDs">
-		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
-		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:orcl" />
-		<property name="username" value="test" />
-		<property name="password" value="123456" />
-	</dataSource>
-	<!-- <dataSource jndi=""/> -->
- 	<listener class="org.rex.db.listener.impl.SqlDebugListener">
- 		<property name="level" value="debug"/>
- 		<property name="simple" value="true"/>
- 	</listener> 
-<!-- 	<listener class="org.rex.db.listener.impl.SqlConsolePrinterListener" /> -->
 </configuration>
