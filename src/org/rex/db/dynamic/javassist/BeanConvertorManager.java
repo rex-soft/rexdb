@@ -163,6 +163,7 @@ public class BeanConvertorManager {
 			sb.append("}\n");
 		}
 		
+		sb.append("cols[i] = -1;\n");
 		sb.append("}\n");
 		sb.append("return cols;\n");
 		sb.append("}\n");
@@ -203,6 +204,47 @@ public class BeanConvertorManager {
 //        System.out.println(sb);
         return sb.toString();
 	}
+	
+//	/**
+//	 * build a setParameters method string
+//	 * @param clazz java bean class
+//	 * @return method string
+//	 * @throws DBException
+//	 */
+//	private static String buildSetParametersMethodString(Class<?> clazz) throws DBException{
+//        StringBuffer sb = new StringBuffer();  
+//        sb.append("public void setParameters(PreparedStatement preparedStatement, Object object, int[] requiredColumnCodes) throws SQLException {\n");
+//        sb.append("if(preparedStatement == null || object == null || requiredColumnCodes == null) return;\n");
+//        sb.append(clazz.getName()).append(" bean = (").append(clazz.getName()).append(")object;\n");
+//        sb.append("for (int i = 0; i < requiredColumnCodes.length; i++) {\n");
+//        
+//		Map<String,Method> getters = ReflectUtil.getReadableMethods(clazz);
+//		Iterator<Map.Entry<String, Method>> iter = getters.entrySet().iterator();
+//		
+//		
+//		int i = 0;
+//		sb.append("switch (requiredColumnCodes[i]) {\n");
+//		while(iter.hasNext()){
+//			Map.Entry<String, Method> entry = (Map.Entry<String, Method>)iter.next();
+//			Method getter = entry.getValue();
+//			
+//			sb.append("case "+ i +":\n");
+//			sb.append("SqlUtil.setParameter(preparedStatement, i + 1, convertValue(bean.").append(getter.getName()).append("()));\n");
+//			sb.append("break;\n");
+//			
+//			i++;
+//		}
+//
+//		sb.append("default:\n");
+//		sb.append("SqlUtil.setNull(preparedStatement, i + 1);\n");
+//		
+//		sb.append("}\n");  
+//        sb.append("}\n");  
+//        sb.append("}\n");
+//        
+////        System.out.println(sb);
+//        return sb.toString();
+//	}
 	
 	/**
 	 * get class name, return [0]string name, <tt>class name[]</tt> if class is array [1]suffix. if class is primitive type, convert it to Object first, then get primitive value.

@@ -19,6 +19,8 @@ public abstract class BeanConvertor {
 	 */
 	public abstract void setParameters(PreparedStatement preparedStatement, Object bean, String[] requiredParam) throws SQLException;
 	
+//	public abstract void setParameters(PreparedStatement preparedStatement, Object bean, int[] requiredColumnCodes) throws SQLException;
+	
 	public abstract int[] getColumnCodes(String[] rsLabelsRenamed);
 	
 	public abstract Object readResultSet(ResultSet rs, ORUtil orUtil, int[] requiredColumnCodes) throws SQLException, DBException;

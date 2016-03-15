@@ -130,10 +130,10 @@ public class BeanStatementCreator extends AbstractStatementCreator{
 			LOGGER.debug("setting java bean parameters {0} for statement[{1}].", parameters, statement.hashCode());
 		}
 		
-		if(isDynamic()){
-			BeanConvertor setter = BeanConvertorManager.getConvertor(parameters.getClass());
-			setter.setParameters(statement, parameters, tokens);
-		}else{
+//		if(isDynamic()){
+//			BeanConvertor setter = BeanConvertorManager.getConvertor(parameters.getClass());
+//			setter.setParameters(statement, parameters, tokens);
+//		}else{
 			Map<String, Method> readers = ReflectUtil.getReadableMethods(parameters.getClass());
 			for (int i = 0; i < tokens.length; i++) {
 				Method reader = readers.get(tokens[i]);
@@ -144,7 +144,7 @@ public class BeanStatementCreator extends AbstractStatementCreator{
 					SqlUtil.setParameter(statement, i + 1, value);
  				}
 			}
-		}
+//		}
 	}
 	
 }

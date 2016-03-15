@@ -28,6 +28,27 @@ public class SampleBeanConvertor extends BeanConvertor {
 			}
 		}
 	}
+	
+//	public void setParameters(PreparedStatement preparedStatement, Object object, int[] requiredColumnCodes) throws SQLException {
+//		if (preparedStatement == null || object == null || requiredColumnCodes == null)
+//			return;
+//
+//		SampleBean bean = (SampleBean) object;
+//		for (int i = 0; i < requiredColumnCodes.length; i++) {
+//
+//			switch (requiredColumnCodes[i]) {
+//			case 0:
+//				SqlUtil.setParameter(preparedStatement, i + 1, convertValue(bean.getId()));
+//				break;
+//			case 1:
+//				SqlUtil.setParameter(preparedStatement, i + 1, convertValue(bean.getDate()));
+//				break;
+//			default:
+//				SqlUtil.setNull(preparedStatement, i + 1);
+//			}
+//			
+//		}
+//	}
 
 	public int[] getColumnCodes(String[] rsLabelsRenamed) {
 		int[] cols = new int[rsLabelsRenamed.length];
@@ -40,6 +61,8 @@ public class SampleBeanConvertor extends BeanConvertor {
 				cols[i] = 1;
 				continue;
 			}
+			
+			cols[i] = -1;
 		}
 		return cols;
 	}

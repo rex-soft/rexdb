@@ -86,7 +86,7 @@ public class Configuration {
 	/**
 	 * 使用动态类替代反射调用
 	 */
-	private volatile boolean dynamicClass = false;
+	private volatile boolean dynamicClass = true;
 	
 	/**
 	 * 自动调整日期/时间类型，以适应
@@ -121,7 +121,6 @@ public class Configuration {
 	
 	//--构造函数
 	public Configuration(){
-		variables = new Properties();
 		dataSourceManager = new DataSourceManager();
 		listenerManager = new ListenerManager();
 		dialectManager = new DialectManager();
@@ -204,12 +203,10 @@ public class Configuration {
 	}
 	
 	//---------------------------
-	public void setVariables(Properties variables) {
-		this.variables = variables;
-	}
-	
 	public void addVariables(Properties variables) {
-		if(variables != null)
+		if(this.variables == null) 
+			this.variables = variables;
+		else
 			this.variables.putAll(variables);
 	}
 
