@@ -209,7 +209,8 @@ public class Configuration {
 	}
 	
 	public void addVariables(Properties variables) {
-		this.variables.putAll(variables);
+		if(variables != null)
+			this.variables.putAll(variables);
 	}
 
 	public Properties getVariables() {
