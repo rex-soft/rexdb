@@ -388,7 +388,7 @@ public class DBTemplate {
 	public void applyTimeout(Statement stmt, DataSource ds) throws DBException {
 		int live = Configuration.getCurrentConfiguration().getQueryTimeout();
 		ConnectionHolder holder = (ConnectionHolder) ThreadConnectionHolder.get(ds);
-		if (holder != null && holder.getDeadline() != null) {//已短的时间为准
+		if (holder != null && holder.getDeadline() != null) {//以短的时间为准
 			int tranLive = holder.getTimeToLiveInSeconds();
 			if(live < 0  || (live > 0 && live > tranLive))
 				live = tranLive;

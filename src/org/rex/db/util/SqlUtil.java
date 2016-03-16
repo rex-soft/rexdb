@@ -3,7 +3,6 @@ package org.rex.db.util;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.rex.db.Ps;
-import org.rex.db.configuration.Configuration;
 import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
 
@@ -26,10 +24,6 @@ public class SqlUtil {
 	private static final char PARAMETER = '?';
 	
 	private static final Map<String, String[]> sqlCache = new HashMap<String, String[]>();
-	
-	private static boolean isDateAdjust() throws DBException{
-		return Configuration.getCurrentConfiguration().isDateAdjust();
-	}
 	
 	/**
 	 * 对SQL执行基本的校验，防止错误查询被发送到数据库。校验不通过时直接抛出异常
@@ -75,14 +69,11 @@ public class SqlUtil {
 					break;
 				case Types.DATE:
 				case Types.TIMESTAMP:
+					if(value.getClass() == java.sql.Date.class)
+						preparedStatement.setTimestamp(index, new java.sql.Timestamp(((Date)value).getTime()));
 				case Types.TIME:
-					Class<?> valueClass = value.getClass();
-					if(valueClass == java.sql.Date.class || valueClass == java.sql.Timestamp.class || valueClass == java.sql.Time.class){
-						//ignore and continue
-					}else if(java.util.Date.class.isAssignableFrom(valueClass)){
-						preparedStatement.setTimestamp(index, new Timestamp(((Date)value).getTime()));
-						break;
-					}
+					if(value.getClass() == java.sql.Date.class)
+						preparedStatement.setTime(index, new java.sql.Time(((Date)value).getTime()));
 				default : 
 					preparedStatement.setObject(index, value, sqlType);
 					break;
@@ -247,8 +238,10 @@ public class SqlUtil {
 				type = Types.FLOAT;
 			else if(paramClass == double.class || paramClass == Double.class) 
 				type = Types.DOUBLE;
-			else if(java.util.Date.class.isAssignableFrom(paramClass)){
+			else if(paramClass == java.util.Date.class || paramClass == java.sql.Date.class || paramClass == java.sql.Timestamp.class){
 				type = Types.TIMESTAMP;
+			}else if(paramClass == java.sql.Time.class){
+				type = Types.TIME;
 			}else if(paramClass == java.sql.Blob.class) //XXX: Not sure if available
 				type = Types.BLOB;
 			else if(paramClass == java.sql.Clob.class) //XXX: Not sure if available
@@ -258,6 +251,14 @@ public class SqlUtil {
 		}
 
 		return type;
+	}
+	
+	public static void main(String[] args) {
+		long s = System.currentTimeMillis();
+		for (int i = 0; i < 1000000; i++) {
+			boolean b = java.util.Date.class == java.util.Date.class;
+		}
+		System.out.println(System.currentTimeMillis()-s);
 	}
 	
 	/**

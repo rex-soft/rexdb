@@ -361,9 +361,10 @@ public class ReflectUtil {
 			throw new DBException("DB-URF05", e, classPath, e.getMessage());
 		}
 
-		if (targetClass != null && !targetClass.isAssignableFrom(clazz))
+		try{
+			return (T) instance(clazz);
+		}catch(ClassCastException e){
 			throw new DBException("DB-URF06", classPath, targetClass.getName());
-
-		return (T) instance(clazz);
+		}
 	}
 }

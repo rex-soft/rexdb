@@ -232,11 +232,11 @@ public class DBUpdate extends DBOperation {
 			templateBatchUpdate(sql, null);
 		
 		Class<?> clazz = validateListElementsType(parameterList);
-		if(Ps.class.isAssignableFrom(clazz))
+		if(clazz == Ps.class)
 			return templateBatchUpdate(sql, parameterList.toArray(new Ps[parameterList.size()]));
-		else if(Map.class.isAssignableFrom(clazz))
+		else if(clazz.isInstance(Map.class))
 			return templateBatchUpdate(sql, parameterList.toArray(new Map[parameterList.size()]));
-		else if(Object[].class.isAssignableFrom(clazz))
+		else if(clazz.isArray())
 			return templateBatchUpdate(sql, parameterList.toArray(new Object[parameterList.size()][]));
 		else
 			return templateBatchUpdate(sql, parameterList.toArray(new Object[parameterList.size()]));

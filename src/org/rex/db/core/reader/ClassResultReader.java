@@ -67,7 +67,6 @@ public class ClassResultReader<T> implements ResultReader<T> {
 	private T row2Bean(ResultSet rs, int rowNum) throws DBException {
 		if (resultClass == null)
 			throw new DBException("DB-C0003");
-		
 		if(isDynamic()){
 			BeanConvertor setter = BeanConvertorManager.getConvertor(resultClass);
 			String[] rsLabelsRenamed = orUtil.getResultSetLabelsRenamed(rs);

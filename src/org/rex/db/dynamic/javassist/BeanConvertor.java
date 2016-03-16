@@ -3,7 +3,6 @@ package org.rex.db.dynamic.javassist;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
@@ -31,15 +30,15 @@ public abstract class BeanConvertor {
 	}
 	
 	protected static Integer convertValue(int v){
-		return new Integer(v);
+		return Integer.valueOf(v);
 	}
 	
 	protected static Boolean convertValue(boolean v){
-		return new Boolean(v);
+		return Boolean.valueOf(v);
 	}
 	
 	protected static Byte convertValue(byte v){
-		return new Byte(v);
+		return Byte.valueOf(v);
 	}
 	
 	protected static String convertValue(char v){
@@ -47,19 +46,19 @@ public abstract class BeanConvertor {
 	}
 	
 	protected static Double convertValue(double v){
-		return new Double(v);
+		return Double.valueOf(v);
 	}
 	
 	protected static Float convertValue(float v){
-		return new Float(v);
+		return Float.valueOf(v);
 	}
 	
 	protected static Long convertValue(long v){
-		return new Long(v);
+		return Long.valueOf(v);
 	}
 	
 	protected static Short convertValue(short v){
-		return new Short(v);
+		return Short.valueOf(v);
 	}
 	
 	//---array

@@ -303,9 +303,11 @@ public class Configuration {
 				BeanConvertorManager.getConvertor(this.getClass());
 				this.dynamicClass = true;
 			}catch(Throwable e){
+				this.dynamicClass = false;
 				LOGGER.warn("dynamic class setting is true, but could not pass the validation test, now automatically switch to false, {0}", e, e.getMessage());
 			}
-		}
+		}else
+			this.dynamicClass = false;
 	}
 
 	public boolean isDateAdjust() {
