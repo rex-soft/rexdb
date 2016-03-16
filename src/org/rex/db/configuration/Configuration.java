@@ -10,6 +10,7 @@ import org.rex.db.dialect.Dialect;
 import org.rex.db.dialect.DialectManager;
 import org.rex.db.dynamic.javassist.BeanConvertorManager;
 import org.rex.db.exception.DBException;
+import org.rex.db.exception.DBRuntimeException;
 import org.rex.db.exception.ExceptionResourceFactory;
 import org.rex.db.listener.DBListener;
 import org.rex.db.listener.ListenerManager;
@@ -171,13 +172,17 @@ public class Configuration {
 	/**
 	 * 获取当前配置
 	 */
-	public static Configuration getCurrentConfiguration() throws DBException{
+	public static Configuration getCurrentConfiguration() throws DBRuntimeException{
 		if(instance == null){
-			loadDefaultConfiguration();
+			try {
+				loadDefaultConfiguration();
+			} catch (DBException e) {
+				throw new DBRuntimeException(e);
+			}
 		}
 		
 		if(instance == null)
-			throw new DBException("DB-F0008", DEFAULT_CONFIG_PATH);
+			throw new DBRuntimeException("DB-F0008", DEFAULT_CONFIG_PATH);
 			
 		return instance;
 	}

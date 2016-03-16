@@ -1,16 +1,21 @@
 package org.rex.db.util;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.rex.db.Ps;
+import org.rex.db.configuration.Configuration;
 import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
+
 
 public class SqlUtil {
 	
@@ -21,6 +26,10 @@ public class SqlUtil {
 	private static final char PARAMETER = '?';
 	
 	private static final Map<String, String[]> sqlCache = new HashMap<String, String[]>();
+	
+	private static boolean isDateAdjust() throws DBException{
+		return Configuration.getCurrentConfiguration().isDateAdjust();
+	}
 	
 	/**
 	 * 对SQL执行基本的校验，防止错误查询被发送到数据库。校验不通过时直接抛出异常
@@ -64,7 +73,16 @@ public class SqlUtil {
 				case Types.VARCHAR : 
 					preparedStatement.setString(index, (String) value);
 					break;
-
+				case Types.DATE:
+				case Types.TIMESTAMP:
+				case Types.TIME:
+					Class<?> valueClass = value.getClass();
+					if(valueClass == java.sql.Date.class || valueClass == java.sql.Timestamp.class || valueClass == java.sql.Time.class){
+						//ignore and continue
+					}else if(java.util.Date.class.isAssignableFrom(valueClass)){
+						preparedStatement.setTimestamp(index, new Timestamp(((Date)value).getTime()));
+						break;
+					}
 				default : 
 					preparedStatement.setObject(index, value, sqlType);
 					break;
@@ -207,6 +225,7 @@ public class SqlUtil {
 	 * 6. double|Double - Types.DOUBLE
 	 * 7. Date - Types.DATE
 	 * 8. Time - Types.TIME
+	 * @throws DBException 
 
 	 */
 	public static int getSqlType(Object param){
@@ -215,33 +234,27 @@ public class SqlUtil {
 			type = Types.NULL;
 		}
 		else{
-			String paramClassName=param.getClass().getName();//参数类名称
-			if("java.lang.String".equals(paramClassName)) 
+			Class<?> paramClass = param.getClass();
+			if(paramClass == String.class) 
 				type = Types.VARCHAR;
-			else if("int".equals(paramClassName) || "java.lang.Integer".equals(paramClassName)) 
+			else if(paramClass == int.class || paramClass == Integer.class) 
 				type = Types.INTEGER;
-			else if("java.math.BigDecimal".equals(paramClassName)) 
+			else if(paramClass == BigDecimal.class) 
 				type = Types.NUMERIC;
-			else if("long".equals(paramClassName) || "java.lang.Long".equals(paramClassName)) 
+			else if(paramClass == long.class || paramClass == Long.class) 
 				type = Types.BIGINT;
-			else if("float".equals(paramClassName) || "java.lang.Float".equals(paramClassName)) 
+			else if(paramClass == float.class || paramClass == Float.class) 
 				type = Types.FLOAT;
-			else if("double".equals(paramClassName) || "java.lang.Double".equals(paramClassName)) 
+			else if(paramClass == double.class || paramClass == Double.class) 
 				type = Types.DOUBLE;
-			else if("java.util.Date".equals(paramClassName) || "java.sql.Date".equals(paramClassName)) 
-				//type = Types.DATE;
+			else if(java.util.Date.class.isAssignableFrom(paramClass)){
 				type = Types.TIMESTAMP;
-			else if("java.sql.Time".equals(paramClassName)) 
-				//type = Types.TIME;
-				type = Types.TIMESTAMP;
-			else if("java.sql.Timestamp".equals(paramClassName)) 
-				type = Types.TIMESTAMP;
-			else if("java.sql.Blob".equals(paramClassName)) //不确定BLOB/CLOB是否可用
+			}else if(paramClass == java.sql.Blob.class) //XXX: Not sure if available
 				type = Types.BLOB;
-			else if("java.sql.Clob".equals(paramClassName)) 
+			else if(paramClass == java.sql.Clob.class) //XXX: Not sure if available
 				type = Types.CLOB;
 			else
-				type = Types.VARCHAR;//其余一概作为varchar处理
+				type = Types.VARCHAR;//varchar
 		}
 
 		return type;

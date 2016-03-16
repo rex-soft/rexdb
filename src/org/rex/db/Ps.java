@@ -60,13 +60,7 @@ public class Ps {
 	 * @return boolean
 	 */
 	public static boolean isDateAdjust() {
-		boolean dateAdjust = true;
-		try {
-			dateAdjust = Configuration.getCurrentConfiguration().isDateAdjust();
-		} catch (DBException e) {
-			// ignore
-		}
-		return dateAdjust;
+		return Configuration.getCurrentConfiguration().isDateAdjust();
 	}
 
 	// -------------------------------------------inner class
