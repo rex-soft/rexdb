@@ -40,7 +40,6 @@ public class SqlUtil {
 			throw new DBException("DB-S0001", sql, holderSize, expectedParameterSize);
 	}
 	
-	
 	/**
 	 * set null for PreparedStatement
 	 */
@@ -69,14 +68,17 @@ public class SqlUtil {
 					break;
 				case Types.DATE:
 				case Types.TIMESTAMP:
-					if(value.getClass() == java.sql.Date.class)
+					if(value.getClass() == java.util.Date.class){
 						preparedStatement.setTimestamp(index, new java.sql.Timestamp(((Date)value).getTime()));
+						break;
+					}
 				case Types.TIME:
-					if(value.getClass() == java.sql.Date.class)
+					if(value.getClass() == java.util.Date.class){
 						preparedStatement.setTime(index, new java.sql.Time(((Date)value).getTime()));
+						break;
+					}
 				default : 
 					preparedStatement.setObject(index, value, sqlType);
-					break;
 			}
 		}
 	}
