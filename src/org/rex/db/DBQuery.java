@@ -264,7 +264,7 @@ public class DBQuery extends DBOperation {
 		List<T> list = templateClassQuery(sql, parameters, resultClass, null);
 		if(list.size() == 0) return null;
 		if(list.size() > 1)
-			throw new DBException("DB-Q10001", list.size());
+			throw new DBException("DB-00005", list.size());
 		return list.get(0);
 	}
 	
@@ -301,7 +301,7 @@ public class DBQuery extends DBOperation {
 		List<RMap> list = templateMapQuery(sql, parameters, null);
 		if(list.size() == 0) return null;
 		if(list.size() > 1)
-			throw new DBException("DB-Q10001", list.size());
+			throw new DBException("DB-00005", list.size());
 		
 		return list.get(0);
 	}

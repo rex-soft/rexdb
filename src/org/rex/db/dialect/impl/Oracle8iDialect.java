@@ -67,8 +67,8 @@ public class Oracle8iDialect implements Dialect {
 				LOGGER.debug("setting paged prepared parameters {0}.", hasOffset() ? getRows()+", "+ (getRows() + getOffset()) : getRows());
 			
 			if(hasOffset()){
-				statement.setInt(parameterCount + 1, getRows());
-				statement.setInt(parameterCount + 2, getRows() + getOffset());
+				statement.setInt(parameterCount + 1, getRows() + getOffset());
+				statement.setInt(parameterCount + 2, getRows());
 			}else
 				statement.setInt(parameterCount + 1, getRows());
 		}
