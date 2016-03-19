@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -347,7 +348,7 @@ public class RMap<K,V> extends HashMap<K,V> {
 				//ignore
 			}
 			
-			throw new IllegalArgumentException("Couldn't convert " + s + "(" + value.getClass().getName() + ") to date whitch toString is " + s + ", no date format parttern matches.");
+			throw new ClassCastException("Couldn't convert " + s + "(" + value.getClass().getName() + ") to date whitch toString is " + s + ", no date format parttern matches.");
 		}
 	}
 	
@@ -489,6 +490,93 @@ public class RMap<K,V> extends HashMap<K,V> {
 			}
 			return ss;
 		}
+	}
+	
+	//------------get value as RMap/List
+	
+	/**
+	 * Get value as RMap
+	 * @param key key with which the specified value is to be associated
+	 * @return the value associated with key
+	 * @throws ClassCastException if entry value is not Map
+	 */
+	public RMap getMap(String key){
+		Object value = get(key);
+		if(value == null)
+			return null;
+		else if(value instanceof RMap)
+			return (RMap)value;
+		else if(value instanceof Map){
+			return new RMap((Map)value);
+		}
+		
+		throw new ClassCastException("Couldn't convert " + value + "(" + value.getClass().getName() + ") to RMap");
+	}
+	
+	/**
+	 * Get value as List
+	 * @param key key with which the specified value is to be associated
+	 * @return the value associated with key
+	 * @throws ClassCastException if the entry value could not convert to List
+	 */
+	public List getList(String key){
+		Object value = get(key);
+		if(value == null)
+			return null;
+		else if(value instanceof List){
+			return (List)value;
+		}else if(value.getClass().isArray()){
+			if(value.getClass().getComponentType().isPrimitive()){
+				List list = new ArrayList();
+				if(value instanceof int[]){
+					int[] os = (int[])value;
+					for (int i = 0; i < os.length; i++) {
+						list.add(os[i]);
+					}
+				}else if(value instanceof boolean[]){
+					boolean[] os = (boolean[])value;
+					for (int i = 0; i < os.length; i++)
+						list.add(os[i]);
+				}else if(value instanceof byte[]){
+					byte[] os = (byte[])value;
+					for (int i = 0; i < os.length; i++)
+						list.add(os[i]);
+				}else if(value instanceof char[]){
+					char[] os = (char[])value;
+					for (int i = 0; i < os.length; i++)
+						list.add(os[i]);
+				}else if(value instanceof double[]){
+					double[] os = (double[])value;
+					for (int i = 0; i < os.length; i++)
+						list.add(os[i]);
+				}else if(value instanceof float[]){
+					float[] os = (float[])value;
+					for (int i = 0; i < os.length; i++)
+						list.add(os[i]);
+				}else if(value instanceof long[]){
+					long[] os = (long[])value;
+					for (int i = 0; i < os.length; i++)
+						list.add(os[i]);
+				}else if(value instanceof short[]){
+					short[] os = (short[])value;
+					for (int i = 0; i < os.length; i++)
+						list.add(os[i]);
+				}
+				return list;
+			}else
+				return Arrays.asList((Object[])value);
+		}else if(value instanceof Collection){
+			return new ArrayList((Collection)value);
+		}
+		
+		throw new ClassCastException("Couldn't convert " + value + "(" + value.getClass().getName() + ") to List");
+	}
+	
+	public static void main(String[] args) {
+		Object o = new int[]{1,2,3};
+		RMap m = new RMap();
+		m.put("o", o);
+		System.out.println(m.getList("o"));
 	}
 
 	// -------------------------setters

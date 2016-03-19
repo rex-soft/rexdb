@@ -235,16 +235,24 @@ public class DBTemplate {
 			boolean retval = executor.execute(cs);
 			
 			checkWarnings(con, cs, null);
+			
+			//out parameters
+			Ps ps = null;
 			if(parameters instanceof Ps){
-				Ps ps = (Ps)parameters;
+				ps = (Ps)parameters;
 				outs = extractOutputParameters(cs, ps);
-				RMap<String, Object> returns = extractReturnedResultSets(cs, ps);
-				if(returns.size() > 0)
-					outs.putAll(returns);
-				return outs;
 			}
 			
-			return null;
+			//returns
+			RMap<String, Object> returns = extractReturnedResultSets(cs, ps);
+			if(returns != null && returns.size() > 0){
+				if(outs != null)
+					outs.putAll(returns);
+				else
+					outs = returns;
+			}
+			
+			return outs;
 		}
 		catch (SQLException e) {
 			throw new DBException("DB-C0005", e, sql, parameters, e.getMessage());
@@ -306,7 +314,7 @@ public class DBTemplate {
 	 * 调用存储过程后，解析返回结果
 	 */
 	private RMap<String, Object> extractReturnedResultSets(CallableStatement cs, Ps ps) throws DBException, SQLException {
-		List<Class<?>> returnResultTypes = ps.getReturnResultTypes();
+		List<Class<?>> returnResultTypes = ps == null ? null : ps.getReturnResultTypes();
 		RMap<String, Object> returns = new RMap<String, Object>();
 		int rsIndx = 0;
 		do {
@@ -321,8 +329,7 @@ public class DBTemplate {
 						reader = newResultReader(returnResultTypes.get(rsIndx));
 					
 					resultSetIterator.read(reader, rs);
-					List list = reader.getResults();
-					returns.put(Ps.CALL_RETURN_DEFAULT_PREFIX + (rsIndx + 1), list);
+					returns.put(Ps.CALL_RETURN_DEFAULT_PREFIX + (rsIndx + 1), reader.getResults());
 				}
 			}catch (SQLException e) {
 				throw new DBException("DB-C0007", e, e.getMessage(), ps);
