@@ -10,7 +10,7 @@ import org.rex.db.dialect.impl.DB2Dialect;
 import org.rex.db.dialect.impl.DMDialect;
 import org.rex.db.dialect.impl.DerbyDialect;
 import org.rex.db.dialect.impl.H2Dialect;
-import org.rex.db.dialect.impl.HSQLDialect;
+import org.rex.db.dialect.impl.HSQLDBDialect;
 import org.rex.db.dialect.impl.MySQLDialect;
 import org.rex.db.dialect.impl.Oracle8iDialect;
 import org.rex.db.dialect.impl.Oracle9iDialect;
@@ -104,7 +104,7 @@ public class DialectFactory {
 		if (databaseName.startsWith("DB2"))
 			return new DB2Dialect();
 		if ("HSQL Database Engine".equals(databaseName))
-			return new HSQLDialect();
+			return new HSQLDBDialect();
 		if ("MySQL".equals(databaseName))
 			return new MySQLDialect();
 		if ("PostgreSQL".equals(databaseName))

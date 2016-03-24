@@ -11,9 +11,9 @@ import org.rex.db.logger.LoggerFactory;
 /**
  * HSQL
  */
-public class HSQLDialect implements Dialect {
+public class HSQLDBDialect implements Dialect {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HSQLDialect.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HSQLDBDialect.class);
 	
 	// ------------------------------------------------------------分页SQL
 	protected class HSQLLimitHandler extends LimitHandler {
@@ -27,11 +27,12 @@ public class HSQLDialect implements Dialect {
 		}
 
 		public String wrapSql(String sql) {
-			StringBuffer pagingSelect = new StringBuffer(sql.length() + 10).append(sql)
-					.insert(sql.toLowerCase().indexOf("select") + 6, hasOffset() ? " limit ? ?" : " top ?");
+			StringBuffer pagingSelect = new StringBuffer(sql.length() + 30).append(sql)
+					.append(hasOffset() ? " limit ?, ?" : " limit ?");
 			
 			if(LOGGER.isDebugEnabled())
 				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
+			
 			return pagingSelect.toString();
 		}
 
@@ -66,6 +67,6 @@ public class HSQLDialect implements Dialect {
 
 	// ------------------------------------------------------------版本信息
 	public String getName() {
-		return "HSQL";
+		return "HSQLDB";
 	}
 }
