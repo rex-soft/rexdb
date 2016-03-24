@@ -44,7 +44,8 @@ public class SqlUtil {
 	 * set null for PreparedStatement
 	 */
 	public static void setNull(PreparedStatement preparedStatement, int index) throws SQLException{
-		preparedStatement.setObject(index, null, Types.NULL);
+//		preparedStatement.setObject(index, null, Types.NULL);
+		preparedStatement.setObject(index, null);
 	}
 	
 	
@@ -59,8 +60,10 @@ public class SqlUtil {
 	 * set parameters for PreparedStatement
 	 */
 	public static void setParameter(PreparedStatement preparedStatement, int index, Object value, int sqlType) throws SQLException{
+//		System.out.println(index + "--"+ value + "--"+sqlType);
 		if (value == null) {
-			preparedStatement.setNull(index, sqlType);
+//			preparedStatement.setNull(index, sqlType);
+			preparedStatement.setObject(index, null);
 		}else {
 			switch (sqlType) {
 				case Types.VARCHAR : 

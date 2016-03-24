@@ -32,7 +32,6 @@ public class HSQLDialect implements Dialect {
 			
 			if(LOGGER.isDebugEnabled())
 				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
-			
 			return pagingSelect.toString();
 		}
 
