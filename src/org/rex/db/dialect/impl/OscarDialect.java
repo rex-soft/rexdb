@@ -11,9 +11,9 @@ import org.rex.db.logger.LoggerFactory;
 /**
  * 达梦数据库
  */
-public class DMDialect implements Dialect {
+public class OscarDialect implements Dialect {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DMDialect.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OscarDialect.class);
 	
 	// ------------------------------------------------------------分页SQL
 	protected class DMLimitHandler extends LimitHandler {
