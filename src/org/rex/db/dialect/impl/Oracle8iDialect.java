@@ -68,7 +68,7 @@ public class Oracle8iDialect implements Dialect {
 			
 			if(hasOffset()){
 				statement.setInt(parameterCount + 1, getRows() + getOffset());
-				statement.setInt(parameterCount + 2, getRows());
+				statement.setInt(parameterCount + 2, getOffset());
 			}else
 				statement.setInt(parameterCount + 1, getRows());
 		}

@@ -130,6 +130,7 @@ public class BeanStatementCreator extends AbstractStatementCreator{
 			LOGGER.debug("setting java bean parameters {0} for statement[{1}].", parameters, statement.hashCode());
 		}
 		
+		
 		if(isDynamic()){
 			BeanConvertor setter = BeanConvertorManager.getConvertor(parameters.getClass());
 			setter.setParameters(statement, parameters, tokens);

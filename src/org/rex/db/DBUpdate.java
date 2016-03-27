@@ -1,14 +1,18 @@
 package org.rex.db;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.rex.db.configuration.Configuration;
 import org.rex.db.core.DBOperation;
+import org.rex.db.core.DBTemplate;
 import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
+import org.rex.db.transaction.DefaultDefinition;
 
 /**
  * Database updating operation, such as INSERT, UPDATE, DELETE, etc.
@@ -337,7 +341,26 @@ public class DBUpdate extends DBOperation {
 		if (parametersArray == null || parametersArray.length == 0) {
 			return new int[] { templateUpdate(sql, null) };
 		}
-		return getTemplate().batchUpdate(sql, parametersArray);
+		
+		boolean autoTransaction = Configuration.getCurrentConfiguration().isBatchTransaction();
+		
+		int[] ri;
+		DBTemplate template = getTemplate();
+		DataSource dataSource = template.getDataSource();
+		Connection connection = DBTransaction.getTransactionConnection(dataSource);
+		if(autoTransaction && connection == null){
+			try{
+				DBTransaction.begin(dataSource, new DefaultDefinition());
+				ri = getTemplate().batchUpdate(sql, parametersArray);
+				DBTransaction.commit(dataSource);
+			}catch(DBException e){
+				DBTransaction.rollback(dataSource);
+				throw e;
+			}
+		}else
+			ri = getTemplate().batchUpdate(sql, parametersArray);
+		
+		return ri;
 	}
 
 }

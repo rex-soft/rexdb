@@ -572,13 +572,6 @@ public class RMap<K,V> extends HashMap<K,V> {
 		throw new ClassCastException("Couldn't convert " + value + "(" + value.getClass().getName() + ") to List");
 	}
 	
-	public static void main(String[] args) {
-		Object o = new int[]{1,2,3};
-		RMap m = new RMap();
-		m.put("o", o);
-		System.out.println(m.getList("o"));
-	}
-
 	// -------------------------setters
 	/**
      * put value with the specified key in this map.

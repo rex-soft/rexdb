@@ -51,13 +51,13 @@ public class SQLServer2005Dialect extends SQLServerDialect {
 
 			StringBuffer result = new StringBuffer();
 			result.append("WITH query AS (SELECT ").append(distinctStr)
-				.append(" TOP 100 PERCENT ROW_NUMBER() OVER (").append(orderby).append(") as __row_nr__, ")
+				.append(" TOP 100 PERCENT ROW_NUMBER() OVER (").append(orderby).append(") as _row_, ")
 				.append(pagingBuilder).append(") ")
 				.append(" SELECT * FROM query ")
 				.append(" WHERE ")
-				.append(" __row_nr__ >=").append(offset)
-				.append(" AND __row_nr__ <").append(rows)
-				.append(" ORDER BY __row_nr__");
+				.append(" _row_ >=").append(offset)
+				.append(" AND _row_ <").append(rows + offset)
+				.append(" ORDER BY _row_");
 
 			if(LOGGER.isDebugEnabled())
 				LOGGER.debug("wrapped paged sql {0}.", result);

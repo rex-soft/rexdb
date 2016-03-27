@@ -60,7 +60,6 @@ public class SqlUtil {
 	 * set parameters for PreparedStatement
 	 */
 	public static void setParameter(PreparedStatement preparedStatement, int index, Object value, int sqlType) throws SQLException{
-//		System.out.println(index + "--"+ value + "--"+sqlType);
 		if (value == null) {
 //			preparedStatement.setNull(index, sqlType);
 			preparedStatement.setObject(index, null);
@@ -81,7 +80,8 @@ public class SqlUtil {
 						break;
 					}
 				default : 
-					preparedStatement.setObject(index, value, sqlType);
+//					preparedStatement.setObject(index, value, sqlType);
+					preparedStatement.setObject(index, value);
 			}
 		}
 	}
@@ -256,14 +256,6 @@ public class SqlUtil {
 		}
 
 		return type;
-	}
-	
-	public static void main(String[] args) {
-		long s = System.currentTimeMillis();
-		for (int i = 0; i < 1000000; i++) {
-			boolean b = java.util.Date.class == java.util.Date.class;
-		}
-		System.out.println(System.currentTimeMillis()-s);
 	}
 	
 	/**

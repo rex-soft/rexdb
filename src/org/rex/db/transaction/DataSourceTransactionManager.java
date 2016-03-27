@@ -149,7 +149,6 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 		try {
 			con.setAutoCommit(true);
 			if (connectionHolder.getPreviousIsolationLevel() != null) {
-				System.out.println("==="+connectionHolder.getPreviousIsolationLevel());
 				con.setTransactionIsolation(connectionHolder.getPreviousIsolationLevel());
 			}
 

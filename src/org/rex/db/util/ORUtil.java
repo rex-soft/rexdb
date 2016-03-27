@@ -154,7 +154,6 @@ public class ORUtil {
 				throw new DBException("DB-UOR04", label, "sqlType.CHAR|VARCHAR", javaType.getName());
 			break;
 
-		case Types.BIT:
 		case Types.TINYINT:
 		case Types.SMALLINT:
 		case Types.INTEGER:
@@ -182,6 +181,7 @@ public class ORUtil {
 				throw new DBException("DB-UOR04", label, "sqlType.BIT|TINYINT|SMALLINT|INTEGER|BIGINT|REAL|FLOAT|DOUBLE|DECIMAL|NUMERIC", javaType.getName());
 			break;
 
+		case Types.BIT:
 		case Types.BINARY:
 		case Types.VARBINARY:
 		case Types.LONGVARBINARY:

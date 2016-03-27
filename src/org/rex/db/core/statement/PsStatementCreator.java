@@ -4,7 +4,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.rex.db.Ps;
@@ -104,9 +103,8 @@ public class PsStatementCreator extends AbstractStatementCreator{
 		
 		if(LOGGER.isDebugEnabled())
 			LOGGER.debug("preparing batch PreparedStatement for sql {0} of Connection[{1}].", sql, conn.hashCode());
-		
+
 		PreparedStatement preparedStatement = conn.prepareStatement(sql);
-		
 		if(ps != null){
 	        for(int i = 0; i < ps.length; i++){
 	        	if(ps[i] != null){
@@ -115,7 +113,6 @@ public class PsStatementCreator extends AbstractStatementCreator{
 	        	}
 	        }
 		}
-		
         return preparedStatement;
 	}
 	

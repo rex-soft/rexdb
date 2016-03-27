@@ -329,6 +329,14 @@ Rexdb在初始化时会首先读取**rexdb-database-sample.properties**文件的
 			<td><code>true</code></td>
 			<td>写入数据时，是否自动将日期类型的参数转换为<code>java.sql.Timestamp</code>类型。开启此选项可以有效避免日期、时间数据的丢失，以及因类型、格式不匹配而产生的异常。</td>
 		</tr>
+		<tr>
+			<td><code>batchTransaction</code></td>
+			<td>否</td>
+			<td><code>boolean</code></td>
+			<td><code>true</code>, <code>false</code></td>
+			<td><code>true</code></td>
+			<td>调用批量更新接口时，如果当前没有事物，是否自动开启。在某些数据库中，需要在在事物中执行批量更新，才能获得高效的性能。</td>
+		</tr>
 	</tbody>
 </table>
 

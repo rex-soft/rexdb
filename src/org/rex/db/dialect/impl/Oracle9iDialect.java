@@ -56,7 +56,6 @@ public class Oracle9iDialect extends Oracle8iDialect {
 			if(LOGGER.isDebugEnabled())
 				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
 			
-			System.out.println("---"+pagingSelect.toString());
 			return pagingSelect.toString();
 		}
 

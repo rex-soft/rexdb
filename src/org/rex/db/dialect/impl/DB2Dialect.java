@@ -27,43 +27,30 @@ public class DB2Dialect implements Dialect {
 		}
 		
 		public String wrapSql(String sql) {
-			int startOfSelect = sql.toLowerCase().indexOf("select");
 
-			StringBuffer pagingSelect = new StringBuffer(sql.length() + 100)
-					.append(sql.substring(0, startOfSelect))
-					.append("select * from ( select ").append(getRowNumber(sql));
-
-			if (hasDistinct(sql)) {
-				pagingSelect.append(" row_.* from ( ")
-						.append(sql.substring(startOfSelect)).append(" ) as row_");
-			} else {
-				pagingSelect.append(sql.substring(startOfSelect + 6));
-			}
-
-			pagingSelect.append(" ) as temp_ where rownumber_ ");
-
+			StringBuffer pagingSelect = new StringBuffer();
+			
 			if (hasOffset()) {
-				pagingSelect.append(">=? and rownumber_ < ? ");
-			} else {
-				pagingSelect.append("<= ?");
-			}
+				pagingSelect.append("select * from ( select inner2_.*, rownumber() over(order by order of inner2_) as rownumber_ from ( ")
+						.append(sql)
+						.append(" fetch first ")
+						.append(getOffset() + getRows())
+						.append(" rows only ) as inner2_ ) as inner1_ where rownumber_ > ")
+						.append(getOffset())
+						.append(" order by rownumber_");
+			}else
+				pagingSelect.append(sql)
+					.append(" fetch first ")
+					.append(getRows())
+					.append(" rows only");
 			
 			if(LOGGER.isDebugEnabled())
 				LOGGER.debug("wrapped paged sql {0}.", pagingSelect);
-
+			
 			return pagingSelect.toString();
 		}
 
 		public void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException {
-			
-			if(LOGGER.isDebugEnabled())
-				LOGGER.debug("setting paged prepared parameters {0}.", hasOffset() ? getOffset()+", "+getRows() : getRows());
-			
-			if(hasOffset()){
-				statement.setInt(parameterCount + 1, getOffset());
-				statement.setInt(parameterCount + 2, getRows());
-			}else
-				statement.setInt(parameterCount + 1, getRows());
 		}
 		
 		//private

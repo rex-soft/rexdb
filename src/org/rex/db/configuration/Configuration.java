@@ -94,6 +94,11 @@ public class Configuration {
 	 */
 	private volatile boolean dateAdjust = true;
 	
+	/**
+	 * 批量出更新时自动开启事物
+	 */
+	private volatile boolean batchTransaction = true;
+	
 	//--------managers
 	/**
 	 * 数据源
@@ -316,6 +321,14 @@ public class Configuration {
 
 	public void setDateAdjust(boolean dateAdjust) {
 		this.dateAdjust = dateAdjust;
+	}
+
+	public boolean isBatchTransaction() {
+		return batchTransaction;
+	}
+
+	public void setBatchTransaction(boolean batchTransaction) {
+		this.batchTransaction = batchTransaction;
 	}
 
 	//-----------
