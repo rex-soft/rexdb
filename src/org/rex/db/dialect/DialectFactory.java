@@ -15,6 +15,7 @@ import org.rex.db.dialect.impl.KingbaseDialect;
 import org.rex.db.dialect.impl.MySQLDialect;
 import org.rex.db.dialect.impl.Oracle8iDialect;
 import org.rex.db.dialect.impl.Oracle9iDialect;
+import org.rex.db.dialect.impl.OscarDialect;
 import org.rex.db.dialect.impl.PostgreSQLDialect;
 import org.rex.db.dialect.impl.SQLServer2005Dialect;
 import org.rex.db.dialect.impl.SQLServerDialect;
@@ -83,7 +84,7 @@ public class DialectFactory {
 		} catch (SQLException e) {
 			throw new DBException("DB-A0001", e, e.getMessage());
 		}
-		
+		System.out.println("==================="+databaseName);
 		if ("Oracle".equals(databaseName)) {
 			switch (databaseMajorVersion) {
 			case 8:
@@ -118,7 +119,9 @@ public class DialectFactory {
 			return new DMDialect();
 		if ("KingbaseES".equals(databaseName))
 			return new KingbaseDialect();
-
+		if ("OSCAR".equals(databaseName))
+			return new OscarDialect();
+			
 		throw new DBException("DB-A0002", databaseName);
 	}
 }

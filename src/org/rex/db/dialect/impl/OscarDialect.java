@@ -9,20 +9,20 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 达梦数据库
+ * 神通数据库
  */
 public class OscarDialect implements Dialect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OscarDialect.class);
 	
 	// ------------------------------------------------------------分页SQL
-	protected class DMLimitHandler extends LimitHandler {
+	protected class OscarLimitHandler extends LimitHandler {
 
-		public DMLimitHandler(int rows) {
+		public OscarLimitHandler(int rows) {
 			super(rows);
 		}
 
-		public DMLimitHandler(int offset, int rows) {
+		public OscarLimitHandler(int offset, int rows) {
 			super(offset, rows);
 		}
 
@@ -49,11 +49,11 @@ public class OscarDialect implements Dialect {
 	}
 
 	public LimitHandler getLimitHandler(int rows) {
-		return new DMLimitHandler(rows);
+		return new OscarLimitHandler(rows);
 	}
 
 	public LimitHandler getLimitHandler(int offset, int rows) {
-		return new DMLimitHandler(offset, rows);
+		return new OscarLimitHandler(offset, rows);
 	}
 	
 	// ------------------------------------------------------------数据库测试SQL
@@ -66,6 +66,6 @@ public class OscarDialect implements Dialect {
 	
 	// ------------------------------------------------------------版本信息
 	public String getName() {
-		return "DM";
+		return "OSCAR";
 	}
 }
