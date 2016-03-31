@@ -164,6 +164,7 @@ public class ORUtil {
 		case Types.DECIMAL:
 		case Types.NUMERIC:
 		case Types.LONGVARCHAR:
+		case Types.BIT:
 
 			if (javaType == int.class || javaType == Integer.class)
 				value = new Integer(rs.getInt(label));
@@ -181,7 +182,6 @@ public class ORUtil {
 				throw new DBException("DB-UOR04", label, "sqlType.BIT|TINYINT|SMALLINT|INTEGER|BIGINT|REAL|FLOAT|DOUBLE|DECIMAL|NUMERIC", javaType.getName());
 			break;
 
-		case Types.BIT:
 		case Types.BINARY:
 		case Types.VARBINARY:
 		case Types.LONGVARBINARY:

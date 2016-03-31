@@ -1,8 +1,13 @@
 package org.rex.db.util;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,13 +53,47 @@ public class SqlUtil {
 		preparedStatement.setObject(index, null);
 	}
 	
-	
 	/**
 	 * set parameters for PreparedStatement
 	 */
-	public static void setParameter(PreparedStatement preparedStatement, int index, Object value) throws SQLException{
-		setParameter(preparedStatement, index, value, getSqlType(value));
+	public static void setParameter(PreparedStatement preparedStatement, int index, Object value) throws SQLException {
+		if (value instanceof String) {
+			preparedStatement.setString(index, (String) value);
+		} else if (value instanceof Integer) {
+			preparedStatement.setInt(index, (Integer) value);
+		} else if (value instanceof BigDecimal) {
+			preparedStatement.setBigDecimal(index, (BigDecimal) value);
+		} else if (value instanceof Long) {
+			preparedStatement.setLong(index, (Long) value);
+		} else if (value instanceof Short) {
+			preparedStatement.setShort(index, (Short) value);
+		} else if (value instanceof Float) {
+			preparedStatement.setFloat(index, (Float) value);
+		} else if (value instanceof Double) {
+			preparedStatement.setDouble(index, (Double) value);
+		} else if (value instanceof Byte) {
+			preparedStatement.setByte(index, (Byte) value);
+		} else if (value instanceof java.sql.Date) {
+			preparedStatement.setDate(index, (java.sql.Date) value);
+		} else if (value instanceof Timestamp) {
+			preparedStatement.setTimestamp(index, (Timestamp) value);
+		} else if (value instanceof Time) {
+			preparedStatement.setTime(index, (Time) value);
+		} else if (value instanceof Date) {
+			preparedStatement.setTimestamp(index, new Timestamp(((Date) value).getTime()));
+		} else if (value instanceof Blob) {
+			preparedStatement.setBlob(index, (Blob) value);
+		} else if (value instanceof Clob) {
+			preparedStatement.setClob(index, (Clob) value);
+		} else if (value != null && value.getClass().isArray() && value.getClass().getComponentType() == byte.class) {
+			preparedStatement.setBytes(index, (byte[]) value);
+		} else {
+			preparedStatement.setObject(index, value);
+		}
 	}
+//	public static void setParameter(PreparedStatement preparedStatement, int index, Object value) throws SQLException{
+//		setParameter(preparedStatement, index, value, getSqlType(value));
+//	}
 	
 	/**
 	 * set parameters for PreparedStatement
