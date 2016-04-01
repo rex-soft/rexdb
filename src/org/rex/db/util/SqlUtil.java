@@ -99,29 +99,94 @@ public class SqlUtil {
 	 * set parameters for PreparedStatement
 	 */
 	public static void setParameter(PreparedStatement preparedStatement, int index, Object value, int sqlType) throws SQLException{
-		if (value == null) {
-//			preparedStatement.setNull(index, sqlType);
-			preparedStatement.setObject(index, null);
-		}else {
-			switch (sqlType) {
-				case Types.VARCHAR : 
-					preparedStatement.setString(index, (String) value);
+		switch (sqlType) {
+			case Types.VARCHAR : 
+				if(value instanceof String || value == null){
+					preparedStatement.setString(index, (String)value);
 					break;
-				case Types.DATE:
-				case Types.TIMESTAMP:
-					if(value.getClass() == java.util.Date.class){
-						preparedStatement.setTimestamp(index, new java.sql.Timestamp(((Date)value).getTime()));
-						break;
-					}
-				case Types.TIME:
-					if(value.getClass() == java.util.Date.class){
-						preparedStatement.setTime(index, new java.sql.Time(((Date)value).getTime()));
-						break;
-					}
-				default : 
+				}
+			case Types.BOOLEAN :
+				if(value instanceof Boolean || value == null){
+					preparedStatement.setBoolean(index, (Boolean)value);
+					break;
+				}
+			case Types.NUMERIC :
+				if(value instanceof BigDecimal || value == null){
+					preparedStatement.setBigDecimal(index, (BigDecimal)value);
+					break;
+				}
+			case Types.INTEGER :
+				if(value instanceof Integer || value == null){
+					preparedStatement.setInt(index, (Integer)value);
+					break;
+				}
+			case Types.BIGINT :
+				if(value instanceof Long || value == null){
+					preparedStatement.setLong(index, (Long)value);
+					break;
+				}
+			case Types.DOUBLE :
+				if(value instanceof Double || value == null){
+					preparedStatement.setDouble(index, (Double)value);
+					break;
+				}
+			case Types.FLOAT :
+				if(value instanceof Float || value == null){
+					preparedStatement.setFloat(index, (Float)value);
+					break;
+				}
+			case Types.SMALLINT :
+				if(value instanceof Short || value == null){
+					preparedStatement.setShort(index, (Short)value);
+					break;
+				}
+			case Types.TINYINT :
+				if(value instanceof Byte || value == null){
+					preparedStatement.setByte(index, (Byte)value);
+					break;
+				}
+			case Types.VARBINARY :
+				if(value instanceof byte[] || value == null){
+					preparedStatement.setBytes(index, (byte[])value);
+					break;
+				}
+			case Types.BLOB :
+				if(value instanceof Blob || value == null){
+					preparedStatement.setBlob(index, (Blob)value);
+					break;
+				}
+			case Types.CLOB :
+				if(value instanceof Clob || value == null){
+					preparedStatement.setClob(index, (Clob)value);
+					break;
+				}
+			case Types.DATE:
+				if(value == null || value instanceof java.sql.Date){
+					preparedStatement.setDate(index, (java.sql.Date)value);
+					break;
+				}else if(value instanceof Date){
+					preparedStatement.setDate(index, new java.sql.Date(((Date)value).getTime()));
+					break;
+				}
+			case Types.TIMESTAMP:
+				if(value == null || value instanceof Timestamp){
+					preparedStatement.setTimestamp(index, (Timestamp)value);
+					break;
+				}else if(value instanceof Date){
+					preparedStatement.setTimestamp(index, new Timestamp(((Date)value).getTime()));
+					break;
+				}
+			case Types.TIME:
+				if(value == null || value instanceof Time){
+					preparedStatement.setTime(index, (Time)value);
+					break;
+				}else if(value instanceof Date){
+					preparedStatement.setTime(index, new Time(((Date)value).getTime()));
+					break;
+				}
+			default : 
 //					preparedStatement.setObject(index, value, sqlType);
-					preparedStatement.setObject(index, value);
-			}
+				preparedStatement.setObject(index, value);
 		}
 	}
 	
@@ -269,29 +334,30 @@ public class SqlUtil {
 			type = Types.NULL;
 		}
 		else{
-			Class<?> paramClass = param.getClass();
-			if(paramClass == String.class) 
+			if(param instanceof String) 
 				type = Types.VARCHAR;
-			else if(paramClass == int.class || paramClass == Integer.class) 
+			else if(param instanceof Integer) 
 				type = Types.INTEGER;
-			else if(paramClass == BigDecimal.class) 
-				type = Types.NUMERIC;
-			else if(paramClass == long.class || paramClass == Long.class) 
+			else if(param instanceof Long) 
 				type = Types.BIGINT;
-			else if(paramClass == float.class || paramClass == Float.class) 
+			else if(param instanceof Float) 
 				type = Types.FLOAT;
-			else if(paramClass == double.class || paramClass == Double.class) 
+			else if(param instanceof Double) 
 				type = Types.DOUBLE;
-			else if(paramClass == java.util.Date.class || paramClass == java.sql.Date.class || paramClass == java.sql.Timestamp.class){
+			else if(param instanceof Short) 
+				type = Types.SMALLINT;
+			else if(param instanceof BigDecimal) 
+				type = Types.NUMERIC;
+			else if(param instanceof Date)
 				type = Types.TIMESTAMP;
-			}else if(paramClass == java.sql.Time.class){
-				type = Types.TIME;
-			}else if(paramClass == java.sql.Blob.class) //XXX: Not sure if available
+			else if(param.getClass().isArray() && param.getClass().getComponentType() == Byte.class)
+				type = Types.VARBINARY;
+			else if(param instanceof Blob)
 				type = Types.BLOB;
-			else if(paramClass == java.sql.Clob.class) //XXX: Not sure if available
+			else if(param instanceof Clob)
 				type = Types.CLOB;
 			else
-				type = Types.VARCHAR;//varchar
+				type = Types.OTHER;
 		}
 
 		return type;

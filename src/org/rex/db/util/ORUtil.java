@@ -166,18 +166,23 @@ public class ORUtil {
 		case Types.LONGVARCHAR:
 		case Types.BIT:
 
-			if (javaType == int.class || javaType == Integer.class)
-				value = new Integer(rs.getInt(label));
-			else if (javaType == float.class || javaType == Float.class)
-				value = new Float(rs.getFloat(label));
-			else if (javaType == double.class || javaType == Double.class)
-				value = new Double(rs.getDouble(label));
-			else if (javaType == long.class || javaType == Long.class)
-				value = new Long(rs.getLong(label));
-			else if (javaType == BigDecimal.class)
-				value = rs.getBigDecimal(label);
+			if (javaType == Integer.class || javaType == int.class)
+				value = rs.getInt(label);
 			else if (javaType == String.class)
 				value = rs.getString(label);
+			else if (javaType == Float.class || javaType == float.class)
+				value = rs.getFloat(label);
+			else if (javaType == Double.class || javaType == double.class)
+				value = rs.getDouble(label);
+			else if (javaType == Long.class || javaType == long.class)
+				value = rs.getLong(label);
+			else if (javaType == Short.class || javaType == short.class)
+				value = rs.getShort(label);
+			else if (javaType == BigDecimal.class)
+				value = rs.getBigDecimal(label);
+			else if (javaType == Byte.class || javaType == byte.class)
+				value = rs.getByte(label);
+			
 			else
 				throw new DBException("DB-UOR04", label, "sqlType.BIT|TINYINT|SMALLINT|INTEGER|BIGINT|REAL|FLOAT|DOUBLE|DECIMAL|NUMERIC", javaType.getName());
 			break;

@@ -76,7 +76,7 @@ public class Ps {
 			this.value = value;
 
 			if (isDateAdjust()) {
-				if (value != null && value.getClass().getName().equals("java.util.Date")) {
+				if (value != null && !(value instanceof Timestamp) && (value instanceof Date)) {
 					this.value = new java.sql.Timestamp(((Date) value).getTime());
 					this.sqlType = Types.TIMESTAMP;
 				}
@@ -255,7 +255,7 @@ public class Ps {
 	}
 
 	public Ps set(int index, boolean value) {
-		return setParameter(index, new Boolean(value), Types.BOOLEAN);
+		return setParameter(index, value, Types.BOOLEAN);
 	}
 
 	public Ps set(int index, BigDecimal value) {
@@ -263,21 +263,33 @@ public class Ps {
 	}
 
 	public Ps set(int index, int value) {
-		return setParameter(index, new Integer(value), Types.INTEGER);
+		return setParameter(index, value, Types.INTEGER);
 	}
 
 	public Ps set(int index, long value) {
-		return setParameter(index, new Long(value), Types.BIGINT);
+		return setParameter(index, value, Types.BIGINT);
 	}
 
 	public Ps set(int index, double value) {
-		return setParameter(index, new Double(value), Types.DOUBLE);
+		return setParameter(index, value, Types.DOUBLE);
 	}
 
 	public Ps set(int index, float value) {
-		return setParameter(index, new Float(value), Types.FLOAT);
+		return setParameter(index, value, Types.FLOAT);
+	}
+	
+	public Ps set(int index, short value) {
+		return setParameter(index, value, Types.SMALLINT);
+	}
+	
+	public Ps set(int index, byte value) {
+		return setParameter(index, value, Types.TINYINT);
 	}
 
+	public Ps set(int index, byte[] value) {
+		return setParameter(index, value, Types.VARBINARY);
+	}
+	
 	public Ps set(int index, Blob value) {
 		return setParameter(index, value, Types.BLOB);
 	}
@@ -344,6 +356,18 @@ public class Ps {
 
 	public Ps add(double value) {
 		return addParameter(value, Types.DOUBLE);
+	}
+	
+	public Ps add(short value) {
+		return addParameter(value, Types.SMALLINT);
+	}
+	
+	public Ps add(byte value) {
+		return addParameter(value, Types.TINYINT);
+	}
+
+	public Ps add(byte[] value) {
+		return addParameter(value, Types.VARBINARY);
 	}
 
 	public Ps add(Blob value) {
@@ -446,6 +470,18 @@ public class Ps {
 	public Ps setOutDouble(int index) {
 		return setOutParameter(index, Types.DOUBLE);
 	}
+	
+	public Ps setOutShort(int index) {
+		return setOutParameter(index, Types.SMALLINT);
+	}
+	
+	public Ps setOutByte(int index) {
+		return setOutParameter(index, Types.TINYINT);
+	}
+
+	public Ps setOutBytes(int index) {
+		return setOutParameter(index, Types.VARBINARY);
+	}
 
 	public Ps setOutBlob(int index) {
 		return setOutParameter(index, Types.BLOB);
@@ -498,6 +534,18 @@ public class Ps {
 
 	public Ps setOutDouble(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.DOUBLE);
+	}
+	
+	public Ps setOutShort(int index, String paramName) {
+		return setOutParameter(index, paramName, Types.SMALLINT);
+	}
+	
+	public Ps setOutByte(int index, String paramName) {
+		return setOutParameter(index, paramName, Types.TINYINT);
+	}
+
+	public Ps setOutBytes(int index, String paramName) {
+		return setOutParameter(index, paramName, Types.VARBINARY);
 	}
 
 	public Ps setOutBlob(int index, String paramName) {
@@ -557,6 +605,18 @@ public class Ps {
 		return addOutParameter(Types.DOUBLE);
 	}
 
+	public Ps addOutShort() {
+		return addOutParameter(Types.SMALLINT);
+	}
+	
+	public Ps addOutByte() {
+		return addOutParameter(Types.TINYINT);
+	}
+
+	public Ps addOutBytes() {
+		return addOutParameter(Types.VARBINARY);
+	}
+	
 	public Ps addOutBlob() {
 		return addOutParameter(Types.BLOB);
 	}
@@ -610,6 +670,18 @@ public class Ps {
 		return addOutParameter(paramName, Types.DOUBLE);
 	}
 
+	public Ps addOutShort(String paramName) {
+		return addOutParameter(paramName, Types.SMALLINT);
+	}
+	
+	public Ps addOutByte(String paramName) {
+		return addOutParameter(paramName, Types.TINYINT);
+	}
+
+	public Ps addOutBytes(String paramName) {
+		return addOutParameter(paramName, Types.VARBINARY);
+	}
+	
 	public Ps addOutBlob(String paramName) {
 		return addOutParameter(paramName, Types.BLOB);
 	}
@@ -672,7 +744,7 @@ public class Ps {
 	}
 
 	public Ps setInOut(int index, boolean value) {
-		return setInOutParameter(index, new Boolean(value), Types.BOOLEAN);
+		return setInOutParameter(index, value, Types.BOOLEAN);
 	}
 
 	public Ps setInOut(int index, BigDecimal value) {
@@ -680,19 +752,31 @@ public class Ps {
 	}
 
 	public Ps setInOut(int index, int value) {
-		return setInOutParameter(index, new Integer(value), Types.INTEGER);
+		return setInOutParameter(index, value, Types.INTEGER);
 	}
 
 	public Ps setInOut(int index, long value) {
-		return setInOutParameter(index, new Long(value), Types.BIGINT);
+		return setInOutParameter(index, value, Types.BIGINT);
 	}
 
 	public Ps setInOut(int index, double value) {
-		return setInOutParameter(index, new Double(value), Types.DOUBLE);
+		return setInOutParameter(index, value, Types.DOUBLE);
 	}
 
 	public Ps setInOut(int index, float value) {
-		return setInOutParameter(index, new Float(value), Types.FLOAT);
+		return setInOutParameter(index, value, Types.FLOAT);
+	}
+	
+	public Ps setInOut(int index, short value) {
+		return setInOutParameter(index, value, Types.SMALLINT);
+	}
+	
+	public Ps setInOut(int index, byte value) {
+		return setInOutParameter(index, value, Types.TINYINT);
+	}
+	
+	public Ps setInOut(int index, byte[] value) {
+		return setInOutParameter(index, value, Types.VARBINARY);
 	}
 
 	public Ps setInOut(int index, Blob value) {
@@ -737,7 +821,7 @@ public class Ps {
 	}
 
 	public Ps setInOut(int index, String paramName, boolean value) {
-		return setInOutParameter(index, paramName, new Boolean(value), Types.BOOLEAN);
+		return setInOutParameter(index, paramName, value, Types.BOOLEAN);
 	}
 
 	public Ps setInOut(int index, String paramName, BigDecimal value) {
@@ -745,19 +829,31 @@ public class Ps {
 	}
 
 	public Ps setInOut(int index, String paramName, int value) {
-		return setInOutParameter(index, paramName, new Integer(value), Types.INTEGER);
+		return setInOutParameter(index, paramName, value, Types.INTEGER);
 	}
 
 	public Ps setInOut(int index, String paramName, long value) {
-		return setInOutParameter(index, paramName, new Long(value), Types.BIGINT);
+		return setInOutParameter(index, paramName, value, Types.BIGINT);
 	}
 
 	public Ps setInOut(int index, String paramName, double value) {
-		return setInOutParameter(index, paramName, new Double(value), Types.DOUBLE);
+		return setInOutParameter(index, paramName, value, Types.DOUBLE);
 	}
 
 	public Ps setInOut(int index, String paramName, float value) {
-		return setInOutParameter(index, paramName, new Float(value), Types.FLOAT);
+		return setInOutParameter(index, paramName, value, Types.FLOAT);
+	}
+	
+	public Ps setInOut(int index, String paramName, short value) {
+		return setInOutParameter(index, paramName, value, Types.SMALLINT);
+	}
+	
+	public Ps setInOut(int index, String paramName, byte value) {
+		return setInOutParameter(index, paramName, value, Types.TINYINT);
+	}
+	
+	public Ps setInOut(int index, String paramName, byte[] value) {
+		return setInOutParameter(index, paramName, value, Types.VARBINARY);
 	}
 
 	public Ps setInOut(int index, String paramName, Blob value) {
@@ -827,6 +923,18 @@ public class Ps {
 	public Ps addInOut(double value) {
 		return addInOutParameter(value, Types.DOUBLE);
 	}
+	
+	public Ps addInOut(short value) {
+		return addInOutParameter(value, Types.SMALLINT);
+	}
+	
+	public Ps addInOut(byte value) {
+		return addInOutParameter(value, Types.TINYINT);
+	}
+	
+	public Ps addInOut(byte[] value) {
+		return addInOutParameter(value, Types.VARBINARY);
+	}
 
 	public Ps addInOut(Blob value) {
 		return addInOutParameter(value, Types.BLOB);
@@ -873,7 +981,7 @@ public class Ps {
 		return addInOutParameter(paramName, value, Types.BOOLEAN);
 	}
 
-	public Ps addInOutBig(String paramName, BigDecimal value) {
+	public Ps addInOut(String paramName, BigDecimal value) {
 		return addInOutParameter(paramName, value, Types.NUMERIC);
 	}
 
@@ -891,6 +999,18 @@ public class Ps {
 
 	public Ps addInOut(String paramName, double value) {
 		return addInOutParameter(paramName, value, Types.DOUBLE);
+	}
+	
+	public Ps addInOut(String paramName, short value) {
+		return addInOutParameter(paramName, value, Types.SMALLINT);
+	}
+	
+	public Ps addInOut(String paramName, byte value) {
+		return addInOutParameter(paramName, value, Types.TINYINT);
+	}
+	
+	public Ps addInOut(String paramName, byte[] value) {
+		return addInOutParameter(paramName, value, Types.VARBINARY);
 	}
 
 	public Ps addInOut(String paramName, Blob value) {
