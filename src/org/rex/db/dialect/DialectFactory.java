@@ -84,7 +84,7 @@ public class DialectFactory {
 		} catch (SQLException e) {
 			throw new DBException("DB-A0001", e, e.getMessage());
 		}
-		System.out.println("==================="+databaseName);
+
 		if ("Oracle".equals(databaseName)) {
 			switch (databaseMajorVersion) {
 			case 8:

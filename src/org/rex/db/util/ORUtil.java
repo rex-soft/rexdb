@@ -2,6 +2,8 @@ package org.rex.db.util;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -131,6 +133,7 @@ public class ORUtil {
 	 * @throws SQLException
 	 */
 	public <T> T getValue(ResultSet rs, String label, int sqlType, Class<T> javaType) throws DBException, SQLException {
+//		System.out.println("======================"+label+"====="+sqlType+"======"+javaType);
 		if (javaType == Object.class)
 			return (T)rs.getObject(label);
 
@@ -190,19 +193,24 @@ public class ORUtil {
 		case Types.BINARY:
 		case Types.VARBINARY:
 		case Types.LONGVARBINARY:
+			if (javaType.isArray() && javaType.getComponentType() == byte.class)
+				value = rs.getBytes(label);
+			else
+				throw new DBException("DB-UOR04", label, "sqlType.BINARY|VARBINARY|LONGVARBINARY", javaType.getName());
+			break;
 		case Types.BLOB:
 			if (javaType.isArray() && javaType.getComponentType() == byte.class)
 				value = readBlob(rs, label);
 			else
-				throw new DBException("DB-UOR04", label, "sqlType.BINARY|VARBINARY|LONGVARBINARY|BLOB", javaType.getName());
+				throw new DBException("DB-UOR04", label, "sqlType.BLOB", javaType.getName());
 			break;
 		case Types.CLOB:
 			String clob = readClob(rs, label);
 			if (clob == null)
 				break;
-			if (javaType.isArray() && javaType.getComponentType() == byte.class)
+			if (javaType.isArray() && javaType.getComponentType() == byte.class){
 				value = clob.getBytes();
-			else if (javaType == String.class) {
+			}else if (javaType == String.class) {
 				value = clob;
 			} else if (javaType == StringBuffer.class) {
 				value = new StringBuffer(clob);
@@ -236,72 +244,27 @@ public class ORUtil {
 
 	/**
 	 * 读取clob数据，内容过大时可能造成内存溢出
-	 * XXX: find a better way
 	 */
 	private String readClob(ResultSet rs, String label) throws SQLException, DBException {
-		return rs.getString(label);
-//		Clob c = rs.getClob(label);
-//		if (c != null) {
-//			StringBuffer content = new StringBuffer();
-//			String line = null;
-//			Reader reader = null;
-//			BufferedReader br = null;
-//			try {
-//				reader = c.getCharacterStream();
-//				br = new BufferedReader(reader);
-//
-//				while ((line = br.readLine()) != null) {
-//					content.append(line);
-//					content.append("\r\n");
-//				}
-//			} catch (IOException e) {
-//				throw new DBException("DB-UOR03", e, label, e.getMessage());
-//			} finally {
-//				try {
-//					if (br != null)
-//						br.close();
-//					if (reader != null)
-//						reader.close();
-//				} catch (IOException e) {
-//				}
-//			}
-//
-//			return content;
-//		}
-//		return null;
+	    String value = null;
+	    Clob clob = rs.getClob(label);
+	    if (clob != null) {
+	      int size = (int) clob.length();
+	      value = clob.getSubString(1, size);
+	    }
+	    return value;
 	}
 
 	/**
 	 * 读取blob数据，内容过大时可能造成内存溢出
-	 *  XXX: find a better way
 	 */
 	private byte[] readBlob(ResultSet rs, String label) throws SQLException, DBException {
-		return rs.getBytes(label);
-//		Blob blob = rs.getBlob(label);
-//		if (blob != null && blob.length() > 0) {
-//			InputStream bis = blob.getBinaryStream();
-//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//			try {
-//				byte[] buffer = new byte[1024 * 1024];
-//				int byteRead = 0;
-//				while ((byteRead = bis.read(buffer)) != -1) {
-//					baos.write(buffer, 0, byteRead);
-//				}
-//				baos.flush();
-//				return baos.toByteArray();
-//			} catch (IOException e) {
-//				throw new DBException("DB-UOR02", e, label, e.getMessage());
-//			} finally {
-//				try {
-//					if (bis != null)
-//						bis.close();
-//					if (baos != null)
-//						baos.close();
-//				} catch (IOException e) {
-//				}
-//			}
-//		}
-//		return null;
+	    Blob blob = rs.getBlob(label);
+	    byte[] value = null;
+	    if (null != blob) {
+	    	value = blob.getBytes(1, (int) blob.length());
+	    }
+	    return value;
 	}
 
 	// -----------result set meta
