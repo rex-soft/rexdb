@@ -46,9 +46,8 @@ public class DBUpdate extends DBOperation {
 	 * @return either (1) the affected row count for SQL Data Manipulation
 	 *         Language (DML) statements or (2) 0 for SQL statements that return
 	 *         nothing
-	 * @throws DBException if rexdb configuration wasn't loaded, database access
-	 *             error occurs, couldn't execute SQL, etc. the specific reason
-	 *             will be included in the exception message.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int update(String sql) throws DBException {
 		return templateUpdate(sql, null);
@@ -69,9 +68,8 @@ public class DBUpdate extends DBOperation {
 	 * @return either (1) the affected row count for SQL Data Manipulation
 	 *         Language (DML) statements or (2) 0 for SQL statements that return
 	 *         nothing
-	 * @throws DBException if rexdb configuration wasn't loaded, database access
-	 *             error occurs, couldn't execute SQL, etc. the specific reason
-	 *             will be included in the exception message.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int update(String sql, Object[] parameterArray) throws DBException {
 		return templateUpdate(sql, parameterArray);
@@ -91,9 +89,8 @@ public class DBUpdate extends DBOperation {
 	 * @return either (1) the affected row count for SQL Data Manipulation
 	 *         Language (DML) statements or (2) 0 for SQL statements that return
 	 *         nothing
-	 * @throws DBException if rexdb configuration wasn't loaded, database access
-	 *             error occurs, couldn't execute SQL, etc. the specific reason
-	 *             will be included in the exception message.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int update(String sql, Ps ps) throws DBException {
 		return templateUpdate(sql, ps);
@@ -116,9 +113,8 @@ public class DBUpdate extends DBOperation {
 	 * @return either (1) the affected row count for SQL Data Manipulation
 	 *         Language (DML) statements or (2) 0 for SQL statements that return
 	 *         nothing
-	 * @throws DBException if rexdb configuration wasn't loaded, database access
-	 *             error occurs, couldn't execute SQL, etc. the specific reason
-	 *             will be included in the exception message.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int update(String sql, Map<?, ?> parameterMap) throws DBException {
 		return templateUpdate(sql, parameterMap);
@@ -141,9 +137,8 @@ public class DBUpdate extends DBOperation {
 	 * @return either (1) the affected row count for SQL Data Manipulation
 	 *         Language (DML) statements or (2) 0 for SQL statements that return
 	 *         nothing
-	 * @throws DBException if rexdb configuration wasn't loaded, database access
-	 *             error occurs, couldn't execute SQL, etc. the specific reason
-	 *             will be included in the exception message.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int update(String sql, Object parameterBean) throws DBException {
 		return templateUpdate(sql, parameterBean);
@@ -152,72 +147,78 @@ public class DBUpdate extends DBOperation {
 	// -----------batch update
 	/**
 	 * Executes a batch of SQLs to the database. if all commands execute
-	 * successfully, returns an array of affected row counts. The int elements
-	 * of the array that is returned are ordered to correspond to the commands
-	 * in the batch, which are ordered according to the order in which they were
-	 * added to the batch. The elements in the array returned by the method
-	 * executeBatch may be one of the following:
-	 * <ol>
-	 * <li>A number greater than or equal to zero -- indicates that the command
-	 * was processed successfully and is an update count giving the number of
-	 * rows in the database that were affected by the command's execution
-	 * <li/>
-	 * <li>A value of SUCCESS_NO_INFO -- indicates that the command was
-	 * processed successfully but that the number of rows affected is unknown
-	 * </li>
-	 * <li>A value of EXECUTE_FAILED -- indicates that the command failed to
-	 * execute successfully and occurs only if a driver continues to process
-	 * commands after a command fails</li>
-	 * </ol>
+	 * successfully, returns an array of affected row counts, or value of 
+	 * SUCCESS_NO_INFO, or value of EXECUTE_FAILED. 
 	 * 
 	 * @param sql SQLs to be Execute
 	 * @return an array of update counts containing one element for each command
 	 *         in the batch.
-	 * @throws DBException if rexdb configuration wasn't loaded, database access
-	 *             error occurs, couldn't execute SQL, etc. the specific reason
-	 *             will be included in the exception message.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQLs, etc.
 	 */
 	public int[] batchUpdate(String[] sql) throws DBException {
 		return templateBatchUpdate(sql);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the database. if the sql
+	 * execute successfully, returns an array of affected row counts, or value of 
+	 * SUCCESS_NO_INFO, or value of EXECUTE_FAILED. 
 	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * @param sql SQL to be Execute
+	 * @param parameterArrays a batch of parameter array
+	 * @return an array of update counts containing one element for each command
+	 *         in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int[] batchUpdate(String sql, Object[][] parameterArrays) throws DBException {
 		return templateBatchUpdate(sql, (Object[]) parameterArrays);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the database. if the sql
+	 * execute successfully, returns an array of affected row counts, or value of 
+	 * SUCCESS_NO_INFO, or value of EXECUTE_FAILED. 
 	 * 
-	 * @param ps 预编译参数
-	 * @return 受影响条数
+	 * @param sql SQL to be Execute
+	 * @param parameters a batch of Ps
+	 * @return an array of update counts containing one element for each command
+	 *         in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int[] batchUpdate(String sql, Ps[] parameters) throws DBException {
 		return templateBatchUpdate(sql, parameters);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the database. if the sql
+	 * execute successfully, returns an array of affected row counts, or value of 
+	 * SUCCESS_NO_INFO, or value of EXECUTE_FAILED. 
 	 * 
-	 * @param ps 预编译参数
-	 * @return 受影响条数
+	 * @param sql SQL to be Execute
+	 * @param parameterMaps a batch of Map
+	 * @return an array of update counts containing one element for each command
+	 *         in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int[] batchUpdate(String sql, Map<?, ?>[] parameterMaps) throws DBException {
 		return templateBatchUpdate(sql, parameterMaps);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the database. if the sql
+	 * execute successfully, returns an array of affected row counts, or value of 
+	 * SUCCESS_NO_INFO, or value of EXECUTE_FAILED. 
 	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * @param sql SQL to be Execute
+	 * @param parameterBeans a batch of Java bean
+	 * @return an array of update counts containing one element for each command
+	 *         in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int[] batchUpdate(String sql, Object[] parameterBeans) throws DBException {
 		return templateBatchUpdate(sql, parameterBeans);
@@ -225,11 +226,16 @@ public class DBUpdate extends DBOperation {
 	
 	//---list parameter
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the database. if the sql
+	 * execute successfully, returns an array of affected row counts, or value of 
+	 * SUCCESS_NO_INFO, or value of EXECUTE_FAILED. 
 	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * @param sql SQL to be Execute
+	 * @param parameterList parameter list which contains element of the same java type
+	 * @return an array of update counts containing one element for each command
+	 *         in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public int[] batchUpdate(String sql, List<?> parameterList) throws DBException {
 		if(parameterList == null)
@@ -265,7 +271,7 @@ public class DBUpdate extends DBOperation {
 	/**
 	 * Executes the SQL statement using <tt>DBTemplate</tt>. the given parameter
 	 * 'parameters' could be <tt>null</tt>, <tt>Ps</tt>, <tt>Array</tt> ,
-	 * <tt>Map</tt>, or a java bean. <br/>
+	 * <tt>Map</tt>, or java bean. <br/>
 	 * (1) if the given parameter 'parameters' is <tt>null</tt>, SQL will be
 	 * executed in no-prepared <tt>Statement</tt> object, otherwise in
 	 * <tt>PreparedStatement</tt> object.<br/>

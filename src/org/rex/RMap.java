@@ -574,7 +574,7 @@ public class RMap<K,V> extends HashMap<K,V> {
 	
 	// -------------------------setters
 	/**
-     * put value with the specified key in this map.
+     * put value of specified key to this map.
      *
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
