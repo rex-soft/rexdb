@@ -10,7 +10,7 @@ import org.rex.db.core.DBOperation;
 import org.rex.db.exception.DBException;
 
 /**
- * 存储过程
+ * Database call operation for stored procedures and functions.
  * @author z
  */
 public class DBCall extends DBOperation{
@@ -32,8 +32,10 @@ public class DBCall extends DBOperation{
 	
 	// -------public methods
 	/**
-	 * 调用存储过程
-	 * @throws DBException 
+	 * execute an SQL stored procedure or function.
+	 * @param sql an SQL to be sent to the database, typically a static SQL
+	 * 
+	 * @return
 	 */
 	public RMap<String, ?> call(String sql) throws DBException{
 		return templateCall(sql, null);

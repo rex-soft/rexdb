@@ -15,7 +15,7 @@ import org.rex.db.dialect.LimitHandler;
 import org.rex.db.exception.DBException;
 
 /**
- * 查询
+ * Database Query
  * @author z
  */
 public class DBQuery extends DBOperation {
@@ -39,35 +39,74 @@ public class DBQuery extends DBOperation {
 
 	//---------------query one row for java bean
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to an object of given class
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL
+	 * @param resultClass a class that the ResultSet should be mapped to
+	 * @return object mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public <T> T get(String sql, Class<T> resultClass) throws DBException {
 		return templateClassQueryForOneRow(sql, null, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to an object of given class
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders 
+	 * @param parameters a Ps object that contains prepared parameters
+	 * @param resultClass a class that the ResultSet should be mapped to
+	 * @return object mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public <T> T get(String sql, Ps parameters, Class<T> resultClass) throws DBException {
 		return templateClassQueryForOneRow(sql, parameters, resultClass);
 	}
 	
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to an object of given class
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders 
+	 * @param parameterArray an object array that contains prepared parameters in order
+	 * @param resultClass a class that the ResultSet should be mapped to
+	 * @return object mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public <T> T get(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
 		return templateClassQueryForOneRow(sql, parameterArray, resultClass);
 	}
 	
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to an object of given class
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters an object that contains prepared parameters
+	 * @param resultClass a class that the ResultSet should be mapped to
+	 * @return object mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public <T> T get(String sql, Object parameters, Class<T> resultClass) throws DBException {
 		return templateClassQueryForOneRow(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to an object of given class
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters a map that contains prepared parameters
+	 * @param resultClass a class that the ResultSet should be mapped to
+	 * @return object mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public <T> T get(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
 		return templateClassQueryForOneRow(sql, parameters, resultClass);
@@ -76,35 +115,69 @@ public class DBQuery extends DBOperation {
 	//---------------query one row for RMap
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to a Map
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL
+	 * @return Map which mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public RMap<String, ?> getMap(String sql) throws DBException {
 		return templateMapQueryForOneRow(sql, null);
 	}
 	
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to a Map
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameters a Ps object that contains prepared parameters
+	 * @return Map which mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public RMap<String, ?> getMap(String sql, Ps parameters) throws DBException {
 		return templateMapQueryForOneRow(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to a Map
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameterArray an object array that contains prepared parameters in order
+	 * @return Map which mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public RMap<String, ?> getMap(String sql, Object[] parameterArray) throws DBException {
 		return templateMapQueryForOneRow(sql, parameterArray);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to a Map
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters an object that contains prepared parameters
+	 * @return Map which mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public RMap<String, ?> getMap(String sql, Object parameters) throws DBException {
 		return templateMapQueryForOneRow(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps the JDBC ResultSet to a Map
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters a map that contains prepared parameters
+	 * @return Map which mapped from a row
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public RMap<String, ?> getMap(String sql, Map<?, ?> parameters) throws DBException {
 		return templateMapQueryForOneRow(sql, parameters);
@@ -112,35 +185,74 @@ public class DBQuery extends DBOperation {
 
 	//---------------query a list of java bean
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @return a list of object mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Class<T> resultClass) throws DBException {
 		return templateClassQuery(sql, null, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameters a Ps object that contains prepared parameters
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @return a list of object mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Ps parameters, Class<T> resultClass) throws DBException {
 		return templateClassQuery(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameterArray an object array that contains prepared parameters in order
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @return a list of object mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
 		return templateClassQuery(sql, parameterArray, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters an object that contains prepared parameters
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @return a list of object mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Object parameters, Class<T> resultClass) throws DBException {
 		return templateClassQuery(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters a map that contains prepared parameters
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @return a list of object mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
 		return templateClassQuery(sql, parameters, resultClass);
@@ -148,35 +260,69 @@ public class DBQuery extends DBOperation {
 
 	//---------------query a list of RMap
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql) throws DBException {
 		return templateMapQuery(sql, null);
 	}
 	
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameters a Ps object that contains prepared parameters
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, Ps parameters) throws DBException {
 		return templateMapQuery(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameterArray an object array that contains prepared parameters in order
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, Object[] parameterArray) throws DBException {
 		return templateMapQuery(sql, parameterArray);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters an object that contains prepared parameters
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, Object parameters) throws DBException {
 		return templateMapQuery(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters a map that contains prepared parameters
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, Map<?, ?> parameters) throws DBException {
 		return templateMapQuery(sql, parameters);
@@ -184,14 +330,35 @@ public class DBQuery extends DBOperation {
 	
 	//---------------query a limit list of java bean
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of object which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Class<T> resultClass, int offset, int rows) throws DBException {
 		return templateClassQuery(sql, null, resultClass, offset, rows);
 	}
 	
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameters a Ps object that contains prepared parameters
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of object which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Ps parameters, Class<T> resultClass, int offset, int rows) throws DBException {
 		return templateClassQuery(sql, parameters, resultClass, offset, rows);
@@ -199,21 +366,54 @@ public class DBQuery extends DBOperation {
 	
 	
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameterArray an object array that contains prepared parameters in order
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of object which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Object[] parameterArray, Class<T> resultClass, int offset, int rows) throws DBException {
 		return templateClassQuery(sql, parameterArray, resultClass, offset, rows);
 	}
 	
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters an object that contains prepared parameters
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of object which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Object parameters, Class<T> resultClass, int offset, int rows) throws DBException {
 		return templateClassQuery(sql, parameters, resultClass, offset, rows);
 	}
 	
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of object which instanced from the given class,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters a map that contains prepared parameters
+	 * @param resultClass a class that each row of the ResultSet should be mapped to
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of object which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public <T> List<T> getList(String sql, Map<?, ?> parameters, Class<T> resultClass, int offset, int rows) throws DBException {
 		return templateClassQuery(sql, parameters, resultClass, offset, rows);
@@ -222,35 +422,84 @@ public class DBQuery extends DBOperation {
 	//---------------query a limit list of RMap
 	
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, int offset, int rows) throws DBException {
 		return templateMapQuery(sql, null, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameters a Ps object that contains prepared parameters
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, Ps parameters, int offset, int rows) throws DBException {
 		return templateMapQuery(sql, parameters, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameterArray an object array that contains prepared parameters in order
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, Object[] parameterArray, int offset, int rows) throws DBException {
 		return templateMapQuery(sql, parameterArray, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters an object that contains prepared parameters
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, Object parameters, int offset, int rows) throws DBException {
 		return templateMapQuery(sql, parameters, offset, rows);
 	}
 	
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps the JDBC ResultSet to a List of Map,
+	 * the given SQL is automatically wrapped to a paging SQL for the database
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters a map that contains prepared parameters
+	 * @param offset specified how many rows to skip
+	 * @param rows limits the number of rows returned by the query
+	 * @return a list of Map which mapped from JDBC ResultSet
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public List<RMap> getMapList(String sql, Map<?, ?> parameters, int offset, int rows) throws DBException {
 		return templateMapQuery(sql, parameters, offset, rows);
@@ -277,16 +526,6 @@ public class DBQuery extends DBOperation {
 		return templateClassQuery(sql, parameters, resultClass, limitHandler);
 	}
 	
-	/**
-	 * query for a list of java beans
-	 * 
-	 * @param sql a query SQL that may contain one or more '?', or '#{
-	 *            <i>parameter name</i>}' IN parameter placeholders
-	 * @param parameters the prepared parameters
-	 * @param resultClass java bean that the SQL query for
-	 * @return a list of java beans
-	 * @throws DBException
-	 */
 	private <T> List<T> templateClassQuery(String sql, Object parameters, Class<T> resultClass, LimitHandler limitHandler) throws DBException {
 		ResultReader<T> resultReader = new ClassResultReader<T>(resultClass);
 		if (parameters == null && limitHandler == null)
