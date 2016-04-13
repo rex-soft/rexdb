@@ -13,8 +13,7 @@ import org.rex.db.transaction.JtaTransactionManager;
 import org.rex.db.transaction.TransactionManager;
 
 /**
- * 事务
- * 
+ * Database Transaction
  * @author z
  */
 public class DBTransaction extends DefaultDefinition {
@@ -43,7 +42,7 @@ public class DBTransaction extends DefaultDefinition {
 	}
 	
 	/**
-	 * 开始事物
+	 * begin 
 	 */
 	public void begin(DataSource dataSource) throws DBException {
 		getTransactionManager(dataSource).begin(this);

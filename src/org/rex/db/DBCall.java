@@ -32,49 +32,67 @@ public class DBCall extends DBOperation{
 	
 	// -------public methods
 	/**
-	 * execute an SQL stored procedure or function.
+	 * execute a stored procedure or a function.
 	 * @param sql an SQL to be sent to the database, typically a static SQL
 	 * 
-	 * @return
+	 * @return results contains return results
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public RMap<String, ?> call(String sql) throws DBException{
 		return templateCall(sql, null);
 	}
 	
 	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
+	 * execute a stored procedure or a function.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameterArray an object array that contains prepared parameters in order
+	 * 
+	 * @return results contains return results
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
 	public RMap<String, ?> call(String sql, Object[] parameterArray) throws DBException{
 		return templateCall(sql, parameterArray);
 	}
 	
 	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
+	 * execute a stored procedure or a function.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
+	 * @param parameters a Ps object that contains prepared parameters
+	 * 
+	 * @return results contains return results, out parameters, INOUT parameters
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
-	public RMap<String, ?> call(String sql, Ps ps) throws DBException{
-		return templateCall(sql, ps);
+	public RMap<String, ?> call(String sql, Ps parameters) throws DBException{
+		return templateCall(sql, parameters);
 	}
 
 	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
+	 * execute a stored procedure or a function.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters a map that contains prepared parameters
+	 * 
+	 * @return results contains return results
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
-	public RMap<String, ?> call(String sql, Map<?, ?> parameterMap) throws DBException{
-		return templateCall(sql, parameterMap);
+	public RMap<String, ?> call(String sql, Map<?, ?> parameters) throws DBException{
+		return templateCall(sql, parameters);
 	}
 	
 	/**
-	 * 调用存储过程
-	 * @param ps 参数
-	 * @throws DBException 
+	 * execute a stored procedure or a function.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
+	 * @param parameters an object that contains prepared parameters
+	 * 
+	 * @return results contains return results
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, etc.
 	 */
-	public RMap<String, ?> call(String sql, Object parameterBean) throws DBException{
-		return templateCall(sql, parameterBean);
+	public RMap<String, ?> call(String sql, Object parameters) throws DBException{
+		return templateCall(sql, parameters);
 	}
 	
 	// -------private methods
