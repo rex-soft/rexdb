@@ -8,12 +8,9 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.rex.db.configuration.Configuration;
-import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
 import org.rex.db.util.SqlUtil;
 
@@ -174,6 +171,8 @@ public class Ps {
 	 * @param list list to alter
 	 * @param index index of value to replace.
 	 * @param value element to be stored at the specified position.
+	 * 
+	 * @throws DBRuntimeException if the index is out of range.
 	 */
 	private void set(List list, int index, Object value) {
 		--index;
@@ -182,14 +181,31 @@ public class Ps {
 		} else if (index < list.size()) {
 			list.set(index, value);
 		} else
-			throw new DBRuntimeException("DB-C10041", value, index + 1, list.size());
+			throw new DBRuntimeException("DB-00001", value, index + 1, list.size());
 	}
 
+	/**
+	 * Sets IN parameter at the specified position, and declares it as the specified SQL type.
+	 * @param index index of value to set.
+	 * @param value element to be stored at the specified position.
+	 * @param type the SQL type to be sent to the database.
+	 * 
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	protected Ps setParameter(int index, Object value, int type) {
 		set(parameters, index, new SqlParameter(type, value));
 		return this;
 	}
 
+	/**
+	 * Sets IN parameter at the specified position.
+	 * @param index index of value to set.
+	 * @param value element to be stored at the specified position.
+	 * 
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	protected Ps addParameter(Object value, int type) {
 		parameters.add(new SqlParameter(type, value));
 		return this;
@@ -197,7 +213,7 @@ public class Ps {
 
 	// -------------------------------------------get parameters
 	/**
-	 * get parameter size
+	 * Returns the number of declared parameters.
 	 * 
 	 * @return parameter size
 	 */
@@ -206,7 +222,7 @@ public class Ps {
 	}
 
 	/**
-	 * get all parameters, including IN, INOUT, OUT parameters declared.
+	 * Returns all parameters declared as List.
 	 * 
 	 * @return list of all parameters.
 	 */
@@ -215,290 +231,661 @@ public class Ps {
 	}
 
 	/**
-	 * get declared return result set bean class types
-	 * @return
+	 * Returns all return types declared.
+	 * 
+	 * @return java types declared.
 	 */
 	public List<Class<?>> getReturnResultTypes(){
 		return returnResultTypes;
 	}
+	
 	// -----------------------------------------declare prepared parameters
-	// ----------------------------declare parameters at the specified position
+	// ----------------------------declares parameter at the specified position
 
 	/**
-	 * set prepared parameter at specified position. the parameter's SQL
-	 * type is matched automatically according to the java type.
-	 * @param index parameter index, witch starts at 1.
+	 * Sets prepared parameters at the specified position.
+	 * @param index parameter index which starts at 1.
 	 * @param value parameter value.
-	 * @return a reference to this object.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
 	 */
 	public Ps set(int index, Object value) {
 		return setParameter(index, value, SqlUtil.getSqlType(value));
 	}
 
 	/**
-	 * set prepared parameter at specified position and SQL type.
-	 * @param index parameter index, witch starts at 1.
+	 * Sets prepared parameter at the specified position and declares it as the specified SQL type.
+	 * @param index parameter index which starts at 1.
 	 * @param value parameter value.
-	 * @param sqlType parameter's <tt>java.sql.Types</tt>
-	 * @return
+	 * @param sqlType the SQL type to be sent to the database.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
 	 */
 	public Ps set(int index, Object value, int sqlType) {
 		return setParameter(index, value, sqlType);
 	}
 
+	/**
+	 * Sets the designated parameter to SQL NULL. 
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setNull(int index) {
 		return setParameter(index, null, Types.NULL);
 	}
 
+	/**
+	 * Sets the designated parameter to the given Java String value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, String value) {
 		return setParameter(index, value, Types.VARCHAR);
 	}
 
+	/**
+	 * Sets the designated parameter to the given boolean value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, boolean value) {
 		return setParameter(index, value, Types.BOOLEAN);
 	}
 
+	/**
+	 * Sets the designated parameter to the given BigDecimal value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, BigDecimal value) {
 		return setParameter(index, value, Types.NUMERIC);
 	}
 
+	/**
+	 * Sets the designated parameter to the given integer value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, int value) {
 		return setParameter(index, value, Types.INTEGER);
 	}
 
+	/**
+	 * Sets the designated parameter to the given long value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, long value) {
 		return setParameter(index, value, Types.BIGINT);
 	}
 
+	/**
+	 * Sets the designated parameter to the given double value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, double value) {
 		return setParameter(index, value, Types.DOUBLE);
 	}
 
+	/**
+	 * Sets the designated parameter to the given float value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, float value) {
 		return setParameter(index, value, Types.FLOAT);
 	}
 	
+	/**
+	 * Sets the designated parameter to the given short value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, short value) {
 		return setParameter(index, value, Types.SMALLINT);
 	}
 	
+	/**
+	 * Sets the designated parameter to the given byte value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, byte value) {
 		return setParameter(index, value, Types.TINYINT);
 	}
 
+	/**
+	 * Sets the designated parameter to the given byte array.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, byte[] value) {
 		return setParameter(index, value, Types.VARBINARY);
 	}
 	
+	/**
+	 * Sets the designated parameter to the given Blob value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, Blob value) {
 		return setParameter(index, value, Types.BLOB);
 	}
 
+	/**
+	 * Sets the designated parameter to the given Clob value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, Clob value) {
 		return setParameter(index, value, Types.CLOB);
 	}
 
+	/**
+	 * Sets the designated parameter to the given Date value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, Date date) {
 		return setParameter(index, date, Types.DATE);
 	}
 
+	/**
+	 * Sets the designated parameter to the given Date value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, java.sql.Date date) {
 		return setParameter(index, date, Types.DATE);
 	}
 
+	/**
+	 * Sets the designated parameter to the given Time value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, Time time) {
 		return setParameter(index, time, Types.TIME);
 	}
 
+	/**
+	 * Sets the designated parameter to the given Timestamp value.
+	 * @param index parameter index which starts at 1.
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps set(int index, Timestamp time) {
 		return setParameter(index, time, Types.TIMESTAMP);
 	}
 
-	// ----------------------------按顺序增加参数
+	// ----------------------------appends parameter to the end of declared parameters. 
 	/**
-	 * 增加预编译参数，根据对象的java类型设置预编译参数类型
+	 * Appends the specified value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
 	 */
 	public Ps add(Object value) {
 		return addParameter(value, SqlUtil.getSqlType(value));
 	}
 
+	/**
+	 * Appends the specified value to the end of declared parameters, which declared as the specified sql type. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(Object value, int type) {
 		return addParameter(value, type);
 	}
 
+	/**
+	 * Appends SQL NULL to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addNull() {
 		return addParameter(null, Types.NULL);
 	}
 
+	/**
+	 * Appends the specified String value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(String value) {
 		return addParameter(value, Types.VARCHAR);
 	}
 
+	/**
+	 * Appends the specified boolean value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(boolean value) {
 		return addParameter(value, Types.BOOLEAN);
 	}
 
+	/**
+	 * Appends the specified BigDecimal value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(BigDecimal value) {
 		return addParameter(value, Types.NUMERIC);
 	}
 
+	/**
+	 * Appends the specified integer value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(int value) {
 		return addParameter(value, Types.INTEGER);
 	}
 
+	/**
+	 * Appends the specified long value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(long value) {
 		return addParameter(value, Types.BIGINT);
 	}
 
+	/**
+	 * Appends the specified float value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(float value) {
 		return addParameter(value, Types.FLOAT);
 	}
 
+	/**
+	 * Appends the specified double value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(double value) {
 		return addParameter(value, Types.DOUBLE);
 	}
 	
+	/**
+	 * Appends the specified short value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(short value) {
 		return addParameter(value, Types.SMALLINT);
 	}
 	
+	/**
+	 * Appends the specified byte value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(byte value) {
 		return addParameter(value, Types.TINYINT);
 	}
 
+	/**
+	 * Appends the specified byte array to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(byte[] value) {
 		return addParameter(value, Types.VARBINARY);
 	}
 
+	/**
+	 * Appends the specified Blob value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(Blob value) {
 		return addParameter(value, Types.BLOB);
 	}
 
+	/**
+	 * Appends the specified Clob value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(Clob value) {
 		return addParameter(value, Types.CLOB);
 	}
 
+	/**
+	 * Appends the specified Date value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(Date date) {
 		return addParameter(date, Types.DATE);
 	}
 
+	/**
+	 * Appends the specified Date value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(java.sql.Date date) {
 		return addParameter(date, Types.DATE);
 	}
 
+	/**
+	 * Appends the specified Time value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(Time time) {
 		return addParameter(time, Types.TIME);
 	}
 
+	/**
+	 * Appends the specified Timestamp value to the end of declared parameters. 
+	 * @param value the parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps add(Timestamp time) {
 		return addParameter(time, Types.TIMESTAMP);
 	}
 
-	// ----------------------------插入参数到指定位置
+	// ----------------------------inserts parameter at the specified position.
 	/**
-	 * 插入预编译参数，根据对象的java类型设置预编译参数类型
+	 * Inserts the specified value at the specified position in declared parameters.
+	 * @param index index at which the parameter is to be inserted.
+	 * @param value parameter is to be inserted.
+	 * @return reference to this object.
+	 * @throws IndexOutOfBoundsException if the index is out of range.
 	 */
 	public Ps insert(int index, Object value) {
+		--index;
+		if(index < 0 || index > parameters.size() )
+			throw new DBRuntimeException("DB-00001", value, index + 1, parameters.size());
+		
 		parameters.add(index, new SqlParameter(SqlUtil.getSqlType(value), value));
-		// parameters = insert(parameters, index, new
-		// SqlParameter(SqlUtil.getSqlType(value), value));
 		return this;
 	}
 
-	// ----------------------------------------------------------------------设置输出参数（用于存储过程、函数调用）
+	// ----------------------------------------------------------------------declares OUT parameters at the specified position
+	//---------protected
+	/**
+	 * Declares OUT parameter as the specified SQL type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param type OUT parameter's SQL type.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	protected Ps setOutParameter(int index, int type) {
 		return setOutParameter(index, null, type);
 	}
 
+	/**
+	 * Declares OUT parameter as the specified SQL type at the specified position, also declares an alias for the parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param type OUT parameter's SQL type.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	protected Ps setOutParameter(int index, String paramName, int type) {
 		set(parameters, index, new SqlOutParameter(type, paramName));
 		return this;
 	}
 
+	/**
+	 * Appends OUT parameter to the end of declared parameters.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 */
 	protected Ps addOutParameter(int type) {
 		return addOutParameter(null, type);
 	}
 
+	/**
+	 * Appends OUT parameter as the specified SQL type to the end of declared parameters.
+	 * @param index parameter index which starts at 1.
+	 * @param type OUT parameter's SQL type.
+	 * @return reference to this object.
+	 */
 	protected Ps addOutParameter(String paramName, int type) {
 		parameters.add(new SqlOutParameter(type, paramName));
 		return this;
 	}
 
+	//---------public
+	/**
+	 * Declares OUT ResultSet as the specified ResultSet SQL type (Depending on the database and JDBC driver) 
+	 * at the specified position, also declares a java type to map to and an alias for the parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param type JDBC driver's ResultSet SQL type.
+	 * @param resultClass java type to map to
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutResultSet(int index, String paramName, int sqlType, Class<?> resultClass) {
 		set(parameters, index, new SqlOutParameter(sqlType, paramName, resultClass, true));
 		return this;
 	}
 
+	/**
+	 * Appends OUT ResultSet as the specified ResultSet SQL type (Depending on the database and JDBC driver) 
+	 * to the end of declared parameters, also declares a java type to map to and an alias for the parameter.
+	 * @param paramName alias for the parameter.
+	 * @param type JDBC driver's ResultSet SQL type.
+	 * @param resultClass java type to map to
+	 * @return reference to this object.
+	 */
 	public Ps addOutResultSet(String paramName, int sqlType, Class<?> outEntitryClass) {
 		parameters.add(new SqlOutParameter(sqlType, paramName, outEntitryClass, true));
 		return this;
 	}
 
-	// ----------------------------按照指定下标设置输出参数
+	/**
+	 * Declares OUT ResultSet as the specified ResultSet SQL type (Depending on the database and JDBC driver) 
+	 * at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param type JDBC driver's ResultSet SQL type.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutResultSet(int index, int sqlType) {
 		return setOutResultSet(index, null, sqlType, null);
 	}
 
+	/**
+	 * Declares OUT ResultSet as the specified ResultSet SQL type (Depending on the database and JDBC driver) 
+	 * at the specified position, also declares a java type to map to for the parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param type JDBC driver's ResultSet SQL type.
+	 * @param resultClass java type to map to
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutResultSet(int index, int sqlType, Class<?> resultClass) {
 		return setOutResultSet(index, null, sqlType, resultClass);
 	}
 
+	/**
+	 * Declares OUT parameter as string type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutString(int index) {
 		return setOutParameter(index, Types.VARCHAR);
 	}
 
+	/**
+	 * Declares OUT parameter as boolean type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutBoolean(int index) {
 		return setOutParameter(index, Types.BOOLEAN);
 	}
 
+	/**
+	 * Declares OUT parameter as BigDecimal type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutBigDecimal(int index) {
 		return setOutParameter(index, Types.NUMERIC);
 	}
 
+	/**
+	 * Declares OUT parameter as integer type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutInt(int index) {
 		return setOutParameter(index, Types.INTEGER);
 	}
 
+	/**
+	 * Declares OUT parameter as long type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutLong(int index) {
 		return setOutParameter(index, Types.BIGINT);
 	}
 
+	/**
+	 * Declares OUT parameter as float type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutFloat(int index) {
 		return setOutParameter(index, Types.FLOAT);
 	}
 
+	/**
+	 * Declares OUT parameter as double type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutDouble(int index) {
 		return setOutParameter(index, Types.DOUBLE);
 	}
 	
+	/**
+	 * Declares OUT parameter as short type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutShort(int index) {
 		return setOutParameter(index, Types.SMALLINT);
 	}
 	
+	/**
+	 * Declares OUT parameter as byte type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutByte(int index) {
 		return setOutParameter(index, Types.TINYINT);
 	}
 
+	/**
+	 * Declares OUT parameter as byte array at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutBytes(int index) {
 		return setOutParameter(index, Types.VARBINARY);
 	}
 
+	/**
+	 * Declares OUT parameter as Blob type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutBlob(int index) {
 		return setOutParameter(index, Types.BLOB);
 	}
 
+	/**
+	 * Declares OUT parameter as Clob type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutClob(int index) {
 		return setOutParameter(index, Types.CLOB);
 	}
 
+	/**
+	 * Declares OUT parameter as Date type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutDate(int index) {
 		return setOutParameter(index, Types.DATE);
 	}
 
+	/**
+	 * Declares OUT parameter as Time type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutTime(int index) {
 		return setOutParameter(index, Types.TIME);
 	}
 
+	/**
+	 * Declares OUT parameter as Timestamp type at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutTimestamp(int index) {
 		return setOutParameter(index, Types.TIMESTAMP);
 	}
