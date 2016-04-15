@@ -654,7 +654,7 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as the specified SQL type at the specified position, also declares an alias for the parameter.
+	 * Declares OUT parameter as the specified SQL type at the specified position, also declares an alias for this parameter.
 	 * @param index parameter index which starts at 1.
 	 * @param paramName alias for the parameter.
 	 * @param type OUT parameter's SQL type.
@@ -676,7 +676,7 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as the specified SQL type to the end of declared parameters.
+	 * Appends OUT parameter as specified SQL type to the end of declared parameters.
 	 * @param index parameter index which starts at 1.
 	 * @param type OUT parameter's SQL type.
 	 * @return reference to this object.
@@ -706,7 +706,7 @@ public class Ps {
 	 * Appends OUT ResultSet as the specified ResultSet SQL type (Depending on the database and JDBC driver) 
 	 * to the end of declared parameters, also declares a java type to map to and an alias for the parameter.
 	 * @param paramName alias for the parameter.
-	 * @param type JDBC driver's ResultSet SQL type.
+	 * @param sqlType JDBC driver's ResultSet SQL type.
 	 * @param resultClass java type to map to
 	 * @return reference to this object.
 	 */
@@ -890,536 +890,1321 @@ public class Ps {
 		return setOutParameter(index, Types.TIMESTAMP);
 	}
 
-	// -------为输出参数命名
+	// -------Declares OUT parameter
+	/**
+	 * Declares OUT parameter as specified type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param type OUT parameter's SQL type.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutResultSet(int index, String paramName, int sqlType) {
 		return setOutResultSet(index, paramName, sqlType, null);
 	}
 
+	/**
+	 * Declares OUT parameter as String type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutString(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.VARCHAR);
 	}
 
+	/**
+	 * Declares OUT parameter as boolean type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutBoolean(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.BOOLEAN);
 	}
 
+	/**
+	 * Declares OUT parameter as BigDecimal type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutBigDecimal(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.NUMERIC);
 	}
 
+	/**
+	 * Declares OUT parameter as integer type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutInt(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.INTEGER);
 	}
 
+	/**
+	 * Declares OUT parameter as long type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutLong(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.BIGINT);
 	}
 
+	/**
+	 * Declares OUT parameter as float type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutFloat(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.FLOAT);
 	}
 
+	/**
+	 * Declares OUT parameter as double type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutDouble(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.DOUBLE);
 	}
 	
+	/**
+	 * Declares OUT parameter as short type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutShort(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.SMALLINT);
 	}
 	
+	/**
+	 * Declares OUT parameter as byte type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutByte(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.TINYINT);
 	}
 
+	/**
+	 * Declares OUT parameter as byte array at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutBytes(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.VARBINARY);
 	}
 
+	/**
+	 * Declares OUT parameter as Blob type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutBlob(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.BLOB);
 	}
 
+	/**
+	 * Declares OUT parameter as Clob type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutClob(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.CLOB);
 	}
 
+	/**
+	 * Declares OUT parameter as Date type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutDate(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.DATE);
 	}
 
+	/**
+	 * Declares OUT parameter as Time type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutTime(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.TIME);
 	}
 
+	/**
+	 * Declares OUT parameter as Timestamp type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setOutTimestamp(int index, String paramName) {
 		return setOutParameter(index, paramName, Types.TIMESTAMP);
 	}
 
-	// ----------------------------按顺序增加输出参数
+	// ----------------------------Appends OUT parameter
+	/**
+	 * Appends OUT parameter as ResultSet to the end of declared parameters.
+	 * @param sqlType JDBC driver's ResultSet SQL type.
+	 * @return reference to this object.
+	 */
 	public Ps addOutResultSet(int sqlType) {
 		return addOutResultSet(null, sqlType, null);
 	}
 
+	/**
+	 * Appends OUT parameter as ResultSet to the end of declared parameters.
+	 * @param sqlType JDBC driver's ResultSet SQL type.
+	 * @param resultClass java type to map to
+	 * @return reference to this object.
+	 */
 	public Ps addOutResultSet(int sqlType, Class<?> resultClass) {
 		return addOutResultSet(null, sqlType, resultClass);
 	}
 
+	/**
+	 * Appends OUT parameter as String type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutString() {
 		return addOutParameter(Types.VARCHAR);
 	}
 
+	/**
+	 * Appends OUT parameter as boolean type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutBoolean() {
 		return addOutParameter(Types.BOOLEAN);
 	}
 
+	/**
+	 * Appends OUT parameter as BigDecimal type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutBigDecimal() {
 		return addOutParameter(Types.NUMERIC);
 	}
 
+	/**
+	 * Appends OUT parameter as integer type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutInt() {
 		return addOutParameter(Types.INTEGER);
 	}
 
+	/**
+	 * Appends OUT parameter as long type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutLong() {
 		return addOutParameter(Types.BIGINT);
 	}
-
+	
+	/**
+	 * Appends OUT parameter as float type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutFloat() {
 		return addOutParameter(Types.FLOAT);
 	}
 
+	/**
+	 * Appends OUT parameter as double type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutDouble() {
 		return addOutParameter(Types.DOUBLE);
 	}
 
+	/**
+	 * Appends OUT parameter as short type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutShort() {
 		return addOutParameter(Types.SMALLINT);
 	}
 	
+	/**
+	 * Appends OUT parameter as byte type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutByte() {
 		return addOutParameter(Types.TINYINT);
 	}
 
+	/**
+	 * Appends OUT parameter as byte array to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutBytes() {
 		return addOutParameter(Types.VARBINARY);
 	}
 	
+	/**
+	 * Appends OUT parameter as Blob type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutBlob() {
 		return addOutParameter(Types.BLOB);
 	}
 
+	/**
+	 * Appends OUT parameter as Clob type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutClob() {
 		return addOutParameter(Types.CLOB);
 	}
 
+	/**
+	 * Appends OUT parameter as Date type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutDate() {
 		return addOutParameter(Types.DATE);
 	}
 
+	/**
+	 * Appends OUT parameter as Time type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutTime() {
 		return addOutParameter(Types.TIME);
 	}
 
+	/**
+	 * Appends OUT parameter as Timestamp type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addOutTimestamp() {
 		return addOutParameter(Types.TIMESTAMP);
 	}
 
-	// -------为输出参数命名
+	// -------Appends OUT parameter and declares alias
+	
+	/**
+	 * Appends OUT parameter as ResultSet to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param sqlType JDBC driver's ResultSet SQL type.
+	 * @return reference to this object.
+	 */
 	public Ps addOutResultSet(String paramName, int sqlType) {
 		return addOutResultSet(paramName, sqlType, null);
 	}
 
+	/**
+	 * Appends OUT parameter as String type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutString(String paramName) {
 		return addOutParameter(paramName, Types.VARCHAR);
 	}
 
+	/**
+	 * Appends OUT parameter as boolean type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutBoolean(String paramName) {
 		return addOutParameter(paramName, Types.BOOLEAN);
 	}
 
+	/**
+	 * Appends OUT parameter as BigDecimal type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutBigDecimal(String paramName) {
 		return addOutParameter(paramName, Types.NUMERIC);
 	}
 
+	/**
+	 * Appends OUT parameter as integer type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutInt(String paramName) {
 		return addOutParameter(paramName, Types.INTEGER);
 	}
 
+	/**
+	 * Appends OUT parameter as long type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutLong(String paramName) {
 		return addOutParameter(paramName, Types.BIGINT);
 	}
 
+	/**
+	 * Appends OUT parameter as float type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutFloat(String paramName) {
 		return addOutParameter(paramName, Types.FLOAT);
 	}
 
+	/**
+	 * Appends OUT parameter as double type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutDouble(String paramName) {
 		return addOutParameter(paramName, Types.DOUBLE);
 	}
 
+	/**
+	 * Appends OUT parameter as short type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutShort(String paramName) {
 		return addOutParameter(paramName, Types.SMALLINT);
 	}
 	
+	/**
+	 * Appends OUT parameter as byte type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutByte(String paramName) {
 		return addOutParameter(paramName, Types.TINYINT);
 	}
 
+	/**
+	 * Appends OUT parameter as byte array to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutBytes(String paramName) {
 		return addOutParameter(paramName, Types.VARBINARY);
 	}
 	
+	/**
+	 * Appends OUT parameter as Blob type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutBlob(String paramName) {
 		return addOutParameter(paramName, Types.BLOB);
 	}
 
+	/**
+	 * Appends OUT parameter as Clob type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutClob(String paramName) {
 		return addOutParameter(paramName, Types.CLOB);
 	}
 
+	/**
+	 * Appends OUT parameter as Date type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutDate(String paramName) {
 		return addOutParameter(paramName, Types.DATE);
 	}
 
+	/**
+	 * Appends OUT parameter as Time type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutTime(String paramName) {
 		return addOutParameter(paramName, Types.TIME);
 	}
 
+	/**
+	 * Appends OUT parameter as Timestamp type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addOutTimestamp(String paramName) {
 		return addOutParameter(paramName, Types.TIMESTAMP);
 	}
 
-	// ----------------------------------------------------------------------设置输入输出参数，即参数既是输入也是输出（用于存储过程、函数调用）
-	protected Ps addInOutParameter(Object value, int type) {
-		parameters.add(new SqlInOutParameter(type, value));
-		return this;
-	}
+	// ----------------------------------------------------------------------Declares INOUT parameter
 
-	protected Ps setInOutParameter(int index, Object value, int type) {
+	/**
+	 * Declares INOUT parameter as specified SQL type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @param type INOUT parameter's SQL type.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	protected Ps setInOutParameter(int index, String paramName, Object value, int type) {
 		set(parameters, index, new SqlInOutParameter(type, value));
 		return this;
 	}
-
+	
+	/**
+	 * Declares INOUT parameter as specified SQL type at specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @param type INOUT parameter's SQL type.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	protected Ps setInOutParameter(int index, Object value, int type) {
+		set(parameters, index, new SqlInOutParameter(type, value));
+		return this;
+	}	
+	
+	/**
+	 * Appends INOUT parameter as declared type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @param type INOUT parameter's SQL type.
+	 * @return reference to this object.
+	 */
 	protected Ps addInOutParameter(String paramName, Object value, int type) {
 		parameters.add(new SqlInOutParameter(type, paramName, value));
 		return this;
 	}
 
-	protected Ps setInOutParameter(int index, String paramName, Object value, int type) {
-		set(parameters, index, new SqlInOutParameter(type, value));
-		return this;
-	}
-
-	// ----------------------------按照指定下标设置输入输出参数
 	/**
-	 * 设置预编译参数，根据对象的java类型设置预编译参数类型
+	 * Appends INOUT parameter as declared type to the end of declared parameters
+	 * @param value parameter value.
+	 * @param type INOUT parameter's SQL type.
+	 * @return reference to this object.
+	 */
+	protected Ps addInOutParameter(Object value, int type) {
+		parameters.add(new SqlInOutParameter(type, value));
+		return this;
+	}	
+	
+	// ----------------------------Declares INOUT parameter
+	/**
+	 * Declares INOUT parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
 	 */
 	public Ps setInOut(int index, Object value) {
 		return setInOutParameter(index, value, SqlUtil.getSqlType(value));
 	}
 
+	/**
+	 * Declares INOUT parameter as specified SQL type at specified position
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @param type INOUT parameter's SQL type.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */	
 	public Ps setInOut(int index, Object value, int type) {
 		return setInOutParameter(index, value, type);
 	}
 
+	/**
+	 * Declares INOUT parameter as NULL type at specified position.
+	 * @param index parameter index which starts at 1.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOutNull(int index) {
 		return setInOutParameter(index, null, Types.NULL);
 	}
 
+	/**
+	 * Declares INOUT String parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String value) {
 		return setInOutParameter(index, value, Types.VARCHAR);
 	}
 
+	/**
+	 * Declares INOUT boolean parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, boolean value) {
 		return setInOutParameter(index, value, Types.BOOLEAN);
 	}
 
+	/**
+	 * Declares INOUT BigDecimal parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, BigDecimal value) {
 		return setInOutParameter(index, value, Types.NUMERIC);
 	}
 
+	/**
+	 * Declares INOUT integer parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, int value) {
 		return setInOutParameter(index, value, Types.INTEGER);
 	}
 
+	/**
+	 * Declares INOUT long parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, long value) {
 		return setInOutParameter(index, value, Types.BIGINT);
 	}
 
+	/**
+	 * Declares INOUT double parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, double value) {
 		return setInOutParameter(index, value, Types.DOUBLE);
 	}
 
+	/**
+	 * Declares INOUT float parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, float value) {
 		return setInOutParameter(index, value, Types.FLOAT);
 	}
 	
+	/**
+	 * Declares INOUT short parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, short value) {
 		return setInOutParameter(index, value, Types.SMALLINT);
 	}
 	
+	/**
+	 * Declares INOUT byte parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, byte value) {
 		return setInOutParameter(index, value, Types.TINYINT);
 	}
 	
+	/**
+	 * Declares INOUT byte array parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, byte[] value) {
 		return setInOutParameter(index, value, Types.VARBINARY);
 	}
 
+	/**
+	 * Declares INOUT Blob parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, Blob value) {
 		return setInOutParameter(index, value, Types.BLOB);
 	}
 
+	/**
+	 * Declares INOUT Clob parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, Clob value) {
 		return setInOutParameter(index, value, Types.CLOB);
 	}
 
-	public Ps setInOut(int index, Date date) {
-		return setInOutParameter(index, date, Types.DATE);
+	/**
+	 * Declares INOUT Date parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	public Ps setInOut(int index, Date value) {
+		return setInOutParameter(index, value, Types.DATE);
 	}
 
-	public Ps setInOut(int index, java.sql.Date date) {
-		return setInOutParameter(index, date, Types.DATE);
+	/**
+	 * Declares INOUT Date parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	public Ps setInOut(int index, java.sql.Date value) {
+		return setInOutParameter(index, value, Types.DATE);
 	}
 
-	public Ps setInOut(int index, Time time) {
-		return setInOutParameter(index, time, Types.TIME);
+	/**
+	 * Declares INOUT Time parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	public Ps setInOut(int index, Time value) {
+		return setInOutParameter(index, value, Types.TIME);
 	}
 
-	public Ps setInOut(int index, Timestamp time) {
-		return setInOutParameter(index, time, Types.TIMESTAMP);
+	/**
+	 * Declares INOUT Timestamp parameter at the specified position.
+	 * @param index parameter index which starts at 1.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	public Ps setInOut(int index, Timestamp value) {
+		return setInOutParameter(index, value, Types.TIMESTAMP);
 	}
 
-	// -------为输出参数命名
+	// -------------------Declares INOUT parameter and alias
+	/**
+	 * Declares INOUT parameter at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */	
 	public Ps setInOut(int index, String paramName, Object value) {
 		return setInOutParameter(index, paramName, value, SqlUtil.getSqlType(value));
 	}
 
+	/**
+	 * Declares INOUT parameter at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @param type JDBC driver's ResultSet SQL type.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */	
 	public Ps setInOut(int index, String paramName, Object value, int type) {
 		return setInOutParameter(index, paramName, value, type);
 	}
 
+	/**
+	 * Declares INOUT parameter as NULL type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOutNull(int index, String paramName) {
 		return setInOutParameter(index, paramName, null, Types.NULL);
 	}
 
+	/**
+	 * Declares INOUT parameter as String type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, String value) {
 		return setInOutParameter(index, paramName, value, Types.VARCHAR);
 	}
 
+	/**
+	 * Declares INOUT parameter as boolean type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, boolean value) {
 		return setInOutParameter(index, paramName, value, Types.BOOLEAN);
 	}
 
+	/**
+	 * Declares INOUT parameter as BigDecimal type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, BigDecimal value) {
 		return setInOutParameter(index, paramName, value, Types.NUMERIC);
 	}
 
+	/**
+	 * Declares INOUT parameter as integer type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, int value) {
 		return setInOutParameter(index, paramName, value, Types.INTEGER);
 	}
 
+	/**
+	 * Declares INOUT parameter as long type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, long value) {
 		return setInOutParameter(index, paramName, value, Types.BIGINT);
 	}
 
+	/**
+	 * Declares INOUT parameter as double type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, double value) {
 		return setInOutParameter(index, paramName, value, Types.DOUBLE);
 	}
 
+	/**
+	 * Declares INOUT parameter as float type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, float value) {
 		return setInOutParameter(index, paramName, value, Types.FLOAT);
 	}
 	
+	/**
+	 * Declares INOUT parameter as short type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, short value) {
 		return setInOutParameter(index, paramName, value, Types.SMALLINT);
 	}
 	
+	/**
+	 * Declares INOUT parameter as byte type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, byte value) {
 		return setInOutParameter(index, paramName, value, Types.TINYINT);
 	}
 	
+	/**
+	 * Declares INOUT parameter as byte array at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, byte[] value) {
 		return setInOutParameter(index, paramName, value, Types.VARBINARY);
 	}
 
+	/**
+	 * Declares INOUT parameter as Blob type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, Blob value) {
 		return setInOutParameter(index, paramName, value, Types.BLOB);
 	}
 
+	/**
+	 * Declares INOUT parameter as Clob type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, Clob value) {
 		return setInOutParameter(index, paramName, value, Types.CLOB);
 	}
 
+	/**
+	 * Declares INOUT parameter as Date type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
 	public Ps setInOut(int index, String paramName, Date date) {
 		return setInOutParameter(index, paramName, date, Types.DATE);
 	}
 
-	public Ps setInOut(int index, String paramName, java.sql.Date date) {
-		return setInOutParameter(index, paramName, date, Types.DATE);
-	}
-
-	public Ps setInOut(int index, String paramName, Time time) {
-		return setInOutParameter(index, paramName, time, Types.TIME);
-	}
-
-	public Ps setInOut(int index, String paramName, Timestamp time) {
-		return setInOutParameter(index, paramName, time, Types.TIMESTAMP);
-	}
-
-	// ----------------------------按顺序增加参数
 	/**
-	 * 增加预编译参数，根据对象的java类型设置预编译参数类型
+	 * Declares INOUT parameter as Date type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	public Ps setInOut(int index, String paramName, java.sql.Date value) {
+		return setInOutParameter(index, paramName, value, Types.DATE);
+	}
+
+	/**
+	 * Declares INOUT parameter as Time type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	public Ps setInOut(int index, String paramName, Time value) {
+		return setInOutParameter(index, paramName, value, Types.TIME);
+	}
+
+	/**
+	 * Declares INOUT parameter as Timestamp type at the specified position, also declares an alias for this parameter.
+	 * @param index parameter index which starts at 1.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 * @throws DBRuntimeException if the index is out of range.
+	 */
+	public Ps setInOut(int index, String paramName, Timestamp value) {
+		return setInOutParameter(index, paramName, value, Types.TIMESTAMP);
+	}
+
+	// ----------------------------Appends INOUT parameter
+	/**
+	 * Appends INOUT parameter to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
 	 */
 	public Ps addInOut(Object value) {
 		return addInOutParameter(value, SqlUtil.getSqlType(value));
 	}
 
+	/**
+	 * Appends INOUT parameter as declared type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @param type INOUT parameter's SQL type.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(Object value, int type) {
 		return addInOutParameter(value, type);
 	}
 
+	/**
+	 * Appends INOUT parameter as NULL type to the end of declared parameters.
+	 * @return reference to this object.
+	 */
 	public Ps addInOutNull() {
 		return addInOutParameter(null, Types.NULL);
 	}
 
+	/**
+	 * Appends INOUT parameter as String type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String value) {
 		return addInOutParameter(value, Types.VARCHAR);
 	}
 
+	/**
+	 * Appends INOUT parameter as boolean type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(boolean value) {
 		return addInOutParameter(value, Types.BOOLEAN);
 	}
 
+	/**
+	 * Appends INOUT parameter as BigDecimal type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(BigDecimal value) {
 		return addInOutParameter(value, Types.NUMERIC);
 	}
 
+	/**
+	 * Appends INOUT parameter as integer type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(int value) {
 		return addInOutParameter(value, Types.INTEGER);
 	}
 
+	/**
+	 * Appends INOUT parameter as long type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(long value) {
 		return addInOutParameter(value, Types.BIGINT);
 	}
 
+	/**
+	 * Appends INOUT parameter as float type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(float value) {
 		return addInOutParameter(value, Types.FLOAT);
 	}
 
+	/**
+	 * Appends INOUT parameter as double type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(double value) {
 		return addInOutParameter(value, Types.DOUBLE);
 	}
 	
+	/**
+	 * Appends INOUT parameter as short type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(short value) {
 		return addInOutParameter(value, Types.SMALLINT);
 	}
-	
+
+	/**
+	 * Appends INOUT parameter as byte type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(byte value) {
 		return addInOutParameter(value, Types.TINYINT);
 	}
 	
+	/**
+	 * Appends INOUT parameter as byte array to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(byte[] value) {
 		return addInOutParameter(value, Types.VARBINARY);
 	}
 
+	/**
+	 * Appends INOUT parameter as Blob type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(Blob value) {
 		return addInOutParameter(value, Types.BLOB);
 	}
 
+	/**
+	 * Appends INOUT parameter as Clob type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(Clob value) {
 		return addInOutParameter(value, Types.CLOB);
 	}
 
+	/**
+	 * Appends INOUT parameter as Date type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(Date date) {
 		return addInOutParameter(date, Types.DATE);
 	}
 
-	public Ps addInOut(java.sql.Date date) {
-		return addInOutParameter(date, Types.DATE);
+	/**
+	 * Appends INOUT parameter as Date type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
+	public Ps addInOut(java.sql.Date value) {
+		return addInOutParameter(value, Types.DATE);
 	}
 
-	public Ps addInOut(Time time) {
-		return addInOutParameter(time, Types.TIME);
+	/**
+	 * Appends INOUT parameter as Time type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
+	public Ps addInOut(Time value) {
+		return addInOutParameter(value, Types.TIME);
 	}
 
-	public Ps addInOut(Timestamp time) {
-		return addInOutParameter(time, Types.TIMESTAMP);
+	/**
+	 * Appends INOUT parameter as Timestamp type to the end of declared parameters.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
+	public Ps addInOut(Timestamp value) {
+		return addInOutParameter(value, Types.TIMESTAMP);
 	}
 
-	// -------为输出参数命名
+	// -------Appends INOUT parameter and declares alias
+	/**
+	 * Appends INOUT parameter to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, Object value) {
 		return addInOutParameter(paramName, value, SqlUtil.getSqlType(value));
 	}
 
+	/**
+	 * Appends INOUT parameter as declared type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @param type INOUT parameter's SQL type.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, Object value, int type) {
 		return addInOutParameter(paramName, value, type);
 	}
 
+	/**
+	 * Appends INOUT parameter as NULL type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @return reference to this object.
+	 */
 	public Ps addInOutNull(String paramName) {
 		return addInOutParameter(paramName, null, Types.NULL);
 	}
 
+	/**
+	 * Appends INOUT parameter as String type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, String value) {
 		return addInOutParameter(paramName, value, Types.VARCHAR);
 	}
 
+	/**
+	 * Appends INOUT parameter as boolean type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, boolean value) {
 		return addInOutParameter(paramName, value, Types.BOOLEAN);
 	}
 
+	/**
+	 * Appends INOUT parameter as BigDecimal type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, BigDecimal value) {
 		return addInOutParameter(paramName, value, Types.NUMERIC);
 	}
 
+	/**
+	 * Appends INOUT parameter as integer type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, int value) {
 		return addInOutParameter(paramName, value, Types.INTEGER);
 	}
 
+	/**
+	 * Appends INOUT parameter as long type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, long value) {
 		return addInOutParameter(paramName, value, Types.BIGINT);
 	}
 
+	/**
+	 * Appends INOUT parameter as float type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, float value) {
 		return addInOutParameter(paramName, value, Types.FLOAT);
 	}
 
+	/**
+	 * Appends INOUT parameter as double type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, double value) {
 		return addInOutParameter(paramName, value, Types.DOUBLE);
 	}
 	
+	/**
+	 * Appends INOUT parameter as short type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, short value) {
 		return addInOutParameter(paramName, value, Types.SMALLINT);
 	}
 	
+	/**
+	 * Appends INOUT parameter as byte type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, byte value) {
 		return addInOutParameter(paramName, value, Types.TINYINT);
 	}
 	
+	/**
+	 * Appends INOUT parameter as byte array to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, byte[] value) {
 		return addInOutParameter(paramName, value, Types.VARBINARY);
 	}
 
+	/**
+	 * Appends INOUT parameter as Blob type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, Blob value) {
 		return addInOutParameter(paramName, value, Types.BLOB);
 	}
 
+	/**
+	 * Appends INOUT parameter as Clob type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, Clob value) {
 		return addInOutParameter(paramName, value, Types.CLOB);
 	}
 
+	/**
+	 * Appends INOUT parameter as Date type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, Date date) {
 		return addInOutParameter(paramName, date, Types.DATE);
 	}
 
+	/**
+	 * Appends INOUT parameter as Date type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, java.sql.Date date) {
 		return addInOutParameter(paramName, date, Types.DATE);
 	}
 
+	/**
+	 * Appends INOUT parameter as Time type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, Time time) {
 		return addInOutParameter(paramName, time, Types.TIME);
 	}
 
+	/**
+	 * Appends INOUT parameter as Timestamp type to the end of declared parameters, also declares an alias for this parameter.
+	 * @param paramName alias for the parameter.
+	 * @param value parameter value.
+	 * @return reference to this object.
+	 */
 	public Ps addInOut(String paramName, Timestamp time) {
 		return addInOutParameter(paramName, time, Types.TIMESTAMP);
 	}
