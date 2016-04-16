@@ -13,7 +13,7 @@ import org.rex.db.transaction.JtaTransactionManager;
 import org.rex.db.transaction.TransactionManager;
 
 /**
- * Database Transaction
+ * Database transaction.
  * @author z
  */
 public class DBTransaction extends DefaultDefinition {
@@ -42,35 +42,60 @@ public class DBTransaction extends DefaultDefinition {
 	}
 	
 	/**
-	 * begin 
+	 * Begins a new transaction for the dataSource.
+	 * Framework will get a new connection from the given dataSource, set auto-commit mode to false and put it into ThreadLocal.
+	 * Operations for this dataSource in the same thread are using this connection until committing or rollback. 
+	 * 
+	 * @param dataSource the DataSource that transaction is beginning for.
+	 * @throws DBException if configuration wasn't loaded, could not access database, transaction is already begin etc.
 	 */
 	public void begin(DataSource dataSource) throws DBException {
 		getTransactionManager(dataSource).begin(this);
 	}
 
 	/**
-	 * 开始事物
+	 * Begins a new transaction with definition for the dataSource.
+	 * Framework will get a new connection from the given dataSource, set auto-commit mode to false and put it into ThreadLocal.
+	 * Operations for this dataSource in the same thread are using this connection until committing or rollback. 
+	 * 
+	 * @param dataSource the DataSource that transaction is beginning for.
+	 * @param definition transaction definition.
+	 * @throws DBException if configuration wasn't loaded, could not access database, transaction is already begin etc.
 	 */
-	public static void begin(DataSource dataSource, DefaultDefinition definition) throws DBException {
+	public static void begin(DataSource dataSource, DefaultDefinition definition) throws DBException {  
 		getTransactionManager(dataSource).begin(definition);
 	}
 
 	/**
-	 * 提交事物
+	 * Commits transaction for the dataSource.
+	 * Framework will get connection from ThreadLocal and commit it.
+	 * 
+	 * @param dataSource the DataSource that transaction is committing for.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 		could not find connection from ThreadLocal for the given dataSource etc.
 	 */
 	public static void commit(DataSource dataSource) throws DBException {
 		getTransactionManager(dataSource).commit();
 	}
 
 	/**
-	 * 回滚事物
+	 * Rollback transaction for the dataSource.
+	 * Framework will get connection from ThreadLocal and rollback it.
+	 * 
+	 * @param dataSource the DataSource that transaction is rollback for.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 		could not find connection from ThreadLocal for the given dataSource etc.
 	 */
 	public static void rollback(DataSource dataSource) throws DBException {
 		getTransactionManager(dataSource).rollback();
 	}
 
 	/**
-	 * 获取连接
+	 * Gets connection from ThreadLocal for the dataSource.
+	 * 
+	 * @param dataSource the DataSource that transaction is on.
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 		could not find connection from ThreadLocal for the given dataSource etc.
 	 */
 	public static Connection getTransactionConnection(DataSource dataSource) throws DBException {
 		return getTransactionManager(dataSource).getTransactionConnection();
@@ -79,28 +104,34 @@ public class DBTransaction extends DefaultDefinition {
 	
 	//-------jta
 	/**
-	 * 开始事物
+	 * Begins a JTA transaction with definition.
+	 * 
+	 * @param definition transaction definition.
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not begin transaction etc.
 	 */
 	public static void beginJta(DefaultDefinition definition) throws DBException {
 		getJtaTransactionManager().begin(definition);
 	}
 
 	/**
-	 * 开始事物
+	 * Begins a JTA transaction.
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not begin transaction etc.
 	 */
 	public static void beginJta() throws DBException {
 		getJtaTransactionManager().begin(null);
 	}
 
 	/**
-	 * 提交事物
+	 * Commits a JTA transaction.
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not commit transaction etc.
 	 */
 	public static void commitJta() throws DBException {
 		getJtaTransactionManager().commit();
 	}
 	
 	/**
-	 * 回滚事物
+	 * Rollback a JTA transaction.
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not commit transaction etc.
 	 */
 	public static void rollbackJta() throws DBException {
 		getJtaTransactionManager().rollback();
