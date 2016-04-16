@@ -10,7 +10,7 @@ import org.rex.db.core.DBOperation;
 import org.rex.db.exception.DBException;
 
 /**
- * Database call operation for stored procedures and functions.
+ * Database calling operation for storage procedures and functions.
  * @author z
  */
 public class DBCall extends DBOperation{

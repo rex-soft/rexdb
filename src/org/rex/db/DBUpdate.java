@@ -261,7 +261,7 @@ public class DBUpdate extends DBOperation {
 				clazz = el.getClass();
 			else{
 				if(el.getClass() != clazz)
-					throw new DBRuntimeException("DB-00004", clazz.getClass().getName(), el.getClass().getName());
+					throw new DBRuntimeException("DB-00005", clazz.getClass().getName(), el.getClass().getName());
 			}
 		}
 		return clazz;

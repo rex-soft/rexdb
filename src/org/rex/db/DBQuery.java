@@ -364,7 +364,6 @@ public class DBQuery extends DBOperation {
 		return templateClassQuery(sql, parameters, resultClass, offset, rows);
 	}
 	
-	
 	/**
 	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class,
 	 * the given SQL is automatically wrapped to paging SQL for the database.
@@ -513,7 +512,7 @@ public class DBQuery extends DBOperation {
 		List<T> list = templateClassQuery(sql, parameters, resultClass, null);
 		if(list.size() == 0) return null;
 		if(list.size() > 1)
-			throw new DBException("DB-00005", list.size());
+			throw new DBException("DB-00006", list.size());
 		return list.get(0);
 	}
 	
@@ -540,7 +539,7 @@ public class DBQuery extends DBOperation {
 		List<RMap> list = templateMapQuery(sql, parameters, null);
 		if(list.size() == 0) return null;
 		if(list.size() > 1)
-			throw new DBException("DB-00005", list.size());
+			throw new DBException("DB-00006", list.size());
 		
 		return list.get(0);
 	}

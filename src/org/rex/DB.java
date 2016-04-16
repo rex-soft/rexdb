@@ -20,9 +20,7 @@ import org.rex.db.exception.DBException;
 import org.rex.db.transaction.DefaultDefinition;
 
 /**
- * This class contains various methods for database operations, including
- * database query, update, call and transaction. Also contains getter methods
- * for data source, connection, dialect etc.
+ * Database operations.
  * 
  * @author z
  */
@@ -31,23 +29,21 @@ public class DB {
 	// --------------------------------------------- delegates
 	// -------------update
 	/**
-	 * get <tt>DBUpdate</tt> instance for the default data source
+	 * Gets <tt>DBUpdate</tt> instance for the default dataSource.
 	 * 
-	 * @return DBUpdate
-	 * @throws DBException couldn't find default data source, or couldn't
-	 *             initialize DBUpdate instance
+	 * @return DBUpdate instance.
+	 * @throws DBException couldn't find dataSource, couldn't initialize DBUpdate instance.
 	 */
 	private static DBUpdate getDBUpdate() throws DBException {
 		return DBUpdate.getInstance(getDefaultDataSource());
 	}
 
 	/**
-	 * get <tt>DBUpdate</tt> instance for specified data source
+	 * Gets <tt>DBUpdate</tt> instance by the specified dataSource id.
 	 * 
-	 * @param dataSourceId the data source configured in the configuration xml.
-	 * @return DBUpdate
-	 * @throws DBException couldn't find the data source, or couldn't initialize
-	 *             DBUpdate instance
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @return DBUpdate instance.
+	 * @throws DBException couldn't find dataSource, couldn't initialize DBUpdate instance.
 	 */
 	private static DBUpdate getDBUpdate(String dataSourceId) throws DBException {
 		return DBUpdate.getInstance(getDataSource(dataSourceId));
@@ -55,23 +51,21 @@ public class DB {
 
 	// -------------query
 	/**
-	 * get <tt>DBQuery</tt> instance for the default data source
+	 * Gets <tt>DBQuery</tt> instance for the default dataSource.
 	 * 
-	 * @return DBQuery
-	 * @throws DBException couldn't find default data source, or couldn't
-	 *             initialize DBQuery instance
+	 * @return DBQuery instance.
+	 * @throws DBException couldn't find dataSource, couldn't initialize DBQuery instance.
 	 */
 	private static DBQuery getDBQuery() throws DBException {
 		return DBQuery.getInstance(getDefaultDataSource());
 	}
 
 	/**
-	 * get <tt>DBQuery</tt> instance for specified data source
+	 * Gets <tt>DBQuery</tt> instance by the specified dataSource id.
 	 * 
-	 * @param dataSourceId the data source configured in the configuration xml.
-	 * @return DBQuery
-	 * @throws DBException couldn't find the data source, or couldn't initialize
-	 *             DBQuery instance
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @return DBQuery instance.
+	 * @throws DBException couldn't find dataSource, couldn't initialize DBQuery instance.
 	 */
 	private static DBQuery getDBQuery(String dataSourceId) throws DBException {
 		return DBQuery.getInstance(getDataSource(dataSourceId));
@@ -79,30 +73,27 @@ public class DB {
 
 	// -------------call
 	/**
-	 * get <tt>DBCall</tt> instance for the default data source
+	 * Gets <tt>DBCall</tt> instance for the default dataSource.
 	 * 
-	 * @return DBCall
-	 * @throws DBException couldn't find default data source, or couldn't
-	 *             initialize DBCall instance
+	 * @return DBCall instance.
+	 * @throws DBException couldn't find dataSource, couldn't initialize DBCall instance.
 	 */
 	private static DBCall getDBCall() throws DBException {
 		return DBCall.getInstance(getDefaultDataSource());
 	}
 
 	/**
-	 * get <tt>DBCall</tt> instance for specified data source
+	 * Gets <tt>DBCall</tt> instance by the specified dataSource id.
 	 * 
-	 * @param dataSourceId the data source configured in the configuration xml.
-	 * @return DBCall
-	 * @throws DBException couldn't find the data source, or couldn't initialize
-	 *             DBCall instance
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @return DBCall instance.
+	 * @throws DBException couldn't find dataSource, couldn't initialize DBCall instance.
 	 */
 	private static DBCall getDBCall(String dataSourceId) throws DBException {
 		return DBCall.getInstance(getDataSource(dataSourceId));
 	}
 
 	// --------------------------------------------- data sources and
-	// connections
 	private static DataSourceManager getDataSourceManager() throws DBException {
 		return Configuration.getCurrentConfiguration().getDataSourceManager();
 	}
@@ -122,17 +113,29 @@ public class DB {
 	}
 
 	/**
-	 * 获取数据库连接
+	 * Gets Connection from the default dataSource.
+	 * 
+	 * @return an idle Connection from the default dataSource.
 	 */
-	public static Connection getConnection() throws DBException, SQLException {
-		return getDefaultDataSource().getConnection();
+	public static Connection getConnection() throws DBException {
+		try{
+			return getDefaultDataSource().getConnection();
+		}catch(SQLException e){
+			throw new DBException("DB-00004", e);
+		}
 	}
 
 	/**
-	 * 获取数据库连接
+	 * Gets Connection from specified dataSource.
+	 * 
+	 * @return an idle Connection from specified dataSource.
 	 */
-	public static Connection getConnection(String dataSource) throws DBException, SQLException {
-		return getDataSource(dataSource).getConnection();
+	public static Connection getConnection(String dataSourceId) throws DBException {
+		try{
+			return getDataSource(dataSourceId).getConnection();
+		}catch(SQLException e){
+			throw new DBException("DB-00004", e);
+		}
 	}
 
 	// --------------------------------------------- dialects
@@ -141,28 +144,35 @@ public class DB {
 	}
 
 	/**
-	 * 获取方言实现
+	 * Gets Dialect instance for the default dataSource.
+	 * @return dialect for the default dataSource.
 	 */
 	public static Dialect getDialect() throws DBException {
 		return getDialectManager().getDialect(getDefaultDataSource());
 	}
 
 	/**
-	 * 获取方言实现
+	 * Gets Dialect instance for the specified dataSource.
+	 * 
+	 * @param dataSource the specified dataSource.
+	 * @return dialect for the specified dataSource.
 	 */
 	public static Dialect getDialect(DataSource dataSource) throws DBException {
 		return getDialectManager().getDialect(dataSource);
 	}
 
 	/**
-	 * 获取方言实现
+	 * Gets Dialect instance for the specified dataSource.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @return dialect for the specified dataSource.
 	 */
 	public static Dialect getDialect(String dataSourceId) throws DBException {
 		return getDialectManager().getDialect(getDataSource(dataSourceId));
 	}
 
 	// --------------------------------------------- 查询
-	// ------------使用指定数据源
+	// ------------specified dataSource
 	// ---------------query one row for java bean
 	/**
 	 * 执行查询, 获取一条记录
@@ -384,38 +394,77 @@ public class DB {
 		return getDBQuery(dataSourceId).getMapList(sql, parameters, offset, rows);
 	}
 
-	// ------------使用默认数据源
+	// ------------default dataSource
 	// ---------------query one row for java bean
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @param resultClass a class that JDBC ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public static <T> T get(String sql, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param resultClass a class that the ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public static <T> T get(String sql, Ps parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param resultClass a class that the ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public static <T> T get(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, parameterArray, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @param resultClass a class that the ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public static <T> T get(String sql, Object parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @param resultClass a class that the ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database,
+	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
 	 */
 	public static <T> T get(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, parameters, resultClass);

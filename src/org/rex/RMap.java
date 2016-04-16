@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * A HashMap with java type conversion methods.
+ * HashMap with java type conversion methods.
  * @author z
  */
 public class RMap<K,V> extends HashMap<K,V> {
@@ -44,11 +44,11 @@ public class RMap<K,V> extends HashMap<K,V> {
 
 	//------------get value as string
 	/**
-	 * Get value as String
-	 * @param key key with which the specified value is to be associated
-	 * @param emptyAsNull returns null if the value equals ""
+	 * Returns the value as String to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @param key the key whose associated value is to be returned.
+	 * @param emptyAsNull returns null if the value equals empty String.
 	 * 
-	 * @return the value associated with key
+	 * @return String value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public String getString(String key, boolean emptyAsNull) {
 		if (!containsKey(key))
@@ -58,20 +58,20 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 
 	/**
-	 * Get value as String
-	 * @param key key with which the specified value is to be associated
+	 * Returns the value as String to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @param key the key whose associated value is to be returned.
 	 * 
-	 * @return the value associated with key
+	 * @return String value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public String getString(String key) {
 		return getString(key, false);
 	}
 
 	/**
-	 * Convert an object to String, contact values if the object is a string array
-	 * @param object object to convert
+	 * Converts Object to String, contacts values if the Object is array.
+	 * @param value the Object to convert.
 	 * 
-	 * @return string value
+	 * @return String value.
 	 */
 	protected String getStringValue(Object value) {
 		if (value == null)
@@ -111,10 +111,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 
 	//------------get value as boolean
 	/**
-	 * Get value as boolean
-	 * @param key key with which the specified value is to be associated
+	 * Returns the value as boolean to which the specified key is mapped, or false if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
 	 * 
-	 * @return the value associated with key
+	 * @return boolean value to which the specified key is mapped, or false if this map contains no mapping for the key.
 	 */
 	public boolean getBoolean(String key) {
 		Object value = get(key);
@@ -129,10 +129,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 
 	//------------get value as number
 	/**
-	 * Get value as int, return 0 if the value is null or empty, throw exception if convert failed
-	 * @param key key with which the specified value is to be associated
+	 * Returns the value as integer to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
 	 * 
-	 * @return int value
+	 * @return integer value to which the specified key is mapped, or 0 if this map contains no mapping for the key.
 	 */
 	public int getInt(String key) {
 		Object value = get(key);
@@ -157,10 +157,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 	
 	/**
-	 * Get value as long, return 0 if the value is null or empty, throw exception if convert failed
-	 * @param key key with which the specified value is to be associated
+	 * Returns the value as long to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
 	 * 
-	 * @return long value
+	 * @return long value to which the specified key is mapped, or 0 if this map contains no mapping for the key.
 	 */
 	public long getLong(String key) {
 		Object value = get(key);
@@ -185,10 +185,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 
 	/**
-	 * Get value as float, return 0 if the value is null or empty, throw exception if convert failed
-	 * @param key key with which the specified value is to be associated
+	 * Returns the value as float to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
 	 * 
-	 * @return float value
+	 * @return float value to which the specified key is mapped, or 0 if this map contains no mapping for the key.
 	 */
 	public float getFloat(String key) {
 		Object value = get(key);
@@ -213,10 +213,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 
 	/**
-	 * Get value as double, return 0 if the value is null or empty, throw exception if convert failed
-	 * @param key key with which the specified value is to be associated
+	 * Returns the value as double to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
 	 * 
-	 * @return double value
+	 * @return double value to which the specified key is mapped, or 0 if this map contains no mapping for the key.
 	 */
 	public double getDouble(String key) {
 		Object value = get(key);
@@ -241,10 +241,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 
 	/**
-	 * Get value as BigDecimal, return 0 if the value is null or empty, throw exception if convert failed
-	 * @param key key with which the specified value is to be associated
+	 * Returns the value as BigDecimal to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
 	 * 
-	 * @return BigDecimal value
+	 * @return BigDecimal value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public BigDecimal getBigDecimal(String key) {
 		Object value = get(key);
@@ -276,9 +276,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 
 	//------------get value as Date
 	/**
-	 * Get value as java.util.Date
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
+	 * Returns the value as Date to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
+	 * 
+	 * @return Date value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public Date getDate(String key) {
 		if (!containsKey(key))
@@ -288,9 +289,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 	
 	/**
-	 * Get value as java.sql.Date
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
+	 * Returns the value as java.sql.Date to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
+	 * 
+	 * @return java.sql.Date value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public java.sql.Date getDateForSql(String key) {
 		Date date = getDate(key);
@@ -300,9 +302,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 	
 	/**
-	 * Get value as Time
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
+	 * Returns the value as Time to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
+	 * 
+	 * @return Time value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public Time getTime(String key) {
 		Date date = getDate(key);
@@ -312,9 +315,10 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 
 	/**
-	 * Get value as Timestamp
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
+	 * Returns the value as Timestamp to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
+	 * 
+	 * @return Timestamp value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public Timestamp getTimestamp(String key) {
 		Date date = getDate(key);
@@ -324,9 +328,9 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 	
 	/**
-	 * try to parse value to Date
-	 * @param value object to convert
-	 * @return date value
+	 * Parses Object to Date.
+	 * @param value Object to convert.
+	 * @return Date value.
 	 */
 	protected Date getDateByValue(Object value) {
 		if (value == null)
@@ -353,7 +357,7 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 	
 	/**
-	 * Inner class for automatically parsing date string
+	 * Inner class for automatically parsing date string.
 	 */
 	static class DateParser{
 		private String regular;
@@ -368,7 +372,7 @@ public class RMap<K,V> extends HashMap<K,V> {
 		}
 		
 		/**
-		 * parse date string which matches the pattern
+		 * Parses date String that matches pattern.
 		 * @param dateStr date string
 		 * @return java.util.Date or null
 		 */
@@ -415,20 +419,20 @@ public class RMap<K,V> extends HashMap<K,V> {
 	};
 	
 	/**
-	 * Add a pattern for date format
-	 * @param pattern date regular expression
-	 * @param format java date format
+	 * Addes a pattern for date format.
+	 * @param pattern date regular expression.
+	 * @param format java date format.
 	 */
 	public static void addDateFormat(String pattern, String format){
 		dateParsers.add(new DateParser(pattern, format));
 	}
 
 	//------------get value as array
-
 	/**
-	 * Get value as string array, if the value is not an array, will be the first element of the array
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
+	 * Returns the value as String array to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @param key key with which the specified value is to be associated.
+	 * 
+	 * @return String array to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public String[] getStringArray(String key) {
 		Object value = get(key);
@@ -493,12 +497,12 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 	
 	//------------get value as RMap/List
-	
 	/**
-	 * Get value as RMap
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
-	 * @throws ClassCastException if entry value is not Map
+	 * Gets value as RMap.
+	 * @param key key with which the specified value is to be associated.
+	 * 
+	 * @return RMap to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @throws ClassCastException if entry value is not a Map.
 	 */
 	public RMap getMap(String key){
 		Object value = get(key);
@@ -514,10 +518,11 @@ public class RMap<K,V> extends HashMap<K,V> {
 	}
 	
 	/**
-	 * Get value as List
-	 * @param key key with which the specified value is to be associated
-	 * @return the value associated with key
-	 * @throws ClassCastException if the entry value could not convert to List
+	 * Gets value as List.
+	 * @param key key with which the specified value is to be associated.
+	 * 
+	 * @return List to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @throws ClassCastException if the entry value is not or could not convert to List.
 	 */
 	public List getList(String key){
 		Object value = get(key);
@@ -574,7 +579,7 @@ public class RMap<K,V> extends HashMap<K,V> {
 	
 	// -------------------------setters
 	/**
-     * put value of specified key to this map.
+     * Associates the specified value with the specified key in this map.
      *
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
