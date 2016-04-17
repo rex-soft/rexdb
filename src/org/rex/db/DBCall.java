@@ -1,3 +1,18 @@
+/**
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.rex.db;
 
 import java.util.HashMap;
@@ -11,10 +26,13 @@ import org.rex.db.exception.DBException;
 
 /**
  * Database calling operation for storage procedures and functions.
+ * 
  * @author z
+ * @version 1.0.0, 2016-04-17
+ * @since 1.0
  */
-public class DBCall extends DBOperation{
-	
+public class DBCall extends DBOperation {
+
 	// ------instances
 	private volatile static Map<DataSource, DBCall> calls = new HashMap<DataSource, DBCall>();
 
@@ -29,74 +47,74 @@ public class DBCall extends DBOperation{
 	public DBCall(DataSource dataSource) throws DBException {
 		super(dataSource);
 	}
-	
+
 	// -------public methods
 	/**
-	 * execute a stored procedure or a function.
-	 * @param sql an SQL to be sent to the database, typically a static SQL
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @return results contains return results
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, etc.
+	 * @param sql an SQL to be sent to the database, typically a static SQL.
+	 * 
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public RMap<String, ?> call(String sql) throws DBException{
+	public RMap<String, ?> call(String sql) throws DBException {
 		return templateCall(sql, null);
 	}
-	
+
 	/**
-	 * execute a stored procedure or a function.
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
-	 * @param parameterArray an object array that contains prepared parameters in order
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @return results contains return results
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, etc.
+	 * @param sql an SQL that may contain one or more '?' parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * 
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public RMap<String, ?> call(String sql, Object[] parameterArray) throws DBException{
+	public RMap<String, ?> call(String sql, Object[] parameterArray) throws DBException {
 		return templateCall(sql, parameterArray);
 	}
-	
+
 	/**
-	 * execute a stored procedure or a function.
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders
-	 * @param parameters a Ps object that contains prepared parameters
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @return results contains return results, out parameters, INOUT parameters
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, etc.
+	 * @param sql an SQL that may contain one or more '?' parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * 
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public RMap<String, ?> call(String sql, Ps parameters) throws DBException{
+	public RMap<String, ?> call(String sql, Ps parameters) throws DBException {
 		return templateCall(sql, parameters);
 	}
 
 	/**
-	 * execute a stored procedure or a function.
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
-	 * @param parameters a map that contains prepared parameters
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @return results contains return results
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, etc.
+	 * @param sql an SQL that may contain one or more '#{...}' parameter placeholders.
+	 * @param parameters a Map that contains prepared parameters.
+	 * 
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public RMap<String, ?> call(String sql, Map<?, ?> parameters) throws DBException{
+	public RMap<String, ?> call(String sql, Map<?, ?> parameters) throws DBException {
 		return templateCall(sql, parameters);
 	}
-	
+
 	/**
-	 * execute a stored procedure or a function.
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders 
-	 * @param parameters an object that contains prepared parameters
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @return results contains return results
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, etc.
+	 * @param sql an SQL that may contain one or more '#{...}' parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * 
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public RMap<String, ?> call(String sql, Object parameters) throws DBException{
+	public RMap<String, ?> call(String sql, Object parameters) throws DBException {
 		return templateCall(sql, parameters);
 	}
-	
+
 	// -------private methods
-	private RMap<String, ?> templateCall(String sql, Object parameters) throws DBException{
+	private RMap<String, ?> templateCall(String sql, Object parameters) throws DBException {
 		return getTemplate().call(sql, parameters);
 	}
 }

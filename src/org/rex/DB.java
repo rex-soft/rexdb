@@ -1,3 +1,18 @@
+/**
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.rex;
 
 import java.sql.Connection;
@@ -23,6 +38,8 @@ import org.rex.db.transaction.DefaultDefinition;
  * Database operations.
  * 
  * @author z
+ * @version 1.0.0, 2016-04-17
+ * @since 1.0
  */
 public class DB {
 
@@ -118,9 +135,9 @@ public class DB {
 	 * @return an idle Connection from the default dataSource.
 	 */
 	public static Connection getConnection() throws DBException {
-		try{
+		try {
 			return getDefaultDataSource().getConnection();
-		}catch(SQLException e){
+		} catch (SQLException e) {
 			throw new DBException("DB-00004", e);
 		}
 	}
@@ -131,9 +148,9 @@ public class DB {
 	 * @return an idle Connection from specified dataSource.
 	 */
 	public static Connection getConnection(String dataSourceId) throws DBException {
-		try{
+		try {
 			return getDataSource(dataSourceId).getConnection();
-		}catch(SQLException e){
+		} catch (SQLException e) {
 			throw new DBException("DB-00004", e);
 		}
 	}
@@ -145,6 +162,7 @@ public class DB {
 
 	/**
 	 * Gets Dialect instance for the default dataSource.
+	 * 
 	 * @return dialect for the default dataSource.
 	 */
 	public static Dialect getDialect() throws DBException {
@@ -171,39 +189,78 @@ public class DB {
 		return getDialectManager().getDialect(getDataSource(dataSourceId));
 	}
 
-	// --------------------------------------------- 查询
+	// --------------------------------------------- QUERY
 	// ------------specified dataSource
 	// ---------------query one row for java bean
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @param resultClass a class that JDBC ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String dataSourceId, String sql, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).get(sql, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param resultClass a class that the ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String dataSourceId, String sql, Ps parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).get(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param resultClass a class that the ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String dataSourceId, String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).get(sql, parameterArray, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @param resultClass a class that the ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String dataSourceId, String sql, Object parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).get(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to an object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @param resultClass a class that the ResultSet should be mapped to.
+	 * @return object that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String dataSourceId, String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).get(sql, parameters, resultClass);
@@ -212,35 +269,69 @@ public class DB {
 	// ---------------query one row for RMap
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String dataSourceId, String sql) throws DBException {
 		return getDBQuery(dataSourceId).getMap(sql);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String dataSourceId, String sql, Ps parameters) throws DBException {
 		return getDBQuery(dataSourceId).getMap(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String dataSourceId, String sql, Object[] parameterArray) throws DBException {
 		return getDBQuery(dataSourceId).getMap(sql, parameterArray);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String dataSourceId, String sql, Object parameters) throws DBException {
 		return getDBQuery(dataSourceId).getMap(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String dataSourceId, String sql, Map<?, ?> parameters) throws DBException {
 		return getDBQuery(dataSourceId).getMap(sql, parameters);
@@ -248,35 +339,69 @@ public class DB {
 
 	// ---------------query a list of java bean
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).getList(sql, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Ps parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).getList(sql, parameterArray, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Object parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass);
@@ -284,35 +409,64 @@ public class DB {
 
 	// ---------------query a list of RMap
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, Ps parameters) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, Object[] parameterArray) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, parameterArray);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, Object parameters) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, Map<?, ?> parameters) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, parameters);
@@ -320,21 +474,50 @@ public class DB {
 
 	// ---------------query a limit list of java bean
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class,
+	 * the given SQL is automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Class<T> resultClass, int offset, int rows) throws DBException {
 		return getDBQuery(dataSourceId).getList(sql, resultClass, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class,
+	 * the given SQL is automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Ps parameters, Class<T> resultClass, int offset, int rows) throws DBException {
 		return getDBQuery(dataSourceId).getList(sql, parameters, resultClass, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class,
+	 * the given SQL is automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Object[] parameterArray, Class<T> resultClass, int offset, int rows)
 			throws DBException {
@@ -342,7 +525,17 @@ public class DB {
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class,
+	 * the given SQL is automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Object parameters, Class<T> resultClass, int offset, int rows)
 			throws DBException {
@@ -350,7 +543,17 @@ public class DB {
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of object that instanced from the given class,
+	 * the given SQL is automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String dataSourceId, String sql, Map<?, ?> parameters, Class<T> resultClass, int offset, int rows)
 			throws DBException {
@@ -360,35 +563,79 @@ public class DB {
 	// ---------------query a limit list of RMap
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped
+	 * to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, int offset, int rows) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped
+	 * to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, Ps parameters, int offset, int rows) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, parameters, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped
+	 * to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, Object[] parameterArray, int offset, int rows) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, parameterArray, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped
+	 * to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, Object parameters, int offset, int rows) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, parameters, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL with the specified dataSource and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped
+	 * to paging SQL for the database.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String dataSourceId, String sql, Map<?, ?> parameters, int offset, int rows) throws DBException {
 		return getDBQuery(dataSourceId).getMapList(sql, parameters, offset, rows);
@@ -402,9 +649,8 @@ public class DB {
 	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
 	 * @param resultClass a class that JDBC ResultSet should be mapped to.
 	 * @return object that mapped from a row.
-	 * 
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String sql, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, resultClass);
@@ -417,9 +663,8 @@ public class DB {
 	 * @param parameters a Ps object that contains prepared parameters.
 	 * @param resultClass a class that the ResultSet should be mapped to.
 	 * @return object that mapped from a row.
-	 * 
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String sql, Ps parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, parameters, resultClass);
@@ -432,9 +677,8 @@ public class DB {
 	 * @param parameterArray an object array that contains prepared parameters in order.
 	 * @param resultClass a class that the ResultSet should be mapped to.
 	 * @return object that mapped from a row.
-	 * 
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, parameterArray, resultClass);
@@ -447,9 +691,8 @@ public class DB {
 	 * @param parameters an object that contains prepared parameters.
 	 * @param resultClass a class that the ResultSet should be mapped to.
 	 * @return object that mapped from a row.
-	 * 
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String sql, Object parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, parameters, resultClass);
@@ -462,9 +705,8 @@ public class DB {
 	 * @param parameters a map that contains prepared parameters.
 	 * @param resultClass a class that the ResultSet should be mapped to.
 	 * @return object that mapped from a row.
-	 * 
-	 * @throws DBException if configuration wasn't loaded, could not access database,
-	 * 			couldn't execute SQL, the ResultSet contains more than one row, etc.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static <T> T get(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().get(sql, parameters, resultClass);
@@ -473,35 +715,64 @@ public class DB {
 	// ---------------query one row for RMap
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String sql) throws DBException {
 		return getDBQuery().getMap(sql);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String sql, Ps parameters) throws DBException {
 		return getDBQuery().getMap(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String sql, Object[] parameterArray) throws DBException {
 		return getDBQuery().getMap(sql, parameterArray);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String sql, Object parameters) throws DBException {
 		return getDBQuery().getMap(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取一条记录
+	 * Executes SQL and maps JDBC ResultSet to a Map.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @return Map that mapped from a row.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, the ResultSet contains
+	 *             more than one row, etc.
 	 */
 	public static RMap<String, ?> getMap(String sql, Map<?, ?> parameters) throws DBException {
 		return getDBQuery().getMap(sql, parameters);
@@ -509,35 +780,64 @@ public class DB {
 
 	// ---------------query a list of java bean
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Class<T> resultClass) throws DBException {
 		return getDBQuery().getList(sql, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Ps parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().getList(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Object[] parameterArray, Class<T> resultClass) throws DBException {
 		return getDBQuery().getList(sql, parameterArray, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Object parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().getList(sql, parameters, resultClass);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Map<?, ?> parameters, Class<T> resultClass) throws DBException {
 		return getDBQuery().getList(sql, parameters, resultClass);
@@ -545,35 +845,59 @@ public class DB {
 
 	// ---------------query a list of RMap
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql) throws DBException {
 		return getDBQuery().getMapList(sql);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, Ps parameters) throws DBException {
 		return getDBQuery().getMapList(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, Object[] parameterArray) throws DBException {
 		return getDBQuery().getMapList(sql, parameterArray);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, Object parameters) throws DBException {
 		return getDBQuery().getMapList(sql, parameters);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, Map<?, ?> parameters) throws DBException {
 		return getDBQuery().getMapList(sql, parameters);
@@ -581,35 +905,79 @@ public class DB {
 
 	// ---------------query a limit list of java bean
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class, the given SQL is
+	 * automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Class<T> resultClass, int offset, int rows) throws DBException {
 		return getDBQuery().getList(sql, resultClass, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class, the given SQL is
+	 * automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Ps parameters, Class<T> resultClass, int offset, int rows) throws DBException {
 		return getDBQuery().getList(sql, parameters, resultClass, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class, the given SQL is
+	 * automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Object[] parameterArray, Class<T> resultClass, int offset, int rows) throws DBException {
 		return getDBQuery().getList(sql, parameterArray, resultClass, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class, the given SQL is
+	 * automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Object parameters, Class<T> resultClass, int offset, int rows) throws DBException {
 		return getDBQuery().getList(sql, parameters, resultClass, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of object that instanced from the given class, the given SQL is
+	 * automatically wrapped to paging SQL for the database.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @param resultClass a class that each row of the ResultSet should be mapped to.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of object that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static <T> List<T> getList(String sql, Map<?, ?> parameters, Class<T> resultClass, int offset, int rows) throws DBException {
 		return getDBQuery().getList(sql, parameters, resultClass, offset, rows);
@@ -617,253 +985,339 @@ public class DB {
 
 	// ---------------query a limit list of RMap
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped to paging SQL for the
+	 * database.
+	 * 
+	 * @param sql an SQL to be sent to the database, typically a static SELECT SQL.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, int offset, int rows) throws DBException {
 		return getDBQuery().getMapList(sql, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped to paging SQL for the
+	 * database.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, Ps parameters, int offset, int rows) throws DBException {
 		return getDBQuery().getMapList(sql, parameters, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped to paging SQL for the
+	 * database.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, Object[] parameterArray, int offset, int rows) throws DBException {
 		return getDBQuery().getMapList(sql, parameterArray, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped to paging SQL for the
+	 * database.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, Object parameters, int offset, int rows) throws DBException {
 		return getDBQuery().getMapList(sql, parameters, offset, rows);
 	}
 
 	/**
-	 * 执行查询, 获取多条记录
+	 * Executes SQL and maps JDBC ResultSet to a List of Map, the given SQL is automatically wrapped to paging SQL for the
+	 * database.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @param offset specified how many rows to skip.
+	 * @param rows limits the number of rows returned by the query.
+	 * @return a list of Map that mapped from JDBC ResultSet.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static List<RMap> getMapList(String sql, Map<?, ?> parameters, int offset, int rows) throws DBException {
 		return getDBQuery().getMapList(sql, parameters, offset, rows);
 	}
 
-	// --------------------------------------------- 更新
-	// ------------使用指定数据源
+	// --------------------------------------------- UPDATE
+	// ------------specified dataSource
 
 	/**
-	 * 执行更新
+	 * Executes the given SQL to the specified database, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing,
+	 * such as an SQL DDL.
 	 * 
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL to be sent to the database, such as INSERT, UPDATE, DELETE or DDL.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int update(String dataSourceId, String sql) throws DBException {
 		return getDBUpdate(dataSourceId).update(sql);
 	}
 
 	/**
-	 * 执行更新
+	 * Executes the given SQL to the specified database, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing,
+	 * such as an SQL DDL.
 	 * 
-	 * @param ps 预编译参数
-	 * @return 受影响记录条数
-	 * @throws DBException
-	 */
-	public static int update(String dataSourceId, String sql, Ps ps) throws DBException {
-		return getDBUpdate(dataSourceId).update(sql, ps);
-	}
-
-	/**
-	 * 执行更新
-	 * 
-	 * @param params 预编译参数，按照SQL中预编译参数顺序排列
-	 * @return 受影响记录条数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int update(String dataSourceId, String sql, Object[] parameterArray) throws DBException {
 		return getDBUpdate(dataSourceId).update(sql, parameterArray);
 	}
 
 	/**
-	 * 执行更新
+	 * Executes the given SQL to the specified database, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing,
+	 * such as an SQL DDL.
 	 * 
-	 * @param params 预编译参数所在的Map或POJO对象
-	 * @return 受影响记录条数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public static int update(String dataSourceId, String sql, Map<?, ?> parameterMap) throws DBException {
-		return getDBUpdate(dataSourceId).update(sql, parameterMap);
+	public static int update(String dataSourceId, String sql, Ps parameters) throws DBException {
+		return getDBUpdate(dataSourceId).update(sql, parameters);
 	}
 
 	/**
-	 * 执行更新
+	 * Executes the given SQL to the specified database, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing,
+	 * such as an SQL DDL.
 	 * 
-	 * @param params 预编译参数所在的Map或POJO对象
-	 * @return 受影响记录条数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public static int update(String dataSourceId, String sql, Object parameterBean) throws DBException {
-		return getDBUpdate(dataSourceId).update(sql, parameterBean);
+	public static int update(String dataSourceId, String sql, Map<?, ?> parameters) throws DBException {
+		return getDBUpdate(dataSourceId).update(sql, parameters);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes the given SQL to the specified database, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing,
+	 * such as an SQL DDL.
 	 * 
-	 * @param sql sql语句
-	 * @return 受影响记录条数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
+	 */
+	public static int update(String dataSourceId, String sql, Object parameters) throws DBException {
+		return getDBUpdate(dataSourceId).update(sql, parameters);
+	}
+
+	/**
+	 * Executes a batch of SQLs to the specified database. If all commands execute successfully, returns an array of affected row
+	 * counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql SQLs to be sent to the database.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQLs, etc.
 	 */
 	public static int[] batchUpdate(String dataSourceId, String[] sqls) throws DBException {
 		return getDBUpdate(dataSourceId).batchUpdate(sqls);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the specified database. if the sql execute successfully, returns an array of
+	 * affected row counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
 	 * 
-	 * @param ps 预编译参数
-	 * @return 受影响条数
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a batch of Ps.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public static int[] batchUpdate(String dataSourceId, String sql, Ps[] pss) throws DBException {
-		return getDBUpdate(dataSourceId).batchUpdate(sql, pss);
+	public static int[] batchUpdate(String dataSourceId, String sql, Ps[] parameters) throws DBException {
+		return getDBUpdate(dataSourceId).batchUpdate(sql, parameters);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes the given SQL with a batch of parameters to the specified database. If the SQL executes successfully, returns an
+	 * array of affected row counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
 	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArrays a batch of parameter arrays.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int[] batchUpdate(String dataSourceId, String sql, Object[][] parameterArrays) throws DBException {
 		return getDBUpdate(dataSourceId).batchUpdate(sql, parameterArrays);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the specified database. if the sql execute successfully, returns an array of
+	 * affected row counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
 	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameterMaps a batch of Map.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int[] batchUpdate(String dataSourceId, String sql, Map<?, ?>[] parameterMaps) throws DBException {
 		return getDBUpdate(dataSourceId).batchUpdate(sql, parameterMaps);
 	}
 
 	/**
-	 * 执行批量更新
-	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * Executes sql with a batch of parameters to the specified database. if the sql execute successfully, returns an array of
+	 * affected row counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
+	 *
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameterBeans a batch of Java bean.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int[] batchUpdate(String dataSourceId, String sql, Object[] parameterBeans) throws DBException {
 		return getDBUpdate(dataSourceId).batchUpdate(sql, parameterBeans);
 	}
 
-	// ------------使用默认数据源
+	// ------------default dataSource
 	/**
-	 * 执行更新
+	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
-	 * @throws DBException
+	 * @param sql an SQL to be sent to the database, such as INSERT, UPDATE, DELETE or DDL.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int update(String sql) throws DBException {
 		return getDBUpdate().update(sql);
 	}
 
 	/**
-	 * 执行更新
+	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
-	 * @param ps 预编译参数
-	 * @return 受影响记录条数
-	 * @throws DBException
-	 */
-	public static int update(String sql, Ps ps) throws DBException {
-		return getDBUpdate().update(sql, ps);
-	}
-
-	/**
-	 * 执行更新
-	 * 
-	 * @param params 预编译参数，按照SQL中预编译参数顺序排列
-	 * @return 受影响记录条数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int update(String sql, Object[] parameterArray) throws DBException {
 		return getDBUpdate().update(sql, parameterArray);
 	}
 
 	/**
-	 * 执行更新
+	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
-	 * @param params 预编译参数所在的Map对象
-	 * @return 受影响记录条数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public static int update(String sql, Map<?, ?> parameterMap) throws DBException {
-		return getDBUpdate().update(sql, parameterMap);
+	public static int update(String sql, Ps parameters) throws DBException {
+		return getDBUpdate().update(sql, parameters);
 	}
 
 	/**
-	 * 执行更新
+	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
-	 * @param params 预编译参数所在的POJO对象
-	 * @return 受影响记录条数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
-	public static int update(String sql, Object parameterBean) throws DBException {
-		return getDBUpdate().update(sql, parameterBean);
+	public static int update(String sql, Map<?, ?> parameters) throws DBException {
+		return getDBUpdate().update(sql, parameters);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
-	 * @param sql sql语句
-	 * @return 受影响记录条数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameters a map that contains prepared parameters.
+	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
+	 */
+	public static int update(String sql, Object parameters) throws DBException {
+		return getDBUpdate().update(sql, parameters);
+	}
+
+	/**
+	 * Executes a batch of SQLs to the database. If all commands execute successfully, returns an array of affected row counts, or
+	 * value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
+	 * 
+	 * @param sql SQLs to be sent to the database.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQLs, etc.
 	 */
 	public static int[] batchUpdate(String[] sql) throws DBException {
 		return getDBUpdate().batchUpdate(sql);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes the given SQL with a batch of parameters to the database. If the SQL executes successfully, returns an array of
+	 * affected row counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
 	 * 
-	 * @param ps 预编译参数
-	 * @return 受影响条数
-	 */
-	public static int[] batchUpdate(String sql, Ps[] pss) throws DBException {
-		return getDBUpdate().batchUpdate(sql, pss);
-	}
-
-	/**
-	 * 执行批量更新
-	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameterArrays a batch of parameter arrays.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int[] batchUpdate(String sql, Object[][] parameterArrays) throws DBException {
 		return getDBUpdate().batchUpdate(sql, parameterArrays);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the database. if the sql execute successfully, returns an array of affected row
+	 * counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
 	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param parameters a batch of Ps.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
+	 */
+	public static int[] batchUpdate(String sql, Ps[] parameters) throws DBException {
+		return getDBUpdate().batchUpdate(sql, parameters);
+	}
+
+	/**
+	 * Executes sql with a batch of parameters to the database. if the sql execute successfully, returns an array of affected row
+	 * counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
+	 * 
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameterMaps a batch of Map
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int[] batchUpdate(String sql, Map<?, ?>[] parameterMaps) throws DBException {
 		return getDBUpdate().batchUpdate(sql, parameterMaps);
 	}
 
 	/**
-	 * 执行批量更新
+	 * Executes sql with a batch of parameters to the database. if the sql execute successfully, returns an array of affected row
+	 * counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
 	 * 
-	 * @param params 预编译参数
-	 * @return 受影响条数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param parameterBeans a batch of Java bean
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static int[] batchUpdate(String sql, Object[] parameterBeans) throws DBException {
 		return getDBUpdate().batchUpdate(sql, parameterBeans);
@@ -872,49 +1326,64 @@ public class DB {
 	// --------------------------------------------- 存储过程
 	// ------------使用指定数据源
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function to the specified database.
 	 * 
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL to be sent to the database, typically a static SQL.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String dataSourceId, String sql) throws DBException {
 		return getDBCall(dataSourceId).call(sql);
 	}
 
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function to the specified database.
 	 * 
-	 * @param ps 参数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String dataSourceId, String sql, Object[] parameterArray) throws DBException {
 		return getDBCall(dataSourceId).call(sql, parameterArray);
 	}
 
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function to the specified database.
 	 * 
-	 * @param ps 参数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String dataSourceId, String sql, Ps parameters) throws DBException {
 		return getDBCall(dataSourceId).call(sql, parameters);
 	}
 
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function to the specified database.
 	 * 
-	 * @param ps 参数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' parameter placeholders.
+	 * @param parameters a Map that contains prepared parameters.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String dataSourceId, String sql, Map<?, ?> parameters) throws DBException {
 		return getDBCall(dataSourceId).call(sql, parameters);
 	}
 
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function to the specified database.
 	 * 
-	 * @param ps 参数
-	 * @throws DBException
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '#{...}' parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String dataSourceId, String sql, Object parameters) throws DBException {
 		return getDBCall(dataSourceId).call(sql, parameters);
@@ -922,174 +1391,220 @@ public class DB {
 
 	// ------------使用默认数据源
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @throws DBException
+	 * @param sql an SQL to be sent to the database, typically a static SQL.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String sql) throws DBException {
 		return getDBCall().call(sql);
 	}
 
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @param ps 参数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '?' parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String sql, Object[] parameterArray) throws DBException {
 		return getDBCall().call(sql, parameterArray);
 	}
 
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @param ps 参数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '?' parameter placeholders.
+	 * @param parameters a Ps object that contains prepared parameters.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String sql, Ps parameters) throws DBException {
 		return getDBCall().call(sql, parameters);
 	}
 
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @param ps 参数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '#{...}' parameter placeholders.
+	 * @param parameters a Map that contains prepared parameters.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String sql, Map<?, ?> parameters) throws DBException {
 		return getDBCall().call(sql, parameters);
 	}
 
 	/**
-	 * 调用存储过程
+	 * Executes a stored procedure or a function.
 	 * 
-	 * @param ps 参数
-	 * @throws DBException
+	 * @param sql an SQL that may contain one or more '#{...}' parameter placeholders.
+	 * @param parameters an object that contains prepared parameters.
+	 * @return a Map that may contain OUT, INOUT parameters and return results.
+	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
 	 */
 	public static RMap<String, ?> call(String sql, Object parameters) throws DBException {
 		return getDBCall().call(sql, parameters);
 	}
 
-	// --------------------------------------------- 事务
-
-	// ---普通事物
-	/**
-	 * 开始事物
-	 */
-	public static void beginTransaction() throws DBException {
-		beginTransaction(getDefaultDataSource(), null);
+	// --------------------------------------------- TRANSACTION
+	private static void beginTransaction(DataSource dataSource, DefaultDefinition definition) throws DBException {
+		DBTransaction.begin(dataSource, definition);
 	}
 
+	private static void commit(DataSource dataSource) throws DBException {
+		DBTransaction.commit(dataSource);
+	}
+
+	private static void rollback(DataSource dataSource) throws DBException {
+		DBTransaction.rollback(dataSource);
+	}
+
+	private static Connection getTransactionConnection(DataSource dataSource) throws DBException {
+		return DBTransaction.getTransactionConnection(dataSource);
+	}
+
+	// ---------------------specified dataSource
 	/**
-	 * 开始事物
+	 * Begins a new transaction for the specified dataSource. The framework will get a new connection from the specified
+	 * dataSource, set auto-commit mode to false and put it into ThreadLocal. Operations for this dataSource in the same thread
+	 * are using this connection until committing or rollback.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @throws DBException if configuration wasn't loaded, could not access database, transaction is already begin etc.
 	 */
 	public static void beginTransaction(String dataSourceId) throws DBException {
 		beginTransaction(getDataSource(dataSourceId), null);
 	}
-	
-	/**
-	 * 开始事物
-	 */
-	public static void beginTransaction(DefaultDefinition definition) throws DBException {
-		beginTransaction(getDefaultDataSource(), definition);
-	}
 
 	/**
-	 * 开始事物
+	 * Begins a new transaction with definition for the specified dataSource. The framework will get a new connection from the
+	 * specified dataSource, set auto-commit mode to false and put it into ThreadLocal. Operations for this dataSource in the same
+	 * thread are using this connection until committing or rollback.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param definition transaction definition.
+	 * @throws DBException if configuration wasn't loaded, could not access database, transaction is already begin etc.
 	 */
 	public static void beginTransaction(String dataSourceId, DefaultDefinition definition) throws DBException {
 		beginTransaction(getDataSource(dataSourceId), definition);
 	}
 
 	/**
-	 * 开始事物
-	 */
-	private static void beginTransaction(DataSource dataSource, DefaultDefinition definition) throws DBException {
-		DBTransaction.begin(dataSource, definition);
-	}
-
-	/**
-	 * 提交事物
-	 */
-	public static void commit() throws DBException {
-		commit(getDefaultDataSource());
-	}
-
-	/**
-	 * 提交事物
+	 * Commits transaction for the specified dataSource. The framework will get connection from ThreadLocal and commit it.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
+	 *             for the given dataSource etc.
 	 */
 	public static void commit(String dataSourceId) throws DBException {
 		commit(getDataSource(dataSourceId));
 	}
 
 	/**
-	 * 提交事物
-	 */
-	private static void commit(DataSource dataSource) throws DBException {
-		DBTransaction.commit(dataSource);
-	}
-
-	/**
-	 * 回滚事务
-	 */
-	public static void rollback() throws DBException {
-		rollback(getDefaultDataSource());
-	}
-
-	/**
-	 * 回滚事务
+	 * Rollback transaction for the specified dataSource. The framework will get connection from ThreadLocal and rollback it.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
+	 *             for the given dataSource etc.
 	 */
 	public static void rollback(String dataSourceId) throws DBException {
 		rollback(getDataSource(dataSourceId));
 	}
 
+	// ---------------------default dataSource
 	/**
-	 * 回滚事务
+	 * Begins a new transaction for the default dataSource. The framework will get a new connection from the specified dataSource,
+	 * set auto-commit mode to false and put it into ThreadLocal. Operations for this dataSource in the same thread are using this
+	 * connection until committing or rollback.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database, transaction is already begin etc.
 	 */
-	private static void rollback(DataSource dataSource) throws DBException {
-		DBTransaction.rollback(dataSource);
+	public static void beginTransaction() throws DBException {
+		beginTransaction(getDefaultDataSource(), null);
 	}
 
 	/**
-	 * 获取事物中的连接
+	 * Begins a new transaction with definition for the default dataSource. The framework will get a new connection from the
+	 * specified dataSource, set auto-commit mode to false and put it into ThreadLocal. Operations for this dataSource in the same
+	 * thread are using this connection until committing or rollback.
+	 * 
+	 * @param dataSourceId dataSource id that configured in the configuration XML.
+	 * @param definition transaction definition.
+	 * @throws DBException if configuration wasn't loaded, could not access database, transaction is already begin etc.
 	 */
-	public static Connection getTransactionConnection() throws DBException {
-		return getTransactionConnection(getDefaultDataSource());
+	public static void beginTransaction(DefaultDefinition definition) throws DBException {
+		beginTransaction(getDefaultDataSource(), definition);
 	}
 
 	/**
-	 * 获取事物中的连接
+	 * Commits transaction for the dataSource.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
+	 *             for the given dataSource etc.
 	 */
-	public static Connection getTransactionConnection(String dataSourceId) throws DBException {
-		return DBTransaction.getTransactionConnection(getDataSource(dataSourceId));
+	public static void commit() throws DBException {
+		commit(getDefaultDataSource());
 	}
 
 	/**
-	 * 获取事物中的连接
+	 * Rollback transaction for the dataSource.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
+	 *             for the given dataSource etc.
 	 */
-	private static Connection getTransactionConnection(DataSource dataSource) throws DBException {
-		return DBTransaction.getTransactionConnection(dataSource);
+	public static void rollback() throws DBException {
+		rollback(getDefaultDataSource());
 	}
 
-	// ---jta
+	// ---------------------jta
 	/**
-	 * 开始事物
+	 * Begins a JTA transaction.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not begin transaction etc.
 	 */
 	public static void beginJtaTransaction() throws DBException {
 		DBTransaction.beginJta();
 	}
 
 	/**
-	 * 提交事物
+	 * Commits a JTA transaction.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not commit transaction etc.
 	 */
 	public static void commitJta() throws DBException {
 		DBTransaction.commitJta();
 	}
 
 	/**
-	 * 回滚事务
+	 * Rollback a JTA transaction.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not commit transaction etc.
 	 */
 	public static void rollbackJta() throws DBException {
 		DBTransaction.rollbackJta();
+	}
+
+	// --------------------transaction connection
+	/**
+	 * Gets connection from ThreadLocal for the default dataSource.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
+	 *             for the given dataSource etc.
+	 */
+	public static Connection getTransactionConnection() throws DBException {
+		return getTransactionConnection(getDefaultDataSource());
+	}
+
+	/**
+	 * Gets connection from ThreadLocal for the default dataSource.
+	 * 
+	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
+	 *             for the given dataSource etc.
+	 */
+	public static Connection getTransactionConnection(String dataSourceId) throws DBException {
+		return DBTransaction.getTransactionConnection(getDataSource(dataSourceId));
 	}
 }
