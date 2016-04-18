@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 the original author or authors.
+ * Copyright 2016 the Rex-Soft Group.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,10 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 用于加载配置文件
+ * Resource utilities.
+ * 
+ * @version 1.0.0, 2016-02-14
+ * @since 1.0
  */
 public class ResourceUtil {
 
@@ -38,7 +41,7 @@ public class ResourceUtil {
 	private static ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper();
 
 	/**
-	 * 从类路径中加载输入流
+	 * Gets InputStream from classpath.
 	 */
 	public static InputStream getResourceAsStream(String resource) throws DBException {
 		return getResourceAsStream(null, resource);
@@ -53,7 +56,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * 从类路径中加载配置
+	 * Gets Properties from classpath.
 	 */
 	public static Properties getResourceAsProperties(String resource) throws DBException {
 		return getResourceAsProperties(null, resource, null);
@@ -72,7 +75,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * 从类路径中加载File
+	 * Gets File from classpath.
 	 */
 	public static File getResourceAsFile(String resource) throws DBException {
 		return getResourceAsFile(null, resource);
@@ -83,7 +86,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * 从URL中加载资源
+	 * Gets Resource URL.
 	 */
 	public static URL getResourceURL(String resource) throws DBException {
 		return getResourceURL(null, resource);
@@ -98,7 +101,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * 从URL中加载输入流
+	 * Gets InputStream from URL.
 	 */
 	public static InputStream getUrlAsStream(String urlString) throws DBException {
 		try {
@@ -151,7 +154,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * 使用类加载器加载文件
+	 * Hierarchical Class Loader.
 	 */
 	static class ClassLoaderWrapper {
 

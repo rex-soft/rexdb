@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 the original author or authors.
+ * Copyright 2016 the Rex-Soft Group.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,18 @@ import java.sql.Statement;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
+/**
+ * JDBC utilities.
+ * 
+ * @version 1.0.0, 2016-02-01
+ * @since 1.0
+ */
 public class JdbcUtil {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(JdbcUtil.class);
 
 	/**
-	 * 检查执行过程中的各种警告
+	 * Checks warnings for connection, statement and resultSet.
 	 */
 	public static void checkWarnings(Connection connection, Statement statement, ResultSet resultSet){
 		if(connection != null) checkConnectionWarning(connection);
@@ -38,7 +44,7 @@ public class JdbcUtil {
 	}
 	
 	/**
-	 * 检查Connection中的警告
+	 * Checks connection warnings.
 	 */
 	public static void checkConnectionWarning(Connection connection) {
 		try {
@@ -51,7 +57,7 @@ public class JdbcUtil {
 	}
 	
 	/**
-	 * 检查Statement中的警告
+	 * Checks statement warnings.
 	 */
 	public static void checkStatementWarning(Statement statement) {
 		try {
@@ -64,7 +70,7 @@ public class JdbcUtil {
 	}
 	
 	/**
-	 * 检查ResultSet中的警告
+	 * Checks resultSet warnings.
 	 */
 	public static void checkResultSetWarning(ResultSet resultSet) {
 		try {

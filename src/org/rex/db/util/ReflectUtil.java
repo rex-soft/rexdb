@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 the original author or authors.
+ * Copyright 2016 the Rex-Soft Group.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,99 +32,97 @@ import org.rex.db.exception.DBException;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
+/**
+ * Reflect utilities.
+ * 
+ * @version 1.0.0, 2016-04-19
+ * @since 1.0
+ */
 public class ReflectUtil {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReflectUtil.class);
-	
-	//writer methods
+
+	// writer methods
 	private static final Map<Class<?>, Map<String, Method>> getters = new HashMap<Class<?>, Map<String, Method>>();
-	//reader methods
+	// reader methods
 	private static final Map<Class<?>, Map<String, Method>> setters = new HashMap<Class<?>, Map<String, Method>>();
-	//parameter types
+	// parameter types
 	private static final Map<Class<?>, Map<String, Class<?>>> types = new HashMap<Class<?>, Map<String, Class<?>>>();
-	
+
 	private static volatile boolean cacheEnabled = true;
-	
+
 	/**
-	 * 设置是否启用了BeanInfo缓存
+	 * Cache BeanInfo?
 	 */
-	public static void setCacheEnabled(boolean isCacheEnabled){
-		if(cacheEnabled != isCacheEnabled){
+	public static void setCacheEnabled(boolean isCacheEnabled) {
+		if (cacheEnabled != isCacheEnabled) {
 			LOGGER.info("reflect cache is {0}.", cacheEnabled ? "enabled" : "disabled");
 			cacheEnabled = isCacheEnabled;
-			if(!cacheEnabled) clearCache();
+			if (!cacheEnabled)
+				clearCache();
 		}
 	}
-	
+
 	/**
-	 * 清空缓存
+	 * Clear caches.
 	 */
-	public static void clearCache(){
+	public static void clearCache() {
 		getters.clear();
 		setters.clear();
 	}
-	
+
 	/**
-	 * 是否启用了BeanInfo缓存
-	 * @return
+	 * Is cache enabled?
 	 */
-	public static boolean isCacheEnabled(){
+	public static boolean isCacheEnabled() {
 		return cacheEnabled;
 	}
-	
+
 	/**
-	 * 获取类变量的类型
-	 * 
-	 * @param clazz
-	 * @return
-	 * @throws DBException
+	 * Gets class fields types.
 	 */
 	public static Map<String, Class<?>> getParameterTypes(Class<?> clazz) throws DBException {
-		if(cacheEnabled){
-			if(!types.containsKey(clazz)){
-				Map <String, Class<?>> p = getTypes(clazz);
+		if (cacheEnabled) {
+			if (!types.containsKey(clazz)) {
+				Map<String, Class<?>> p = getTypes(clazz);
 				types.put(clazz, p);
 				return p;
-			}else
+			} else
 				return types.get(clazz);
-		}else
+		} else
 			return getTypes(clazz);
 	}
-	
+
 	/**
-	 * 获取类的所有可读方法
-	 * 
-	 * @param clazz
-	 * @return
-	 * @throws DBException
+	 * Gets all readable methods from class.
 	 */
 	public static Map<String, Method> getReadableMethods(Class<?> clazz) throws DBException {
-		if(cacheEnabled){
-			if(!getters.containsKey(clazz)){
-				Map <String, Method> g = getGetters(clazz);
+		if (cacheEnabled) {
+			if (!getters.containsKey(clazz)) {
+				Map<String, Method> g = getGetters(clazz);
 				getters.put(clazz, g);
 				return g;
-			}else
+			} else
 				return getters.get(clazz);
-		}else
+		} else
 			return getGetters(clazz);
 	}
-	
+
 	/**
-	 * 获取该类的所有可写方法
+	 * Gets all writeable methods from class.
 	 */
 	public static Map<String, Method> getWriteableMethods(Class<?> clazz) throws DBException {
-		if(cacheEnabled){
-			if(!setters.containsKey(clazz)){
-				Map <String, Method> s = getSetters(clazz);
+		if (cacheEnabled) {
+			if (!setters.containsKey(clazz)) {
+				Map<String, Method> s = getSetters(clazz);
 				setters.put(clazz, s);
 				return s;
-			}else
+			} else
 				return setters.get(clazz);
-		}else
+		} else
 			return getSetters(clazz);
 	}
-	
+
 	private static Map<String, Class<?>> getTypes(Class<?> clazz) throws DBException {
 		Map<String, Class<?>> params = new HashMap<String, Class<?>>();
 		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
@@ -135,7 +133,7 @@ public class ReflectUtil {
 		}
 		return params;
 	}
-	
+
 	private static Map<String, Method> getGetters(Class<?> clazz) throws DBException {
 		Map<String, Method> params = new HashMap<String, Method>();
 		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
@@ -146,7 +144,7 @@ public class ReflectUtil {
 		}
 		return params;
 	}
-	
+
 	private static Map<String, Method> getSetters(Class<?> clazz) throws DBException {
 		Map<String, Method> params = new HashMap<String, Method>();
 		PropertyDescriptor[] props = getPropertyDescriptors(clazz);
@@ -158,36 +156,18 @@ public class ReflectUtil {
 		return params;
 	}
 
-	/**
-	 * 获取类Bean属性
-	 * 
-	 * @param clazz
-	 * @return
-	 * @throws DBException
-	 */
 	private static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws DBException {
 		BeanInfo bean = getBeanInfo(clazz);
 		return bean.getPropertyDescriptors();
 	}
 
-	/**
-	 * 获取类Bean方法
-	 * 
-	 * @param clazz
-	 * @return
-	 * @throws DBException
-	 */
 	private static MethodDescriptor[] getMethodDescriptor(Class<?> clazz) throws DBException {
 		BeanInfo bean = getBeanInfo(clazz);
 		return bean.getMethodDescriptors();
 	}
 
 	/**
-	 * 获取类Bean信息
-	 * 
-	 * @param clazz
-	 * @return
-	 * @throws DBException
+	 * Gets BeanInfo from class.
 	 */
 	public static BeanInfo getBeanInfo(Class<?> clazz) throws DBException {
 		try {
@@ -198,11 +178,7 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 获取对象的clone方法（对象必须实现Cloneable接口，并且具备一个可以调用的clone方法，且该方法的返回值类型与对象相同）
-	 * 
-	 * @param clazz
-	 * @return
-	 * @throws DBException
+	 * Gets cloneable method from object.
 	 */
 	public static Method getCloneMethod(Object bean) throws DBException {
 		if (!(bean instanceof Cloneable))
@@ -219,23 +195,19 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 反射赋值
-	 * 
-	 * @param bean
-	 * @param properties
-	 * @throws DBException
+	 * Invokes setter methods with properties.
 	 */
 	public static void setProperties(Object bean, Properties properties) throws DBException {
 		setProperties(bean, properties, false, false);
 	}
 
 	/**
-	 * 反射赋值
+	 * Invokes setter methods with properties.
 	 * 
-	 * @param bean
-	 * @param properties
-	 * @param ignoreMismatches
-	 * @param ignoreEmpty
+	 * @param bean the object.
+	 * @param properties properties to set.
+	 * @param ignoreMismatches throws exception if ignoreMismatches is false.
+	 * @param ignoreEmpty skip invoking setter method if the properties value is null or ''.
 	 * @throws DBException
 	 */
 	public static void setProperties(Object bean, Properties properties, boolean ignoreMismatches, boolean ignoreEmpty) throws DBException {
@@ -246,13 +218,14 @@ public class ReflectUtil {
 		for (Iterator<?> iterator = properties.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			String value = properties.getProperty(key);
-			
-			if(ignoreEmpty && StringUtil.isEmptyString(value))
+
+			if (ignoreEmpty && StringUtil.isEmptyString(value))
 				continue;
 
 			if (!writers.containsKey(key)) {
 				if (ignoreMismatches) {
-					LOGGER.warn("{0}[{1}] dose not support property [{2}: {3}], no writer method found, the property has been ignored.", bean.getClass().getName(), bean.hashCode(), key, value);
+					LOGGER.warn("{0}[{1}] dose not support property [{2}: {3}], no writer method found, the property has been ignored.",
+							bean.getClass().getName(), bean.hashCode(), key, value);
 					continue;
 				} else
 					throw new DBException("URF02", bean.getClass().getName(), key, value);
@@ -264,51 +237,50 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 向写入方法赋值
+	 * Invokes the given setter method.
 	 */
 	public static void setValue(Object bean, Method writer, String key, String value, boolean ignoreMismatches) throws DBException {
 		if (value == null)
 			invokeMethod(bean, writer, null);
 		else {
 			Class<?> paramType = writer.getParameterTypes()[0];
-			String paramTypeName = paramType.getName();
 
-			// 类型匹配，赋值
-			if ("java.lang.String".equals(paramTypeName)) {
+			if (paramType == String.class) {
 				invokeMethod(bean, writer, value);
-			} else if ("int".equals(paramTypeName) || "java.lang.Integer".equals(paramTypeName)) {// Integer
+			} else if (paramType == int.class || paramType == Integer.class) {// Integer
 				invokeMethod(bean, writer, Integer.parseInt(value));
-			} else if ("boolean".equals(paramTypeName) || "java.lang.Boolean".equals(paramTypeName)) {// Boolean
+			} else if (paramType == boolean.class || paramType == Boolean.class) {// Boolean
 				invokeMethod(bean, writer, Boolean.parseBoolean(value));
-			} else if ("double".equals(paramTypeName) || "java.lang.Double".equals(paramTypeName)) {// Double
+			} else if (paramType == double.class || paramType == Double.class) {// Double
 				invokeMethod(bean, writer, Double.parseDouble(value));
-			} else if ("float".equals(paramTypeName) || "java.lang.Float".equals(paramTypeName)) {// Float
+			} else if (paramType == float.class || paramType == Float.class) {// Float
 				invokeMethod(bean, writer, Float.parseFloat(value));
-			} else if ("long".equals(paramTypeName) || "java.lang.Long".equals(paramTypeName)) {// Long
+			} else if (paramType == long.class || paramType == Long.class) {// Long
 				invokeMethod(bean, writer, Long.parseLong(value));
+			} else if (paramType == short.class || paramType == Short.class) {// Short
+				invokeMethod(bean, writer, Short.parseShort(value));
+			} else if (paramType == byte.class || paramType == Byte.class) {// Byte
+				invokeMethod(bean, writer, Byte.parseByte(value));
 			} else {
 				if (ignoreMismatches)
 					LOGGER.warn("property [{0}: {1}] for {2}[{3}] is String, couldn't convert to {4}, which has been ignored.", key, value,
-							bean.getClass().getName(), bean.hashCode(), paramTypeName);
+							bean.getClass().getName(), bean.hashCode(), paramType.getName());
 				else
 					throw new DBException("DB-URF03", key.getClass().getName(), paramType.getName(), key, value);
 			}
 		}
 	}
 
-	/**
-	 * 反射调用指定名称的方法
-	 */
 	public static Object invokeMethod(Object object, String methodName, Class<?>[] paramTypes, Object[] params) throws DBException {
-		if(object == null || methodName == null) return null;
+		if (object == null || methodName == null)
+			return null;
 		return invokeMethod(object, object.getClass(), methodName, paramTypes, params);
 	}
-	
-	/**
-	 * 反射调用指定名称的方法
-	 */
-	public static Object invokeMethod(Object object, Class<?> objectClass, String methodName, Class<?>[] paramTypes, Object[] params) throws DBException {
-		if(object == null || objectClass == null || methodName == null) return null;
+
+	public static Object invokeMethod(Object object, Class<?> objectClass, String methodName, Class<?>[] paramTypes, Object[] params)
+			throws DBException {
+		if (object == null || objectClass == null || methodName == null)
+			return null;
 		try {
 			Method target = objectClass.getMethod(methodName, paramTypes);
 			return invoke(object, target, params);
@@ -318,21 +290,11 @@ public class ReflectUtil {
 			throw new DBException("DB-URF07", e, object.getClass().getName(), methodName, e.getMessage());
 		}
 	}
-	
-	/**
-	 * 调用对象无参数的方法
-	 * 
-	 * @throws DBException
-	 */
+
 	public static Object invokeMethod(Object object, Method method) throws DBException {
 		return invoke(object, method, null);
 	}
 
-	/**
-	 * 向对象赋值，至少要有1个参数
-	 * 
-	 * @throws DBException
-	 */
 	public static Object invokeMethod(Object object, Method method, Object... value) throws DBException {
 		return invoke(object, method, value);
 	}
@@ -350,7 +312,7 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 创建对象实例
+	 * Creates new instance.
 	 */
 	public static <T> T instance(Class<T> targetClass) throws DBException {
 		try {
@@ -362,9 +324,6 @@ public class ReflectUtil {
 		}
 	}
 
-	/**
-	 * 创建对象实例
-	 */
 	public static <T> T instance(String classPath, Class<T> targetClass) throws DBException {
 		if (StringUtil.isEmptyString(classPath))
 			return null;
@@ -376,9 +335,9 @@ public class ReflectUtil {
 			throw new DBException("DB-URF05", e, classPath, e.getMessage());
 		}
 
-		try{
+		try {
 			return (T) instance(clazz);
-		}catch(ClassCastException e){
+		} catch (ClassCastException e) {
 			throw new DBException("DB-URF06", classPath, targetClass.getName());
 		}
 	}

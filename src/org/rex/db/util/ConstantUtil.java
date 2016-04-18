@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 the original author or authors.
+ * Copyright 2016 the Rex-Soft Group.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,10 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 获取类中的常量，即public static final声明的常量
+ * Constant utilities.
+ * 
+ * @version 1.0.0, 2016-02-14
+ * @since 1.0
  */
 public class ConstantUtil {
 

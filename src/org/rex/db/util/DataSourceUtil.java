@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 the original author or authors.
+ * Copyright 2016 the Rex-Soft Group.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,15 @@ import org.rex.db.exception.DBException;
 import org.rex.db.transaction.ThreadConnectionHolder;
 
 /**
- * 数据源通用类
+ * DataSource utilities.
+ * 
+ * @version 1.0.0, 2016-02-02
+ * @since 1.0
  */
 public class DataSourceUtil {
 
 	/**
-	 * Make a copy of properties and hidden password
-	 * 
-	 * @param properties datasource configuration
+	 * Copies the given properties and hides password.
 	 */
 	public static Properties hiddenPassword(Properties properties) {
 		Properties clone = null;
@@ -46,7 +47,7 @@ public class DataSourceUtil {
 	}
 
 	/**
-	 * 从数据源中获取连接
+	 * Gets connection from the given DataSource.
 	 */
 	public static Connection getConnection(DataSource ds) throws DBException {
 		if (ds == null)
@@ -65,7 +66,7 @@ public class DataSourceUtil {
 	}
 
 	/**
-	 * 关闭数据库连接
+	 * Closes the given connection if it is not in transaction.
 	 */
 	public static void closeConnectionIfNotTransaction(Connection con, DataSource ds) throws DBException {
 		if (con == null || ThreadConnectionHolder.has(ds)) {

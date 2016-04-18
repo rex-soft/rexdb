@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 the original author or authors.
+ * Copyright 2016 the Rex-Soft Group.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,10 @@ import org.rex.RMap;
 import org.rex.db.exception.DBException;
 
 /**
- * convert ResultSet to java bean or Map, use it carefully cause one instance can only handle ONE result set. 
+ * Converts ResultSet to java bean or Map.
+ * 
+ * @version 1.0.0, 2016-04-05
+ * @since 1.0
  */
 public class ORUtil {
 
@@ -100,7 +103,7 @@ public class ORUtil {
 
 	// -----------get column value
 	/**
-	 * 从结果集中读取一个字段
+	 * Gets value by ResultSet label name.
 	 */
 	public Object getValue(ResultSet rs, String label, int type) throws SQLException, DBException {
 		Object value = null;
@@ -136,19 +139,19 @@ public class ORUtil {
 	}
 	
 	/**
-	 * 将结果集数据转换为Java所需类型
+	 * Gets value of the specified java type.
 	 * 
-	 * @param rs 结果集
-	 * @param label 列名
-	 * @param sqlType 列的SQL类型
-	 * @param paramClassName 待转换的java类型
-	 * @return java对象
+	 * @param rs ResultSet.
+	 * @param label ResultSet label name.
+	 * @param sqlType SQL type of the label from ResultSet meta.
+	 * @param paramClassName java class.
+	 * @return value of the specified java type.
 	 * 
 	 * @throws DBException
 	 * @throws SQLException
 	 */
 	public <T> T getValue(ResultSet rs, String label, int sqlType, Class<T> javaType) throws DBException, SQLException {
-//		System.out.println("======================"+label+"====="+sqlType+"======"+javaType);
+
 		if (javaType == Object.class)
 			return (T)rs.getObject(label);
 
@@ -258,7 +261,7 @@ public class ORUtil {
 
 
 	/**
-	 * 读取clob数据，内容过大时可能造成内存溢出
+	 * Reads Clob column.
 	 */
 	private String readClob(ResultSet rs, String label) throws SQLException, DBException {
 	    String value = null;
@@ -271,7 +274,7 @@ public class ORUtil {
 	}
 
 	/**
-	 * 读取blob数据，内容过大时可能造成内存溢出
+	 * Reads Blob column.
 	 */
 	private byte[] readBlob(ResultSet rs, String label) throws SQLException, DBException {
 	    Blob blob = rs.getBlob(label);
@@ -307,7 +310,8 @@ public class ORUtil {
 	}
 
 	/**
-	 * 处理掉label的下划线并转化大小写, 如CJXM_DM->cjxmDm;AA_BB_CC->aaBbCc
+	 * Renames column name to java field name.
+	 * sample: CJXM_DM->cjxmDm;AA_BB_CC->aaBbCc
 	 */
 	private String renameLabel(String label) {
 		StringBuilder result = new StringBuilder(label.length());

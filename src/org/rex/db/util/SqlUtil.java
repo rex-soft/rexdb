@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 the original author or authors.
+ * Copyright 2016 the Rex-Soft Group.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ import org.rex.db.exception.DBException;
 import org.rex.db.exception.DBRuntimeException;
 
 /**
- * SQL utility.
+ * SQL utilities.
  * 
- * @version 1.0.0, 2016-01-29
+ * @version 1.0.0, 2016-04-18
  * @since 1.0
  */
 public class SqlUtil {
@@ -50,9 +50,7 @@ public class SqlUtil {
 	private static final Map<String, String[]> sqlCache = new HashMap<String, String[]>();
 	
 	/**
-	 * 对SQL执行基本的校验，防止错误查询被发送到数据库。校验不通过时直接抛出异常
-	 * @param sql 待校验的SQL语句
-	 * @throws DBException 
+	 * Validates sql and prepared parameters.
 	 */
 	public static void validate(String sql, Ps ps) throws DBException{
 		validate(sql, ps == null ? 0 : ps.getParameters().size());
@@ -218,9 +216,9 @@ public class SqlUtil {
 	}
 	
 	/**
-	 * parse the sql with tags
-	 * @param sql sql to parse
-	 * @return string array, array[0] is parsed sql, array[1] until the last element is parsed parameters
+	 * Parses the given SQL with tags.
+	 * @param sql SQL to analyze.
+	 * @return string array, array[0] is parsed SQL, array[1..n] prepared parameters keys.
 	 */
 	public static String[] parse(String sql) {
 		if(!sqlCache.containsKey(sql)){
@@ -264,10 +262,10 @@ public class SqlUtil {
 
 
 	/**
-	 * 检查文本中字符个数
-	 * @param str 文本
-	 * @param marker 待检查字符串
-	 * @param delim 引用符号，在引用符号中的字符串不计入统计
+	 * Counts placeholders.
+	 * @param str text to check.
+	 * @param marker placeholder.
+	 * @param delim the string in the reference symbol is not included in the statistics.
 	 * @return
 	 */
 	public static int countParameterPlaceholders(String str, char marker, char delim) {
@@ -342,7 +340,7 @@ public class SqlUtil {
 	}
 	
 	/**
-	 * 根据java对象类型，获取sql type
+	 * Gets SQL type by object.
 	 * 
 	 * 1. String - Types.VARCHAR
 	 * 2. int|Integer - Types.INTEGER
@@ -352,8 +350,7 @@ public class SqlUtil {
 	 * 6. double|Double - Types.DOUBLE
 	 * 7. Date - Types.DATE
 	 * 8. Time - Types.TIME
-	 * @throws DBException 
-
+	 * 9. etc
 	 */
 	public static int getSqlType(Object param){
 		int type;
@@ -391,69 +388,9 @@ public class SqlUtil {
 	}
 	
 	/**
-	 * 根据对象数组声明参数<br/>
-	 * 1. String - Types.VARCHAR
-	 * 2. int|Integer - Types.INTEGER
-	 * 3. BigDecimal - Types.NUMERIC
-	 * 4. long|Long - Types.BIGINT
-	 * 5. float|Float - Types.FLOAT
-	 * 6. double|Double - Types.DOUBLE
-	 * 7. Date - Types.DATE
-	 * 8. Time - Types.TIME
-	 * @param params 参数数组，与SQL语句中的‘?’一一对应
-	 */
-	public static int[] getSqlTypes(Object[] params){
-		if(params==null) return null;
-		
-		int[] paramTypes = new int[params.length];
-		for(int i=0;i<params.length;i++){
-			paramTypes[i] = getSqlType(params[i]);
-		}
-		return paramTypes;
-	}
-	
-
-	/**
-	 * 检查SQL参数类型是否是数字
-	 */
-	public static boolean isNumeric(int sqlType) {
-		return Types.BIT == sqlType
-			|| Types.BIGINT == sqlType
-			|| Types.DECIMAL == sqlType
-			|| Types.DOUBLE == sqlType
-			|| Types.FLOAT == sqlType
-			|| Types.INTEGER == sqlType
-			|| Types.NUMERIC == sqlType
-			|| Types.REAL == sqlType
-			|| Types.SMALLINT == sqlType
-			|| Types.TINYINT == sqlType;
-	}
-
-	/**
-	 * 简化SQL参数类型，只使用其中几类
-	 */
-	public static int translateType(int sqlType) {
-
-		int retType = sqlType;
-		if (Types.BIT == sqlType || Types.TINYINT == sqlType || Types.SMALLINT == sqlType || Types.INTEGER == sqlType)
-			retType = Types.INTEGER;
-		else if (Types.CHAR == sqlType || Types.VARCHAR == sqlType)
-			retType = Types.VARCHAR;
-		else if (
-			Types.DECIMAL == sqlType
-				|| Types.DOUBLE == sqlType
-				|| Types.FLOAT == sqlType
-				|| Types.NUMERIC == sqlType
-				|| Types.REAL == sqlType)
-			retType = Types.NUMERIC;
-
-		return retType;
-	}
-	
-	/**
-	 * 根据数值返回SQL类型
-	 * @param sqlType
-	 * @return
+	 * Gets name by SQL type.
+	 * @param sqlType SQL type.
+	 * @return SQL type name.
 	 */
 	public static String getNameByType(int sqlType){
 		switch(sqlType){
