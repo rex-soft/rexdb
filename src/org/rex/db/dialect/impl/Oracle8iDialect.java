@@ -26,14 +26,14 @@ import org.rex.db.logger.LoggerFactory;
 /**
  * Oracle8i
  * 
- * 不支持left join on语法
- * 联合USER_TABLES的原因是表回收站开启情形下表删除后在USER_CONSTRAINTS还存在（BIN$开头），其它方法联合也是这个原因
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class Oracle8iDialect implements Dialect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Oracle8iDialect.class);
 	
-	// ------------------------------------------------------------分页SQL
+	// ------------------------------------------------------------
 	protected class OracleLimitHandler extends LimitHandler{
 
 		public OracleLimitHandler(int rows) {
@@ -97,15 +97,12 @@ public class Oracle8iDialect implements Dialect {
 		return new OracleLimitHandler(offset, rows);
 	}
 	
-	// ------------------------------------------------------------数据库测试SQL
-	/**
-	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
-	 */
+	// ------------------------------------------------------------
 	public String getTestSql(){
 		return "SELECT 1 FROM DUAL";
 	}
 	
-	// ------------------------------------------------------------当前方言版本信息
+	// ------------------------------------------------------------
 	public String getName() {
 		return "ORACLE";
 	}

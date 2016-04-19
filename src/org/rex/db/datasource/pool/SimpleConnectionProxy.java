@@ -31,7 +31,10 @@ import org.rex.db.exception.DBException;
 import org.rex.db.util.ReflectUtil;
 
 /**
- * 包装数据库连接，供简单连接池使用
+ * Simple Connection Proxy
+ * 
+ * @version 1.0, 2016-01-29
+ * @since Rexdb-1.0
  */
 public class SimpleConnectionProxy implements InvocationHandler {
 
@@ -60,9 +63,6 @@ public class SimpleConnectionProxy implements InvocationHandler {
 		}
 	};
 
-	/**
-	 * 构造函数
-	 */
 	public SimpleConnectionProxy() {
 		openedStatements = new ArrayList<Statement>(64);
 		creationTime = lastAccess = System.currentTimeMillis();
@@ -70,7 +70,7 @@ public class SimpleConnectionProxy implements InvocationHandler {
 	}
 
 	/**
-	 * 绑定数据库连接对象
+	 * binds connection
 	 */
 	public ConnectionProxy bind(Connection conn) {
 		this.delegate = conn;
@@ -79,7 +79,7 @@ public class SimpleConnectionProxy implements InvocationHandler {
 	}
 
 	/**
-	 * 动态代理方法调用
+	 * dynamic proxy
 	 */
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		for (int i = 0; i < overrideMethods.length; i++) {
@@ -91,7 +91,7 @@ public class SimpleConnectionProxy implements InvocationHandler {
 	}
 
 	/**
-	 * 对比2个方法的名称和参数是否相同
+	 * Compares the given method and parameters
 	 */
 	private boolean methodEqueals(Method m1, Method m2) {
 		if (m1.getName() == m2.getName()) {

@@ -22,34 +22,37 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.ConstantUtil;
 
 /**
- * 定义事物运行参数
+ * Default transaction definition.
+ * 
+ * @version 1.0, 2016-03-03
+ * @since Rexdb-1.0
  */
 public class DefaultDefinition implements Definition {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDefinition.class);
 	
 	/** 
-	 * 用于读取事物定义常量 
+	 * Constant Util
 	 */
 	private static final ConstantUtil CONSTANTS = new ConstantUtil(Definition.class);
 	
 	/**
-	 * 隔离级别
+	 * transaction isolation level
 	 */
 	private int isolationLevel = ISOLATION_DEFAULT;
 
 	/**
-	 * 超时时间
+	 * transaction timeout
 	 */
 	private int timeout = TIMEOUT_DEFAULT;
 
 	/**
-	 * 只读
+	 * transaction readOnly
 	 */
 	private boolean readOnly = false;
 	
 	/**
-	 * 设置事物提交失败时是否回滚
+	 * transaction auto rollback
 	 */
 	private boolean autoRollback = false;
 	
@@ -59,11 +62,12 @@ public class DefaultDefinition implements Definition {
 	}
 	
 	/**
-	 * 应用全局配置
+	 * Apply definition
 	 */
 	protected void applyConfigrations() throws DBException{
 		Configuration config = Configuration.getCurrentConfiguration();
 		autoRollback = config.isAutoRollback();
+		
 		try{
 			setTimeout(config.getTransactionTimeout());
 		}catch(Exception e){
@@ -74,12 +78,11 @@ public class DefaultDefinition implements Definition {
 			if(config.getTransactionIsolation() != null)
 				setIsolationLevel(config.getTransactionIsolation());
 		}catch(Exception e){
-//			e.printStackTrace();
 			LOGGER.warn("configuration setting isolation level is invalid, {0}, which has been ignored.", e.getMessage());
 		}
 	}
 
-	//--------事物隔离级别
+	//--------isolation level
 	public void setIsolationLevel(String isolationLevelName) throws DBException {
 		if (isolationLevelName == null || !isolationLevelName.startsWith(ISOLATION_CONSTANT_PREFIX)) {
 			throw new DBException("DB-T0001", isolationLevelName);
@@ -98,7 +101,7 @@ public class DefaultDefinition implements Definition {
 		return isolationLevel;
 	}
 
-	//--------超时时间
+	//--------timeout
 	public void setTimeout(int timeout) throws DBException {
 		if (timeout < TIMEOUT_DEFAULT) {
 			throw new DBException("DB-T0002", timeout);
@@ -110,7 +113,7 @@ public class DefaultDefinition implements Definition {
 		return timeout;
 	}
 
-	//--------设置只读
+	//--------readOnly
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
@@ -119,7 +122,7 @@ public class DefaultDefinition implements Definition {
 		return readOnly;
 	}
 
-	//--------设置事物提交失败时自动回滚
+	//--------autoRollback
 	public void setAutoRollback(boolean autoRollback) {
 		this.autoRollback = autoRollback;
 	}

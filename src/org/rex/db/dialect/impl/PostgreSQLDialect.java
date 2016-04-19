@@ -25,12 +25,15 @@ import org.rex.db.logger.LoggerFactory;
 
 /**
  * PostgreSQL
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class PostgreSQLDialect implements Dialect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PostgreSQLDialect.class);
 	
-	// ------------------------------------------------------------分页SQL
+	// ------------------------------------------------------------
 	protected class PostgreSQLLimitHandler extends LimitHandler {
 
 		public PostgreSQLLimitHandler(int rows) {
@@ -71,15 +74,12 @@ public class PostgreSQLDialect implements Dialect {
 		return new PostgreSQLLimitHandler(offset, rows);
 	}
 
-	// ------------------------------------------------------------数据库测试SQL
-	/**
-	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
-	 */
+	// ------------------------------------------------------------
 	public String getTestSql() {
 		return "SELECT 1";
 	}
 
-	// ------------------------------------------------------------版本信息
+	// ------------------------------------------------------------
 	public String getName() {
 		return "POSTGRESQL";
 	}

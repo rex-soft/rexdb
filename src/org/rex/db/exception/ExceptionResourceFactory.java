@@ -28,20 +28,29 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.StringUtil;
 
 /**
- * 加载异常配置文件
+ * Exception Resource Factory.
+ * 
+ * @version 1.0, 2016-01-27
+ * @since Rexdb-1.0
  */
 public class ExceptionResourceFactory {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionResourceFactory.class);
 
-	//--异常资源配置文件
+	/**
+	 * resource encoding
+	 */
 	private static final String PROPERTIES_ENCODING = "UTF-8";
 			
-	//--支持的语言，方便用户设置
+	/**
+	 * exception message language
+	 */
 	public static final String LANG_ZH_CN = "zh-cn";
 	public static final String LANG_EN = "en";
 	
-	//--异常资源配置文件
+	/**
+	 * initialize properties
+	 */
 	private static final Map<String, String> PROPERTIES = new HashMap<String, String>(){
 		{
 			put(LANG_ZH_CN, "exception.db.zh-cn.properties");
@@ -49,13 +58,19 @@ public class ExceptionResourceFactory {
 		}
 	};
 
-	//--当前使用的语言
+	/**
+	 * current language
+	 */
 	private volatile String lang = LANG_EN;
 	
-	//所有资源
+	/**
+	 * all resource
+	 */
 	private final Map<String, ExceptionResource> resources;
 	
-	//单例
+	/**
+	 * instance
+	 */
 	private static final ExceptionResourceFactory instance;
 
 	
@@ -73,7 +88,7 @@ public class ExceptionResourceFactory {
 	}
 	
 	/**
-	 * 加载配置
+	 * loading resource
 	 */
 	private void init(){
 		for (Iterator iterator = PROPERTIES.entrySet().iterator(); iterator.hasNext();) {
@@ -88,7 +103,7 @@ public class ExceptionResourceFactory {
 	
 	//--------PUBLIC
 	/**
-	 * 设置异常语言
+	 * Sets exception message language
 	 */
 	public void setLang(String lang){
 		if(!LANG_ZH_CN.equals(lang) && !LANG_EN.equals(lang))
@@ -98,21 +113,20 @@ public class ExceptionResourceFactory {
 	}
 	
 	/**
-	 * 获取异常消息
+	 * Returns exception message
 	 */
 	public String translate(String code){
 		return translate(code, null);
 	}
 	
 	/**
-	 * 获取异常消息
+	 * Merge exception resource and parameters
 	 */
 	public String translate(String code, Object... params){
 		
 		ExceptionResource resource = resources.get(lang);
 		String message = resource.getMessage(code);
 		
-		//对应错误代码
 		if(message == null)
 			return code;
 		else{
@@ -120,9 +134,6 @@ public class ExceptionResourceFactory {
 		}
 	}
 	
-	/**
-	 * 读取一个配置文件
-	 */
 	private Properties loadProperties(String path, String encode) {
 		Properties props = new Properties();
 		InputStream inputStream = null;

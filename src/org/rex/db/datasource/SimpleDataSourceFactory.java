@@ -22,7 +22,10 @@ import javax.sql.DataSource;
 import org.rex.db.exception.DBException;
 
 /**
- * 框架内置的简单数据源工厂，用于创建一个简单数据源
+ * Simple DataSource Factory
+ * 
+ * @version 1.0, 2016-01-29
+ * @since Rexdb-1.0
  */
 public class SimpleDataSourceFactory extends DataSourceFactory {
 	

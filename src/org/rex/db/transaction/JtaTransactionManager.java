@@ -31,7 +31,10 @@ import javax.transaction.UserTransaction;
 import org.rex.db.exception.DBException;
 
 /**
- * 简单的JTA事物管理
+ * JTA Transaction Manager.
+ * 
+ * @version 1.0, 2016-02-19
+ * @since Rexdb-1.0
  */
 public class JtaTransactionManager extends AbstractTransactionManager{
 
@@ -45,7 +48,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	
 	//----------------------------------implements
 	/**
-	 * 开始事物
+	 * Begins JTA transaction.
 	 */
 	protected void doBegin(Definition definition) throws DBException {
 		try {
@@ -59,10 +62,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	}
 
 	/**
-	 * 设置超时时间
-	 * @param timeout
-	 * @throws DBException
-	 * @throws SystemException
+	 * Sets timeOut for transaction.
 	 */
 	protected void applyTimeout(int timeout) throws DBException, SystemException {
 		if (timeout > Definition.TIMEOUT_DEFAULT) {
@@ -71,7 +71,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	}
 
 	/**
-	 * 提交事务
+	 * Commits transaction.
 	 */
 	protected void doCommit() throws DBException {
 		try {
@@ -122,9 +122,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 
 	//-----------------------
 	/**
-	 * 从jndi中获取数据源
-	 * @return UserTransaction对象
-	 * @throws DBException
+	 * Returns UserTransaction from JNDI.
 	 */
 	protected UserTransaction doGetTransaction() throws DBException {
 		if(userTransaction == null){
@@ -136,11 +134,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	}
 	
 	/**
-	 * 从jndi中查找UserTransaction对象
-	 * @param transactionName 执行事务对象名称
-	 * @param clazz jndi查找到的对象类型
-	 * @return jndi中查找到的对象
-	 * @throws DBException
+	 * Looks up object from JNDI.
 	 */
 	protected <T> T lookupTransaction(String transactionName, Class<T> clazz) throws DBException {
 		InitialContext initCtx = null;

@@ -25,13 +25,16 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * PostgreSQL
+ * SQLServer
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class SQLServerDialect implements Dialect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SQLServerDialect.class);
 	
-	// ------------------------------------------------------------分页SQL
+	// ------------------------------------------------------------
 	protected class SQLServerLimitHandler extends LimitHandler {
 
 		public SQLServerLimitHandler(int rows) {
@@ -74,15 +77,12 @@ public class SQLServerDialect implements Dialect {
 		throw new DBRuntimeException("DB-A0003", getName());
 	}
 
-	// ------------------------------------------------------------数据库测试SQL
-	/**
-	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
-	 */
+	// ------------------------------------------------------------
 	public String getTestSql() {
 		return "SELECT 1";
 	}
 
-	// ------------------------------------------------------------版本信息
+	// ------------------------------------------------------------
 	public String getName() {
 		return "SQLSERVER";
 	}

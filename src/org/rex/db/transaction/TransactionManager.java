@@ -20,27 +20,30 @@ import java.sql.Connection;
 import org.rex.db.exception.DBException;
 
 /**
- * 事物管理
+ * Transaction Manager Interface.
+ * 
+ * @version 1.0, 2016-02-19
+ * @since Rexdb-1.0
  */
 public interface TransactionManager {
 
 	/**
-	 * 返回当前事物状态
+	 * begins transaction.
 	 */
 	void begin(Definition definition) throws DBException;
 
 	/**
-	 * 提交事务
+	 * commits transaction.
 	 */
 	void commit() throws DBException;
 
 	/**
-	 * 回滚事务
+	 * rollback transaction.
 	 */
 	void rollback() throws DBException;
 
 	/**
-	 * 获取开启事物的连接
+	 * returns transaction connection.
 	 */
 	Connection getTransactionConnection() throws DBException;
 }

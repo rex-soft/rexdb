@@ -18,6 +18,12 @@ package org.rex.db.logger.slf4j;
 import org.rex.db.logger.Logger;
 import org.rex.db.util.StringUtil;
 
+/**
+ * Slf4j Logger.
+ * 
+ * @version 1.0, 2016-02-08
+ * @since Rexdb-1.0
+ */
 public class Slf4jLogger implements Logger {
 
 	private org.slf4j.Logger log;

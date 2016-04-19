@@ -19,8 +19,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 用于包装数据库连接，供框架内置的简单连接池使用
- * 最主要的作用是覆盖了close方法，在程序调用该接口时并不真正关闭数据库连接，而是交还回连接池中
+ * A connection proxy that overrides close method
+ * 
+ * @version 1.0, 2016-01-29
+ * @since Rexdb-1.0
  */
 public interface ConnectionProxy extends Connection {
 

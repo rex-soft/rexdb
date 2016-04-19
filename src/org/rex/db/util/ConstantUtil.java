@@ -30,8 +30,8 @@ import org.rex.db.logger.LoggerFactory;
 /**
  * Constant utilities.
  * 
- * @version 1.0.0, 2016-02-14
- * @since 1.0
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public class ConstantUtil {
 

@@ -32,8 +32,8 @@ import org.rex.db.exception.DBException;
 /**
  * Converts ResultSet to java bean or Map.
  * 
- * @version 1.0.0, 2016-04-05
- * @since 1.0
+ * @version 1.0, 2016-04-05
+ * @since Rexdb-1.0
  */
 public class ORUtil {
 

@@ -33,8 +33,8 @@ import org.rex.db.exception.DBException;
  * Database querying operation.
  * 
  * @author z
- * @version 1.0.0, 2016-04-17
- * @since 1.0
+ * @version 1.0, 2016-04-17
+ * @since Rexdb-1.0
  */
 public class DBQuery extends DBOperation {
 

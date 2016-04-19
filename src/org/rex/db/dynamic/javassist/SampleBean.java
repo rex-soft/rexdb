@@ -17,6 +17,12 @@ package org.rex.db.dynamic.javassist;
 
 import java.util.Date;
 
+/**
+ * A Bean Sample.
+ * 
+ * @version 1.0, 2016-01-14
+ * @since Rexdb-1.0
+ */
 public class SampleBean {
 
 	private int id;

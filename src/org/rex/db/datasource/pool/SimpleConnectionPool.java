@@ -38,7 +38,10 @@ import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.StringUtil;
 
 /**
- * 简单的连接池，提供基本的数据库连接管理、获取、超时处理等功能
+ * A Simple Connection pool
+ * 
+ * @version 1.0, 2016-01-29
+ * @since Rexdb-1.0
  */
 public class SimpleConnectionPool {
 
@@ -52,21 +55,21 @@ public class SimpleConnectionPool {
 	private String username;
 	private String password;
 
-	private int initSize = 1;// 初始化时创建的连接数
-	private int minSize = 3; // 连接池保持的最小连接数
-	private int maxSize = 10; // 连接池最大连接数
-	private int increment = 1; // 每次增长的连接数
+	private int initSize = 1;// initial number of connections
+	private int minSize = 3; // minimum number of connections
+	private int maxSize = 10; // maximum number of connections
+	private int increment = 1; // when there are no idle connections, the number of connections are created at one-time
 
-	private int retries = 2; // 获取数据库连接失败后的重试次数
-	private int retryInterval = 750; // 增长连接失败后重试间隔
+	private int retries = 2; // retry count after failed to get connection
+	private int retryInterval = 750; // retry intervals after failed to get connection
 
-	private int getConnectionTimeout = 5000; // 连接超时时间（毫秒）
-	private int inactiveTimeout = 600000; // 允许的连接空闲时间，超出时将被关闭
-	private int maxLifetime = 1800000; // 允许的连接最长时间，超出时将被重置
+	private int getConnectionTimeout = 5000; // connection timeout (ms)
+	private int inactiveTimeout = 600000; //  timeout (ms) for idle connections, idle connections are closed after timeout
+	private int maxLifetime = 1800000; // timeout (ms) for connections, connections are closed after timeout
 
-	private boolean testConnection = true; // 使用JDBC接口测试连接
-	private String testSql; // 测试连接有效性SQL
-	private int testTimeout = 500;// 测试连接有效性的超时时间
+	private boolean testConnection = true; // test connection alive after created ? 
+	private String testSql; // SQL for testing connection alive
+	private int testTimeout = 500;// timeout (ms) for testing connection alive
 
 	// ---------runtime
 	private final Timer timer;
@@ -77,12 +80,7 @@ public class SimpleConnectionPool {
 
 	private volatile Throwable latestException;
 
-	/**
-	 * 初始化连接池
-	 * 
-	 * @param properties
-	 * @throws DBException
-	 */
+
 	public SimpleConnectionPool(Properties properties) throws DBException  {
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.info("starting simple connection pool[{0}] of properties {1}.", this.hashCode(), DataSourceUtil.hiddenPassword(properties));
@@ -108,9 +106,7 @@ public class SimpleConnectionPool {
 
 	// -----------property
 	/**
-	 * 获取配置
-	 * 
-	 * @throws DBException
+	 * Applies Settings
 	 */
 	private void extractProperties(Properties properties) throws DBException {
 		if (properties == null)
@@ -135,12 +131,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 覆盖默认值
-	 * 
-	 * @param field
-	 * @param value
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
+	 * Overrides setting
 	 */
 	private void overrideProperty(Field field, String value) {
 		try {
@@ -162,7 +153,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 检查各项参数是否正确
+	 * Validates settings
 	 */
 	private void validateConfig() throws DBException {
 		// --not null
@@ -180,7 +171,7 @@ public class SimpleConnectionPool {
 
 	// -------------pool
 	/**
-	 * 初始化驱动管理
+	 * Initializes JDBC Driver
 	 */
 	public void initDriverManager() throws DBException {
 		try {
@@ -191,7 +182,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 获取连接
+	 * Returns connection
 	 */
 	public Connection getConnection() throws SQLException {
 		if (LOGGER.isDebugEnabled()) {
@@ -244,7 +235,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 释放连接
+	 * Releases connection
 	 */
 	public void releaseConnection(ConnectionProxy connectionProxy) {
 		if (!connectionProxy.isForceClosed()) {
@@ -263,21 +254,21 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 获取活动连接
+	 * Returns active connections
 	 */
 	public int getActiveConnections() {
 		return Math.min(this.maxSize, totalConnectionsCount.get() - inactiveConnectionCount.get());
 	}
 
 	/**
-	 * 获取空闲连接
+	 * Returns idle connections
 	 */
 	public int getInactiveConnections() {
 		return inactiveConnectionCount.get();
 	}
 
 	/**
-	 * 获取所有连接
+	 * Returns all connections
 	 */
 	public int gettotalConnectionsCount() {
 		return totalConnectionsCount.get();
@@ -297,7 +288,7 @@ public class SimpleConnectionPool {
 
 	// ----private
 	/**
-	 * 初始化连接池
+	 * Initializes connection pool
 	 */
 	private void initConnectionPool() {
 		for (int i = 0; i < initSize; i++)
@@ -310,8 +301,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 向连接池中增加预设的连接数，但不超过最大连接数
-	 * XXX:一次性增加若干个连接，会不会影响获取连接的性能？
+	 * Increases connections
 	 */
 	private synchronized void addConnections() {
 		for (int i = 0; totalConnectionsCount.get() < maxSize && i < increment; i++) {
@@ -320,7 +310,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 向连接池中增加1个连接
+	 * Increases a connection
 	 */
 	private void addConnection() {
 		if (LOGGER.isDebugEnabled()) {
@@ -371,7 +361,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 创建一个新的数据库连接
+	 * Creates a new connection from database
 	 */
 	private ConnectionProxy newConnection() throws SQLException {
 		if (LOGGER.isDebugEnabled()) {
@@ -385,11 +375,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 测试连接是否可用
-	 * 
-	 * @param connection 连接
-	 * @param timeoutMs 超时时间
-	 * @return 是否可用
+	 * Tests connection alive
 	 */
 	private boolean isConnectionAlive(Connection connection) {
 		if (!this.testConnection)
@@ -410,7 +396,6 @@ public class SimpleConnectionPool {
 					LOGGER.debug("current JDK version is 1.5, testing connection with sql: {0}.", testSql);
 				}
 
-				// 执行查询测试连接
 				Statement statement = connection.createStatement();
 				statement.setQueryTimeout(timeout);
 				try {
@@ -421,7 +406,7 @@ public class SimpleConnectionPool {
 				
 				isAlive = true;
 			} else {
-				// jdk6及以上版本，使用jdbc自带接口测试连接有效性
+				// jdk6 or higher
 //				isAlive = connection.isValid(timeout);
 				isAlive = (Boolean)ReflectUtil.invokeMethod(connection, Connection.class, "isValid", new Class[]{int.class}, new Object[]{timeout});
 			}
@@ -458,7 +443,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * 用于定期清理空闲连接，并在必要时重建连接
+	 * Cleans and rebuilds connections
 	 */
 	private class PoolTimerTask extends TimerTask {
 
@@ -479,7 +464,7 @@ public class SimpleConnectionPool {
 				LOGGER.debug("timer task started.");
 			}
 
-			timer.purge();// 移除所有任务
+			timer.purge();
 
 			long now = System.currentTimeMillis();
 			int inactiveCount = inactiveConnectionCount.get();

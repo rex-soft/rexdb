@@ -27,7 +27,10 @@ import org.rex.db.util.DataSourceUtil;
 import org.rex.db.util.StringUtil;
 
 /**
- * 根据JNDI加载数据源，通常用于Java EE服务器环境中
+ * JNDI DataSource Factory.
+ * 
+ * @version 1.0, 2016-01-29
+ * @since Rexdb-1.0
  */
 public class JndiDataSourceFactory extends DataSourceFactory {
 

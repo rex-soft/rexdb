@@ -20,12 +20,15 @@ import java.sql.Connection;
 import org.rex.db.datasource.ConnectionHolder;
 
 /**
- * 数据源事物对象
+ * DataSource Connection Holder.
+ * 
+ * @version 1.0, 2016-02-19
+ * @since Rexdb-1.0
  */
 public class DataSourceConnectionHolder extends ConnectionHolder{
 	
 	/**
-	 * 事物配置
+	 * Definition for current transaction.
 	 */
 	private Definition definition;
 
@@ -47,7 +50,7 @@ public class DataSourceConnectionHolder extends ConnectionHolder{
 	}
 
 	/**
-	 * 本次事物开启前，需要保存的事物状态
+	 * Temporarily stores isolation level.
 	 */
 	private Integer previousIsolationLevel;
 

@@ -23,6 +23,12 @@ import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
 import org.rex.db.util.SqlUtil;
 
+/**
+ * A Bean Convertor Sample.
+ * 
+ * @version 1.0, 2016-03-16
+ * @since Rexdb-1.0
+ */
 public class SampleBeanConvertor extends BeanConvertor {
 
 	public void setParameters(PreparedStatement preparedStatement, Object object, String[] requiredParam) throws SQLException {

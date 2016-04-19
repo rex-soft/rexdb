@@ -22,10 +22,16 @@ import java.sql.SQLException;
 import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
 
+/**
+ * Abstract Bean Convertor.
+ * 
+ * @version 1.0, 2016-03-17
+ * @since Rexdb-1.0
+ */
 public abstract class BeanConvertor {
 
 	/**
-	 * set parameters from object to prepared statement
+	 * Sets prepared parameters by object.
 	 * @param preparedStatement prepared statement to set values to
 	 * @param bean java bean that values store
 	 * @param requiredParam property name of java bean, 

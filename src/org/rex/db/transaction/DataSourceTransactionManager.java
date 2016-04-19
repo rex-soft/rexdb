@@ -28,7 +28,10 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.DataSourceUtil;
 
 /**
- * 数据源事物管理
+ * DataSource Transaction Manager.
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class DataSourceTransactionManager extends AbstractTransactionManager {
 	
@@ -44,7 +47,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 
 	/**
-	 * 获取数据源
+	 * Returns current dataSource.
 	 */
 	public DataSource getDataSource() {
 		return dataSource;
@@ -52,7 +55,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	
 	//-------------------------------implements
 	/**
-	 * 获取事物对象
+	 * Returns ConnectionHolder for.
 	 */
 	protected ConnectionHolder doGetTransaction() {
 		if (ThreadConnectionHolder.has(dataSource)) {
@@ -62,7 +65,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 
 	/**
-	 * 开始事务
+	 * Begins transaction.
 	 */
 	protected void doBegin(Definition definition) throws DBException {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
@@ -77,33 +80,27 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 			throw new DBException("DB-T0004", e, e.getMessage(), connectionHolder.getConnection().hashCode(), dataSource.hashCode());
 		}
 
-		// 将连接绑定至线程
 		ThreadConnectionHolder.bind(dataSource, connectionHolder);
 	}
 	
-	/**
-	 * 为连接开启事物
-	 * @param connectionHolder
-	 * @param definition
-	 * @throws SQLException
-	 */
 	private void beginTransaction(DataSourceConnectionHolder connectionHolder, Definition definition) throws SQLException{
 		Connection conn = connectionHolder.getConnection();
-		// 设置隔离级别
+		
+		// set isolation level
 		if (definition.getIsolationLevel() != Definition.ISOLATION_DEFAULT) {
 			connectionHolder.setPreviousIsolationLevel(conn.getTransactionIsolation());
 			conn.setTransactionIsolation(definition.getIsolationLevel());
 		}
 
-		// 是否只读
+		// set readonly
 		if (definition.isReadOnly()) {
 			conn.setReadOnly(true);
 		}
 
-		// 切换至手动提交事物
+		// set auto commit mode to false
 		conn.setAutoCommit(false);
 
-		// 注册事物超时时间
+		// set timeout
 		if (definition.getTimeout() > 0) {
 			connectionHolder.setTimeoutInSeconds(definition.getTimeout());
 		}
@@ -111,7 +108,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 
 
 	/**
-	 * 提交事务
+	 * Commits transaction.
 	 */
 	protected void doCommit() throws DBException {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
@@ -129,14 +126,14 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 	
 	/**
-	 * 提交事务出现异常时，自动回滚
+	 * Auto rollback transaction on exception.
 	 */
 	private void doRollbackOnCommitException(Throwable ex) throws DBException {
 		doRollback();
 	}
 
 	/**
-	 * 回滚事务
+	 * Rollback transaction.
 	 */
 	protected void doRollback() throws DBException {
 		ConnectionHolder connectionHolder = doGetTransaction();
@@ -152,7 +149,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 
 	/**
-	 * 恢复连接至初始状态
+	 * Resets connection.
 	 */
 	protected void afterCompletion() {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
@@ -182,7 +179,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 
 	/**
-	 * 获取事物所属连接
+	 * Gets transaction connection.
 	 */
 	protected Connection doGetTransactionConnection(){
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();

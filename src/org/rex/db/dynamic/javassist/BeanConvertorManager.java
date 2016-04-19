@@ -30,6 +30,12 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
+/**
+ * Bean Convertor Manager.
+ * 
+ * @version 1.0, 2016-03-16
+ * @since Rexdb-1.0
+ */
 public class BeanConvertorManager {
 	
 	private static final String PACKAGE = "org.rex.db.dynamic";
@@ -37,15 +43,12 @@ public class BeanConvertorManager {
 	private static final String CLASS_PREFIX = "JSetterFor";
 	
 	/**
-	 * 动态类转换
+	 * dynamic convertors
 	 */
 	private static final Map<Class<?>, BeanConvertor> convertors = new HashMap<Class<?>, BeanConvertor>();
 	
 	/**
-	 * 获取一个类转换器
-	 * @param beanClass
-	 * @return
-	 * @throws DBException 
+	 * Returns a bean convertor.
 	 */
 	public static BeanConvertor getConvertor(Class<?> beanClass){
 		if(!convertors.containsKey(beanClass)){
@@ -68,14 +71,7 @@ public class BeanConvertorManager {
 	}
 
 	/**
-	 * 生成一个动态类
-	 * @param clazz
-	 * @return
-	 * @throws NotFoundException
-	 * @throws DBException
-	 * @throws CannotCompileException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
+	 * Creates a bean convertor.
 	 */
 	private static BeanConvertor build(Class<?> clazz) throws NotFoundException, DBException, CannotCompileException, InstantiationException, IllegalAccessException {
 
@@ -109,10 +105,7 @@ public class BeanConvertorManager {
 	}
 	
 	/**
-	 * build a readResultSet method string
-	 * @param clazz java bean class
-	 * @return method string
-	 * @throws DBException
+	 * Appends a readResultSet method string
 	 */
 	private static String buildReadResultSetMethodString(Class<?> clazz) throws DBException{
 		StringBuffer sb = new StringBuffer();
@@ -154,10 +147,7 @@ public class BeanConvertorManager {
 	
 	
 	/**
-	 * build a getColumnCodes method string
-	 * @param clazz java bean class
-	 * @return method string
-	 * @throws DBException
+	 * Appends a getColumnCodes method string
 	 */
 	private static String buildGetColumnCodesMethodString(Class<?> clazz) throws DBException{
 		StringBuffer sb = new StringBuffer();
@@ -188,10 +178,7 @@ public class BeanConvertorManager {
 	}
 	
 	/**
-	 * build a setParameters method string
-	 * @param clazz java bean class
-	 * @return method string
-	 * @throws DBException
+	 * Appends a setParameters method string
 	 */
 	private static String buildSetParametersMethodString(Class<?> clazz) throws DBException{
         StringBuffer sb = new StringBuffer();  
@@ -221,10 +208,7 @@ public class BeanConvertorManager {
 	}
 	
 //	/**
-//	 * build a setParameters method string
-//	 * @param clazz java bean class
-//	 * @return method string
-//	 * @throws DBException
+//	 * Appends a setParameters method string
 //	 */
 //	private static String buildSetParametersMethodString(Class<?> clazz) throws DBException{
 //        StringBuffer sb = new StringBuffer();  
@@ -262,10 +246,13 @@ public class BeanConvertorManager {
 //	}
 	
 	/**
-	 * get class name, return [0]string name, <tt>class name[]</tt> if class is array [1]suffix. if class is primitive type, convert it to Object first, then get primitive value.
-	 * such as : (1)String[]{"java.lang.String", ""} (2)String[]{"Integer", ".intValue()"}
-	 * @param clazz
-	 * @return string array
+	 * Returns class name.
+	 * 
+	 * [0]string name, <tt>class name[]</tt> if class is array 
+	 * [1]suffix. if class is primitive type, convert it to Object first, then get primitive value.
+	 * such as : 
+	 * (1)String[]{"java.lang.String", ""} 
+	 * (2)String[]{"Integer", ".intValue()"}
 	 */
 	private static String[] getClassName(Class<?> clazz){
 		if(clazz == null)
@@ -315,8 +302,7 @@ public class BeanConvertorManager {
 	}
 	
 	/**
-	 * generate a unique class names
-	 * @param clazz 
+	 * Generates a unique class name
 	 */
 	private static String genClassName(Class<?> clazz){
 		String className = clazz.getName();

@@ -24,6 +24,9 @@ import org.rex.db.exception.DBException;
 
 /**
  * Base DB Operation
+ * 
+ * @version 1.0, 2016-02-12
+ * @since Rexdb-1.0
  */
 public class DBOperation {
 	

@@ -15,7 +15,6 @@
  */
 package org.rex.db.dialect;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,10 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 管理数据库方言
+ * Dialect Manager
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public class DialectManager {
 	
@@ -36,9 +38,7 @@ public class DialectManager {
 	private final Map<String, Dialect> dialectInstances = Collections.synchronizedMap(new HashMap<String, Dialect>());
 	
 	/**
-	 * 为数据源指定一个方言
-	 * @param dataSource 数据源
-	 * @param dialect 用户指定的方言
+	 * Sets dialect for a dataSource
 	 */
 	public void setDialect(DataSource dataSource, Dialect dialect){
 		dialectInstances.put(String.valueOf(dataSource.hashCode()), dialect);
@@ -48,11 +48,7 @@ public class DialectManager {
 	}
 	
 	/**
-	 * 获取数据源对应的方言
-	 * @param dataSource 数据源
-	 * @return 方言实例
-	 * @throws SQLException 获取数据库元数据描述失败时，抛出异常
-	 * @throws DBException 
+	 * Returns dialect for the given dataSource
 	 */
 	public Dialect getDialect(DataSource dataSource) throws DBException {
 		String hashCode = String.valueOf(dataSource.hashCode());
@@ -65,6 +61,4 @@ public class DialectManager {
 			return dialectInstances.get(hashCode);
 		}
 	}
-	
-
 }

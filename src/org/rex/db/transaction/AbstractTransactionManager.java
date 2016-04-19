@@ -22,11 +22,17 @@ import org.rex.db.exception.DBException;
 import org.rex.db.listener.ListenerManager;
 import org.rex.db.listener.TransactionContext;
 
+/**
+ * Abstract Transaction Manager.
+ * 
+ * @version 1.0, 2016-02-19
+ * @since Rexdb-1.0
+ */
 public abstract class AbstractTransactionManager implements TransactionManager {
 
 	//----------------------------------implements
 	/**
-	 * 开始事物
+	 * Begins Transaction.
 	 */
 	public void begin(Definition definition) throws DBException {
 		if (definition == null)
@@ -44,7 +50,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	}
 
 	/**
-	 * 提交事务
+	 * Commits Transaction.
 	 */
 	public void commit() throws DBException {
 		try {
@@ -60,7 +66,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	
 
 	/**
-	 * 回滚事务
+	 * Rollback Transaction.
 	 */
 	public void rollback() throws DBException {
 		try {
@@ -75,7 +81,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	}
 	
 	/**
-	 * 获取事务所属连接
+	 * Gets Transaction Connection.
 	 */
 	public Connection getTransactionConnection() throws DBException {
 		return doGetTransactionConnection();
@@ -83,7 +89,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 
 	//----------------------------------Listener
 	/**
-	 * 开始事物前调用监听接口
+	 * Fires Event before Transaction.
 	 */
 	protected TransactionContext fireOnEvent(int event) throws DBException{
 		return fireOnEvent(event, null);
@@ -100,7 +106,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	}
 	
 	/**
-	 * 结束事物后调用监听接口
+	 * Fires Event after Transaction.
 	 */
 	protected void fireAfterEvent(TransactionContext context) throws DBException{
 		if(context != null){
@@ -119,27 +125,27 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	//----------------------------------abstract
 
 	/**
-	 * 开始事物
+	 * Do begin.
 	 */
 	protected abstract void doBegin(Definition definition) throws DBException;
 
 	/**
-	 * 提交事务
+	 * Do commit.
 	 */
 	protected abstract void doCommit() throws DBException;
 
 	/**
-	 * 回滚
+	 * Do rollback.
 	 */
 	protected abstract void doRollback() throws DBException;
 
 	/**
-	 * 事务结束后执行
+	 * Do after operation.
 	 */
 	protected abstract void afterCompletion();
 	
 	/**
-	 * 获取事务所属连接
+	 * Gets transaction connection.
 	 */
 	protected abstract Connection doGetTransactionConnection();
 

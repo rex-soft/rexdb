@@ -25,7 +25,10 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.DataSourceUtil;
 
 /**
- * 创建数据源的工厂
+ * DataSource factory.
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public abstract class DataSourceFactory {
 	

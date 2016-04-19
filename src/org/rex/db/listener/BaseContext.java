@@ -19,6 +19,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Base Context.
+ * 
+ * @version 1.0, 2016-02-01
+ * @since Rexdb-1.0
+ */
 public class BaseContext {
 
 	private String contextId;

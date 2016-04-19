@@ -18,7 +18,10 @@ package org.rex.db.exception;
 import java.util.Properties;
 
 /**
- * 异常资源
+ * Exception Resource.
+ * 
+ * @version 1.0, 2016-01-27
+ * @since Rexdb-1.0
  */
 public class ExceptionResource {
 

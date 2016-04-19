@@ -20,6 +20,12 @@ import java.util.logging.Level;
 import org.rex.db.logger.Logger;
 import org.rex.db.util.StringUtil;
 
+/**
+ * Jdk Logger.
+ * 
+ * @version 1.0, 2016-02-08
+ * @since Rexdb-1.0
+ */
 public class JdkLogger implements Logger {
 
 	private java.util.logging.Logger log;

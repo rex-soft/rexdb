@@ -19,37 +19,40 @@ import org.rex.db.transaction.Definition;
 import org.rex.db.util.ConstantUtil;
 
 /**
- * 包装事物配置等信息，方便监听程序调用
+ * Wraps transaction context.
+ * 
+ * @version 1.0, 2016-02-19
+ * @since Rexdb-1.0
  */
 public class TransactionContext extends BaseContext {
 	
 	/** 
-	 * 用于读取常量 
+	 * Reads constants
 	 */
 	static final ConstantUtil CONSTANTS = new ConstantUtil(TransactionContext.class);
 
 	/**
-	 * 事物的状态：开启
+	 * Event: begin
 	 */
 	public static final int TRANSACTION_BEGIN = 1;
 
 	/**
-	 * 事物的状态：提交
+	 * Event: commit
 	 */
 	public static final int TRANSACTION_COMMIT = 2;
 
 	/**
-	 * 事物的状态：回滚
+	 * Event: rollback
 	 */
 	public static final int TRANSACTION_ROLLBACK = 3;
 
 	/**
-	 * 事物配置
+	 * current definition
 	 */
 	private Definition definition;
 
 	/**
-	 * 执行事件：TRANSACTION_BEGIN、TRANSACTION_COMMIT、TRANSACTION_ROLLBACK
+	 * current event：TRANSACTION_BEGIN、TRANSACTION_COMMIT、TRANSACTION_ROLLBACK
 	 */
 	private int event;
 	
@@ -73,7 +76,6 @@ public class TransactionContext extends BaseContext {
 		.append(", definition=[")
 		.append(definition)
 		.append("]");
-		
 		
 		return sb.toString();
 	}

@@ -25,7 +25,10 @@ import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.StringUtil;
 
 /**
- * 用于加载第三方数据源的工厂，例如DBCP、C3P0
+ * Pooled DataSource Factory for DBCP, C3P0 etc.
+ * 
+ * @version 1.0, 2016-01-29
+ * @since Rexdb-1.0
  */
 public class PoolDataSourceFactory extends DataSourceFactory {
 	

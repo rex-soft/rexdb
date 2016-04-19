@@ -40,7 +40,10 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.DataSourceUtil;
 
 /**
- * 根据数据库类型创建方言
+ * Dialect Factory
+ * 
+ * @version 1.0, 2016-04-05
+ * @since Rexdb-1.0
  */
 public class DialectFactory {
 	
@@ -62,10 +65,10 @@ public class DialectFactory {
 	
 	
 	/**
-	 * 获取连接对应的方言，注意该方法不会主动关闭连接
-	 * @param connection 数据库连接
-	 * @return 方言
-	 * @throws DBException 获取元数据描述失败时，抛出异常
+	 * Returns dialect by connection
+	 * @param connection the database connection
+	 * @return dialect for database
+	 * @throws DBException could not read resultSet meta
 	 */
 	public static Dialect resolveDialect(Connection connection) throws DBException {
 		if(connection == null) return null;
@@ -105,7 +108,7 @@ public class DialectFactory {
 			case 8:
 				return new Oracle8iDialect();
 			default:
-				return new Oracle9iDialect();//其它版本使用Oracle 9i
+				return new Oracle9iDialect();
 			}
 		}
 
@@ -114,7 +117,7 @@ public class DialectFactory {
 			case 8:
 				return new SQLServerDialect();
 			default:
-				return new SQLServer2005Dialect();// 其它版本使用SQL Server 2005
+				return new SQLServer2005Dialect();
 			}
 		}
 

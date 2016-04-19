@@ -25,12 +25,15 @@ import org.rex.db.logger.LoggerFactory;
 
 /**
  * H2
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class H2Dialect implements Dialect {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(H2Dialect.class);
 
-	// ------------------------------------------------------------分页SQL
+	// ------------------------------------------------------------
 	protected class H2LimitHandler extends LimitHandler {
 
 		public H2LimitHandler(int rows) {
@@ -71,15 +74,12 @@ public class H2Dialect implements Dialect {
 		return new H2LimitHandler(offset, rows);
 	}
 
-	// ------------------------------------------------------------数据库测试SQL
-	/**
-	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
-	 */
+	// ------------------------------------------------------------
 	public String getTestSql() {
 		return "SELECT 1";
 	}
 
-	// ------------------------------------------------------------版本信息
+	// ------------------------------------------------------------
 	public String getName() {
 		return "H2";
 	}

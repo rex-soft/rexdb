@@ -25,16 +25,23 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 框架内置的监听，用于监控所有数据库操作，并由LOGGER DEBUG输出
+ * SQL Listener for Logging.
+ * 
+ * @version 1.0, 2016-02-01
+ * @since Rexdb-1.0
  */
 public class SqlDebugListener implements DBListener{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SqlDebugListener.class);
 	
-	//日志输出级别
+	/**
+	 * Logging level
+	 */
 	private String level = "debug";
 	
-	//输出精简的日志
+	/**
+	 * Print simple log.
+	 */
 	protected boolean simple = false;
 
 	public void setLevel(String level) {

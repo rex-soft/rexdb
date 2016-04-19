@@ -36,8 +36,8 @@ import org.rex.db.exception.DBRuntimeException;
 /**
  * SQL utilities.
  * 
- * @version 1.0.0, 2016-04-18
- * @since 1.0
+ * @version 1.0, 2016-04-18
+ * @since Rexdb-1.0
  */
 public class SqlUtil {
 	

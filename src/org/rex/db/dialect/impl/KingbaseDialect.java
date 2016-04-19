@@ -24,13 +24,16 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 金仓数据库
+ * Kingbase
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class KingbaseDialect implements Dialect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KingbaseDialect.class);
 	
-	// ------------------------------------------------------------分页SQL
+	// ------------------------------------------------------------
 	protected class KingbaseLimitHandler extends LimitHandler {
 
 		public KingbaseLimitHandler(int rows) {
@@ -71,15 +74,12 @@ public class KingbaseDialect implements Dialect {
 		return new KingbaseLimitHandler(offset, rows);
 	}
 	
-	// ------------------------------------------------------------数据库测试SQL
-	/**
-	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
-	 */
+	// ------------------------------------------------------------
 	public String getTestSql(){
 		return "SELECT 1 FROM DUAL";
 	}
 	
-	// ------------------------------------------------------------版本信息
+	// ------------------------------------------------------------
 	public String getName() {
 		return "KINGBASE";
 	}

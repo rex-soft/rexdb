@@ -24,13 +24,16 @@ import org.rex.db.datasource.ConnectionHolder;
 import org.rex.db.exception.DBRuntimeException;
 
 /**
- * 基于线程的事物管理
+ * Holds connections in ThreadLocal.
+ * 
+ * @version 1.0, 2016-02-19
+ * @since Rexdb-1.0
  */
 public class ThreadConnectionHolder {
 
-	private static ThreadLocal<Map<DataSource, ConnectionHolder>> connections = new ThreadLocal<Map<DataSource, ConnectionHolder>>() {//线程保存的资源
+	private static ThreadLocal<Map<DataSource, ConnectionHolder>> connections = new ThreadLocal<Map<DataSource, ConnectionHolder>>() {
 		protected Map<DataSource, ConnectionHolder> initialValue() {
-			return new HashMap<DataSource, ConnectionHolder> ();
+			return new HashMap<DataSource, ConnectionHolder>();
 		}
 	};
 

@@ -23,32 +23,35 @@ import org.rex.db.dialect.LimitHandler;
 import org.rex.db.util.ConstantUtil;
 
 /**
- * 包装SQL、预编译参数、数据源等，方便监听程序调用
+ * Wraps SQL context.
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public class SqlContext extends BaseContext{
 	
 	/** 
-	 * 用于读取常量 
+	 * Reads constants
 	 */
 	private static final ConstantUtil constants = new ConstantUtil(SqlContext.class);
 	
 	/**
-	 * 执行的SQL类型：查询
+	 * event: query
 	 */
 	public static final int SQL_QUERY = 1;
 	
 	/**
-	 * 执行的SQL类型：更新
+	 * event: update
 	 */
 	public static final int SQL_UPDATE = 2;
 	
 	/**
-	 * 执行的SQL类型：批处理
+	 * event: batch
 	 */
 	public static final int SQL_BATCH_UPDATE = 3;
 	
 	/**
-	 * 执行的SQL类型：调用
+	 * event: call
 	 */
 	public static final int SQL_CALL = 4;
 	

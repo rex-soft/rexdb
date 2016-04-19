@@ -22,20 +22,22 @@ import java.util.Date;
 import org.rex.db.exception.DBRuntimeException;
 
 /**
- * 用于包装数据库连接，额外增加了用于给事物计时的超时时间等属性
- * 为方便调用，包装后的数据库连接通常被放置在ThreadLocal中
+ * Holds connections in ThreadLocal.
+ * 
+ * @version 1.0, 2016-02-02
+ * @since Rexdb-1.0
  */
 public class ConnectionHolder{
 
 	private final Connection connection;
 
 	/**
-	 * 超时时间
+	 * Seconds to live
 	 */
 	private int liveSeconds = -1;
 	
 	/**
-	 * 事物截至时间
+	 * Transaction dead time
 	 */
 	private Date deadline;
 	
@@ -48,7 +50,7 @@ public class ConnectionHolder{
 	}
 
 	/**
-	 * 设置超时时间
+	 * Sets timeout in seconds
 	 */
 	public void setTimeoutInSeconds(int seconds) {
 		liveSeconds = seconds;
@@ -60,14 +62,14 @@ public class ConnectionHolder{
 	}
 
 	/**
-	 * 获取超时时间
+	 * Returns transaction dead time
 	 */
 	public Date getDeadline() {
 		return deadline;
 	}
 
 	/**
-	 * 获取剩余可执行时间
+	 * Returns seconds to live
 	 */
 	public int getTimeToLiveInSeconds() {
 		double diff = ((double) getTimeToLiveInMillis()) / 1000;

@@ -15,6 +15,12 @@
  */
 package org.rex.db.logger;
 
+/**
+ * Logger interface.
+ * 
+ * @version 1.0, 2016-02-08
+ * @since Rexdb-1.0
+ */
 public interface Logger {
 	
 	void trace(String msg, String... args);

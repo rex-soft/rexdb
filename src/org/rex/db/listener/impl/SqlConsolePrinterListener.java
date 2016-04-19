@@ -21,7 +21,10 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 框架内置的监听，用于监控所有数据库操作，并直接使用System.out.println打印
+ * SQL Listener for System.out.
+ * 
+ * @version 1.0, 2016-02-01
+ * @since Rexdb-1.0
  */
 public class SqlConsolePrinterListener extends SqlDebugListener{
 	

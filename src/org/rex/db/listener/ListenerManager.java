@@ -22,7 +22,10 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 用于管理已注册的监听程序，当发生数据库操作时，会逐个通知监听
+ * Used to manage registered listeners, and fire events.
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public class ListenerManager {
 	
@@ -35,8 +38,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * 注册监听
-	 * @param listener
+	 * Registers listener.
 	 */
 	public void registe(DBListener listener) {
 		listeners.addElement(listener);
@@ -46,8 +48,7 @@ public class ListenerManager {
 	}
 
 	/**
-	 * 解除监听
-	 * @param listener
+	 * Removes listener.
 	 */
 	public void remove(DBListener listener) {
 		listeners.remove(listener);
@@ -57,15 +58,14 @@ public class ListenerManager {
 	}
 
 	/**
-	 * 已注册的监听数量
-	 * @return
+	 * Returns size of listeners.
 	 */
 	public int getSize(){
 		return listeners.size();
 	}
 	
 	/**
-	 * 查询是否有注册的监听
+	 * Has listener.
 	 */
 	public boolean hasListener(){
 		return listeners.size() > 0;
@@ -76,7 +76,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * 触发SQL执行前事件
+	 * Fires event before executing SQLs.
 	 */
 	public void fireOnExecute(final SqlContext context){
 		notify(new ListenerCaller(){
@@ -87,7 +87,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * 触发SQL执行后事件
+	 * Fires event after executing SQLs
 	 */
 	public void fireAfterExecute(final SqlContext context, final Object result){
 		notify(new ListenerCaller(){
@@ -98,7 +98,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * 事物操作前事件
+	 * Fires event before transaction.
 	 */
 	public void fireOnTransaction(final TransactionContext context){
 		notify(new ListenerCaller(){
@@ -109,7 +109,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * 事物操作后事件
+	 * Fires event after transaction.
 	 */
 	public void fireAfterTransaction(final TransactionContext context){
 		notify(new ListenerCaller(){
@@ -120,10 +120,6 @@ public class ListenerManager {
 	}
 	
 	//---------private
-	
-	/**
-	 * 通知监听类
-	 */
 	private void notify(ListenerCaller caller) {
 		Enumeration<DBListener> enums = listeners.elements();
 		while (enums.hasMoreElements()) {
@@ -132,9 +128,6 @@ public class ListenerManager {
 		}
 	}
 	
-	/**
-	 * 用于回调Listener的方法
-	 */
 	interface ListenerCaller{
 		public void call(DBListener listener);
 	}

@@ -20,8 +20,8 @@ import java.text.MessageFormat;
 /**
  * String utilities.
  * 
- * @version 1.0.0, 2016-01-29
- * @since 1.0
+ * @version 1.0, 2016-01-29
+ * @since Rexdb-1.0
  */
 public class StringUtil {
 

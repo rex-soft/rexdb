@@ -21,12 +21,15 @@ import org.rex.db.logger.LoggerFactory;
 
 /**
  * Oracle9i
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class Oracle9iDialect extends Oracle8iDialect {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Oracle9iDialect.class);
 	
-	//------------------------------------------------------------分页SQL
+	//------------------------------------------------------------
 	protected class Oracle9iLimitHandler extends OracleLimitHandler{
 
 		public Oracle9iLimitHandler(int rows) {

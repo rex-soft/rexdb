@@ -22,11 +22,17 @@ import org.rex.db.dialect.LimitHandler;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
+/**
+ * SQLServer2005
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
+ */
 public class SQLServer2005Dialect extends SQLServerDialect {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SQLServer2005Dialect.class);
 	
-	//------------------------------------------------------------分页SQL
+	//------------------------------------------------------------
 	protected class SQLServer2005LimitHandler extends LimitHandler{
 
 		public SQLServer2005LimitHandler(int rows) {

@@ -25,12 +25,15 @@ import org.rex.db.logger.LoggerFactory;
 
 /**
  * DB2
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class DB2Dialect implements Dialect {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DB2Dialect.class);
 
-	// ------------------------------------------------------------分页SQL
+	// ------------------------------------------------------------
 	protected class DB2LimitHandler extends LimitHandler{
 
 		public DB2LimitHandler(int rows) {
@@ -97,15 +100,12 @@ public class DB2Dialect implements Dialect {
 		return new DB2LimitHandler(offset, rows);
 	}
 	
-	// ------------------------------------------------------------数据库测试SQL
-	/**
-	 * 获取一个针对数据库的测试SQL，如果能执行，说明连接有效
-	 */
+	// ------------------------------------------------------------
 	public String getTestSql(){
 		return "SELECT COUNT(*) FROM SYSIBM.SYSTABLES";
 	}
 	
-	// ------------------------------------------------------------版本信息
+	// ------------------------------------------------------------
 	public String getName() {
 		return "DB2";
 	}

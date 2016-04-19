@@ -18,6 +18,12 @@ package org.rex.db.logger.log4j2;
 import org.rex.db.logger.Logger;
 import org.rex.db.util.StringUtil;
 
+/**
+ * Log4j2 Logger.
+ * 
+ * @version 1.0, 2016-02-08
+ * @since Rexdb-1.0
+ */
 public class Log4j2Logger implements Logger {
 
 	private org.apache.logging.log4j.Logger log;

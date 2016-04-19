@@ -18,14 +18,18 @@ package org.rex.db.logger.log4j2;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
+/**
+ * Log4j2 logger factory.
+ * 
+ * @version 1.0, 2016-02-08
+ * @since Rexdb-1.0
+ */
 public class Log4j2LoggerFactory extends LoggerFactory {
 
-    @Override
     protected Logger getLoggerImpl(Class<?> cls) {
         return new Log4j2Logger(org.apache.logging.log4j.LogManager.getLogger(cls));
     }
 
-    @Override
     protected Logger getLoggerImpl(String name) {
         return new Log4j2Logger(org.apache.logging.log4j.LogManager.getLogger(name));
     }

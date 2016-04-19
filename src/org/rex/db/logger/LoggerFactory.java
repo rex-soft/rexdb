@@ -25,6 +25,12 @@ import org.rex.db.logger.log4j.Log4jLoggerFactory;
 import org.rex.db.logger.log4j2.Log4j2LoggerFactory;
 import org.rex.db.logger.slf4j.Slf4jLoggerFactory;
 
+/**
+ * Abstract logger factory.
+ * 
+ * @version 1.0, 2016-02-08
+ * @since Rexdb-1.0
+ */
 public abstract class LoggerFactory {
 	
 	private static final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -78,7 +84,7 @@ public abstract class LoggerFactory {
 	}
 	
 	/**
-	 * 禁用所有Logger输出
+	 * Disable all logs.
 	 */
 	public static void setNolog(boolean isNolog){
 		getLogger(LoggerFactory.class).info("Logger has switched to {0} mode.", isNolog ? "nolog" : "normal");

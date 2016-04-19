@@ -15,6 +15,12 @@
  */
 package org.rex.db.exception;
 
+/**
+ * DB Exception.
+ * 
+ * @version 1.0, 2016-01-27
+ * @since Rexdb-1.0
+ */
 public class DBException extends Exception {
 	
 	public DBException(Throwable e){

@@ -24,7 +24,10 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * 管理已加载的数据源，包括1个默认数据源，以及多个指定ID的数据源
+ * Manage DataSources, including a default dataSource.
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public class DataSourceManager {
 	
