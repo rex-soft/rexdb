@@ -29,11 +29,14 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.SqlUtil;
 
 /**
- * Statement Creator for Ps
+ * Statement Creator for Ps objects.
  * 
- * Set standard SQL prepared statement parameters. such as:
- * sql: INSERT INTO TBL(CL1, CL2) VALUES(?,?)
+ * Sets prepared statement parameters, such as:
+ * SQL: INSERT INTO TBL(CL1, CL2) VALUES(?,?)
  * parameters: new Ps("100", "M");
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class PsStatementCreator extends AbstractStatementCreator{
 	
@@ -132,9 +135,6 @@ public class PsStatementCreator extends AbstractStatementCreator{
 	}
 	
 	//------private methods
-	/**
-	 * set parameters for PreparedStatement
-	 */
 	private void setParameters(PreparedStatement preparedStatement, Ps ps) throws DBException, SQLException{
 		List<Ps.SqlParameter> parameters = ps.getParameters();
 

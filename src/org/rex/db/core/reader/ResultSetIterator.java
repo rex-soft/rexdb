@@ -19,10 +19,16 @@ import java.sql.ResultSet;
 
 import org.rex.db.exception.DBException;
 
+/**
+ * ResultSet Iterator.
+ * 
+ * @version 1.0, 2016-01-18
+ * @since Rexdb-1.0
+ */
 public interface ResultSetIterator {
 
 	/**
-	 * 遍历结果集
+	 * Iterates over the given ResultSet.
 	 */
 	public void read(ResultReader resultReader, ResultSet rs) throws DBException;
 }

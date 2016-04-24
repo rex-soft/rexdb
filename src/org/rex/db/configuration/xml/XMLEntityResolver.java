@@ -28,6 +28,12 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * XML Entity Resolver
+ *
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
+ */
 public class XMLEntityResolver implements EntityResolver {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLEntityResolver.class);

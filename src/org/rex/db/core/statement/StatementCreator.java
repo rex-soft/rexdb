@@ -25,7 +25,10 @@ import org.rex.db.dialect.LimitHandler;
 import org.rex.db.exception.DBException;
 
 /**
- * 对象创建器
+ * Statement creator interface.
+ * 
+ * @version 1.0, 2016-02-12
+ * @since Rexdb-1.0
  */
 public interface StatementCreator {
 

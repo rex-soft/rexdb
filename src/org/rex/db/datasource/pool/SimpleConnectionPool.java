@@ -38,14 +38,14 @@ import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.StringUtil;
 
 /**
- * A Simple Connection pool
+ * A Simple Connection pool.
  * 
  * @version 1.0, 2016-01-29
  * @since Rexdb-1.0
  */
 public class SimpleConnectionPool {
 
-	private static final boolean IS_JDK5 = System.getProperty("java.version").contains("1.5."); // 当前JDK版本是否是1.5
+	private static final boolean IS_JDK5 = System.getProperty("java.version").contains("1.5."); // current JDK version
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleConnectionPool.class);
 

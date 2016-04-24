@@ -22,37 +22,40 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * SQL执行接口
+ * Query executor.
+ * 
+ * @version 1.0, 2016-01-18
+ * @since Rexdb-1.0
  */
 public interface QueryExecutor {
 
 	/**
-	 * 执行查询
+	 * Executes query.
 	 */
 	ResultSet executeQuery(Statement stmt, String sql) throws SQLException;
 
 	/**
-	 * 执行预编译查询
+	 * Executes query.
 	 */
 	ResultSet executeQuery(PreparedStatement ps) throws SQLException;
 	
 	/**
-	 * 执行调用
-	 */
-	boolean execute(CallableStatement statement) throws SQLException;
-
-	/**
-	 * 执行批处理
-	 */
-	int[] executeBatch(Statement statement) throws SQLException;
-	
-	/**
-	 * 执行更新
+	 * Executes update.
 	 */
 	int executeUpdate(PreparedStatement ps) throws SQLException;
 	
 	/**
-	 * 执行更新
+	 * Executes update.
 	 */
 	int executeUpdate(Statement stmt, String sql) throws SQLException;
+	
+	/**
+	 * Executes batch update.
+	 */
+	int[] executeBatch(Statement statement) throws SQLException;
+	
+	/**
+	 * Executes call.
+	 */
+	boolean execute(CallableStatement statement) throws SQLException;
 }

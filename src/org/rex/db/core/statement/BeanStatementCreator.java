@@ -33,11 +33,14 @@ import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.SqlUtil;
 
 /**
- * Statement Creator for map and java bean
+ * Statement Creator for Maps and objects.
  *	
- * Set SQL with prepared statement parameters, sql has '#{...}' tags to identify parameters. such as:
- * sql: INSERT INTO TBL(CL1, CL2) VALUES(#{cl1}, #{cl2})
- * parameters: 1. java bean with variables: 'cl1', 'cl2'; 2. Map with key 'cl1' and 'cl2'.
+ * Sets prepared statement parameters, the SQL may contain one or more '?' IN parameter placeholders. such as:
+ * SQL: INSERT INTO TBL(CL1, CL2) VALUES(#{cl1}, #{cl2})
+ * parameters: 1. java bean with variables: 'cl1', 'cl2'; 2. Map with keys 'cl1' and 'cl2'.
+ * 
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
  */
 public class BeanStatementCreator extends AbstractStatementCreator{
 	
@@ -45,8 +48,7 @@ public class BeanStatementCreator extends AbstractStatementCreator{
 	
 	//----------settings
 	/**
-	 * user dynamic class
-	 * @throws DBException 
+	 * Uses dynamic class?
 	 */
 	private static boolean isDynamic() throws DBException{
 		return Configuration.getCurrentConfiguration().isDynamicClass();
@@ -115,13 +117,6 @@ public class BeanStatementCreator extends AbstractStatementCreator{
 		}
 	}
 	
-	/**
-	 * set parametersthe if the parameters is Map
-	 * @param statement
-	 * @param tokens
-	 * @param parameters
-	 * @throws SQLException 
-	 */
 	private void setParameters(PreparedStatement statement, String[] tokens, Map<?,?> parameters) throws SQLException{
 		
 		if(LOGGER.isDebugEnabled())
@@ -132,14 +127,6 @@ public class BeanStatementCreator extends AbstractStatementCreator{
 		}
 	}
 	
-	/**
-	 * set parametersthe if the parameters is java bean
-	 * @param statement
-	 * @param tokens
-	 * @param parameters
-	 * @throws DBException 
-	 * @throws SQLException 
-	 */
 	private void setParameters(PreparedStatement statement, String[] tokens, Object parameters) throws DBException, SQLException{
 		if(LOGGER.isDebugEnabled()){
 			LOGGER.debug("setting java bean parameters {0} for statement[{1}].", parameters, statement.hashCode());

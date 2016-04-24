@@ -24,7 +24,10 @@ import org.rex.db.exception.DBException;
 import org.rex.db.util.ORUtil;
 
 /**
- * 读取单条结果集，进行OR映射
+ * Map ResultSet reader.
+ * 
+ * @version 1.0, 2016-02-12
+ * @since Rexdb-1.0
  */
 public class MapResultReader implements ResultReader {
 

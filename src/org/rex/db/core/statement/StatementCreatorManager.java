@@ -17,6 +17,12 @@ package org.rex.db.core.statement;
 
 import org.rex.db.Ps;
 
+/**
+ * Statement creator manager.
+ *
+ * @version 1.0, 2016-02-12
+ * @since Rexdb-1.0
+ */
 public class StatementCreatorManager {
 	
 	private StatementCreator psStatementCreator, beanStatementCreator, arrayStatementCreator;
@@ -28,17 +34,14 @@ public class StatementCreatorManager {
 	}
 
 	/**
-	 * get a default StatementCreator for no prepared statement
-	 * @return
+	 * Returns bean StatementCreator instance.
 	 */
 	public StatementCreator get(){
 		return beanStatementCreator;
 	}
 	
 	/**
-	 * get matched StatementCreator
-	 * @param parameter
-	 * @return
+	 * Returns suitable instances for the given objects.
 	 */
 	public StatementCreator get(Object[] parameters){
 		if(parameters == null)
@@ -50,6 +53,9 @@ public class StatementCreatorManager {
 		return get();
 	}
 	
+	/**
+	 * Returns suitable StatementCreator instance for the given object.
+	 */
 	public StatementCreator get(Object parameters){
 		if(parameters == null)
 			return get();

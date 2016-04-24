@@ -27,18 +27,21 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.ResourceUtil;
 
 /**
- * 用于读取框架配置文件
+ * Loads XML configuration.
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public class XMLConfigurationLoader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigurationLoader.class);
 
 	/**
-	 * 从类路径中加载配置
+	 * Loads configuration from file system.
 	 * 
-	 * @param path classpath中的路径
-	 * @return 已解析的配置
-	 * @throws DBException 加载失败时抛出异常
+	 * @param path absolute path.
+	 * @return configuration.
+	 * @throws DBException could not read or parse the file.
 	 */
 	public Configuration loadFromFileSystem(String path) throws DBException {
 		File xml = new File(path);
@@ -54,11 +57,11 @@ public class XMLConfigurationLoader {
 	}
 
 	/**
-	 * 从类路径中加载配置
+	 * Loads configuration from ClassPath.
 	 * 
-	 * @param path classpath中的路径
-	 * @return 已解析的配置
-	 * @throws DBException 加载失败时抛出异常
+	 * @param path file path from ClassPath.
+	 * @return configuration.
+	 * @throws DBException could not read or parse the file.
 	 */
 	public Configuration loadFromClasspath(String path) throws DBException {
 		InputStream inputStream = ResourceUtil.getResourceAsStream(path);
@@ -66,25 +69,17 @@ public class XMLConfigurationLoader {
 	}
 
 	/**
-	 * 加载配置
+	 * Loads configuration from InputStream.
 	 * 
-	 * @param inputStream 文件流
-	 * @return 已解析的配置
-	 * @throws DBException 
+	 * @param inputStream file InputStream.
+	 * @return configuration.
+	 * @throws DBException could not read or parse the InputStream.
 	 */
 	public Configuration load(InputStream inputStream) throws DBException {
 		return load(inputStream, null);
 	}
 
-	/**
-	 * 加载配置
-	 * 
-	 * @param inputStream 文件流
-	 * @param properties 已有配置
-	 * @return 已解析的配置
-	 * @throws DBException 
-	 */
-	public Configuration load(InputStream inputStream, Properties properties) throws DBException {
+	protected Configuration load(InputStream inputStream, Properties properties) throws DBException {
 		XMLConfigParser parser = new XMLConfigParser(inputStream, properties);
 		Configuration configuration = parser.parse();
 		if (inputStream != null) {

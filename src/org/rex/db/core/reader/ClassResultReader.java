@@ -28,7 +28,10 @@ import org.rex.db.util.ORUtil;
 import org.rex.db.util.ReflectUtil;
 
 /**
- * 读取单条结果集，进行OR映射
+ * Bean ResultSet reader.
+ * 
+ * @version 1.0, 2016-03-17
+ * @since Rexdb-1.0
  */
 public class ClassResultReader<T> implements ResultReader<T> {
 
@@ -39,6 +42,7 @@ public class ClassResultReader<T> implements ResultReader<T> {
 
 	private int rowNum = 0;
 
+	int[] columnsCodeCacheForDynamic = null;
 	
 	//----------settings
 	/**
@@ -51,13 +55,6 @@ public class ClassResultReader<T> implements ResultReader<T> {
 	
 
 	//--------construct
-	/**
-	 * 创建结果集读取类，适用于普通查询
-	 * 
-	 * @param ps 查询参数
-	 * @param originalKey 是否按照结果集原始键处理
-	 * @param resultPojo
-	 */
 	public ClassResultReader(Class<T> resultClass) {
 		this.results = new LinkedList<T>();
 		this.resultClass = resultClass;
@@ -72,13 +69,7 @@ public class ClassResultReader<T> implements ResultReader<T> {
 		return results;
 	}
 
-	// --------private parameter
-	int[] columnsCodeCacheForDynamic = null;
-
 	// --------private methods
-	/**
-	 * OR映射
-	 */
 	private T row2Bean(ResultSet rs, int rowNum) throws DBException {
 		if (resultClass == null)
 			throw new DBException("DB-C0003");

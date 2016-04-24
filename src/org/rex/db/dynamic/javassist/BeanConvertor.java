@@ -81,40 +81,4 @@ public abstract class BeanConvertor {
 	protected static Short convertValue(short v){
 		return Short.valueOf(v);
 	}
-	
-	//---array
-//	protected static Object convertValue(Object[] v){
-//		return v;
-//	}
-//	protected static String convertValue(int[] v){
-//		return Arrays.toString((int[])v);
-//	}
-//	
-//	protected static String convertValue(boolean[] v){
-//		return Arrays.toString((boolean[])v);
-//	}
-//	
-//	protected static String convertValue(byte[] v){
-//		return Arrays.toString((byte[])v);
-//	}
-//	
-//	protected static String convertValue(char[] v){
-//		return Arrays.toString((char[])v);
-//	}
-//	
-//	protected static String convertValue(double[] v){
-//		return Arrays.toString((double[])v);
-//	}
-//	
-//	protected static String convertValue(float[] v){
-//		return Arrays.toString((float[])v);
-//	}
-//	
-//	protected static String convertValue(long[] v){
-//		return Arrays.toString((long[])v);
-//	}
-//	
-//	protected static String convertValue(short[] v){
-//		return Arrays.toString((short[])v);
-//	}
 }

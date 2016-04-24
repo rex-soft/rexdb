@@ -28,11 +28,14 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.SqlUtil;
 
 /**
- * Statement Creator for parameter array, not support primitive types array.
+ * Statement Creator for arrays, primitive type arrays are not supported.
  * 
- * Set standard SQL prepared statement parameters. such as:
- * sql: INSERT INTO TBL(CL1, CL2) VALUES(?,?)
+ * Sets prepared statement parameters, such as:
+ * SQL: INSERT INTO TBL(CL1, CL2) VALUES(?,?)
  * parameters: new String[]{"100", "M"}, or new Object[]{100, "M"};
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public class ArrayStatementCreator extends AbstractStatementCreator{
 	
@@ -102,9 +105,6 @@ public class ArrayStatementCreator extends AbstractStatementCreator{
 	}
 	
 	//------private methods
-	/**
-	 * set parameters for PreparedStatement
-	 */
 	private void setParameters(PreparedStatement preparedStatement, Object[] parameterArray) throws DBException, SQLException{
 		if(preparedStatement == null || parameterArray == null) return;
 		

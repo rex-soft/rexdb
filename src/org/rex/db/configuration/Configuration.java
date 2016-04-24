@@ -35,98 +35,101 @@ import org.rex.db.transaction.Definition;
 import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.ResourceUtil;
 
+/**
+ * Framework Configuration.
+ *
+ * @version 1.0, 2016-03-28
+ * @since Rexdb-1.0
+ */
 public class Configuration {
 	
-	//-----------------------------singlon instance
+	//-----------------------------Singleton instance
 	private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 	
 	private static final String DEFAULT_CONFIG_PATH = "rexdb.xml";
 	
-	/**
-	 * 以单例模式运行
-	 */
 	private static volatile Configuration instance;
 	
 	//-----------------------------configuration
 	/**
-	 * 配置变量
+	 * properties
 	 */
 	private volatile Properties variables;
 	
 	//--------settings
 	/**
-	 * 语言：zh-cn、en
+	 * language: zh-cn, en
 	 */
 	private volatile String lang;
 	
 	/**
-	 * 关闭所有输出日志
+	 * Closes all logs?
 	 */
 	private volatile boolean nolog = false;
 	
 	/**
-	 * 在执行SQL前执行基本校验，防止错误的SQL被发送到数据库
+	 * Validates SQLs before executing.
 	 */
 	private volatile boolean validateSql = true;
 	
 	/**
-	 * 是否检查执行过程中的各种警告，如连接警告、Statement警告、结果集警告
+	 * Checks warnings after executing, including connection warnings, statement warnings and ResultSet warnings.
 	 */
 	private volatile boolean checkWarnings = false;
 	
 	/**
-	 * 执行查询的默认超时时间
+	 * Timeout for each query.
 	 */
 	private volatile int queryTimeout = -1;
 	
 	/**
-	 * 事物默认超时时间
+	 * Timeout for each transaction.
 	 */
 	private volatile int transactionTimeout = -1;
 	
 	/**
-	 * 事物中的操作执行失败时，是否自动回滚
+	 * Rolls back transaction on committing failure.
 	 */
 	private volatile boolean autoRollback = false;
 	
 	/**
-	 * 事物默认隔离级别
+	 * Transaction isolation.
 	 */
 	private volatile String transactionIsolation;
 	
 	/**
-	 * 启用反射缓存
+	 * Caches beanInfo, parameter types etc in reflections.
 	 */
 	private volatile boolean reflectCache = true;
 	
 	/**
-	 * 使用动态类替代反射调用
+	 * Uses dynamic classes instead of reflections.
 	 */
 	private volatile boolean dynamicClass = true;
 	
 	/**
-	 * 自动调整日期/时间类型，以适应
+	 * Automatically converts Date and Time to java.sql.Timestamp.
 	 */
 	private volatile boolean dateAdjust = true;
 	
 	/**
-	 * 批量出更新时自动开启事物
+	 * Automatically begins transaction before batch update.
 	 */
 	private volatile boolean batchTransaction = true;
 	
 	//--------managers
 	/**
-	 * 数据源
+	 * DataSource Manager
 	 */
 	private final DataSourceManager dataSourceManager;
 	
 	/**
-	 * 监听
+	 * Listener Manager
 	 */
 	private final ListenerManager listenerManager;
 	
 	/**
-	 * 方言
+	 * Dialect Manager
 	 */
 	private final DialectManager dialectManager;
 	
@@ -140,7 +143,6 @@ public class Configuration {
 		}
 	}
 	
-	//--构造函数
 	public Configuration(){
 		dataSourceManager = new DataSourceManager();
 		listenerManager = new ListenerManager();
@@ -148,7 +150,9 @@ public class Configuration {
 	}
 	
 	/**
-	 * 加载默认配置
+	 * Loads the default configuration.
+	 * 
+	 * @throws DBException if the default XML file does not exist, could not parse the file, etc.
 	 */
 	public synchronized static void loadDefaultConfiguration() throws DBException{
 		if(instance != null)
@@ -162,9 +166,9 @@ public class Configuration {
 	}
 	
 	/**
-	 * 从classpath中加载指定配置
-	 * @param path classpath中的文件路径
-	 * @throws DBException 加载失败时抛出异常
+	 * Loads the default configuration from classPath.
+	 * @param path file in classPath.
+	 * @throws DBException if the default XML file does not exist, could not parse the file, etc.
 	 */
 	public synchronized static void loadConfigurationFromClasspath(String path) throws DBException{
 		if(instance != null)
@@ -176,9 +180,9 @@ public class Configuration {
 	}
 	
 	/**
-	 * 从文件系统中加载指定配置
-	 * @param path 文件系统中的路径
-	 * @throws DBException 加载失败时抛出异常
+	 * Loads the default configuration from classPath.
+	 * @param path file absolute path.
+	 * @throws DBException if the default XML file does not exist, could not parse the file, etc.
 	 */
 	public synchronized static void loadConfigurationFromFileSystem(String path) throws DBException{
 		if(instance != null)
@@ -190,7 +194,7 @@ public class Configuration {
 	}
 
 	/**
-	 * 获取当前配置
+	 * Returns current configuration.
 	 */
 	public static Configuration getCurrentConfiguration() throws DBRuntimeException{
 		if(instance == null){
@@ -210,17 +214,17 @@ public class Configuration {
 	
 	//---------------------------
 	public void applySettings(){
-		//语言版本
+		//lang
 		if(lang != null){
 			ExceptionResourceFactory.getInstance().setLang(lang);
 		}
 		
-		//反射缓存
+		//reflectCache
 		if(!reflectCache){
 			ReflectUtil.setCacheEnabled(false);
 		}
 		
-		//日志
+		//nolog
 		if(nolog){
 			LoggerFactory.setNolog(true);
 		}

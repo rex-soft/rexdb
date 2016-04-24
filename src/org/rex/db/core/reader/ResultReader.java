@@ -21,17 +21,20 @@ import java.util.List;
 import org.rex.db.exception.DBException;
 
 /**
- * 读取结果集接口
+ * ResultSet reader.
+ * 
+ * @version 1.0, 2016-01-18
+ * @since Rexdb-1.0
  */
 public interface ResultReader<T> {
 	 
 	/**
-	 * 处理单条结果集
+	 * Reads the given ResultSet.
 	 */
 	void processRow(ResultSet rs) throws DBException;
 	
 	/**
-	 * 获取结果对象
+	 * Returns results.
 	 */
 	List<T> getResults();
 }

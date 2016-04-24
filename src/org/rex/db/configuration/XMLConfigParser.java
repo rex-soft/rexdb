@@ -41,6 +41,12 @@ import org.rex.db.util.ReflectUtil;
 import org.rex.db.util.ResourceUtil;
 import org.rex.db.util.StringUtil;
 
+/**
+ * Parses XML configuration.
+ *
+ * @version 1.0, 2016-03-15
+ * @since Rexdb-1.0
+ */
 public class XMLConfigParser {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigParser.class);
@@ -73,16 +79,13 @@ public class XMLConfigParser {
 	}
 
 	/**
-	 * 解析配置文件根节点
+	 * Parses from root.
 	 */
 	public Configuration parse() throws DBException {
 		parseConfiguration(parser.evalNode("/configuration"));
 		return configuration;
 	}
 
-	/**
-	 * 解析XML
-	 */
 	private void parseConfiguration(XNode root) throws DBException {
 			parsePropertiesNodes(root.evalNodes("properties"));
 			parseSettingsNodes(root.evalNodes("settings"));
@@ -93,9 +96,7 @@ public class XMLConfigParser {
 	}
 	
 	/**
-	 * 解析所有properties节点
-	 * @param context
-	 * @throws DBException
+	 * Parses properties nodes.
 	 */
 	private void parsePropertiesNodes(List<XNode> nodes) throws DBException {
 		if(nodes == null) return;
@@ -108,9 +109,6 @@ public class XMLConfigParser {
 		}
 	}
 
-	/**
-	 * 解析一个properties节点
-	 */
 	private void parsePropertiesNode(XNode context) throws DBException {
 		if (context == null)
 			return;
@@ -138,7 +136,7 @@ public class XMLConfigParser {
 	}
 	
 	/**
-	 * 解析Settings节点
+	 * Parses settings node.
 	 */
 	private void parseSettingsNodes(List<XNode> nodes) throws DBException {
 		if(nodes == null) return;
@@ -147,9 +145,6 @@ public class XMLConfigParser {
 		}
 	}
 
-	/**
-	 * 解析Settings节点
-	 */
 	private void parseSettingsNode(XNode context) throws DBException {
 		if (context == null)
 			return;
@@ -168,7 +163,7 @@ public class XMLConfigParser {
 	}
 	
 	/**
-	 * 解析dataSource节点
+	 * Parses dataSource nodes.
 	 */
 	private void parseDataSources(List<XNode> nodes) throws DBException  {
 		if(nodes == null) return;
@@ -181,9 +176,6 @@ public class XMLConfigParser {
 		}
 	}
 	
-	/**
-	 * 解析dataSource节点
-	 */
 	private void parseDataSource(XNode context) throws DBException  {
 		if (context == null)
 			return;
@@ -201,30 +193,30 @@ public class XMLConfigParser {
 			throw new DBException("DB-F0004", "dataSource", "jndi, class");
 
 		DataSourceFactory factory;
-		if (hasJndi) {// 有jndi参数，使用JNDI
+		if (hasJndi) {
 			props.put(JndiDataSourceFactory.JNDI_NAME, jndi);
 			factory = new JndiDataSourceFactory(props);
-		}else if (hasClass){// 自定指定数据源
+		}else if (hasClass){
 			props.put(PoolDataSourceFactory.DATA_SOURCE_CLASS, clazz);
 			factory = new PoolDataSourceFactory(props);
-		}else{// 不指定class和jndi时，使用自带简易数据源
+		}else{
 			factory = new SimpleDataSourceFactory(props);
 		}
 		
 		DataSource dataSource = factory.getDataSource();
-		if (!StringUtil.isEmptyString(dialect)) {// 处理方言
+		if (!StringUtil.isEmptyString(dialect)) {
 			Dialect instance = (Dialect) ReflectUtil.instance(dialect, Dialect.class);
 			configuration.addDialect(dataSource, instance);
 		}
 		
-		if (StringUtil.isEmptyString(id))// 设置数据源
+		if (StringUtil.isEmptyString(id))
 			configuration.setDefaultDataSource(dataSource);
 		else
 			configuration.setDataSource(id, dataSource);
 	}
 
 	/**
-	 * 解析listener节点
+	 * Parses listener nodes.
 	 */
 	private void parseListeners(List<XNode> nodes) throws DBException {
 		if(nodes == null) return;
@@ -237,9 +229,6 @@ public class XMLConfigParser {
 		}
 	}
 	
-	/**
-	 * 解析listener节点
-	 */
 	private void parseListener(XNode context) throws DBException {
 		if (context == null)
 			return;

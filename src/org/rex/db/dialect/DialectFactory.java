@@ -86,12 +86,11 @@ public class DialectFactory {
 	}
 
 	/**
-	 * 根据数据库类型创建方言实例
+	 * Creates dialect instance for the specified database.
 	 * 
-	 * @param metaData 数据库元描述
-	 * @return 方言实例
-	 * @throws DBException 当找不到数据库对应的方言时，抛出异常
-	 * @throws SQLException 获取数据库元数据描述失败时，抛出异常
+	 * @param metaData database meta data.
+	 * @return dialect instance.
+	 * @throws DBException could not read meta data, or does not support the database.
 	 */
 	private static Dialect resolveDialectInternal(DatabaseMetaData metaData) throws DBException {
 		String databaseName;

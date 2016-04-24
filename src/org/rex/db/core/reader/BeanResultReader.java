@@ -26,7 +26,11 @@ import org.rex.db.util.ORUtil;
 import org.rex.db.util.ReflectUtil;
 
 /**
- * 读取单条结果集，进行OR映射
+ * Bean ResultSet reader.
+ * 
+ * @version 1.0, 2016-02-12
+ * @since Rexdb-1.0
+ * @deprecated No longer supports object.
  */
 public class BeanResultReader<T> implements ResultReader<T> {
 
@@ -40,13 +44,6 @@ public class BeanResultReader<T> implements ResultReader<T> {
 	private int rowNum = 0;
 	private Method cloneMethod = null;
 
-	/**
-	 * 创建结果集读取类，适用于普通查询
-	 * 
-	 * @param ps 查询参数
-	 * @param originalKey 是否按照结果集原始键处理
-	 * @param resultPojo
-	 */
 	public BeanResultReader(Ps ps, T resultBean) {
 		this.results = new LinkedList<T>();
 		this.ps = ps;
@@ -73,22 +70,19 @@ public class BeanResultReader<T> implements ResultReader<T> {
 		results.add(row2Bean(rs, rowNum++, ps, clone));
 	}
 	
+	public List<T> getResults() {
+		return results;
+	}
+	
+	// --------private methods
 	private Method getCloneMethod() throws DBException{
 		if(cloneMethod == null)
 			cloneMethod = ReflectUtil.getCloneMethod(resultBean);
 		return cloneMethod;
 	}
 
-	public List<T> getResults() {
-		return results;
-	}
-
-	/**
-	 * OR映射
-	 */
 	protected T row2Bean(ResultSet rs, int rowNum, Ps ps, T bean) throws DBException {
 		return orUtil.rs2Object(rs, bean);
 	}
-	
 
 }

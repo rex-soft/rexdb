@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * A connection proxy that overrides close method
+ * Connection proxy.
  * 
  * @version 1.0, 2016-01-29
  * @since Rexdb-1.0

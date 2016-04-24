@@ -24,7 +24,12 @@ import java.sql.Statement;
 import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
-
+/**
+ * Default query executor.
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
+ */
 public class DefaultQueryExecutor implements QueryExecutor {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultQueryExecutor.class);

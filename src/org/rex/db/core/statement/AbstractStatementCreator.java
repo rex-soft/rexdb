@@ -29,7 +29,10 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.SqlUtil;
 
 /**
- * Base statement creator
+ * Basic statement creator.
+ * 
+ * @version 1.0, 2016-02-14
+ * @since Rexdb-1.0
  */
 public abstract class AbstractStatementCreator implements StatementCreator{
 	
@@ -70,16 +73,12 @@ public abstract class AbstractStatementCreator implements StatementCreator{
 	}
 
 	/**
-	 * 在执行SQL前进行基本的校验
-	 * @param sql
-	 * @param ps
-	 * @throws DBException 
+	 * Validates the given SQL before executing.
 	 */
 	private static void validateSql(String sql, int expectedParameterSize) throws DBException{
 		SqlUtil.validate(sql, expectedParameterSize);
 	}
 	
-	//validate sql with array parameters
 	protected static void validateSql(String sql, Object[] parameterArray) throws DBException{
 		if(isValidateSql())
 			validateSql(sql, parameterArray == null ? 0 : parameterArray.length);
@@ -92,7 +91,6 @@ public abstract class AbstractStatementCreator implements StatementCreator{
 		}
 	}
 
-	//validate sql with ps parameters
 	protected static void validateSql(String sql, Ps ps) throws DBException{
 		if(isValidateSql())
 			validateSql(sql, ps == null ? 0 : ps.getParameterSize());
@@ -105,7 +103,6 @@ public abstract class AbstractStatementCreator implements StatementCreator{
 		}
 	}
 	
-	//validate sqls
 	protected static void validateSql(String sql) throws DBException{
 		if(isValidateSql()) validateSql(sql, 0);
 	}
