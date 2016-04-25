@@ -16,7 +16,6 @@
 package org.rex.db.configuration;
 
 import java.io.InputStream;
-import java.io.Reader;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
@@ -55,20 +54,12 @@ public class XMLConfigParser {
 	protected final Configuration configuration;
 
 	// ----------------constructs
-	public XMLConfigParser(Reader reader) {
-		this(reader, null);
-	}
-
-	public XMLConfigParser(Reader reader, Properties props) {
-		this(new XPathParser(reader, true, props, new XMLEntityResolver()), props);
-	}
-
 	public XMLConfigParser(InputStream inputStream) {
 		this(inputStream, null);
 	}
 
 	public XMLConfigParser(InputStream inputStream, Properties props) {
-		this(new XPathParser(inputStream, true, props, new XMLEntityResolver()), props);
+		this(new XPathParser(inputStream, props, new XMLEntityResolver()), props);
 	}
 
 	private XMLConfigParser(XPathParser parser, Properties props) {
