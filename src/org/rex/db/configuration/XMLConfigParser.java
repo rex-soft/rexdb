@@ -24,7 +24,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.rex.db.configuration.xml.XMLEntityResolver;
+import org.rex.db.configuration.xml.XEntityResolver;
 import org.rex.db.configuration.xml.XNode;
 import org.rex.db.configuration.xml.XPathParser;
 import org.rex.db.datasource.DataSourceFactory;
@@ -59,7 +59,7 @@ public class XMLConfigParser {
 	}
 
 	public XMLConfigParser(InputStream inputStream, Properties props) {
-		this(new XPathParser(inputStream, props, new XMLEntityResolver()), props);
+		this(new XPathParser(inputStream, props, new XEntityResolver()), props);
 	}
 
 	private XMLConfigParser(XPathParser parser, Properties props) {
@@ -78,12 +78,12 @@ public class XMLConfigParser {
 	}
 
 	private void parseConfiguration(XNode root) throws DBException {
-			parsePropertiesNodes(root.evalNodes("properties"));
-			parseSettingsNodes(root.evalNodes("settings"));
+			parsePropertiesNodes(parser.evalNodes(root, "properties"));
+			parseSettingsNodes(parser.evalNodes(root, "settings"));
 			configuration.applySettings();
 			
-			parseDataSources(root.evalNodes("dataSource"));
-			parseListeners(root.evalNodes("listener"));
+			parseDataSources(parser.evalNodes(root, "dataSource"));
+			parseListeners(parser.evalNodes(root, "listener"));
 	}
 	
 	/**
@@ -104,8 +104,8 @@ public class XMLConfigParser {
 		if (context == null)
 			return;
 
-		String path = context.getStringAttribute("path");
-		String url = context.getStringAttribute("url");
+		String path = context.getAttribute("path");
+		String url = context.getAttribute("url");
 		boolean hasPath = !StringUtil.isEmptyString(path), 
 				hasUrl = !StringUtil.isEmptyString(url);
 
@@ -172,10 +172,10 @@ public class XMLConfigParser {
 			return;
 		
 		Properties props = context.getChildrenAsProperties();
-		String id = context.getStringAttribute("id"),
-			clazz = context.getStringAttribute("class"),
-			jndi = context.getStringAttribute("jndi"),
-			dialect = context.getStringAttribute("dialect");
+		String id = context.getAttribute("id"),
+			clazz = context.getAttribute("class"),
+			jndi = context.getAttribute("jndi"),
+			dialect = context.getAttribute("dialect");
 		
 		boolean hasJndi = !StringUtil.isEmptyString(jndi),
 				hasClass = !StringUtil.isEmptyString(clazz);
@@ -224,7 +224,7 @@ public class XMLConfigParser {
 		if (context == null)
 			return;
 
-		String clazz = context.getStringAttribute("class");
+		String clazz = context.getAttribute("class");
 		Properties props = context.getChildrenAsProperties();
 		if (StringUtil.isEmptyString(clazz)) {
 			throw new DBException("DB-F0006", "listener", "class");

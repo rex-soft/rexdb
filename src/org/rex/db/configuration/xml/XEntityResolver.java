@@ -29,14 +29,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * XML Entity Resolver
+ * XML entity resolver.
  *
  * @version 1.0, 2016-02-14
  * @since Rexdb-1.0
  */
-public class XMLEntityResolver implements EntityResolver {
+public class XEntityResolver implements EntityResolver {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(XMLEntityResolver.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(XEntityResolver.class);
 
 	private static final Map<String, String> doctypeMap = new HashMap<String, String>();
 

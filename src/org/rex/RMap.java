@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * HashMap with java type conversion methods.
+ * HashMap with type conversion methods.
  * 
  * @author z
  * @version 1.0, 2016-04-17

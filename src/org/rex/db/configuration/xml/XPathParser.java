@@ -37,6 +37,12 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+/**
+ * XPath parser.
+ *
+ * @version 1.0, 2016-04-26
+ * @since Rexdb-1.0
+ */
 public class XPathParser {
 
 	private Document document;
@@ -64,8 +70,12 @@ public class XPathParser {
 		return evalString(document, expression);
 	}
 
+	public String evalString(XNode root, String expression) {
+		return evalString(root.getNode(), expression);
+	}
+	
 	public String evalString(Object root, String expression) {
-		String result = (String) evaluate(expression, root, XPathConstants.STRING);
+		String result = (String) eval(expression, root, XPathConstants.STRING);
 		result = tokenParser.parse(result);
 		return result;
 	}
@@ -74,9 +84,13 @@ public class XPathParser {
 		return evalNodes(document, expression);
 	}
 
+	public List<XNode> evalNodes(XNode root, String expression) {
+		return evalNodes(root.getNode(), expression);
+	}
+	
 	public List<XNode> evalNodes(Object root, String expression) {
 		List<XNode> xnodes = new ArrayList<XNode>();
-		NodeList nodes = (NodeList) evaluate(expression, root, XPathConstants.NODESET);
+		NodeList nodes = (NodeList) eval(expression, root, XPathConstants.NODESET);
 		for (int i = 0; i < nodes.getLength(); i++) {
 			xnodes.add(new XNode(this, nodes.item(i), tokenParser));
 		}
@@ -87,19 +101,24 @@ public class XPathParser {
 		return evalNode(document, expression);
 	}
 
+	public XNode evalNode(XNode root, String expression) {
+		return evalNode(root.getNode(), expression);
+	}
+	
 	public XNode evalNode(Object root, String expression) {
-		Node node = (Node) evaluate(expression, root, XPathConstants.NODE);
+		Node node = (Node) eval(expression, root, XPathConstants.NODE);
 		if (node == null) {
 			return null;
 		}
 		return new XNode(this, node, tokenParser);
 	}
 
-	private Object evaluate(String expression, Object root, QName returnType) {
+	//-----private
+	private Object eval(String expression, Object root, QName returnType) {
 		try {
 			return xpath.evaluate(expression, root, returnType);
 		} catch (Exception e) {
-			throw new DBRuntimeException("DB-C10053", e, e.getMessage());
+			throw new DBRuntimeException("DB-F0010", e, expression, e.getMessage());
 		}
 	}
 
@@ -107,7 +126,6 @@ public class XPathParser {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setValidating(true);
-
 			factory.setNamespaceAware(false);
 			factory.setIgnoringComments(true);
 			factory.setIgnoringElementContentWhitespace(false);
@@ -120,14 +138,13 @@ public class XPathParser {
 				public void error(SAXParseException exception) throws SAXException {
 					throw exception;
 				}
-
 				public void fatalError(SAXParseException exception) throws SAXException {
 					throw exception;
 				}
-
 				public void warning(SAXParseException exception) throws SAXException {
 				}
 			});
+			
 			return builder.parse(inputSource);
 		} catch (Exception e) {
 			throw new DBRuntimeException("DB-F0009", e, e.getMessage());

@@ -20,11 +20,16 @@ import java.util.List;
 import java.util.Properties;
 
 import org.w3c.dom.CharacterData;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * XML node.
+ *
+ * @version 1.0, 2016-04-26
+ * @since Rexdb-1.0
+ */
 public class XNode {
 
 	private Node node;
@@ -44,31 +49,7 @@ public class XNode {
 		this.body = parseBody(node);
 	}
 
-	public String getPath() {
-		StringBuilder builder = new StringBuilder();
-		Node current = node;
-		while (current != null && current instanceof Element) {
-			if (current != node) {
-				builder.insert(0, "/");
-			}
-			builder.insert(0, current.getNodeName());
-			current = current.getParentNode();
-		}
-		return builder.toString();
-	}
-
-	public String evalString(String expression) {
-		return xpathParser.evalString(node, expression);
-	}
-
-	public List<XNode> evalNodes(String expression) {
-		return xpathParser.evalNodes(node, expression);
-	}
-
-	public XNode evalNode(String expression) {
-		return xpathParser.evalNode(node, expression);
-	}
-
+	//---node
 	public Node getNode() {
 		return node;
 	}
@@ -77,23 +58,12 @@ public class XNode {
 		return name;
 	}
 
-	public String getStringBody() {
-		return getStringBody(null);
+	//----attribute
+	public String getAttribute(String name) {
+		return getAttribute(name, null);
 	}
 
-	public String getStringBody(String def) {
-		if (body == null) {
-			return def;
-		} else {
-			return body;
-		}
-	}
-
-	public String getStringAttribute(String name) {
-		return getStringAttribute(name, null);
-	}
-
-	public String getStringAttribute(String name, String def) {
+	public String getAttribute(String name, String def) {
 		String value = attributes.getProperty(name);
 		if (value == null) {
 			return def;
@@ -102,6 +72,20 @@ public class XNode {
 		}
 	}
 
+	//----body
+	public String getBody() {
+		return getBody(null);
+	}
+
+	public String getBody(String def) {
+		if (body == null) {
+			return def;
+		} else {
+			return body;
+		}
+	}
+
+	//----children
 	public List<XNode> getChildren() {
 		List<XNode> children = new ArrayList<XNode>();
 		NodeList nodeList = node.getChildNodes();
@@ -119,8 +103,8 @@ public class XNode {
 	public Properties getChildrenAsProperties() {
 		Properties properties = new Properties();
 		for (XNode child : getChildren()) {
-			String name = child.getStringAttribute("name");
-			String value = child.getStringAttribute("value");
+			String name = child.getAttribute("name");
+			String value = child.getAttribute("value");
 			if (name != null && value != null) {
 				properties.setProperty(name, value);
 			}
