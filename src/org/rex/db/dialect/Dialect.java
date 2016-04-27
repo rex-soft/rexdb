@@ -31,7 +31,7 @@ public interface Dialect {
 	
 	// ------------------------------------------------------------Test SQL
 	/**
-	 * Return a test SQL for current database
+	 * Returns a test SQL for current database
 	 */
 	public String getTestSql();
 

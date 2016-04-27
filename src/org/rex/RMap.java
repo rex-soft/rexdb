@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * HashMap with type conversion methods.
+ * HashMap with some type conversion methods.
  * 
  * @author z
  * @version 1.0, 2016-04-17
@@ -62,10 +62,10 @@ public class RMap<K, V> extends HashMap<K, V> {
 
 	// ------------get value as string
 	/**
-	 * Returns the value as String to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * Returns the value of string type to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 * 
 	 * @param key the key whose associated value is to be returned.
-	 * @param emptyAsNull returns null if the value equals empty String.
+	 * @param emptyAsNull returns null if the value is an empty string.
 	 * @return String value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 */
 	public String getString(String key, boolean emptyAsNull) {
@@ -76,7 +76,7 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Returns the value as String to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * Returns the value of string type to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 * 
 	 * @param key the key whose associated value is to be returned.
 	 * @return String value to which the specified key is mapped, or null if this map contains no mapping for the key.
@@ -86,9 +86,9 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Converts Object to String, contacts values if the Object is array.
+	 * Converts the specified Object to a String.
 	 * 
-	 * @param value the Object to convert.
+	 * @param value the Object to be converted.
 	 * @return String value.
 	 */
 	protected String getStringValue(Object value) {
@@ -127,9 +127,9 @@ public class RMap<K, V> extends HashMap<K, V> {
 			return String.valueOf(value);
 	}
 
-	// ------------get value as boolean
+	// ------------returns value as boolean
 	/**
-	 * Returns the value as boolean to which the specified key is mapped, or false if this map contains no mapping for the key.
+	 * Returns the value of boolean type to which the specified key is mapped, or false if this map contains no mapping for the key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
 	 * @return boolean value to which the specified key is mapped, or false if this map contains no mapping for the key.
@@ -145,12 +145,12 @@ public class RMap<K, V> extends HashMap<K, V> {
 		}
 	}
 
-	// ------------get value as number
+	// ------------returns value as number
 	/**
-	 * Returns the value as integer to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * Returns the value of integer type to which the specified key is mapped, or zero if this map contains no mapping for the key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
-	 * @return integer value to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * @return integer value to which the specified key is mapped, or zero if this map contains no mapping for the key.
 	 */
 	public int getInt(String key) {
 		Object value = get(key);
@@ -175,10 +175,10 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Returns the value as long to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * Returns the value of long type to which the specified key is mapped, or zero if this map contains no mapping for the key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
-	 * @return long value to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * @return long value to which the specified key is mapped, or zero if this map contains no mapping for the key.
 	 */
 	public long getLong(String key) {
 		Object value = get(key);
@@ -203,10 +203,10 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Returns the value as float to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * Returns the value of float type to which the specified key is mapped, or zero if this map contains no mapping for the key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
-	 * @return float value to which the specified key is mapped, or 0 if this map contains no mapping for the key.
+	 * @return float value to which the specified key is mapped, or zero if this map contains no mapping for the key.
 	 */
 	public float getFloat(String key) {
 		Object value = get(key);
@@ -292,9 +292,9 @@ public class RMap<K, V> extends HashMap<K, V> {
 		}
 	}
 
-	// ------------get value as Date
+	// ------------returns value as Date
 	/**
-	 * Returns the value as Date to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * Returns the value of Date type to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
 	 * @return Date value to which the specified key is mapped, or null if this map contains no mapping for the key.
@@ -307,7 +307,7 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Returns the value as java.sql.Date to which the specified key is mapped, or null if this map contains no mapping for the
+	 * Returns the value of java.sql.Date type to which the specified key is mapped, or null if this map contains no mapping for the
 	 * key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
@@ -322,7 +322,7 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Returns the value as Time to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * Returns the value of Time type to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
 	 * @return Time value to which the specified key is mapped, or null if this map contains no mapping for the key.
@@ -335,7 +335,7 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Returns the value as Timestamp to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * Returns the value of Timestamp type to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
 	 * @return Timestamp value to which the specified key is mapped, or null if this map contains no mapping for the key.
@@ -348,10 +348,10 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Parses Object to Date.
+	 * Converts the given object to a date.
 	 * 
-	 * @param value Object to convert.
-	 * @return Date value.
+	 * @param value Object to be converted.
+	 * @return Date.
 	 */
 	protected Date getDateByValue(Object value) {
 		if (value == null)
@@ -380,7 +380,7 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Inner class for automatically parsing date string.
+	 *  Date Parser
 	 */
 	static class DateParser {
 		private String regular;
@@ -395,10 +395,10 @@ public class RMap<K, V> extends HashMap<K, V> {
 		}
 
 		/**
-		 * Parses date String that matches pattern.
+		 * Converts the given string to a date if this string matches one of the built-in patterns.
 		 * 
-		 * @param dateStr date string
-		 * @return java.util.Date or null
+		 * @param dateStr string to be converted.
+		 * @return date, or null
 		 */
 		public Date parse(String dateStr) {
 			if (pattern.matcher(dateStr).matches()) {
@@ -450,18 +450,18 @@ public class RMap<K, V> extends HashMap<K, V> {
 	};
 
 	/**
-	 * Addes a pattern for date format.
+	 * Adds a pattern.
 	 * 
-	 * @param pattern date regular expression.
-	 * @param format java date format.
+	 * @param pattern regular expression.
+	 * @param date format.
 	 */
 	public static void addDateFormat(String pattern, String format) {
 		dateParsers.add(new DateParser(pattern, format));
 	}
 
-	// ------------get value as array
+	// ------------returns value as array
 	/**
-	 * Returns the value as String array to which the specified key is mapped, or null if this map contains no mapping for the
+	 * Returns the value of string array type to which the specified key is mapped, or null if this map contains no mapping for the
 	 * key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
@@ -529,13 +529,14 @@ public class RMap<K, V> extends HashMap<K, V> {
 		}
 	}
 
-	// ------------get value as RMap/List
+	// ------------returns value as RMap/List
 	/**
-	 * Gets value as RMap.
+	 * Returns the value of org.rex.RMap type to which the specified key is mapped, or null if this map contains no mapping for the
+	 * key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
-	 * @return RMap to which the specified key is mapped, or null if this map contains no mapping for the key.
-	 * @throws ClassCastException if entry value is not a Map.
+	 * @return org.rex.RMap to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 * @throws ClassCastException if the value to which the specified key is mapped is not a Map.
 	 */
 	public RMap getMap(String key) {
 		Object value = get(key);
@@ -551,11 +552,12 @@ public class RMap<K, V> extends HashMap<K, V> {
 	}
 
 	/**
-	 * Gets value as List.
+	 * Returns the value of List type to which the specified key is mapped, or null if this map contains no mapping for the
+	 * key.
 	 * 
 	 * @param key key with which the specified value is to be associated.
 	 * @return List to which the specified key is mapped, or null if this map contains no mapping for the key.
-	 * @throws ClassCastException if the entry value is not or could not convert to List.
+	 * @throws ClassCastException if the value to which the specified key is mapped is not a List.
 	 */
 	public List getList(String key) {
 		Object value = get(key);

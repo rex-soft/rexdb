@@ -37,7 +37,7 @@ public class XMLConfigurationLoader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigurationLoader.class);
 
 	/**
-	 * Loads configuration from file system.
+	 * Loads configuration from the file system.
 	 * 
 	 * @param path absolute path.
 	 * @return configuration.
