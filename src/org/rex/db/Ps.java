@@ -700,7 +700,7 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as the specified SQL type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as the specified SQL type at the specified position, also declares an alias for this parameter.
 	 * 
 	 * @param index the first parameter is 1, the second is 2, ...
 	 * @param paramName the alias for the parameter.
@@ -961,11 +961,11 @@ public class Ps {
 
 	// -------Declares OUT parameter
 	/**
-	 * Declares OUT parameter as the specified type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as the specified type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param sqlType OUT parameter's SQL type.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param sqlType the SQL type to be sent to the database.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -974,10 +974,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as String type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as String type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -986,10 +986,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as boolean type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as boolean type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -998,10 +998,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as BigDecimal type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as BigDecimal type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1010,10 +1010,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as integer type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as integer type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1022,10 +1022,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as long type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as long type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1034,10 +1034,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as float type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as float type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1046,10 +1046,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as double type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as double type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1058,10 +1058,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as short type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as short type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1070,10 +1070,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as byte type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as byte type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1082,10 +1082,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as byte array type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as byte array type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1094,10 +1094,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as Blob type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as Blob type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1106,10 +1106,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as Clob type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as Clob type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1118,10 +1118,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as Date type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as Date type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1130,10 +1130,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as Time type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as Time type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1142,10 +1142,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares OUT parameter as Timestamp type at the specified position, and declares an alias for this parameter.
+	 * Declares OUT parameter as Timestamp type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1313,9 +1313,9 @@ public class Ps {
 	// -------Appends OUT parameter and declares alias
 
 	/**
-	 * Appends OUT parameter as ResultSet to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as ResultSet type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @param sqlType JDBC driver's ResultSet SQL type.
 	 * @return reference to this object.
 	 */
@@ -1324,9 +1324,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as String type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as String type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutString(String paramName) {
@@ -1334,9 +1334,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as boolean type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as boolean type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutBoolean(String paramName) {
@@ -1344,9 +1344,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as BigDecimal type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as BigDecimal type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutBigDecimal(String paramName) {
@@ -1354,9 +1354,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as integer type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as integer type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutInt(String paramName) {
@@ -1364,9 +1364,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as long type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as long type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutLong(String paramName) {
@@ -1374,9 +1374,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as float type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as float type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutFloat(String paramName) {
@@ -1384,9 +1384,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as double type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as double type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutDouble(String paramName) {
@@ -1394,9 +1394,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as short type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as short type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutShort(String paramName) {
@@ -1404,9 +1404,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as byte type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as byte type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutByte(String paramName) {
@@ -1414,9 +1414,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as byte array type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as byte array type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutBytes(String paramName) {
@@ -1424,9 +1424,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as Blob type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as Blob type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutBlob(String paramName) {
@@ -1434,9 +1434,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as Clob type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as Clob type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutClob(String paramName) {
@@ -1444,9 +1444,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as Date type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as Date type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutDate(String paramName) {
@@ -1454,9 +1454,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as Time type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as Time type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutTime(String paramName) {
@@ -1464,9 +1464,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends OUT parameter as Timestamp type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends OUT parameter as Timestamp type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addOutTimestamp(String paramName) {
@@ -1476,12 +1476,12 @@ public class Ps {
 	// ----------------------------------------------------------------------Declares INOUT parameter
 
 	/**
-	 * Declares INOUT parameter as the specified SQL type at the specified position, and declares an alias for this parameter.
+	 * Declares INOUT parameter as the specified SQL type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
-	 * @param sqlType INOUT parameter's SQL type.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
+	 * @param sqlType the SQL type to be sent to the database.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1493,9 +1493,9 @@ public class Ps {
 	/**
 	 * Declares INOUT parameter as the specified SQL type at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
-	 * @param sqlType INOUT parameter's SQL type.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
+	 * @param sqlType the SQL type to be sent to the database.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1505,12 +1505,12 @@ public class Ps {
 	}
 
 	/**
-	 * Appends INOUT parameter as the specified SQL type to the end of the declared parameters list, and declares an alias for this
+	 * Appends INOUT parameter as the specified SQL type to the end of the declared parameters list, also declares an alias for this
 	 * parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
-	 * @param sqlType INOUT parameter's SQL type.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
+	 * @param sqlType the INOUT parameter's SQL type.
 	 * @return reference to this object.
 	 */
 	protected Ps addInOutParameter(String paramName, Object value, int sqlType) {
@@ -1521,8 +1521,8 @@ public class Ps {
 	/**
 	 * Appends INOUT parameter as the specified SQL type to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
-	 * @param sqlType INOUT parameter's SQL type.
+	 * @param value the parameter value.
+	 * @param sqlType the INOUT parameter's SQL type.
 	 * @return reference to this object.
 	 */
 	protected Ps addInOutParameter(Object value, int sqlType) {
@@ -1534,8 +1534,8 @@ public class Ps {
 	/**
 	 * Declares INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1546,9 +1546,9 @@ public class Ps {
 	/**
 	 * Declares INOUT parameter as the specified SQL type at the specified position
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
-	 * @param sqlType INOUT parameter's SQL type.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
+	 * @param sqlType the INOUT parameter's SQL type.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1559,7 +1559,7 @@ public class Ps {
 	/**
 	 * Declares INOUT parameter as NULL type at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
+	 * @param index the first parameter is 1, the second is 2, ...
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1570,8 +1570,8 @@ public class Ps {
 	/**
 	 * Declares String INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1582,8 +1582,8 @@ public class Ps {
 	/**
 	 * Declares boolean INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1594,8 +1594,8 @@ public class Ps {
 	/**
 	 * Declares BigDecimal INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1606,8 +1606,8 @@ public class Ps {
 	/**
 	 * Declares integer INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1618,8 +1618,8 @@ public class Ps {
 	/**
 	 * Declares long INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1630,8 +1630,8 @@ public class Ps {
 	/**
 	 * Declares double INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1642,8 +1642,8 @@ public class Ps {
 	/**
 	 * Declares float INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1654,8 +1654,8 @@ public class Ps {
 	/**
 	 * Declares short INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1666,8 +1666,8 @@ public class Ps {
 	/**
 	 * Declares byte INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1678,8 +1678,8 @@ public class Ps {
 	/**
 	 * Declares byte array INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1690,8 +1690,8 @@ public class Ps {
 	/**
 	 * Declares Blob INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1702,8 +1702,8 @@ public class Ps {
 	/**
 	 * Declares Clob INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1714,8 +1714,8 @@ public class Ps {
 	/**
 	 * Declares Date INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1726,8 +1726,8 @@ public class Ps {
 	/**
 	 * Declares Date INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1738,8 +1738,8 @@ public class Ps {
 	/**
 	 * Declares Time INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1750,8 +1750,8 @@ public class Ps {
 	/**
 	 * Declares Timestamp INOUT parameter at the specified position.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1761,11 +1761,11 @@ public class Ps {
 
 	// -------------------Declares INOUT parameter and alias
 	/**
-	 * Declares INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1774,11 +1774,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares INOUT parameter as the specified SQL type at the specified position, and declares an alias for this parameter.
+	 * Declares INOUT parameter as the specified SQL type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @param sqlType JDBC driver's ResultSet SQL type.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
@@ -1788,10 +1788,10 @@ public class Ps {
 	}
 
 	/**
-	 * Declares INOUT parameter as NULL type at the specified position, and declares an alias for this parameter.
+	 * Declares INOUT parameter as NULL type at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1800,11 +1800,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares String INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares String INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1813,11 +1813,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares boolean INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares boolean INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1826,11 +1826,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares BigDecimal INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares BigDecimal INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1839,11 +1839,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares integer INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares integer INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1852,11 +1852,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares long INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares long INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1865,11 +1865,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares double INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares double INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1878,11 +1878,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares float INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares float INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1891,11 +1891,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares short INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares short INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1904,11 +1904,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares byte INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares byte INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1917,11 +1917,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares byte array INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares byte array INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1930,11 +1930,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares Blob INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares Blob INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1943,11 +1943,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares Clob INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares Clob INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1956,11 +1956,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares Date INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares Date INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1969,11 +1969,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares Date INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares Date INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1982,11 +1982,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares Time INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares Time INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -1995,11 +1995,11 @@ public class Ps {
 	}
 
 	/**
-	 * Declares Timestamp INOUT parameter at the specified position, and declares an alias for this parameter.
+	 * Declares Timestamp INOUT parameter at the specified position, also declares an alias for this parameter.
 	 * 
-	 * @param index parameter index that starts at 1.
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param index the first parameter is 1, the second is 2, ...
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 * @throws DBRuntimeException if the index is out of range.
 	 */
@@ -2011,7 +2011,7 @@ public class Ps {
 	/**
 	 * Appends INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(Object value) {
@@ -2021,8 +2021,8 @@ public class Ps {
 	/**
 	 * Appends INOUT parameter as the declared SQL type to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
-	 * @param sqlType INOUT parameter's SQL type.
+	 * @param value the parameter value.
+	 * @param sqlType the INOUT parameter's SQL type.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(Object value, int sqlType) {
@@ -2041,7 +2041,7 @@ public class Ps {
 	/**
 	 * Appends String INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String value) {
@@ -2051,7 +2051,7 @@ public class Ps {
 	/**
 	 * Appends boolean INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(boolean value) {
@@ -2061,7 +2061,7 @@ public class Ps {
 	/**
 	 * Appends BigDecimal INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(BigDecimal value) {
@@ -2071,7 +2071,7 @@ public class Ps {
 	/**
 	 * Appends integer INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(int value) {
@@ -2081,7 +2081,7 @@ public class Ps {
 	/**
 	 * Appends long INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(long value) {
@@ -2091,7 +2091,7 @@ public class Ps {
 	/**
 	 * Appends float INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(float value) {
@@ -2101,7 +2101,7 @@ public class Ps {
 	/**
 	 * Appends double INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(double value) {
@@ -2111,7 +2111,7 @@ public class Ps {
 	/**
 	 * Appends short INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(short value) {
@@ -2121,7 +2121,7 @@ public class Ps {
 	/**
 	 * Appends byte INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(byte value) {
@@ -2131,7 +2131,7 @@ public class Ps {
 	/**
 	 * Appends byte array INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(byte[] value) {
@@ -2141,7 +2141,7 @@ public class Ps {
 	/**
 	 * Appends Blob INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(Blob value) {
@@ -2151,7 +2151,7 @@ public class Ps {
 	/**
 	 * Appends Clob INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(Clob value) {
@@ -2161,7 +2161,7 @@ public class Ps {
 	/**
 	 * Appends Date INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(Date value) {
@@ -2171,7 +2171,7 @@ public class Ps {
 	/**
 	 * Appends Date INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(java.sql.Date value) {
@@ -2181,7 +2181,7 @@ public class Ps {
 	/**
 	 * Appends Time INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(Time value) {
@@ -2191,7 +2191,7 @@ public class Ps {
 	/**
 	 * Appends Timestamp INOUT parameter to the end of the declared parameters list.
 	 * 
-	 * @param value parameter value.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(Timestamp value) {
@@ -2200,10 +2200,10 @@ public class Ps {
 
 	// -------Appends INOUT parameter and declares alias
 	/**
-	 * Appends INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, Object value) {
@@ -2214,9 +2214,9 @@ public class Ps {
 	 * Appends INOUT parameter as the declared SQL type to the end of the declared parameters list, and declares an alias for this
 	 * parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
-	 * @param sqlType INOUT parameter's SQL type.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
+	 * @param sqlType the INOUT parameter's SQL type.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, Object value, int sqlType) {
@@ -2224,9 +2224,9 @@ public class Ps {
 	}
 
 	/**
-	 * Appends INOUT parameter as NULL type to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends INOUT parameter as NULL type to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
+	 * @param paramName the alias for the parameter.
 	 * @return reference to this object.
 	 */
 	public Ps addInOutNull(String paramName) {
@@ -2234,10 +2234,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends String INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends String INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, String value) {
@@ -2245,10 +2245,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends boolean INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends boolean INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, boolean value) {
@@ -2256,10 +2256,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends BigDecimal INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends BigDecimal INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, BigDecimal value) {
@@ -2267,10 +2267,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends integer INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends integer INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, int value) {
@@ -2278,10 +2278,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends long INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends long INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, long value) {
@@ -2289,10 +2289,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends float INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends float INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, float value) {
@@ -2300,10 +2300,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends double INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends double INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, double value) {
@@ -2311,10 +2311,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends short INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends short INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, short value) {
@@ -2322,10 +2322,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends byte INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends byte INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, byte value) {
@@ -2333,10 +2333,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends byte array INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends byte array INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, byte[] value) {
@@ -2344,10 +2344,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends Blob INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends Blob INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, Blob value) {
@@ -2355,10 +2355,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends Clob INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends Clob INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, Clob value) {
@@ -2366,10 +2366,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends Date INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends Date INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, Date value) {
@@ -2377,10 +2377,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends java.sql.Date INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends java.sql.Date INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, java.sql.Date value) {
@@ -2388,10 +2388,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends Time INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends Time INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, Time value) {
@@ -2399,10 +2399,10 @@ public class Ps {
 	}
 
 	/**
-	 * Appends Timestamp INOUT parameter to the end of the declared parameters list, and declares an alias for this parameter.
+	 * Appends Timestamp INOUT parameter to the end of the declared parameters list, also declares an alias for this parameter.
 	 * 
-	 * @param paramName alias for the parameter.
-	 * @param value parameter value.
+	 * @param paramName the alias for the parameter.
+	 * @param value the parameter value.
 	 * @return reference to this object.
 	 */
 	public Ps addInOut(String paramName, Timestamp value) {
@@ -2411,9 +2411,9 @@ public class Ps {
 
 	// -------
 	/**
-	 * Declares return ResultSet class type to map to.
+	 * If the call returns a ResultSet, maps it to java objects that instanced from the given class.
 	 * 
-	 * @param resultClass java type that each row of ResultSet to map to.
+	 * @param resultClass java type that the ResultSet is going to map to.
 	 * @return reference to this object.
 	 */
 	public Ps addReturnType(Class<?> resultClass) {
@@ -2424,8 +2424,9 @@ public class Ps {
 	}
 
 	/**
-	 * Declares return ResultSet class type to map to at the specified position.
+	 * If the call returns a ResultSet, maps it to java objects that instanced from the given class.
 	 * 
+	 * @param index the first parameter is 1, the second is 2, ...
 	 * @param resultClass java type that each row of ResultSet to map to.
 	 * @return reference to this object.
 	 */
