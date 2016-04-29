@@ -46,7 +46,7 @@ public class DB {
 	// --------------------------------------------- delegates
 	// -------------update
 	/**
-	 * Gets <tt>DBUpdate</tt> instance for the default dataSource.
+	 * Returns <tt>DBUpdate</tt> instance for the default dataSource.
 	 * 
 	 * @return DBUpdate instance.
 	 * @throws DBException couldn't find dataSource, couldn't initialize DBUpdate instance.
