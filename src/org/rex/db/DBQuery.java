@@ -72,7 +72,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to an object that instanced from the specified class.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
 	 * @param parameters a Ps object that contains prepared parameters.
 	 * @param resultClass the ResultSet will be mapped to an object that instanced from this class.
 	 * @return an object that mapped from the ResultSet.
@@ -87,8 +87,8 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to an object that instanced from the specified class.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
-	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters.
 	 * @param resultClass the ResultSet will be mapped to an object that instanced from this class.
 	 * @return an object that mapped from the ResultSet.
 	 * 
@@ -102,7 +102,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to an object that instanced from the specified class.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters an object that contains prepared parameters.
 	 * @param resultClass the ResultSet will be mapped to an object that instanced from this class.
 	 * @return an object that mapped from the ResultSet.
@@ -117,7 +117,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to an object that instanced from the specified class.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters a map that contains prepared parameters.
 	 * @param resultClass the ResultSet will be mapped to an object that instanced from this class.
 	 * @return an object that mapped from the ResultSet.
@@ -147,7 +147,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
 	 * @param parameters a Ps object that contains prepared parameters.
 	 * @return a Map that mapped from the ResultSet.
 	 * 
@@ -161,8 +161,8 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
-	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters.
 	 * @return a Map that mapped from the ResultSet.
 	 * 
 	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, the
@@ -175,7 +175,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters an object that contains prepared parameters.
 	 * @return a Map that mapped from the ResultSet.
 	 * 
@@ -189,7 +189,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters a map that contains prepared parameters.
 	 * @return a Map that mapped from the ResultSet.
 	 * 
@@ -217,7 +217,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of object that instanced from the specified class.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
 	 * @param parameters a Ps object that contains prepared parameters.
 	 * @param resultClass a class that each row of the ResultSet should be mapped to.
 	 * @return a list of object that mapped from the ResultSet.
@@ -231,8 +231,8 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of object that instanced from the specified class.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
-	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters.
 	 * @param resultClass a class that each row of the ResultSet should be mapped to.
 	 * @return a list of object that mapped from the ResultSet.
 	 * 
@@ -245,7 +245,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of object that instanced from the specified class.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters an object that contains prepared parameters.
 	 * @param resultClass a class that each row of the ResultSet should be mapped to.
 	 * @return a list of object that mapped from the ResultSet.
@@ -259,7 +259,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of object that instanced from the specified class.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters a map that contains prepared parameters.
 	 * @param resultClass a class that each row of the ResultSet should be mapped to.
 	 * @return a list of object that mapped from the ResultSet.
@@ -286,7 +286,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
 	 * @param parameters a Ps object that contains prepared parameters.
 	 * @return a list of Map that mapped from the ResultSet.
 	 * 
@@ -299,8 +299,8 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
-	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters.
 	 * @return a list of Map that mapped from the ResultSet.
 	 * 
 	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, etc.
@@ -312,7 +312,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters an object that contains prepared parameters.
 	 * @return a list of Map that mapped from the ResultSet.
 	 * 
@@ -325,7 +325,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters a map that contains prepared parameters.
 	 * @return a list of Map that mapped from the ResultSet.
 	 * 
@@ -354,7 +354,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of object that instanced from the given class.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
 	 * @param parameters a Ps object that contains prepared parameters.
 	 * @param resultClass a class that each row of the ResultSet should be mapped to.
 	 * @param offset specifies the number of rows to skip.
@@ -370,8 +370,8 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of object that instanced from the given class.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
-	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters.
 	 * @param resultClass a class that each row of the ResultSet should be mapped to.
 	 * @param offset specifies the number of rows to skip.
 	 * @param rows limits the number of rows returned by the query.
@@ -386,7 +386,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of object that instanced from the given class.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters an object that contains prepared parameters.
 	 * @param resultClass a class that each row of the ResultSet should be mapped to.
 	 * @param offset specifies the number of rows to skip.
@@ -402,7 +402,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of object that instanced from the given class.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters a map that contains prepared parameters.
 	 * @param resultClass a class that each row of the ResultSet should be mapped to.
 	 * @param offset specifies the number of rows to skip.
@@ -434,7 +434,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
 	 * @param parameters a Ps object that contains prepared parameters.
 	 * @param offset specifies the number of rows to skip.
 	 * @param rows limits the number of rows returned by the query.
@@ -449,8 +449,8 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
-	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param sql an SQL that contains one or more '?' IN parameter placeholders.
+	 * @param parameterArray an object array that contains prepared parameters.
 	 * @param offset specifies the number of rows to skip.
 	 * @param rows limits the number of rows returned by the query.
 	 * @return a list of Map that mapped from the ResultSet.
@@ -464,7 +464,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters an object that contains prepared parameters.
 	 * @param offset specifies the number of rows to skip.
 	 * @param rows limits the number of rows returned by the query.
@@ -479,7 +479,7 @@ public class DBQuery extends DBOperation {
 	/**
 	 * Executes the given SQL and maps the JDBC ResultSet to a List of Map.
 	 * 
-	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
+	 * @param sql an SQL that contains one or more '#{...}' IN parameter placeholders.
 	 * @param parameters a map that contains prepared parameters.
 	 * @param offset specifies the number of rows to skip.
 	 * @param rows limits the number of rows returned by the query.

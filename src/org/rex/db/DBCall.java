@@ -55,7 +55,7 @@ public class DBCall extends DBOperation {
 	 * @param sql an SQL to be sent to the database, typically a static SQL.
 	 * 
 	 * @return a Map that may contain OUT, INOUT parameters and return results.
-	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the given SQL, etc.
 	 */
 	public RMap<String, ?> call(String sql) throws DBException {
 		return templateCall(sql, null);
@@ -65,10 +65,10 @@ public class DBCall extends DBOperation {
 	 * Executes a stored procedure or a function.
 	 * 
 	 * @param sql an SQL that may contain one or more '?' parameter placeholders.
-	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param parameterArray an object array that contains prepared parameters.
 	 * 
 	 * @return a Map that may contain OUT, INOUT parameters and return results.
-	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the given SQL, etc.
 	 */
 	public RMap<String, ?> call(String sql, Object[] parameterArray) throws DBException {
 		return templateCall(sql, parameterArray);
@@ -81,7 +81,7 @@ public class DBCall extends DBOperation {
 	 * @param parameters a Ps object that contains prepared parameters.
 	 * 
 	 * @return a Map that may contain OUT, INOUT parameters and return results.
-	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the given SQL, etc.
 	 */
 	public RMap<String, ?> call(String sql, Ps parameters) throws DBException {
 		return templateCall(sql, parameters);
@@ -94,7 +94,7 @@ public class DBCall extends DBOperation {
 	 * @param parameters a Map that contains prepared parameters.
 	 * 
 	 * @return a Map that may contain OUT, INOUT parameters and return results.
-	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the given SQL, etc.
 	 */
 	public RMap<String, ?> call(String sql, Map<?, ?> parameters) throws DBException {
 		return templateCall(sql, parameters);
@@ -107,7 +107,7 @@ public class DBCall extends DBOperation {
 	 * @param parameters an object that contains prepared parameters.
 	 * 
 	 * @return a Map that may contain OUT, INOUT parameters and return results.
-	 * @throws DBException if configuration wasn't loaded, could not access database, couldn't execute SQL, etc.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the given SQL, etc.
 	 */
 	public RMap<String, ?> call(String sql, Object parameters) throws DBException {
 		return templateCall(sql, parameters);

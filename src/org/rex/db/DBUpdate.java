@@ -68,7 +68,7 @@ public class DBUpdate extends DBOperation {
 	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
 	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
-	 * @param parameterArray an object array that contains prepared parameters in order.
+	 * @param parameterArray an object array that may contain prepared parameters in order.
 	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
 	 * 
 	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, etc.
@@ -81,7 +81,7 @@ public class DBUpdate extends DBOperation {
 	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
 	 * @param sql an SQL that may contain one or more '?' IN parameter placeholders.
-	 * @param parameters a Ps object that contains prepared parameters.
+	 * @param parameters a Ps object that may contain prepared parameters.
 	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
 	 * 
 	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, etc.
@@ -94,7 +94,7 @@ public class DBUpdate extends DBOperation {
 	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
 	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
-	 * @param parameters an object that contains prepared parameters.
+	 * @param parameters an object that may contain prepared parameters.
 	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
 	 * 
 	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, etc.
@@ -107,7 +107,7 @@ public class DBUpdate extends DBOperation {
 	 * Executes the given SQL, which may be an INSERT, UPDATE, DELETE or an SQL that returns nothing, such as an SQL DDL.
 	 * 
 	 * @param sql an SQL that may contain one or more '#{...}' IN parameter placeholders.
-	 * @param parameters a map that contains prepared parameters.
+	 * @param parameters a map that may contain prepared parameters.
 	 * @return either (1) the affected row count or (2) 0 for SQL statements that return nothing.
 	 * 
 	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, etc.

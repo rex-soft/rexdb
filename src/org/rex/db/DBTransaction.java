@@ -60,58 +60,58 @@ public class DBTransaction extends DefaultDefinition {
 	}
 
 	/**
-	 * Begins a new transaction for the dataSource. The framework will get a new connection from the specified dataSource, set
-	 * auto-commit mode to false and put it into ThreadLocal. Operations for this dataSource in the same thread are using this
+	 * Begins a new transaction for the specified dataSource. The framework will open a connection from the dataSource, set
+	 * auto-commit mode to false and save it into ThreadLocal. Operations for this dataSource in the same thread are using this
 	 * connection until committing or rollback.
 	 * 
-	 * @param dataSource the DataSource that transaction is beginning for.
-	 * @throws DBException if configuration wasn't loaded, could not access database, transaction is already begin etc.
+	 * @param dataSource the specified DataSource.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, transaction is already begin, etc.
 	 */
 	public void begin(DataSource dataSource) throws DBException {
 		getTransactionManager(dataSource).begin(this);
 	}
 
 	/**
-	 * Begins a new transaction with definition for the dataSource. The framework will get a new connection from the specified
+	 * Begins a new transaction by the definition for the dataSource. The framework will open a connection from the specified
 	 * dataSource, set auto-commit mode to false and put it into ThreadLocal. Operations for this dataSource in the same thread
 	 * are using this connection until committing or rollback.
 	 * 
-	 * @param dataSource the DataSource that transaction is beginning for.
-	 * @param definition transaction definition.
-	 * @throws DBException if configuration wasn't loaded, could not access database, transaction is already begin etc.
+	 * @param dataSource the specified DataSource.
+	 * @param definition the transaction definition.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, transaction is already begin, etc.
 	 */
 	public static void begin(DataSource dataSource, DefaultDefinition definition) throws DBException {
 		getTransactionManager(dataSource).begin(definition);
 	}
 
 	/**
-	 * Commits transaction for the dataSource.
+	 * Commits current transaction to the database.
 	 * 
-	 * @param dataSource the DataSource that transaction is committing for.
-	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
-	 *             for the given dataSource etc.
+	 * @param dataSource the specified DataSource.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, could not find connection for the given dataSource 
+	 * 			from ThreadLocal, etc.
 	 */
 	public static void commit(DataSource dataSource) throws DBException {
 		getTransactionManager(dataSource).commit();
 	}
 
 	/**
-	 * Rollback transaction for the dataSource.
+	 * Undoes all changes made in the current transaction to the database.
 	 * 
-	 * @param dataSource the DataSource that transaction is rollback for.
-	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
-	 *             for the given dataSource etc.
+	 * @param dataSource the specified DataSource.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, could not find connection from ThreadLocal
+	 *             for the given dataSource, etc.
 	 */
 	public static void rollback(DataSource dataSource) throws DBException {
 		getTransactionManager(dataSource).rollback();
 	}
 
 	/**
-	 * Gets connection from ThreadLocal for the dataSource.
+	 * Returns current transaction connection.
 	 * 
-	 * @param dataSource the DataSource that transaction is on.
-	 * @throws DBException if configuration wasn't loaded, could not access database, could not find connection from ThreadLocal
-	 *             for the given dataSource etc.
+	 * @param dataSource the connection's DataSource.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, could not find connection from ThreadLocal
+	 *             for the given dataSource, etc.
 	 */
 	public static Connection getTransactionConnection(DataSource dataSource) throws DBException {
 		return getTransactionManager(dataSource).getTransactionConnection();
@@ -119,10 +119,10 @@ public class DBTransaction extends DefaultDefinition {
 
 	// -------jta
 	/**
-	 * Begins a JTA transaction with definition.
+	 * Begins a JTA transaction by the definition.
 	 * 
-	 * @param definition transaction definition.
-	 * @throws DBException if configuration wasn't loaded, could not access database, could not begin transaction etc.
+	 * @param definition the transaction definition.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, could not begin transaction, etc.
 	 */
 	public static void beginJta(DefaultDefinition definition) throws DBException {
 		getJtaTransactionManager().begin(definition);
@@ -131,7 +131,7 @@ public class DBTransaction extends DefaultDefinition {
 	/**
 	 * Begins a JTA transaction.
 	 * 
-	 * @throws DBException if configuration wasn't loaded, could not access database, could not begin transaction etc.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, could not begin transaction, etc.
 	 */
 	public static void beginJta() throws DBException {
 		getJtaTransactionManager().begin(null);
@@ -140,16 +140,16 @@ public class DBTransaction extends DefaultDefinition {
 	/**
 	 * Commits a JTA transaction.
 	 * 
-	 * @throws DBException if configuration wasn't loaded, could not access database, could not commit transaction etc.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, could not commit the transaction, etc.
 	 */
 	public static void commitJta() throws DBException {
 		getJtaTransactionManager().commit();
 	}
 
 	/**
-	 * Rollback a JTA transaction.
+	 * Undoes all changes made in the current JTA transaction.
 	 * 
-	 * @throws DBException if configuration wasn't loaded, could not access database, could not commit transaction etc.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, could not commit the transaction, etc.
 	 */
 	public static void rollbackJta() throws DBException {
 		getJtaTransactionManager().rollback();
