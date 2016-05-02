@@ -32,12 +32,12 @@ public class ConnectionHolder{
 	private final Connection connection;
 
 	/**
-	 * Seconds to live
+	 * Connection's timeout seconds.
 	 */
 	private int liveSeconds = -1;
 	
 	/**
-	 * Transaction dead time
+	 * Connection's dead time.
 	 */
 	private Date deadline;
 	
@@ -50,7 +50,7 @@ public class ConnectionHolder{
 	}
 
 	/**
-	 * Sets timeout in seconds
+	 * Specifies the connection's timeout.
 	 */
 	public void setTimeoutInSeconds(int seconds) {
 		liveSeconds = seconds;
@@ -62,14 +62,14 @@ public class ConnectionHolder{
 	}
 
 	/**
-	 * Returns transaction dead time
+	 * Returns the connection's dead time.
 	 */
 	public Date getDeadline() {
 		return deadline;
 	}
 
 	/**
-	 * Returns seconds to live
+	 * Returns the connection's timeout.
 	 */
 	public int getTimeToLiveInSeconds() {
 		double diff = ((double) getTimeToLiveInMillis()) / 1000;
@@ -84,5 +84,4 @@ public class ConnectionHolder{
 		
 		return liveInMillis;
 	}
-
 }

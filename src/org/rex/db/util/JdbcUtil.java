@@ -35,7 +35,7 @@ public class JdbcUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JdbcUtil.class);
 
 	/**
-	 * Checks warnings for connection, statement and resultSet.
+	 * Retrieves warnings reported by calls on the Connection, Statement and ResultSet object.
 	 */
 	public static void checkWarnings(Connection connection, Statement statement, ResultSet resultSet){
 		if(connection != null) checkConnectionWarning(connection);
@@ -44,7 +44,7 @@ public class JdbcUtil {
 	}
 	
 	/**
-	 * Checks connection warnings.
+	 * Retrieves the first warning reported by calls on this Connection object.
 	 */
 	public static void checkConnectionWarning(Connection connection) {
 		try {
@@ -57,7 +57,7 @@ public class JdbcUtil {
 	}
 	
 	/**
-	 * Checks statement warnings.
+	 * Retrieves the first warning of this Statement object.
 	 */
 	public static void checkStatementWarning(Statement statement) {
 		try {
@@ -70,7 +70,7 @@ public class JdbcUtil {
 	}
 	
 	/**
-	 * Checks resultSet warnings.
+	 * Retrieves the first warning of this ResultSet object.
 	 */
 	public static void checkResultSetWarning(ResultSet resultSet) {
 		try {

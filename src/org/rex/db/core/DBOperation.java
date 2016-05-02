@@ -39,16 +39,10 @@ public class DBOperation {
 		template = new DBTemplate(dataSource);
 	}
 	
-	/**
-	 * Returns <tt>DBTemplate</tt> for this instance.
-	 */
 	protected DBTemplate getTemplate(){
 		return template;
 	}
 	
-	/**
-	 * Returns <tt>Dialect</tt> for this instance.
-	 */
 	protected Dialect getDialect() throws DBException{
 		DialectManager manager = Configuration.getCurrentConfiguration().getDialectManager();
 		return manager.getDialect(template.getDataSource());

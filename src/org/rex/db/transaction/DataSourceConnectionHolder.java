@@ -50,7 +50,7 @@ public class DataSourceConnectionHolder extends ConnectionHolder{
 	}
 
 	/**
-	 * Temporarily stores isolation level.
+	 * Temporarily stores the previous isolation level.
 	 */
 	private Integer previousIsolationLevel;
 

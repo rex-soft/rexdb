@@ -18,7 +18,7 @@ package org.rex.db.dynamic.javassist;
 import java.util.Date;
 
 /**
- * A Bean Sample.
+ * A sample of java bean.
  * 
  * @version 1.0, 2016-01-14
  * @since Rexdb-1.0

@@ -30,32 +30,32 @@ import java.sql.Statement;
 public interface QueryExecutor {
 
 	/**
-	 * Executes query.
+	 * Query.
 	 */
 	ResultSet executeQuery(Statement stmt, String sql) throws SQLException;
 
 	/**
-	 * Executes query.
+	 * Query.
 	 */
 	ResultSet executeQuery(PreparedStatement ps) throws SQLException;
 	
 	/**
-	 * Executes update.
+	 * Update.
 	 */
 	int executeUpdate(PreparedStatement ps) throws SQLException;
 	
 	/**
-	 * Executes update.
+	 * Update.
 	 */
 	int executeUpdate(Statement stmt, String sql) throws SQLException;
 	
 	/**
-	 * Executes batch update.
+	 * Update.
 	 */
 	int[] executeBatch(Statement statement) throws SQLException;
 	
 	/**
-	 * Executes call.
+	 * Call.
 	 */
 	boolean execute(CallableStatement statement) throws SQLException;
 }

@@ -48,7 +48,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	
 	//----------------------------------implements
 	/**
-	 * Begins JTA transaction.
+	 * Begins a JTA transaction.
 	 */
 	protected void doBegin(Definition definition) throws DBException {
 		try {
@@ -62,7 +62,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	}
 
 	/**
-	 * Sets timeOut for transaction.
+	 * Sets timeout for the transaction.
 	 */
 	protected void applyTimeout(int timeout) throws DBException, SystemException {
 		if (timeout > Definition.TIMEOUT_DEFAULT) {
@@ -71,7 +71,7 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	}
 
 	/**
-	 * Commits transaction.
+	 * Commits the transaction.
 	 */
 	protected void doCommit() throws DBException {
 		try {
@@ -121,9 +121,6 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 	}
 
 	//-----------------------
-	/**
-	 * Returns UserTransaction from JNDI.
-	 */
 	protected UserTransaction doGetTransaction() throws DBException {
 		if(userTransaction == null){
 			String transactionName = userTransactionName != null ? userTransactionName : DEFAULT_USER_TRANSACTION_NAME;
@@ -133,9 +130,6 @@ public class JtaTransactionManager extends AbstractTransactionManager{
 		return userTransaction;
 	}
 	
-	/**
-	 * Looks up object from JNDI.
-	 */
 	protected <T> T lookupTransaction(String transactionName, Class<T> clazz) throws DBException {
 		InitialContext initCtx = null;
 		try {

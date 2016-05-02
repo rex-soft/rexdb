@@ -26,14 +26,14 @@ import java.text.MessageFormat;
 public class StringUtil {
 
 	/**
-	 * Returns true if the given String is null or ''.
+	 * Returns true if the given String is null or empty.
 	 */
 	public static boolean isEmptyString(String s){
 		return s == null || "".equals(s.trim());
 	}
 	
 	/**
-	 * Formats String with the given arguments.
+	 * Formats the message with the given arguments.
 	 * sample: format("Hello {0}!", "World"); -> Hello World
 	 */
 	public static String format(String message, Object... params) {

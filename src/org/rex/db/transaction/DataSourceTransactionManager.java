@@ -55,7 +55,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	
 	//-------------------------------implements
 	/**
-	 * Returns ConnectionHolder for.
+	 * Returns the ConnectionHolder for current dataSource.
 	 */
 	protected ConnectionHolder doGetTransaction() {
 		if (ThreadConnectionHolder.has(dataSource)) {
@@ -65,7 +65,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 
 	/**
-	 * Begins transaction.
+	 * Begins a transaction.
 	 */
 	protected void doBegin(Definition definition) throws DBException {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
@@ -86,21 +86,21 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	private void beginTransaction(DataSourceConnectionHolder connectionHolder, Definition definition) throws SQLException{
 		Connection conn = connectionHolder.getConnection();
 		
-		// set isolation level
+		// sets isolation level
 		if (definition.getIsolationLevel() != Definition.ISOLATION_DEFAULT) {
 			connectionHolder.setPreviousIsolationLevel(conn.getTransactionIsolation());
 			conn.setTransactionIsolation(definition.getIsolationLevel());
 		}
 
-		// set readonly
+		// sets readonly
 		if (definition.isReadOnly()) {
 			conn.setReadOnly(true);
 		}
 
-		// set auto commit mode to false
+		// sets auto commit mode to false
 		conn.setAutoCommit(false);
 
-		// set timeout
+		// sets timeout
 		if (definition.getTimeout() > 0) {
 			connectionHolder.setTimeoutInSeconds(definition.getTimeout());
 		}
@@ -108,7 +108,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 
 
 	/**
-	 * Commits transaction.
+	 * Commits the transaction.
 	 */
 	protected void doCommit() throws DBException {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
@@ -126,14 +126,14 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 	
 	/**
-	 * Auto rollback transaction on exception.
+	 * Auto rolls back the transaction on exception.
 	 */
 	private void doRollbackOnCommitException(Throwable ex) throws DBException {
 		doRollback();
 	}
 
 	/**
-	 * Rollback transaction.
+	 * Rolls back the transaction.
 	 */
 	protected void doRollback() throws DBException {
 		ConnectionHolder connectionHolder = doGetTransaction();
@@ -149,7 +149,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 
 	/**
-	 * Resets connection.
+	 * Resets the connection.
 	 */
 	protected void afterCompletion() {
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();
@@ -179,7 +179,7 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 	}
 
 	/**
-	 * Gets transaction connection.
+	 * Returns the transaction connection.
 	 */
 	protected Connection doGetTransactionConnection(){
 		DataSourceConnectionHolder connectionHolder = (DataSourceConnectionHolder)doGetTransaction();

@@ -34,14 +34,14 @@ public class StatementCreatorManager {
 	}
 
 	/**
-	 * Returns bean StatementCreator instance.
+	 * Returns the StatementCreator instance.
 	 */
 	public StatementCreator get(){
 		return beanStatementCreator;
 	}
 	
 	/**
-	 * Returns suitable instances for the given objects.
+	 * Returns StatementCreator instance for the given array.
 	 */
 	public StatementCreator get(Object[] parameters){
 		if(parameters == null)
@@ -54,7 +54,7 @@ public class StatementCreatorManager {
 	}
 	
 	/**
-	 * Returns suitable StatementCreator instance for the given object.
+	 * Returns StatementCreator instance for the given object.
 	 */
 	public StatementCreator get(Object parameters){
 		if(parameters == null)

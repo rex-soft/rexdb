@@ -50,7 +50,7 @@ public class SqlUtil {
 	private static final Map<String, String[]> sqlCache = new HashMap<String, String[]>();
 	
 	/**
-	 * Validates sql and prepared parameters.
+	 * Validates the SQL and the prepared parameters.
 	 */
 	public static void validate(String sql, Ps ps) throws DBException{
 		validate(sql, ps == null ? 0 : ps.getParameters().size());
@@ -63,7 +63,7 @@ public class SqlUtil {
 	}
 	
 	/**
-	 * set null for PreparedStatement
+	 * Sets the designated parameter to SQL NULL.
 	 */
 	public static void setNull(PreparedStatement preparedStatement, int index) throws SQLException{
 //		preparedStatement.setObject(index, null, Types.NULL);
@@ -71,7 +71,7 @@ public class SqlUtil {
 	}
 	
 	/**
-	 * set parameters for PreparedStatement
+	 * Sets the value of the designated parameter with the given object.
 	 */
 	public static void setParameter(PreparedStatement preparedStatement, int index, Object value) throws SQLException {
 		if (value instanceof String) {
@@ -116,12 +116,9 @@ public class SqlUtil {
 			preparedStatement.setObject(index, value);
 		}
 	}
-//	public static void setParameter(PreparedStatement preparedStatement, int index, Object value) throws SQLException{
-//		setParameter(preparedStatement, index, value, getSqlType(value));
-//	}
 	
 	/**
-	 * set parameters for PreparedStatement
+	 * Sets the value of the designated parameter with the given object as the given SQL type.
 	 */
 	public static void setParameter(PreparedStatement preparedStatement, int index, Object value, int sqlType) throws SQLException{
 		switch (sqlType) {
@@ -216,9 +213,9 @@ public class SqlUtil {
 	}
 	
 	/**
-	 * Parses the given SQL with tags.
-	 * @param sql SQL to analyze.
-	 * @return string array, array[0] is parsed SQL, array[1..n] prepared parameters keys.
+	 * Parses the given SQL with the '${...}' parameter placeholders.
+	 * @param sql the SQL to be analyzed.
+	 * @return a string array, array[0] is the parsed SQL, array[1..n] are prepared parameters' keys.
 	 */
 	public static String[] parse(String sql) {
 		if(!sqlCache.containsKey(sql)){
@@ -262,10 +259,10 @@ public class SqlUtil {
 
 
 	/**
-	 * Counts placeholders.
-	 * @param str text to check.
+	 * Returns total number of placeholders.
+	 * @param str the text to check.
 	 * @param marker placeholder.
-	 * @param delim the string in the reference symbol is not included in the statistics.
+	 * @param delim placeholders between the delimiters won't be calculated.
 	 * @return
 	 */
 	public static int countParameterPlaceholders(String str, char marker, char delim) {
@@ -340,7 +337,7 @@ public class SqlUtil {
 	}
 	
 	/**
-	 * Gets SQL type by object.
+	 * Returns SQL type matches the object.
 	 * 
 	 * 1. String - Types.VARCHAR
 	 * 2. int|Integer - Types.INTEGER
@@ -388,7 +385,7 @@ public class SqlUtil {
 	}
 	
 	/**
-	 * Gets name by SQL type.
+	 * Returns SQL type name by code.
 	 * @param sqlType SQL type.
 	 * @return SQL type name.
 	 */

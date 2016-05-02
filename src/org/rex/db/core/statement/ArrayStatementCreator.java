@@ -28,9 +28,9 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.SqlUtil;
 
 /**
- * Statement Creator for arrays, primitive type arrays are not supported.
+ * Statement Creator for arrays.
  * 
- * Sets prepared statement parameters, such as:
+ * such as:
  * SQL: INSERT INTO TBL(CL1, CL2) VALUES(?,?)
  * parameters: new String[]{"100", "M"}, or new Object[]{100, "M"};
  * 

@@ -65,10 +65,7 @@ public class DialectFactory {
 	
 	
 	/**
-	 * Returns dialect by connection
-	 * @param connection the database connection
-	 * @return dialect for database
-	 * @throws DBException could not read resultSet meta
+	 * Returns the dialect by the connection.
 	 */
 	public static Dialect resolveDialect(Connection connection) throws DBException {
 		if(connection == null) return null;
@@ -86,11 +83,7 @@ public class DialectFactory {
 	}
 
 	/**
-	 * Creates dialect instance for the specified database.
-	 * 
-	 * @param metaData database meta data.
-	 * @return dialect instance.
-	 * @throws DBException could not read meta data, or does not support the database.
+	 * Creates a dialect instance for the specified database.
 	 */
 	private static Dialect resolveDialectInternal(DatabaseMetaData metaData) throws DBException {
 		String databaseName;

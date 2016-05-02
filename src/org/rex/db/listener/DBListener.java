@@ -36,12 +36,12 @@ public interface DBListener extends EventListener{
 	public void afterExecute(SqlContext context, Object results);
 	
 	/**
-	 * Before executing transactions.
+	 * Before transactions.
 	 */
 	public void onTransaction(TransactionContext context);
 	
 	/**
-	 * After executing transactions.
+	 * After transactions.
 	 */
 	public void afterTransaction(TransactionContext context);
 }

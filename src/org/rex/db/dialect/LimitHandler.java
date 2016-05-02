@@ -19,7 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Handles database pagination queries
+ * Handles the database pagination queries.
  * 
  * @version 1.0, 2016-02-14
  * @since Rexdb-1.0
@@ -52,11 +52,6 @@ public abstract class LimitHandler{
 	}
 
 	//---------abstracts
-	/**
-	 * Returns a SQL with paging parameters
-	 * @param sql query SQL
-	 * @return wrapped SQL
-	 */
 	public abstract String wrapSql(String sql);
 	
 	public abstract void afterSetParameters(PreparedStatement statement, int parameterCount) throws SQLException;

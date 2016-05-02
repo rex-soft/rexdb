@@ -23,52 +23,58 @@ package org.rex.db.logger;
  */
 public interface Logger {
 	
+	//----trace
+	boolean isTraceEnabled();
+	
 	void trace(String msg, String... args);
 
 	void trace(String msg, Object... args);
 
 	void trace(String msg, Throwable ex, String... args);
 
-	boolean isTraceEnabled();
-
+	//----debug
+	boolean isDebugEnabled();
+	
 	void debug(String msg, String... args);
 
 	void debug(String msg, Object... args);
 
 	void debug(String msg, Throwable ex, String... args);
 
-	boolean isDebugEnabled();
-
+	//----info
+	boolean isInfoEnabled();
+	
 	void info(String msg, String... args);
 	
 	void info(String msg, Object... args);
 
 	void info(String msg, Throwable ex, String... args);
 
-	boolean isInfoEnabled();
-
+	//----warn
+	boolean isWarnEnabled();
+	
 	void warn(String msg, String... args);
 
 	void warn(String msg, Object... args);
 
 	void warn(String msg, Throwable ex, String... args);
 
-	boolean isWarnEnabled();
-
+	//----error
+	boolean isErrorEnabled();
+	
 	void error(String msg, String... args);
 
 	void error(String msg, Object... args);
 
 	void error(String msg, Throwable ex, String... args);
 
-	boolean isErrorEnabled();
-
+	//----fatal
+	boolean isFatalEnabled();
+	
 	void fatal(String msg, String... args);
 	
 	void fatal(String msg, Object... args);
 
 	void fatal(String msg, Throwable ex, String... args);
-
-	boolean isFatalEnabled();
 
 }

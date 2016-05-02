@@ -32,7 +32,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 
 	//----------------------------------implements
 	/**
-	 * Begins Transaction.
+	 * Begins a Transaction.
 	 */
 	public void begin(Definition definition) throws DBException {
 		if (definition == null)
@@ -50,7 +50,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	}
 
 	/**
-	 * Commits Transaction.
+	 * Commits the Transaction.
 	 */
 	public void commit() throws DBException {
 		try {
@@ -66,7 +66,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	
 
 	/**
-	 * Rollback Transaction.
+	 * Rolls back the Transaction.
 	 */
 	public void rollback() throws DBException {
 		try {
@@ -81,7 +81,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	}
 	
 	/**
-	 * Gets Transaction Connection.
+	 * Returns the Transaction Connection.
 	 */
 	public Connection getTransactionConnection() throws DBException {
 		return doGetTransactionConnection();
@@ -89,7 +89,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 
 	//----------------------------------Listener
 	/**
-	 * Fires Event before Transaction.
+	 * Fires events before beginning a Transaction.
 	 */
 	protected TransactionContext fireOnEvent(int event) throws DBException{
 		return fireOnEvent(event, null);
@@ -106,7 +106,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	}
 	
 	/**
-	 * Fires Event after Transaction.
+	 * Fires Events after transaction.
 	 */
 	protected void fireAfterEvent(TransactionContext context) throws DBException{
 		if(context != null){
@@ -145,7 +145,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
 	protected abstract void afterCompletion();
 	
 	/**
-	 * Gets transaction connection.
+	 * Returns the transaction connection.
 	 */
 	protected abstract Connection doGetTransactionConnection();
 

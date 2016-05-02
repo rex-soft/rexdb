@@ -25,7 +25,7 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * SQL Listener for Logging.
+ * Prints informations to the logger.
  * 
  * @version 1.0, 2016-02-01
  * @since Rexdb-1.0
@@ -35,12 +35,12 @@ public class SqlDebugListener implements DBListener{
 	private static final Logger LOGGER = LoggerFactory.getLogger(SqlDebugListener.class);
 	
 	/**
-	 * Logging level
+	 * Logging level.
 	 */
 	private String level = "debug";
 	
 	/**
-	 * Print simple log.
+	 * Prints simple log.
 	 */
 	protected boolean simple = false;
 

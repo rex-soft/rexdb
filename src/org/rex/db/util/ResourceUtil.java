@@ -41,7 +41,7 @@ public class ResourceUtil {
 	private static ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper();
 
 	/**
-	 * Gets InputStream from classpath.
+	 * Returns file InputStream in classpath.
 	 */
 	public static InputStream getResourceAsStream(String resource) throws DBException {
 		return getResourceAsStream(null, resource);
@@ -56,7 +56,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * Gets Properties from classpath.
+	 * Returns Properties in classpath.
 	 */
 	public static Properties getResourceAsProperties(String resource) throws DBException {
 		return getResourceAsProperties(null, resource, null);
@@ -75,7 +75,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * Gets File from classpath.
+	 * Returns File in classpath.
 	 */
 	public static File getResourceAsFile(String resource) throws DBException {
 		return getResourceAsFile(null, resource);
@@ -86,7 +86,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * Gets Resource URL.
+	 * Returns Resource URL.
 	 */
 	public static URL getResourceURL(String resource) throws DBException {
 		return getResourceURL(null, resource);
@@ -101,7 +101,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * Gets InputStream from URL.
+	 * Returns file InputStream by URL.
 	 */
 	public static InputStream getUrlAsStream(String urlString) throws DBException {
 		try {

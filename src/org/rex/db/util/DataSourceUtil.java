@@ -34,7 +34,7 @@ import org.rex.db.transaction.ThreadConnectionHolder;
 public class DataSourceUtil {
 
 	/**
-	 * Copies the given properties and hides password.
+	 * Returns a cloned Properties object, which hides the password property.
 	 */
 	public static Properties hiddenPassword(Properties properties) {
 		Properties clone = null;
@@ -47,7 +47,7 @@ public class DataSourceUtil {
 	}
 
 	/**
-	 * Gets connection from the given DataSource.
+	 * Returns an idle connection from the DataSource.
 	 */
 	public static Connection getConnection(DataSource ds) throws DBException {
 		if (ds == null)
@@ -66,7 +66,7 @@ public class DataSourceUtil {
 	}
 
 	/**
-	 * Closes the given connection if it is not in transaction.
+	 * Closes the given connection if it is not on a transaction.
 	 */
 	public static void closeConnectionIfNotTransaction(Connection con, DataSource ds) throws DBException {
 		if (con == null || ThreadConnectionHolder.has(ds)) {

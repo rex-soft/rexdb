@@ -63,7 +63,7 @@ public class Configuration {
 	private volatile String lang;
 	
 	/**
-	 * Closes all logs?
+	 * Disables all logs?
 	 */
 	private volatile boolean nolog = false;
 	
@@ -73,7 +73,7 @@ public class Configuration {
 	private volatile boolean validateSql = true;
 	
 	/**
-	 * Checks warnings after executing, including connection warnings, statement warnings and ResultSet warnings.
+	 * Retrieves warnings reported by calls on the Connection, Statement and ResultSet object.
 	 */
 	private volatile boolean checkWarnings = false;
 	
@@ -88,7 +88,7 @@ public class Configuration {
 	private volatile int transactionTimeout = -1;
 	
 	/**
-	 * Rolls back transaction on committing failure.
+	 * Rolls back the transaction on committing failure.
 	 */
 	private volatile boolean autoRollback = false;
 	
@@ -113,23 +113,23 @@ public class Configuration {
 	private volatile boolean dateAdjust = true;
 	
 	/**
-	 * Automatically begins transaction before batch update.
+	 * Automatically begins a transaction before batch updating.
 	 */
 	private volatile boolean batchTransaction = true;
 	
 	//--------managers
 	/**
-	 * DataSource Manager
+	 * DataSource Manager.
 	 */
 	private final DataSourceManager dataSourceManager;
 	
 	/**
-	 * Listener Manager
+	 * Listener Manager.
 	 */
 	private final ListenerManager listenerManager;
 	
 	/**
-	 * Dialect Manager
+	 * Dialect Manager.
 	 */
 	private final DialectManager dialectManager;
 	
@@ -150,7 +150,7 @@ public class Configuration {
 	}
 	
 	/**
-	 * Loads the default configuration.
+	 * Loads the default XML configuration.
 	 * 
 	 * @throws DBException if the default XML file does not exist, could not parse the file, etc.
 	 */
@@ -166,8 +166,8 @@ public class Configuration {
 	}
 	
 	/**
-	 * Loads the default configuration from classPath.
-	 * @param path file in classPath.
+	 * Loads the default XML configuration from ClassPath.
+	 * @param path the path of the XML file.
 	 * @throws DBException if the default XML file does not exist, could not parse the file, etc.
 	 */
 	public synchronized static void loadConfigurationFromClasspath(String path) throws DBException{
@@ -180,8 +180,8 @@ public class Configuration {
 	}
 	
 	/**
-	 * Loads the default configuration from classPath.
-	 * @param path file absolute path.
+	 * Loads the default XML configuration from ClassPath.
+	 * @param path the absolute path of the XML file .
 	 * @throws DBException if the default XML file does not exist, could not parse the file, etc.
 	 */
 	public synchronized static void loadConfigurationFromFileSystem(String path) throws DBException{
@@ -194,7 +194,7 @@ public class Configuration {
 	}
 
 	/**
-	 * Returns current configuration.
+	 * Returns the current configuration.
 	 */
 	public static Configuration getCurrentConfiguration() throws DBRuntimeException{
 		if(instance == null){

@@ -38,19 +38,16 @@ public class ExceptionResourceFactory {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionResourceFactory.class);
 
 	/**
-	 * resource encoding
+	 * Resource encoding.
 	 */
 	private static final String PROPERTIES_ENCODING = "UTF-8";
 			
 	/**
-	 * exception message language
+	 * Exception message language.
 	 */
 	public static final String LANG_ZH_CN = "zh-cn";
 	public static final String LANG_EN = "en";
 	
-	/**
-	 * initialize properties
-	 */
 	private static final Map<String, String> PROPERTIES = new HashMap<String, String>(){
 		{
 			put(LANG_ZH_CN, "exception.db.zh-cn.properties");
@@ -59,17 +56,17 @@ public class ExceptionResourceFactory {
 	};
 
 	/**
-	 * current language
+	 * Current language.
 	 */
 	private volatile String lang = LANG_EN;
 	
 	/**
-	 * all resource
+	 * All resources.
 	 */
 	private final Map<String, ExceptionResource> resources;
 	
 	/**
-	 * instance
+	 * Current instance.
 	 */
 	private static final ExceptionResourceFactory instance;
 
@@ -88,7 +85,7 @@ public class ExceptionResourceFactory {
 	}
 	
 	/**
-	 * loading resource
+	 * Loads resources.
 	 */
 	private void init(){
 		for (Iterator iterator = PROPERTIES.entrySet().iterator(); iterator.hasNext();) {
@@ -103,7 +100,7 @@ public class ExceptionResourceFactory {
 	
 	//--------PUBLIC
 	/**
-	 * Sets exception message language
+	 * Specifies exception message language.
 	 */
 	public void setLang(String lang){
 		if(!LANG_ZH_CN.equals(lang) && !LANG_EN.equals(lang))
@@ -113,14 +110,14 @@ public class ExceptionResourceFactory {
 	}
 	
 	/**
-	 * Returns exception message
+	 * Returns exception message.
 	 */
 	public String translate(String code){
 		return translate(code, null);
 	}
 	
 	/**
-	 * Merge exception resource and parameters
+	 * Merges the exception message and the parameters.
 	 */
 	public String translate(String code, Object... params){
 		

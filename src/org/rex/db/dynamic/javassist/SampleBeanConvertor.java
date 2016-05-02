@@ -24,7 +24,7 @@ import org.rex.db.util.ORUtil;
 import org.rex.db.util.SqlUtil;
 
 /**
- * A Bean Convertor Sample.
+ * A sample of java bean convertor.
  * 
  * @version 1.0, 2016-03-16
  * @since Rexdb-1.0

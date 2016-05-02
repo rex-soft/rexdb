@@ -32,27 +32,27 @@ public class DefaultDefinition implements Definition {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDefinition.class);
 	
 	/** 
-	 * Constant Util
+	 * Constants utilities.
 	 */
 	private static final ConstantUtil CONSTANTS = new ConstantUtil(Definition.class);
 	
 	/**
-	 * transaction isolation level
+	 * Transaction isolation level.
 	 */
 	private int isolationLevel = ISOLATION_DEFAULT;
 
 	/**
-	 * transaction timeout
+	 * Transaction timeout.
 	 */
 	private int timeout = TIMEOUT_DEFAULT;
 
 	/**
-	 * transaction readOnly
+	 * Transaction readOnly setting.
 	 */
 	private boolean readOnly = false;
 	
 	/**
-	 * transaction auto rollback
+	 * Transaction autoRollBack setting.
 	 */
 	private boolean autoRollback = false;
 	
@@ -62,7 +62,7 @@ public class DefaultDefinition implements Definition {
 	}
 	
 	/**
-	 * Apply definition
+	 * Applies current configuration.
 	 */
 	protected void applyConfigrations() throws DBException{
 		Configuration config = Configuration.getCurrentConfiguration();

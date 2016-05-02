@@ -29,9 +29,9 @@ import org.rex.db.logger.LoggerFactory;
 import org.rex.db.util.SqlUtil;
 
 /**
- * Statement Creator for Ps objects.
+ * Statement Creator for Ps object.
  * 
- * Sets prepared statement parameters, such as:
+ * such as:
  * SQL: INSERT INTO TBL(CL1, CL2) VALUES(?,?)
  * parameters: new Ps("100", "M");
  * 

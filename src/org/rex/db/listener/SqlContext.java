@@ -31,27 +31,27 @@ import org.rex.db.util.ConstantUtil;
 public class SqlContext extends BaseContext{
 	
 	/** 
-	 * Reads constants
+	 * Constant utilities.
 	 */
 	private static final ConstantUtil constants = new ConstantUtil(SqlContext.class);
 	
 	/**
-	 * event: query
+	 * Event: query.
 	 */
 	public static final int SQL_QUERY = 1;
 	
 	/**
-	 * event: update
+	 * Event: update.
 	 */
 	public static final int SQL_UPDATE = 2;
 	
 	/**
-	 * event: batch
+	 * Event: batch update.
 	 */
 	public static final int SQL_BATCH_UPDATE = 3;
 	
 	/**
-	 * event: call
+	 * Event: call.
 	 */
 	public static final int SQL_CALL = 4;
 	

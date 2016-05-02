@@ -38,7 +38,7 @@ public class DialectManager {
 	private final Map<String, Dialect> dialectInstances = Collections.synchronizedMap(new HashMap<String, Dialect>());
 	
 	/**
-	 * Sets dialect for a dataSource
+	 * Specifies a dialect for the dataSource.
 	 */
 	public void setDialect(DataSource dataSource, Dialect dialect){
 		dialectInstances.put(String.valueOf(dataSource.hashCode()), dialect);
@@ -48,7 +48,7 @@ public class DialectManager {
 	}
 	
 	/**
-	 * Returns dialect for the given dataSource
+	 * Returns the dialect for the given dataSource.
 	 */
 	public Dialect getDialect(DataSource dataSource) throws DBException {
 		String hashCode = String.valueOf(dataSource.hashCode());

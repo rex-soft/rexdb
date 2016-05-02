@@ -52,7 +52,7 @@ public class ReflectUtil {
 	private static volatile boolean cacheEnabled = true;
 
 	/**
-	 * Cache BeanInfo?
+	 * Caches BeanInfo?
 	 */
 	public static void setCacheEnabled(boolean isCacheEnabled) {
 		if (cacheEnabled != isCacheEnabled) {
@@ -72,14 +72,14 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * Is cache enabled?
+	 * Cache enabled?
 	 */
 	public static boolean isCacheEnabled() {
 		return cacheEnabled;
 	}
 
 	/**
-	 * Gets class fields types.
+	 * Returns field types of the given class.
 	 */
 	public static Map<String, Class<?>> getParameterTypes(Class<?> clazz) throws DBException {
 		if (cacheEnabled) {
@@ -94,7 +94,7 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * Gets all readable methods from class.
+	 * Returns all readable methods of the given class.
 	 */
 	public static Map<String, Method> getReadableMethods(Class<?> clazz) throws DBException {
 		if (cacheEnabled) {
@@ -109,7 +109,7 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * Gets all writeable methods from class.
+	 * Returns all writeable methods of the given class.
 	 */
 	public static Map<String, Method> getWriteableMethods(Class<?> clazz) throws DBException {
 		if (cacheEnabled) {
@@ -167,7 +167,7 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * Gets BeanInfo from class.
+	 * Returns BeanInfo of the given class.
 	 */
 	public static BeanInfo getBeanInfo(Class<?> clazz) throws DBException {
 		try {
@@ -178,7 +178,7 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * Gets cloneable method from object.
+	 * Returns cloneable method of the given object.
 	 */
 	public static Method getCloneMethod(Object bean) throws DBException {
 		if (!(bean instanceof Cloneable))
@@ -195,20 +195,14 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * Invokes setter methods with properties.
+	 * Invokes setter methods with the properties.
 	 */
 	public static void setProperties(Object bean, Properties properties) throws DBException {
 		setProperties(bean, properties, false, false);
 	}
 
 	/**
-	 * Invokes setter methods with properties.
-	 * 
-	 * @param bean the object.
-	 * @param properties properties to set.
-	 * @param ignoreMismatches throws exception if ignoreMismatches is false.
-	 * @param ignoreEmpty skip invoking setter method if the properties value is null or ''.
-	 * @throws DBException
+	 * Invokes setter methods with the properties.
 	 */
 	public static void setProperties(Object bean, Properties properties, boolean ignoreMismatches, boolean ignoreEmpty) throws DBException {
 		if (bean == null || properties == null || properties.size() == 0)
@@ -312,7 +306,7 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * Creates new instance.
+	 * Creates a new instance.
 	 */
 	public static <T> T instance(Class<T> targetClass) throws DBException {
 		try {

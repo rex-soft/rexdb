@@ -43,12 +43,12 @@ public class BeanConvertorManager {
 	private static final String CLASS_PREFIX = "JSetterFor";
 	
 	/**
-	 * dynamic convertors
+	 * Dynamic convertors.
 	 */
 	private static final Map<Class<?>, BeanConvertor> convertors = new HashMap<Class<?>, BeanConvertor>();
 	
 	/**
-	 * Returns a bean convertor.
+	 * Returns the specified convertor.
 	 */
 	public static BeanConvertor getConvertor(Class<?> beanClass){
 		if(!convertors.containsKey(beanClass)){
@@ -71,7 +71,7 @@ public class BeanConvertorManager {
 	}
 
 	/**
-	 * Creates a bean convertor.
+	 * Creates a convertor for the specified class.
 	 */
 	private static BeanConvertor build(Class<?> clazz) throws NotFoundException, DBException, CannotCompileException, InstantiationException, IllegalAccessException {
 
@@ -105,7 +105,7 @@ public class BeanConvertorManager {
 	}
 	
 	/**
-	 * Appends a readResultSet method string
+	 * Builds a readResultSet method string.
 	 */
 	private static String buildReadResultSetMethodString(Class<?> clazz) throws DBException{
 		StringBuffer sb = new StringBuffer();
@@ -147,7 +147,7 @@ public class BeanConvertorManager {
 	
 	
 	/**
-	 * Appends a getColumnCodes method string
+	 * Builds a getColumnCodes method string.
 	 */
 	private static String buildGetColumnCodesMethodString(Class<?> clazz) throws DBException{
 		StringBuffer sb = new StringBuffer();
@@ -178,7 +178,7 @@ public class BeanConvertorManager {
 	}
 	
 	/**
-	 * Appends a setParameters method string
+	 * Builds a setParameters method string.
 	 */
 	private static String buildSetParametersMethodString(Class<?> clazz) throws DBException{
         StringBuffer sb = new StringBuffer();  
@@ -246,7 +246,7 @@ public class BeanConvertorManager {
 //	}
 	
 	/**
-	 * Returns class name.
+	 * Returns the class name.
 	 * 
 	 * [0]string name, <tt>class name[]</tt> if class is array 
 	 * [1]suffix. if class is primitive type, convert it to Object first, then get primitive value.
@@ -302,7 +302,7 @@ public class BeanConvertorManager {
 	}
 	
 	/**
-	 * Generates a unique class name
+	 * Generates a unique class name.
 	 */
 	private static String genClassName(Class<?> clazz){
 		String className = clazz.getName();

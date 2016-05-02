@@ -21,7 +21,7 @@ import org.rex.db.logger.Logger;
 import org.rex.db.logger.LoggerFactory;
 
 /**
- * SQL Listener for System.out.
+ * Prints informations to System.out.
  * 
  * @version 1.0, 2016-02-01
  * @since Rexdb-1.0

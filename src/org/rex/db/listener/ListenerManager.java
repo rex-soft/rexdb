@@ -38,7 +38,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * Registers listener.
+	 * Registers a listener.
 	 */
 	public void registe(DBListener listener) {
 		listeners.addElement(listener);
@@ -48,7 +48,7 @@ public class ListenerManager {
 	}
 
 	/**
-	 * Removes listener.
+	 * Removes the specified listener.
 	 */
 	public void remove(DBListener listener) {
 		listeners.remove(listener);
@@ -58,14 +58,14 @@ public class ListenerManager {
 	}
 
 	/**
-	 * Returns size of listeners.
+	 * Returns the size of listeners.
 	 */
 	public int getSize(){
 		return listeners.size();
 	}
 	
 	/**
-	 * Has listener.
+	 * Has a listener?
 	 */
 	public boolean hasListener(){
 		return listeners.size() > 0;
@@ -76,7 +76,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * Fires event before executing SQLs.
+	 * Fires events before executing SQLs.
 	 */
 	public void fireOnExecute(final SqlContext context){
 		notify(new ListenerCaller(){
@@ -87,7 +87,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * Fires event after executing SQLs
+	 * Fires events after executing SQLs.
 	 */
 	public void fireAfterExecute(final SqlContext context, final Object result){
 		notify(new ListenerCaller(){
@@ -98,7 +98,7 @@ public class ListenerManager {
 	}
 	
 	/**
-	 * Fires event before transaction.
+	 * Fires events before transaction.
 	 */
 	public void fireOnTransaction(final TransactionContext context){
 		notify(new ListenerCaller(){

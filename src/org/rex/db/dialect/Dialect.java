@@ -31,13 +31,13 @@ public interface Dialect {
 	
 	// ------------------------------------------------------------Test SQL
 	/**
-	 * Returns a test SQL for current database
+	 * Returns the test SQL.
 	 */
 	public String getTestSql();
 
 	// ------------------------------------------------------------database version
 	/**
-	 * Returns database name
+	 * Returns the database name.
 	 */
 	public String getName();
 }

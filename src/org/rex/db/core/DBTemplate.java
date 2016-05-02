@@ -77,7 +77,7 @@ public class DBTemplate {
 
 	//--------------------query
 	/**
-	 * Query
+	 * Query.
 	 */
 	public void query(String sql, ResultReader<?> resultReader) throws DBException {
 		SqlContext context = fireOnEvent(SqlContext.SQL_QUERY, false, getDataSource(), new String[]{sql}, null, null);
@@ -102,14 +102,14 @@ public class DBTemplate {
 	}
 
 	/**
-	 * Query with prepared parameters
+	 * Query with prepared parameters.
 	 */
 	public void query(String sql, Object parameters, ResultReader<?> resultReader) throws DBException {
 		query(sql, parameters, null, resultReader);
 	}
 	
 	/**
-	 * Query with prepared parameters
+	 * Query with prepared parameters.
 	 */
 	public void query(String sql, Object parameters, LimitHandler limitHandler, ResultReader<?> resultReader) throws DBException {
 		SqlContext context = fireOnEvent(SqlContext.SQL_QUERY, false, getDataSource(), new String[]{sql}, parameters, limitHandler);
@@ -134,7 +134,7 @@ public class DBTemplate {
 	}
 	//--------------------update
 	/**
-	 * Update
+	 * Update.
 	 */
 	public int update(String sql) throws DBException {
 		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, null, null);
@@ -158,7 +158,7 @@ public class DBTemplate {
 	}
 	
 	/**
-	 * Update with prepared parameters
+	 * Update with prepared parameters.
 	 */
 	public int update(String sql, Object parameters) throws DBException {
 		SqlContext context = fireOnEvent(SqlContext.SQL_UPDATE, false, getDataSource(), new String[]{sql}, parameters, null);
@@ -183,7 +183,7 @@ public class DBTemplate {
 	}
 	
 	/**
-	 * Batch update
+	 * Batch update.
 	 */
 	public int[] batchUpdate(String sql[]) throws DBException{
 		SqlContext context = fireOnEvent(SqlContext.SQL_BATCH_UPDATE, false, getDataSource(), sql, null, null);
@@ -209,7 +209,7 @@ public class DBTemplate {
 	}
 	
 	/**
-	 * Batch update with prepared parameters
+	 * Batch update with prepared parameters.
 	 */
 	public int[] batchUpdate(String sql, Object[] parametersArray) throws DBException {
 		SqlContext context = fireOnEvent(SqlContext.SQL_BATCH_UPDATE, false, getDataSource(), new String[]{sql}, parametersArray, null);
@@ -237,7 +237,7 @@ public class DBTemplate {
 
 	//--------------------call
 	/**
-	 * Call
+	 * Call.
 	 */
 	public RMap<String, ?> call(String sql, Object parameters) throws DBException {
 		SqlContext context = fireOnEvent(SqlContext.SQL_CALL, false, getDataSource(), new String[]{sql}, parameters, null);
@@ -280,7 +280,7 @@ public class DBTemplate {
 	}
 
 	/**
-	 * Call with prepared parameters
+	 * Call with prepared parameters.
 	 */
 	private RMap<String, Object> extractOutputParameters(CallableStatement cs, Ps ps) throws DBException {
 		RMap<String, Object> outParams = new RMap<String, Object>();
@@ -326,9 +326,6 @@ public class DBTemplate {
 		return outParams;
 	}
 	
-	/**
-	 * Extracts resultSets
-	 */
 	private RMap<String, Object> extractReturnedResultSets(CallableStatement cs, Ps ps) throws DBException, SQLException {
 		List<Class<?>> returnResultTypes = ps == null ? null : ps.getReturnResultTypes();
 		RMap<String, Object> returns = new RMap<String, Object>();
@@ -373,7 +370,7 @@ public class DBTemplate {
 	}
 	
 	/**
-	 * Closes connection, statement, resultSet
+	 * Closes the Connection, the Statement and the ResultSet.
 	 */
 	private void close(Connection con, Statement stmt, ResultSet rs) throws DBException{
 		if (rs != null) {
@@ -396,7 +393,7 @@ public class DBTemplate {
 	
 	//-----------------timeout
 	/**
-	 * Applies timeout
+	 * Applies timeout.
 	 */
 	public void applyTimeout(Statement stmt, DataSource ds) throws DBException {
 		int live = Configuration.getCurrentConfiguration().getQueryTimeout();

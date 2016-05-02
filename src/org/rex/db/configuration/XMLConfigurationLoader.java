@@ -39,7 +39,7 @@ public class XMLConfigurationLoader {
 	/**
 	 * Loads configuration from the file system.
 	 * 
-	 * @param path absolute path.
+	 * @param path the absolute path.
 	 * @return configuration.
 	 * @throws DBException could not read or parse the file.
 	 */
@@ -57,9 +57,9 @@ public class XMLConfigurationLoader {
 	}
 
 	/**
-	 * Loads configuration from ClassPath.
+	 * Loads configuration from the ClassPath.
 	 * 
-	 * @param path file path from ClassPath.
+	 * @param path file path from the ClassPath.
 	 * @return configuration.
 	 * @throws DBException could not read or parse the file.
 	 */
@@ -69,9 +69,9 @@ public class XMLConfigurationLoader {
 	}
 
 	/**
-	 * Loads configuration from InputStream.
+	 * Loads configuration by the InputStream.
 	 * 
-	 * @param inputStream file InputStream.
+	 * @param inputStream the InputStream.
 	 * @return configuration.
 	 * @throws DBException could not read or parse the InputStream.
 	 */

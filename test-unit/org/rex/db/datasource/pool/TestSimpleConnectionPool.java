@@ -41,24 +41,24 @@ public class TestSimpleConnectionPool {
 		
 		SimpleConnectionPool pool = initConnectionPool(properties);
 		
-		Assert.assertEquals(pool.gettotalConnectionsCount(), 1);
+		Assert.assertEquals(pool.getTotalConnectionsCount(), 1);
 		
 		Connection conn1 = pool.getConnection();
 		Connection conn2 = pool.getConnection();
 		
-		Assert.assertEquals(pool.gettotalConnectionsCount(), 3);
+		Assert.assertEquals(pool.getTotalConnectionsCount(), 3);
 		Assert.assertEquals(pool.getInactiveConnections(), 1);
 		
 		Connection conn3 = pool.getConnection();
 		Connection conn4 = pool.getConnection();
 		Connection conn5 = pool.getConnection();
 		
-		Assert.assertEquals(pool.gettotalConnectionsCount(), 5);
+		Assert.assertEquals(pool.getTotalConnectionsCount(), 5);
 		Assert.assertEquals(pool.getInactiveConnections(), 0);
 		
 		conn1.close();
 		
-		Assert.assertEquals(pool.gettotalConnectionsCount(), 5);
+		Assert.assertEquals(pool.getTotalConnectionsCount(), 5);
 		Assert.assertEquals(pool.getInactiveConnections(), 1);
 		
 		conn2.close();
@@ -66,7 +66,7 @@ public class TestSimpleConnectionPool {
 		conn4.close();
 		conn5.close();
 		
-		Assert.assertEquals(pool.gettotalConnectionsCount(), 5);
+		Assert.assertEquals(pool.getTotalConnectionsCount(), 5);
 		Assert.assertEquals(pool.getInactiveConnections(), 5);
 	}
 	

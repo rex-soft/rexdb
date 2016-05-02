@@ -35,7 +35,7 @@ import org.rex.db.util.SqlUtil;
 /**
  * Statement Creator for Maps and objects.
  *	
- * Sets prepared statement parameters, the SQL may contain one or more '?' IN parameter placeholders. such as:
+ * such as:
  * SQL: INSERT INTO TBL(CL1, CL2) VALUES(#{cl1}, #{cl2})
  * parameters: 1. java bean with variables: 'cl1', 'cl2'; 2. Map with keys 'cl1' and 'cl2'.
  * 

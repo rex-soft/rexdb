@@ -28,22 +28,22 @@ import org.rex.db.exception.DBException;
 public interface TransactionManager {
 
 	/**
-	 * begins transaction.
+	 * Begins a transaction.
 	 */
 	void begin(Definition definition) throws DBException;
 
 	/**
-	 * commits transaction.
+	 * Commits the transaction.
 	 */
 	void commit() throws DBException;
 
 	/**
-	 * rollback transaction.
+	 * Rolls back the transaction.
 	 */
 	void rollback() throws DBException;
 
 	/**
-	 * returns transaction connection.
+	 * Returns the transaction's connection.
 	 */
 	Connection getTransactionConnection() throws DBException;
 }

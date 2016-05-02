@@ -61,22 +61,22 @@ public interface Definition {
 
 	// --------------------getters
 	/**
-	 * Returns isolation level
+	 * Returns isolation level.
 	 */
 	int getIsolationLevel();
 
 	/**
-	 * Returns timeOut
+	 * Returns timeout.
 	 */
 	int getTimeout();
 
 	/**
-	 * Is readOnly
+	 * Is readOnly?
 	 */
 	boolean isReadOnly();
 
 	/**
-	 * Is auto rollBack
+	 * Is auto rollBack?
 	 */
 	boolean isAutoRollback();
 }

@@ -30,13 +30,6 @@ import org.rex.db.util.ORUtil;
  */
 public abstract class BeanConvertor {
 
-	/**
-	 * Sets prepared parameters by object.
-	 * @param preparedStatement prepared statement to set values to
-	 * @param bean java bean that values store
-	 * @param requiredParam property name of java bean, 
-	 * @throws SQLException
-	 */
 	public abstract void setParameters(PreparedStatement preparedStatement, Object bean, String[] requiredParam) throws SQLException;
 	
 //	public abstract void setParameters(PreparedStatement preparedStatement, Object bean, int[] requiredColumnCodes) throws SQLException;

@@ -84,7 +84,7 @@ public abstract class LoggerFactory {
 	}
 	
 	/**
-	 * Disable all logs.
+	 * Disables all logs.
 	 */
 	public static void setNolog(boolean isNolog){
 		getLogger(LoggerFactory.class).info("Logger has switched to {0} mode.", isNolog ? "nolog" : "normal");

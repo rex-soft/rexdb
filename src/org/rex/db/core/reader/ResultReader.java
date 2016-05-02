@@ -34,7 +34,7 @@ public interface ResultReader<T> {
 	void processRow(ResultSet rs) throws DBException;
 	
 	/**
-	 * Returns results.
+	 * Returns the result.
 	 */
 	List<T> getResults();
 }

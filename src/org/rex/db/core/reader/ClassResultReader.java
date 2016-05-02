@@ -46,8 +46,7 @@ public class ClassResultReader<T> implements ResultReader<T> {
 	
 	//----------settings
 	/**
-	 * user dynamic class
-	 * @throws DBException 
+	 * Dynamic class enabled?
 	 */
 	private static boolean isDynamic() throws DBException{
 		return Configuration.getCurrentConfiguration().isDynamicClass();

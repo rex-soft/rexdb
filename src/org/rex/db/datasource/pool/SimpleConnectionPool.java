@@ -55,21 +55,21 @@ public class SimpleConnectionPool {
 	private String username;
 	private String password;
 
-	private int initSize = 1;// initial number of connections
-	private int minSize = 3; // minimum number of connections
-	private int maxSize = 10; // maximum number of connections
-	private int increment = 1; // when there are no idle connections, the number of connections are created at one-time
+	private int initSize = 1;// initial connections
+	private int minSize = 3; // minimum connections
+	private int maxSize = 10; // maximum connections
+	private int increment = 1; // the number of connections are opened at one-time when there are no idle connections.
 
-	private int retries = 2; // retry count after failed to get connection
-	private int retryInterval = 750; // retry intervals after failed to get connection
+	private int retries = 2; // retry count after failed to open connection.
+	private int retryInterval = 750; // retry intervals after failed to open connection.
 
-	private int getConnectionTimeout = 5000; // connection timeout (ms)
-	private int inactiveTimeout = 600000; //  timeout (ms) for idle connections, idle connections are closed after timeout
-	private int maxLifetime = 1800000; // timeout (ms) for connections, connections are closed after timeout
+	private int getConnectionTimeout = 5000; // connection timeout (ms).
+	private int inactiveTimeout = 600000; //  timeout (ms) for idle connections.
+	private int maxLifetime = 1800000; // timeout (ms) for all connections.
 
-	private boolean testConnection = true; // test connection alive after created ? 
-	private String testSql; // SQL for testing connection alive
-	private int testTimeout = 500;// timeout (ms) for testing connection alive
+	private boolean testConnection = true; // test connection alive after opened.
+	private String testSql; // test SQL.
+	private int testTimeout = 500;// timeout (ms) for testing connection alive.
 
 	// ---------runtime
 	private final Timer timer;
@@ -106,7 +106,7 @@ public class SimpleConnectionPool {
 
 	// -----------property
 	/**
-	 * Applies Settings
+	 * Applies the settings.
 	 */
 	private void extractProperties(Properties properties) throws DBException {
 		if (properties == null)
@@ -131,7 +131,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * Overrides setting
+	 * Overrides a setting.
 	 */
 	private void overrideProperty(Field field, String value) {
 		try {
@@ -153,7 +153,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * Validates settings
+	 * Validates the settings.
 	 */
 	private void validateConfig() throws DBException {
 		// --not null
@@ -171,7 +171,7 @@ public class SimpleConnectionPool {
 
 	// -------------pool
 	/**
-	 * Initializes JDBC Driver
+	 * Initializes the JDBC Driver.
 	 */
 	public void initDriverManager() throws DBException {
 		try {
@@ -182,7 +182,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * Returns connection
+	 * Returns an idle connection.
 	 */
 	public Connection getConnection() throws SQLException {
 		if (LOGGER.isDebugEnabled()) {
@@ -235,7 +235,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * Releases connection
+	 * Releases the connection.
 	 */
 	public void releaseConnection(ConnectionProxy connectionProxy) {
 		if (!connectionProxy.isForceClosed()) {
@@ -254,23 +254,20 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * Returns active connections
+	 * Returns all active connections.
 	 */
 	public int getActiveConnections() {
 		return Math.min(this.maxSize, totalConnectionsCount.get() - inactiveConnectionCount.get());
 	}
 
 	/**
-	 * Returns idle connections
+	 * Returns all idle connections.
 	 */
 	public int getInactiveConnections() {
 		return inactiveConnectionCount.get();
 	}
 
-	/**
-	 * Returns all connections
-	 */
-	public int gettotalConnectionsCount() {
+	public int getTotalConnectionsCount() {
 		return totalConnectionsCount.get();
 	}
 
@@ -288,7 +285,7 @@ public class SimpleConnectionPool {
 
 	// ----private
 	/**
-	 * Initializes connection pool
+	 * Initializes the connection pool.
 	 */
 	private void initConnectionPool() {
 		for (int i = 0; i < initSize; i++)
@@ -301,7 +298,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * Increases connections
+	 * Increases idle connections.
 	 */
 	private synchronized void addConnections() {
 		for (int i = 0; totalConnectionsCount.get() < maxSize && i < increment; i++) {
@@ -310,7 +307,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * Increases a connection
+	 * Increases an idle connection.
 	 */
 	private void addConnection() {
 		if (LOGGER.isDebugEnabled()) {
@@ -360,9 +357,6 @@ public class SimpleConnectionPool {
 		}
 	}
 
-	/**
-	 * Creates a new connection from database
-	 */
 	private ConnectionProxy newConnection() throws SQLException {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("getting connection from database {0}@{1}.", username, url);
@@ -375,7 +369,7 @@ public class SimpleConnectionPool {
 	}
 
 	/**
-	 * Tests connection alive
+	 * Tests the connection.
 	 */
 	private boolean isConnectionAlive(Connection connection) {
 		if (!this.testConnection)
@@ -442,9 +436,6 @@ public class SimpleConnectionPool {
 		}
 	}
 
-	/**
-	 * Cleans and rebuilds connections
-	 */
 	private class PoolTimerTask extends TimerTask {
 
 		private int inactiveTimeout;

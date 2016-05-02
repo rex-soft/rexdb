@@ -27,32 +27,32 @@ import org.rex.db.util.ConstantUtil;
 public class TransactionContext extends BaseContext {
 	
 	/** 
-	 * Reads constants
+	 * Constant utilities.
 	 */
 	static final ConstantUtil CONSTANTS = new ConstantUtil(TransactionContext.class);
 
 	/**
-	 * Event: begin
+	 * Event: begin.
 	 */
 	public static final int TRANSACTION_BEGIN = 1;
 
 	/**
-	 * Event: commit
+	 * Event: commit.
 	 */
 	public static final int TRANSACTION_COMMIT = 2;
 
 	/**
-	 * Event: rollback
+	 * Event: rollback.
 	 */
 	public static final int TRANSACTION_ROLLBACK = 3;
 
 	/**
-	 * current definition
+	 * The current definition.
 	 */
 	private Definition definition;
 
 	/**
-	 * current event：TRANSACTION_BEGIN、TRANSACTION_COMMIT、TRANSACTION_ROLLBACK
+	 * Current event: must be one of TRANSACTION_BEGIN, TRANSACTION_COMMIT, TRANSACTION_ROLLBACK.
 	 */
 	private int event;
 	

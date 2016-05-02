@@ -30,7 +30,7 @@ import org.rex.RMap;
 import org.rex.db.exception.DBException;
 
 /**
- * Converts ResultSet to java bean or Map.
+ * Maps ResultSet.
  * 
  * @version 1.0, 2016-04-05
  * @since Rexdb-1.0
@@ -58,7 +58,7 @@ public class ORUtil {
 		return rsLabelsRenamed;
 	}
 	
-	// -----------result set to map
+	// -----------ResultSet -> map
 	public RMap<String, ?> rs2Map(ResultSet rs) throws DBException {
 		readRsMeta(rs);
 		RMap<String, Object> results = new RMap<String, Object>();
@@ -72,7 +72,7 @@ public class ORUtil {
 		return results;
 	}
 
-	// -----------result set to java bean
+	// -----------ResultSet -> object
 	public <T> T rs2Object(ResultSet rs, T bean) throws DBException {
 		readRsMeta(rs);
 		Class<?> beanClass = bean.getClass();
@@ -82,7 +82,7 @@ public class ORUtil {
 			Method writer = writers.get(rsLabelsRenamed[i]);
 			if(writer == null) continue;
 			Class<?> type = types.get(rsLabelsRenamed[i]);
-			if(type == null){//no class member variable matches the writer
+			if(type == null){
 				type = writer.getParameterTypes()[0];
 				if(type == null) continue;
 				else{
@@ -101,9 +101,9 @@ public class ORUtil {
 		return bean;
 	}
 
-	// -----------get column value
+	// -----------column value
 	/**
-	 * Gets value by ResultSet label name.
+	 * Retrieves the value of the designated column in the current row of this ResultSet object as the given SQL type.
 	 */
 	public Object getValue(ResultSet rs, String label, int type) throws SQLException, DBException {
 		Object value = null;
@@ -139,16 +139,7 @@ public class ORUtil {
 	}
 	
 	/**
-	 * Gets value of the specified java type.
-	 * 
-	 * @param rs ResultSet.
-	 * @param label ResultSet label name.
-	 * @param sqlType SQL type of the label from ResultSet meta.
-	 * @param paramClassName java class.
-	 * @return value of the specified java type.
-	 * 
-	 * @throws DBException
-	 * @throws SQLException
+	 * Retrieves the value of the designated column in the current row of this ResultSet object as the given java type.
 	 */
 	public <T> T getValue(ResultSet rs, String label, int sqlType, Class<T> javaType) throws DBException, SQLException {
 
@@ -261,7 +252,7 @@ public class ORUtil {
 
 
 	/**
-	 * Reads Clob column.
+	 * Retrieves the value of the Clob column.
 	 */
 	private String readClob(ResultSet rs, String label) throws SQLException, DBException {
 	    String value = null;
@@ -274,7 +265,7 @@ public class ORUtil {
 	}
 
 	/**
-	 * Reads Blob column.
+	 * Retrieves the value of the Blob column.
 	 */
 	private byte[] readBlob(ResultSet rs, String label) throws SQLException, DBException {
 	    Blob blob = rs.getBlob(label);
@@ -285,7 +276,7 @@ public class ORUtil {
 	    return value;
 	}
 
-	// -----------result set meta
+	// -----------ResultSet Meta
 	private void readRsMeta(ResultSet rs) throws DBException {
 		if (rsLabels == null) {
 			try {
@@ -310,7 +301,7 @@ public class ORUtil {
 	}
 
 	/**
-	 * Renames column name to java field name.
+	 * Converts the column name to java-style naming.
 	 * sample: CJXM_DM->cjxmDm;AA_BB_CC->aaBbCc
 	 */
 	private String renameLabel(String label) {
