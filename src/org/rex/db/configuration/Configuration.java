@@ -156,7 +156,7 @@ public class Configuration {
 	 */
 	public synchronized static void loadDefaultConfiguration() throws DBException{
 		if(instance != null)
-			throw new DBException("DB-C10052", DEFAULT_CONFIG_PATH);
+			throw new DBException("DB-F0007", DEFAULT_CONFIG_PATH);
 		
 		InputStream inputStream = ResourceUtil.getResourceAsStream(DEFAULT_CONFIG_PATH);
 		if(inputStream == null){
