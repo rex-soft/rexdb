@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!DOCTYPE configuration PUBLIC "-//rex-soft.org//REXDB DTD 1.0//EN" "http://www.rex-soft.org/dtd/rexdb-1-config.dtd">
 <configuration>
+	<!-- configuration sample-->
 	<settings>
 		<property name="lang" value="en"/>
 		<property name="nolog" value="false" />
@@ -15,6 +16,7 @@
 		<property name="dateAdjust" value="true" />
 		<property name="batchTransaction" value="true" />
 	</settings>
+	
 	<!-- Mysql -->
 	<dataSource class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
