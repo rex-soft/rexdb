@@ -1,4 +1,4 @@
-# <div id="top">快速入门（初学者）</div> #
+# <div id="top">快速入门</div> #
 
 <!--
 environment	准备运行环境
@@ -16,7 +16,7 @@ more		更多功能
 thirdparty	附录：Rexdb可选配的第三方包
 -->
 
-如果您是Java初学者，本文档可以帮助您在最短的时间内了解Rexdb的使用方法。
+本文档可以帮助您快速了解Rexdb的使用方法。
 
 ## <div id="environment">准备运行环境</div> ##
 
