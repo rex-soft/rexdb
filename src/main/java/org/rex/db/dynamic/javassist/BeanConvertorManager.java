@@ -25,6 +25,7 @@ import org.rex.db.exception.DBRuntimeException;
 import org.rex.db.util.ReflectUtil;
 
 import javassist.CannotCompileException;
+import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -76,6 +77,8 @@ public class BeanConvertorManager {
 	private static BeanConvertor build(Class<?> clazz) throws NotFoundException, DBException, CannotCompileException, InstantiationException, IllegalAccessException {
 
 		ClassPool pool = ClassPool.getDefault();
+		pool.insertClassPath(new ClassClassPath(clazz)); 
+		
 		pool.importPackage("java.sql.PreparedStatement");
 		pool.importPackage("java.sql.SQLException");
 		pool.importPackage("java.sql.ResultSet");
