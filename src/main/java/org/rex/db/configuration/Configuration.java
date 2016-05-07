@@ -324,7 +324,8 @@ public class Configuration {
 	public void setDynamicClass(boolean dynamicClass) {
 		if(dynamicClass){//test dynamic
 			try{
-				BeanConvertorManager.getConvertor(this.getClass());
+				BeanConvertorManager m = new BeanConvertorManager();
+				BeanConvertorManager.getConvertor(Configuration.class);
 				this.dynamicClass = true;
 			}catch(Throwable e){
 				this.dynamicClass = false;
