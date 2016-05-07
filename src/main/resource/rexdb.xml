@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!DOCTYPE configuration PUBLIC "-//rex-soft.org//REXDB DTD 1.0//EN" "http://www.rex-soft.org/dtd/rexdb-1-config.dtd">
 <configuration>
-	<!-- configuration sample-->
+	<!--====== Imports properties ======-->
+	<!-- 
+	<properties path="conn.properties"></properties>
+ 	-->
+ 	
+	<!--====== Available settings ======-->
+	<!--
 	<settings>
 		<property name="lang" value="en"/>
 		<property name="nolog" value="false" />
@@ -16,12 +22,146 @@
 		<property name="dateAdjust" value="true" />
 		<property name="batchTransaction" value="true" />
 	</settings>
+	-->
 	
+	<!--====== Typical JNDI configurations (A JNDI named 'rexdbJNDI') ======-->
+	<!-- Tomcat -->
+	<!-- 
+	<dataSource jndi="java:comp/env/rexdbJNDI"></dataSource>
+	-->
+
+	<!-- Jboss/WildFly -->
+	<!-- 
+	<dataSource jndi="rexdbJNDI"></dataSource>
+	-->
+
+	<!-- WebLogic -->
+	<!-- 
+	<dataSource jndi="rexdbJNDI"></dataSource>
+	-->
+	
+	<!--====== Typical JDBC configurations ======-->
 	<!-- Mysql -->
-	<dataSource class="org.apache.commons.dbcp.BasicDataSource">
+	<dataSource>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/rexdb" />
 		<property name="username" value="root" />
 		<property name="password" value="12345678" />
 	</dataSource>
+	
+	<!-- oracle -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:rexdb" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->
+	
+	<!-- SQL server -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url" value="jdbc:sqlserver://localhost:1433;database=rexdb" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->
+
+	<!-- DB2 -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="com.ibm.db2.jcc.DB2Driver" />
+		<property name="url" value="jdbc:db2://localhost:50000/rexdb:retrieveMessagesFromServerOnGetMessage=true;" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->
+
+	<!-- postgreSQL -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://127.0.0.1:5432/rexdb" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->
+
+	<!-- H2 -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:tcp://127.0.0.1/~/rexdb" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->
+	
+	<!-- Derby -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="org.apache.derby.jdbc.ClientDriver" />
+		<property name="url" value="jdbc:derby://127.0.0.1:1527/rexdb;create=true" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->
+	
+	<!-- Hsqldb -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="jdbc:hsqldb:hsql://127.0.0.1/" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+	</dataSource>
+	-->	
+	
+	<!-- DM -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="dm.jdbc.driver.DmDriver" />
+		<property name="url" value="jdbc:dm://127.0.0.1:5236/rexdb" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->	
+	
+	<!-- kingbase -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="com.kingbase.Driver" />
+		<property name="url" value="jdbc:kingbase://127.0.0.1/rexdb" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->	
+	
+	<!-- Oscar -->
+	<!--
+	<dataSource>
+		<property name="driverClassName" value="com.oscar.Driver" />
+		<property name="url" value="jdbc:oscar://localhost:2003/rexdb" />
+		<property name="username" value="rexdb" />
+		<property name="password" value="12345678" />
+	</dataSource>
+	-->	
+	
+	<!--====== Available listeners ======-->
+	<!-- Prints debug info to the log -->
+	<!-- 
+	<listener class="org.rex.db.listener.impl.SqlDebugListener">
+		<property name="level" value="info"/>
+		<property name="simple" value="false"/>
+	</listener>
+	-->
+	
+	<!-- Prints debug info to the console -->
+	<!-- 
+	<listener class="org.rex.db.listener.impl.SqlConsolePrinterListener">
+		<property name="simple" value="false"/>
+	</listener>
+	-->
 </configuration>
