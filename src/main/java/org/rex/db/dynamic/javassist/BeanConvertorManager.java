@@ -53,6 +53,14 @@ public class BeanConvertorManager {
 	 */
 	public static BeanConvertor getConvertor(Class<?> beanClass){
 		if(!convertors.containsKey(beanClass)){
+			initConvertor(beanClass);
+		}
+		
+		return convertors.get(beanClass);
+	}
+	
+	private synchronized static void initConvertor(Class<?> beanClass){
+		if(!convertors.containsKey(beanClass)){
 			try {
 				convertors.put(beanClass, build(beanClass));
 			} catch (InstantiationException e) {
@@ -67,8 +75,6 @@ public class BeanConvertorManager {
 				throw new DBRuntimeException(e);
 			}
 		}
-		
-		return convertors.get(beanClass);
 	}
 
 	/**
