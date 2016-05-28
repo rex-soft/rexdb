@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="src/main/resource"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="lib/jdbc/h2/h2-1.4.190.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/mysql/mysql-connector-java-5.1.26-bin.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/oracle/classes12.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/jta-1.1.jar"/>
