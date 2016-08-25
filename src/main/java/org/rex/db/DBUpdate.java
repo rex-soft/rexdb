@@ -187,7 +187,7 @@ public class DBUpdate extends DBOperation {
 	 * counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
 	 * 
 	 * @param sql an SQL that may contain one or more '?' or '#{...}' IN parameter placeholders.
-	 * @param parameterList the parameter list.
+	 * @param parameterList a parameter list.
 	 * @return an array of update counts containing one element for each command in the batch.
 	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, etc.
 	 */

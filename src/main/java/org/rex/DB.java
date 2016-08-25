@@ -1239,6 +1239,20 @@ public class DB {
 	public static int[] batchUpdate(String dataSourceId, String sql, Object[] parameterBeans) throws DBException {
 		return getDBUpdate(dataSourceId).batchUpdate(sql, parameterBeans);
 	}
+	
+	/**
+	 * Executes the given SQL with a batch of parameters to the database. If the SQL executes successfully, returns an array of affected row
+	 * counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
+	 * 
+	 * @param dataSourceId the dataSource id that configured in the configuration XML.
+	 * @param sql an SQL that may contain one or more '?' or '#{...}' IN parameter placeholders.
+	 * @param parameterList a parameter list.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, etc.
+	 */
+	public static int[] batchUpdate(String dataSourceId, String sql, List<?> parameterList) throws DBException {
+		return getDBUpdate(dataSourceId).batchUpdate(sql, parameterList);
+	}
 
 	// ------------default dataSource
 	/**
@@ -1366,6 +1380,19 @@ public class DB {
 	 */
 	public static int[] batchUpdate(String sql, Object[] parameterBeans) throws DBException {
 		return getDBUpdate().batchUpdate(sql, parameterBeans);
+	}
+	
+	/**
+	 * Executes the given SQL with a batch of parameters to the database. If the SQL executes successfully, returns an array of affected row
+	 * counts, or value of SUCCESS_NO_INFO, or value of EXECUTE_FAILED.
+	 * 
+	 * @param sql an SQL that may contain one or more '?' or '#{...}' IN parameter placeholders.
+	 * @param parameterList a parameter list.
+	 * @return an array of update counts containing one element for each command in the batch.
+	 * @throws DBException if the configuration wasn't loaded, could not access the database, couldn't execute the SQL, etc.
+	 */
+	public static int[] batchUpdate(String sql, List<?> parameterList) throws DBException {
+		return getDBUpdate().batchUpdate(sql, parameterList);
 	}
 
 	// --------------------------------------------- DBCall
