@@ -106,7 +106,6 @@ public class DataSourceTransactionManager extends AbstractTransactionManager {
 		}
 	}
 
-
 	/**
 	 * Commits the transaction.
 	 */
