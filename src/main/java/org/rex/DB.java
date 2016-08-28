@@ -1658,7 +1658,7 @@ public class DB {
 	 * 
 	 * @throws DBException if the configuration wasn't loaded, could not access the database, could not begin transaction, etc.
 	 */
-	public static void beginJtaTransaction() throws DBException {
+	public static void beginJta() throws DBException {
 		DBTransaction.beginJta();
 	}
 
