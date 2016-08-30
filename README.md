@@ -14,8 +14,6 @@
 
 # <div id="top">简介</div> #
 
-----------
-
 ## <div id="summary">概述</div> ##
 
 Rexdb是一款使用Java语言编写的，开放源代码的持久层框架。提供了查询、调用、（JTA）事务、数据源管理等功能，可以取代Mybatis、Hibernate作为系统的核心ORM框架。
@@ -59,7 +57,6 @@ Rexdb基于Apache 2.0协议，可以免费用于个人或商业用途。
 
 # <div id="top">快速入门</div> #
 
-----------
 
 ## <div id="environment">开发/运行运行环境</div> ##
 
