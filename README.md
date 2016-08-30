@@ -1,26 +1,65 @@
-![](resource/logo.png) 1.0
+![](document/zh-cn/resource/logo.png)
 
 ----------
 
-> **目录**
+> **全部文档**（限于篇幅，下面的正文为简介和快速入门）
 
-- [开发/运行运行环境](#user-content-environment)
-- [全局配置 *rexdb.xml*](#user-content-config)
-- [查询单条记录 *DB.get()*](#user-content-get)
-- [查询单条记录并获取Map *DB.getMap()*](#user-content-getMap)
-- [查询多条记录 *DB.getList()*](#user-content-getList)
-- [查询多条Map记录 *DB.getMapList()*](#user-content-getMapList)
-- [插入/更新/删除 *DB.update()*](#user-content-update)
-- [批量处理 *DB.batchUpdate()*](#user-content-batchUpdate)
-- [事务](#user-content-transaction)
-- [调用 *DB.call()*](#user-content-call)
-- [更多](#user-content-more)
+- [1. 简介](http://db.rex-soft.org/document.php?version=1.0&doc=intro)
+- [2. 下载](http://db.rex-soft.org/document.php?version=1.0&doc=download)
+- [3. 快速入门（初学者）](http://db.rex-soft.org/document.php?version=1.0&doc=quick-start-beginner)
+- [4. 快速入门](http://db.rex-soft.org/document.php?version=1.0&doc=quick-start)
+- [5. 用户手册](http://db.rex-soft.org/document.php?version=1.0&doc=user-manual)
 
 ----------
+
+# <div id="top">简介</div> #
+
+----------
+
+## <div id="summary">概述</div> ##
+
+Rexdb是一款使用Java语言编写的，开放源代码的持久层框架。提供了查询、调用、（JTA）事务、数据源管理等功能，可以取代Mybatis、Hibernate作为系统的核心ORM框架。
+
+Rexdb提供了工具类风格的接口，不需要编写配置文件，使用简便；同时，它还具备同类框架中最高效的执行效率。
+
+## <div id="performance">性能</div> ##
+
+![](document/zh-cn/resource/intro-performance.png)
+
+更详细的性能测试请浏览[http://db.rex-soft.org/performance.php](http://db.rex-soft.org/performance.php)。
+
+## <div id="feature">功能</div> ##
+
+- 数据库操作：查询、更新、批处理、调用、（JTA）事物等；
+- ORM映射：支持数组、Map和任意Java对象；
+- 数据源：内置连接池，支持第三方数据源和JNDI；
+- 方言：自动分页，支持Oracle、DB2、SQL Server、Mysql、达梦等数据库；
+- 高级功能：监听、国际化、异常管理等；
+
+## <div id="advantage">特点</div> ##
+
+- 高性能；
+- 工具类风格的接口设计，使用简便；
+- 免配置（数据源和全局配置除外）；
+
+## <div id="website">官方网站</div> ##
+
+Rexdb的网站地址是：[http://db.rex-soft.org](http://db.rex-soft.org)。
+
+## <div id="help">帮助和支持</div> ##
+
+Rexdb是免费的开源软件，限于资源条件，除文档、源代码和示例外，不提供日常的技术支持。但提供了[BUG反馈和建议](http://db.rex-soft.org/feedback.php)通道，我们在版本升级时会参考您的建议。
+
+## <div id="lisence">用户协议</div> ##
+
+Rexdb基于Apache 2.0协议，可以免费用于个人或商业用途。
+
+协议详情请见：[Apache Lisence, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
+
 
 # <div id="top">快速入门</div> #
 
-本文档用于快速了解Rexdb的使用方法，适合大部分的Java编程人员阅读。
+----------
 
 ## <div id="environment">开发/运行运行环境</div> ##
 
