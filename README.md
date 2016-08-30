@@ -1,8 +1,12 @@
-![](document/zh-cn/resource/logo.png)
+![](document/zh-cn/resource/logo.png) 
 
 ----------
 
-> **全部文档**（限于篇幅，下面的正文为简介和快速入门）
+> **编译好的Rexdb框架下载：[rexdb-1.0.2.zip](http://git.oschina.net/rexsoft/rexdb/attach_files/download?i=65532&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F5F%2FPaAvDFfFowWANhZpAEzhFUN_xCk148.zip%3Ftoken%3Ddb02cd5b24ebc7c9f17de7c9609a7fa8%26ts%3D1472570379%26attname%3Drexdb-1.0.2.zip) | [rexdb-1.0.2.tar.gz](http://git.oschina.net/rexsoft/rexdb/attach_files/download?i=65534&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F5F%2FPaAvDFfFo0CAceLaAEybXdorN581556.gz%3Ftoken%3De3e13c1ce6ddbbb5fe458952d5181249%26ts%3D1472570379%26attname%3Drexdb-1.0.2.tar.gz)**
+
+----------
+
+> **全部文档**（限于篇幅，下面的正文仅包含简介和快速入门）
 
 - [1. 简介](http://db.rex-soft.org/document.php?version=1.0&doc=intro)
 - [2. 下载](http://db.rex-soft.org/document.php?version=1.0&doc=download)
@@ -68,7 +72,7 @@ Rexdb需要如下运行环境：
 
 - **JDBC驱动**
 - **rexdb-1.0.0.jar（或其它版本）**
-- javassist-3.20.0-GA.jar（可选）
+- javassist-3.20.0-GA.jar（可选，推荐使用）
 - logger4j/logger4j2/slf4j（可选其一，也可以都不使用）
 - dbcp/C3P0/BoneCP等（可选其一，也可以都不使用）
 
