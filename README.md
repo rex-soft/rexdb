@@ -20,9 +20,9 @@
 
 ## <div id="summary">概述</div> ##
 
-Rexdb是一款使用Java语言编写的，开放源代码的持久层框架。提供了查询、调用、（JTA）事务、数据源管理等功能，可以取代Mybatis、Hibernate作为系统的核心ORM框架。
+Rexdb是一款使用Java语言编写的，开放源代码的持久层框架。提供了查询、更新、批处理、调用、（JTA）事务、数据源管理等功能，可以取代Mybatis、Hibernate作为系统的核心ORM框架。
 
-Rexdb提供了工具类风格的接口，不需要编写配置文件，使用简便；同时，它还具备同类框架中最高效的执行效率。
+Rexdb提供了工具类风格的接口，不需要编写映射配置，使用简便；同时，它还具备同类框架中最高效的执行效率。
 
 ## <div id="performance">性能</div> ##
 
@@ -310,11 +310,12 @@ DB.update(sql,new Students(1, "钟小强", null, null));//obj为普通的java对
 List<RMap> list = DB.getMapList("student", "delete from t_student where num = 1");
 ```
 
-## <div id="batchUpdate">批量处理 DB.batchUpdate()</div> ##
+## <div id="batchUpdate">批量更新 DB.batchUpdate()</div> ##
 
 `DB.batchUpdate()`方法用于执行批处理操作，该接口可以有效提升执行大量数据变更时的执行性能，格式如下：
 
 > **int[] DB.batchUpdate([String datasource,] String[] sqls)**
+> **int[] DB.batchUpdate([String datasource,] String sql, Object[][] | Ps[] | Map[] | Object[] | List parameter )**
 
 例1：执行多个SQL
 
