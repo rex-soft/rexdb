@@ -2,16 +2,17 @@
 
 ----------
 
-> **编译好的Rexdb框架下载：[rexdb-1.0.2.zip](http://git.oschina.net/rexsoft/rexdb/attach_files/download?i=65532&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F5F%2FPaAvDFfFowWANhZpAEzhFUN_xCk148.zip%3Ftoken%3Ddb02cd5b24ebc7c9f17de7c9609a7fa8%26ts%3D1472570379%26attname%3Drexdb-1.0.2.zip) | [rexdb-1.0.2.tar.gz](http://git.oschina.net/rexsoft/rexdb/attach_files/download?i=65534&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F5F%2FPaAvDFfFo0CAceLaAEybXdorN581556.gz%3Ftoken%3De3e13c1ce6ddbbb5fe458952d5181249%26ts%3D1472570379%26attname%3Drexdb-1.0.2.tar.gz)**
+> **网站：[http://db.rex-soft.org](http://db.rex-soft.org)**
+> **下载：[rexdb-1.0.2.zip](http://git.oschina.net/rexsoft/rexdb/attach_files/download?i=65532&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F5F%2FPaAvDFfFowWANhZpAEzhFUN_xCk148.zip%3Ftoken%3Ddb02cd5b24ebc7c9f17de7c9609a7fa8%26ts%3D1472570379%26attname%3Drexdb-1.0.2.zip) | [rexdb-1.0.2.tar.gz](http://git.oschina.net/rexsoft/rexdb/attach_files/download?i=65534&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F5F%2FPaAvDFfFo0CAceLaAEybXdorN581556.gz%3Ftoken%3De3e13c1ce6ddbbb5fe458952d5181249%26ts%3D1472570379%26attname%3Drexdb-1.0.2.tar.gz)**
 
 ----------
 
 > **全部文档**（限于篇幅，下面的正文仅包含简介和快速入门）
 
-- [1. 简介](http://db.rex-soft.org/document.php?version=1.0&doc=intro)
+- [1. **简介**](http://db.rex-soft.org/document.php?version=1.0&doc=intro)
 - [2. 下载](http://db.rex-soft.org/document.php?version=1.0&doc=download)
 - [3. 快速入门（初学者）](http://db.rex-soft.org/document.php?version=1.0&doc=quick-start-beginner)
-- [4. 快速入门](http://db.rex-soft.org/document.php?version=1.0&doc=quick-start)
+- [4. **快速入门**](http://db.rex-soft.org/document.php?version=1.0&doc=quick-start)
 - [5. 用户手册](http://db.rex-soft.org/document.php?version=1.0&doc=user-manual)
 
 ----------
@@ -61,6 +62,7 @@ Rexdb基于Apache 2.0协议，可以免费用于个人或商业用途。
 
 # <div id="top">快速入门</div> #
 
+本文档用于快速了解Rexdb的使用方法，适合大部分的Java编程人员阅读。
 
 ## <div id="environment">开发/运行运行环境</div> ##
 
@@ -91,17 +93,18 @@ Rexdb依赖全局配置文件**rexdb.xml**，用于配置数据源、日志、�
 		<property name="username" value="rexdb" />
 		<property name="password" value="12345678" />
 	</dataSource>
-	<!-- student数据源，Mysql数据库，使用了Apache DBCP连接池 -->
+	<!-- id为“student”的数据源，Mysql数据库，使用了Apache DBCP连接池 -->
 	<dataSource id="student" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/rexdb?characterEncoding=utf8" />
 		<property name="username" value="root" />
 		<property name="password" value="12345678" />
 	</dataSource>
+	<!-- id为“school”的数据源，使用Tomcat JNDI -->
+	<dataSource id="school" jndi="java:comp/env/rexdbJNDI"></dataSource>
 </configuration>
 ```
-
-更多选项请参考Rexdb用户手册。
+如果希望从其它位置加载该配置文件，或是启用更多的功能，例如设置异常信息语言（中/英）、设置跟踪SQL的监听、设置超时时间等，请查询[Rexdb用户手册](http://db.rex-soft.org/document.php?version=1.0&doc=user-manual)。
 
 ## <div id="get">查询单条记录 DB.get()</div> ##
 
@@ -144,7 +147,7 @@ Student stu = DB.get("student", "select * from t_student where class='3年1班' 
 
 ## <div id="getMap">查询单条Map记录 DB.getMap()</div> ##
 
-`org.rex.DB.get()`方法用于查询单条记录，并返回一个org.rex.RMap实例（无记录时返回null），org.rex.RMap是java.util.HashMap的子类，提供了数据类型转换等功能。格式如下：
+`org.rex.DB.get()`方法用于查询单条记录，并返回一个org.rex.RMap实例（无记录时返回null），org.rex.RMap是java.util.HashMap的子类，提供了数据类型转换等功能（详见本文附录）。格式如下：
 
 > **RMap DB.getMap([String dataSourceId,] String sql, [Object[] | Ps | Map | Object parameter])**
 
@@ -232,7 +235,7 @@ List<Student> list = DB.getList("student", "select * from t_student where class=
 
 `org.rex.DB.getMapList()`方法用于查询多条记录，并返回一个java.util.List实例（无记录时返回空的List实例）。格式如下：
 
-> **List<RMap> DB.getList([String dataSourceId,] String sql, [Object[] | Ps | Map | Object parameter] [, int offset, int rows])**
+> **List<RMap> DB.getMapList([String dataSourceId,] String sql, [Object[] | Ps | Map | Object parameter] [, int offset, int rows])**
 
 - dataSourceId：可选，配置文件中的数据源id，不设置时使用默认数据源；
 - sql：必填，待执行的SQL语句；
@@ -441,4 +444,63 @@ Rexdb还有更多功能，例如：
 - 启动动态字节码编译/反射缓存；
 - 自动转换日期类型的参数；
 
-详情请参见用户手册。
+详情请参见[Rexdb用户手册](http://db.rex-soft.org/document.php?version=1.0&doc=user-manual)。
+
+## <div id="f1">附1：类 org.rex.RMap</div> ##
+
+类`org.rex.RMap`继承了`java.util.HashMap`，主要用于简化取值时的Java类型转换。该类有诸如`RMap.getInt(String key)`、`RMap.getDate(String key)`的方法，可以方便的获取需要的类型。当Map中存储的值类型和希望获取的类型不匹配时，也会尝试各种可能的方式进行类型转换。
+
+例1：查询记录数
+
+```java
+int c = DB.getMap("select count(*) as c from t_student").getInt("c");
+```
+
+例2：查询数据库中的当前时间（oracle）
+
+```java
+Date now = DB.getMap("select sysdate as now from dual").getDate("now");
+```
+
+例3：获取某日期字段（SQL查询出的类型为String，RMap自动将其转换为Date类型）
+
+```java
+Date date = DB.getMap("select '2016-01-01' as date from dual").getDate("date");
+```
+
+有关该类的更多使用方法请参见[Rexdb用户手册](http://db.rex-soft.org/document.php?version=1.0&doc=user-manual)。
+
+## <div id="f2">附2：类 org.rex.db.Ps</div> ##
+
+类 `org.rex.db.Ps`用于声明预编译参数，也可以用于获取SQL执行后的输出参数和返回值。该类提供了丰富的接口，可以快速设置执行SQL所需的参数，简化了为设置查询条件而实例化Java对象的代码。
+
+例1：使用构造函数按顺序声明预编译参数
+
+```java
+RMap stu = DB.get("select * from t_student where class=? and num=?", new Ps("3年1班", 1));
+```
+
+例2：逐个声明预编译参数
+
+```java
+Ps ps = new Ps();
+ps.add("3年1班");
+ps.add(1);
+RMap stu = DB.get("select * from t_student where class=? and num=?", ps);
+```
+
+例3：声明存储过程的输出参数
+
+```java
+Ps ps = new Ps();
+ps.addOutInt("age");
+RMap result = DB.call("{call test_proc_out(?)}", ps);
+int age = result.getInt("age")
+```
+
+有关该类的更多使用方法请参见[Rexdb用户手册](http://db.rex-soft.org/document.php?version=1.0&doc=user-manual)。
+
+## <div id="f3">附3：作者的一些建议</div> ##
+
+- 对于需求不可预计的项目、业务及其复杂的项目、采用原型法逐步迭代的项目，或是任何没有经过详细设计的项目，在开发、生产过程中都不可避免的要进行多表关联查询，同时也会有较频繁的表结构变更。这类系统建议放弃编写与数据表对应的POJO类，而是直接采用Map的方式查询和传递数据，这可以大幅降低需求变更时的编码量。当然，这还需要其它框架的配合，例如MVC、Taglib或是模板引擎对Map对象的支持。
+- 而对于经过精心设计，表结构不会频繁变更，各表之间的关联查询较少的项目，建议采用查询Java对象系列接口。
