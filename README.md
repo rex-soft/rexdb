@@ -164,23 +164,23 @@ RMap stu = DB.getMap("select * from t_student where class='3年1班' and num=1")
 例2：执行带有预编译参数的SQL，当parameter参数为`Object数组`、`org.rex.db.Ps`时，SQL中使用`?`标记预编译参数
 
 ```java
-RMap stu = DB.get("select * from t_student where class=? and num=?", new Object[]{"3年1班", 1});
-RMap stu = DB.get("select * from t_student where class=? and num=?", new Ps("3年1班", 1));
+RMap stu = DB.getMap("select * from t_student where class=? and num=?", new Object[]{"3年1班", 1});
+RMap stu = DB.getMap("select * from t_student where class=? and num=?", new Ps("3年1班", 1));
 ```
 
 例3：执行带有预编译参数的SQL，当parameter参数为`java.util.Map`、`Java对象`时，SQL中使用`#{}`标记预编译参数
 
 ```java
 //map为java.util.Map类型的实例，包含名为“class”和“num”的键；obj为普通的java对象，包含名为“clazz”和“num”的成员变量
-RMap stu = DB.get("select * from t_student where class=#{clazz} and num=#{num}", map);
-RMap stu = DB.get("select * from t_student where class=#{clazz} and num=#{num}", obj);
+RMap stu = DB.getMap("select * from t_student where class=#{clazz} and num=#{num}", map);
+RMap stu = DB.getMap("select * from t_student where class=#{clazz} and num=#{num}", obj);
 ```
 
 例4：在指定数据源中执行SQL
 
 ```java
 //配置文件rexdb.xml中有id为student的数据源
-RMap stu = DB.get("student", "select * from t_student where class='3年1班' and num=1");
+RMap stu = DB.getMap("student", "select * from t_student where class='3年1班' and num=1");
 ```
 
 ## <div id="getList">查询多条记录 DB.getList()</div> ##
