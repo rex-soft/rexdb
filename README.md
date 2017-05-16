@@ -3,7 +3,7 @@
 ----------
 
 > **网站：[http://db.rex-soft.org](http://db.rex-soft.org)**
-> **下载：[rexdb-1.0.2.zip](http://git.oschina.net/rexsoft/rexdb/attach_files/download?i=65532&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F5F%2FPaAvDFfFowWANhZpAEzhFUN_xCk148.zip%3Ftoken%3Ddb02cd5b24ebc7c9f17de7c9609a7fa8%26ts%3D1472570379%26attname%3Drexdb-1.0.2.zip) | [rexdb-1.0.2.tar.gz](http://git.oschina.net/rexsoft/rexdb/attach_files/download?i=65534&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F5F%2FPaAvDFfFo0CAceLaAEybXdorN581556.gz%3Ftoken%3De3e13c1ce6ddbbb5fe458952d5181249%26ts%3D1472570379%26attname%3Drexdb-1.0.2.tar.gz)**
+> **下载：[rexdb-1.0.3.zip](http://dl.rex-soft.org/rexdb/rexdb-1.0.3.zip) | [rexdb-1.0.3.tar.gz](http://dl.rex-soft.org/rexdb/rexdb-1.0.3.tar.gz)**
 
 ----------
 
