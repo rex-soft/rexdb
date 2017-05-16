@@ -80,7 +80,7 @@ public class BeanConvertorManager {
 	/**
 	 * Creates a convertor for the specified class.
 	 */
-	private static BeanConvertor build(Class<?> clazz) throws NotFoundException, DBException, CannotCompileException, InstantiationException, IllegalAccessException {
+	private synchronized static BeanConvertor build(Class<?> clazz) throws NotFoundException, DBException, CannotCompileException, InstantiationException, IllegalAccessException {
 
 		ClassPool pool = ClassPool.getDefault();
 		pool.insertClassPath(new ClassClassPath(clazz)); 
