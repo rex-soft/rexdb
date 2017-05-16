@@ -2,8 +2,8 @@
 
 ----------
 
-> **网站：[http://db.rex-soft.org](http://db.rex-soft.org)**
-> **下载：[rexdb-1.0.3.zip](http://dl.rex-soft.org/rexdb/rexdb-1.0.3.zip) | [rexdb-1.0.3.tar.gz](http://dl.rex-soft.org/rexdb/rexdb-1.0.3.tar.gz)**
+- **网站：[http://db.rex-soft.org](http://db.rex-soft.org)**
+- **下载：[rexdb-1.0.3.zip](http://dl.rex-soft.org/rexdb/rexdb-1.0.3.zip) | [rexdb-1.0.3.tar.gz](http://dl.rex-soft.org/rexdb/rexdb-1.0.3.tar.gz)**
 
 ----------
 
