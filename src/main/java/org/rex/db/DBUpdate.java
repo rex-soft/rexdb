@@ -194,6 +194,10 @@ public class DBUpdate extends DBOperation {
 	public int[] batchUpdate(String sql, List<?> parameterList) throws DBException {
 		if (parameterList == null)
 			templateBatchUpdate(sql, null);
+		
+		if(parameterList.size() == 0) {
+			return new int[0];
+		}
 
 		Class<?> clazz = validateListElementsType(parameterList);
 		if (clazz == Ps.class)
