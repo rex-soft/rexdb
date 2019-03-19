@@ -10,9 +10,11 @@
 <dependency>
   <groupId>org.rex-soft</groupId>
   <artifactId>rexdb</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
+
+*使用Maven添加依赖后，不要忘记将rexdb配置文件[rexdb.xml](https://gitee.com/rexsoft/rexdb/attach_files/download?i=217656&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F06%2FFA%2FPaAvDFyQjSiAPQ7AAAAULnNNqco198.xml%3Ftoken%3D50339ff93523becdba5e023f93088e17%26ts%3D1552977193%26attname%3Drexdb.xml)拷贝到classpath路径中*
 
 ----------
 
