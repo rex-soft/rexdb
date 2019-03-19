@@ -18,7 +18,9 @@ package org.rex.db.datasource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -62,6 +64,18 @@ public class SimpleDataSource implements DataSource {
 
 	public void setLogWriter(PrintWriter pw) throws SQLException {
 		throw new DBRuntimeException("DB-D0002", "setLogWriter");
+	}
+
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		throw new DBRuntimeException("DB-D0002", "getParentLogger");
+	}
+
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		throw new DBRuntimeException("DB-D0002", "unwrap");
+	}
+
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		throw new DBRuntimeException("DB-D0002", "isWrapperFor");
 	}
 
 }

@@ -2,23 +2,25 @@ package org.rex.db.datasource;
 
 import java.util.Properties;
 
-public class ConnectionProperties {
+import org.rex.db.UsingH2;
+
+public class ConnectionProperties extends UsingH2{
 	
 	//----------simple pool
 	/**
-	 * 获取数据库连接配置
+	 * test conn
 	 */
 	public static Properties getSimpleProperties(){
 		Properties properties = new Properties();
-		properties.put("driverClassName","com.mysql.jdbc.Driver");
-		properties.put("url","jdbc:mysql://localhost:3306/rexdb");
-		properties.put("username","root");
-		properties.put("password","12345678");
+		properties.put("driverClassName","org.h2.Driver");
+		properties.put("url","jdbc:h2:tcp://127.0.0.1/~/rexdb");
+		properties.put("username","sa");
+		properties.put("password","");
 		return properties;
 	}
 
 	/**
-	 * 获取数据库连接配置
+	 *test props
 	 */
 	public static Properties getSimpleProperties(Properties args){
 		Properties properties = getSimpleProperties();
