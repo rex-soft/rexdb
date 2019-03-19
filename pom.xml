@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.rex-soft</groupId>
 	<artifactId>rexdb</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<description>High performance ORM framework</description>
 	<url>http://db.rex-soft.org/</url>
-	<name>rexdb-1.0.3.jar</name>
+	<name>rexdb-1.0.4.jar</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
